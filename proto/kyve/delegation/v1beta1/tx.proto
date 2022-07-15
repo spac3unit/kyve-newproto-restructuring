@@ -1,5 +1,5 @@
 syntax = "proto3";
-package kyvenetwork.chain.delegation;
+package kyve.delegation.v1beta1;
 
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 

@@ -1,9 +1,9 @@
 syntax = "proto3";
-package kyve.delegation.v1beta1;
+package kyve.pool.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
+option go_package = "github.com/KYVENetwork/chain/x/pool/types";
 
 // Params defines the parameters for the module.
 message Params {
