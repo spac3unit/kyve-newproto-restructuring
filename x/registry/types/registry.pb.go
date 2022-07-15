@@ -395,7 +395,7 @@ func (m *UpgradePlan) GetDuration() uint64 {
 	return 0
 }
 
-// DelegationEntries ...
+// deprecated DelegationEntries ... -> moved to delegation
 type DelegationEntries struct {
 	// id ...
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -468,7 +468,7 @@ func (m *DelegationEntries) GetKIndex() uint64 {
 	return 0
 }
 
-// DelegationPoolData ...
+// deprecated DelegationPoolData ... -> moved to delegation
 type DelegationPoolData struct {
 	// id ...
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -568,7 +568,7 @@ func (m *DelegationPoolData) GetLatestIndexWasUndelegation() bool {
 	return false
 }
 
-// Delegator ...
+// deprecated Delegator ... -> moved to delegation
 type Delegator struct {
 	// id ...
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -1509,7 +1509,7 @@ func (m *UnbondingStakingQueueState) GetHighIndex() uint64 {
 	return 0
 }
 
-// UnbondingStakingEntry
+// UnbondingStakingEntry -> moved to delegation
 // Creates an entry for an upcoming unbonding of a staker which is put in the unbonding fifo queue and
 // executed after the unbonding time is over.
 type UnbondingDelegationQueueEntry struct {
@@ -1602,6 +1602,7 @@ func (m *UnbondingDelegationQueueEntry) GetCreationTime() uint64 {
 	return 0
 }
 
+// deprecated -> moved to delegation
 // UnbondingState stores the state for the unbonding of stakes and delegations.
 type UnbondingDelegationQueueState struct {
 	// low_index ...
