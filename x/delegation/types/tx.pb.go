@@ -9,7 +9,11 @@ import (
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
+	io "io"
 	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -23,20 +27,498 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgDelegatePool defines a SDK message for delegating to a protocol node in a specific pool.
+type MsgDelegatePool struct {
+	// creator ...
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// id ...
+	PoolId uint64 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	// staker ...
+	Staker string `protobuf:"bytes,3,opt,name=staker,proto3" json:"staker,omitempty"`
+	// amount ...
+	Amount uint64 `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *MsgDelegatePool) Reset()         { *m = MsgDelegatePool{} }
+func (m *MsgDelegatePool) String() string { return proto.CompactTextString(m) }
+func (*MsgDelegatePool) ProtoMessage()    {}
+func (*MsgDelegatePool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{0}
+}
+func (m *MsgDelegatePool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDelegatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDelegatePool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDelegatePool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDelegatePool.Merge(m, src)
+}
+func (m *MsgDelegatePool) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDelegatePool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDelegatePool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDelegatePool proto.InternalMessageInfo
+
+func (m *MsgDelegatePool) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgDelegatePool) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *MsgDelegatePool) GetStaker() string {
+	if m != nil {
+		return m.Staker
+	}
+	return ""
+}
+
+func (m *MsgDelegatePool) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+// MsgDelegatePoolResponse defines the Msg/DelegatePool response type.
+type MsgDelegatePoolResponse struct {
+}
+
+func (m *MsgDelegatePoolResponse) Reset()         { *m = MsgDelegatePoolResponse{} }
+func (m *MsgDelegatePoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgDelegatePoolResponse) ProtoMessage()    {}
+func (*MsgDelegatePoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{1}
+}
+func (m *MsgDelegatePoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgDelegatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgDelegatePoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgDelegatePoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgDelegatePoolResponse.Merge(m, src)
+}
+func (m *MsgDelegatePoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgDelegatePoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgDelegatePoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgDelegatePoolResponse proto.InternalMessageInfo
+
+// MsgWithdrawPool defines a SDK message for withdrawing delegation rewards from a specific pool.
+type MsgWithdrawPool struct {
+	// creator ...
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// id ...
+	PoolId uint64 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	// staker ...
+	Staker string `protobuf:"bytes,3,opt,name=staker,proto3" json:"staker,omitempty"`
+}
+
+func (m *MsgWithdrawPool) Reset()         { *m = MsgWithdrawPool{} }
+func (m *MsgWithdrawPool) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawPool) ProtoMessage()    {}
+func (*MsgWithdrawPool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{2}
+}
+func (m *MsgWithdrawPool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgWithdrawPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgWithdrawPool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgWithdrawPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawPool.Merge(m, src)
+}
+func (m *MsgWithdrawPool) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgWithdrawPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawPool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgWithdrawPool proto.InternalMessageInfo
+
+func (m *MsgWithdrawPool) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgWithdrawPool) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *MsgWithdrawPool) GetStaker() string {
+	if m != nil {
+		return m.Staker
+	}
+	return ""
+}
+
+// MsgWithdrawPoolResponse defines the Msg/WithdrawPool response type.
+type MsgWithdrawPoolResponse struct {
+}
+
+func (m *MsgWithdrawPoolResponse) Reset()         { *m = MsgWithdrawPoolResponse{} }
+func (m *MsgWithdrawPoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgWithdrawPoolResponse) ProtoMessage()    {}
+func (*MsgWithdrawPoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{3}
+}
+func (m *MsgWithdrawPoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgWithdrawPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgWithdrawPoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgWithdrawPoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgWithdrawPoolResponse.Merge(m, src)
+}
+func (m *MsgWithdrawPoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgWithdrawPoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgWithdrawPoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgWithdrawPoolResponse proto.InternalMessageInfo
+
+// MsgUndelegatePool defines a SDK message for undelegating from a specific pool.
+type MsgUndelegatePool struct {
+	// creator ...
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// id ...
+	PoolId uint64 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	// staker ...
+	Staker string `protobuf:"bytes,3,opt,name=staker,proto3" json:"staker,omitempty"`
+	// amount ...
+	Amount uint64 `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *MsgUndelegatePool) Reset()         { *m = MsgUndelegatePool{} }
+func (m *MsgUndelegatePool) String() string { return proto.CompactTextString(m) }
+func (*MsgUndelegatePool) ProtoMessage()    {}
+func (*MsgUndelegatePool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{4}
+}
+func (m *MsgUndelegatePool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUndelegatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUndelegatePool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUndelegatePool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUndelegatePool.Merge(m, src)
+}
+func (m *MsgUndelegatePool) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUndelegatePool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUndelegatePool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUndelegatePool proto.InternalMessageInfo
+
+func (m *MsgUndelegatePool) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgUndelegatePool) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *MsgUndelegatePool) GetStaker() string {
+	if m != nil {
+		return m.Staker
+	}
+	return ""
+}
+
+func (m *MsgUndelegatePool) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+// MsgUndelegatePoolResponse defines the Msg/UndelegatePool response type.
+type MsgUndelegatePoolResponse struct {
+}
+
+func (m *MsgUndelegatePoolResponse) Reset()         { *m = MsgUndelegatePoolResponse{} }
+func (m *MsgUndelegatePoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUndelegatePoolResponse) ProtoMessage()    {}
+func (*MsgUndelegatePoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{5}
+}
+func (m *MsgUndelegatePoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUndelegatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUndelegatePoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUndelegatePoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUndelegatePoolResponse.Merge(m, src)
+}
+func (m *MsgUndelegatePoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUndelegatePoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUndelegatePoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUndelegatePoolResponse proto.InternalMessageInfo
+
+// MsgRedelegatePool defines a SDK message for redelegating from a
+// staker in a pool to another staker in the same or another pool
+type MsgRedelegatePool struct {
+	// creator ...
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// id ...
+	FromPoolId uint64 `protobuf:"varint,2,opt,name=from_pool_id,json=fromPoolId,proto3" json:"from_pool_id,omitempty"`
+	// staker ...
+	FromStaker string `protobuf:"bytes,3,opt,name=from_staker,json=fromStaker,proto3" json:"from_staker,omitempty"`
+	// id ...
+	ToPoolId uint64 `protobuf:"varint,4,opt,name=to_pool_id,json=toPoolId,proto3" json:"to_pool_id,omitempty"`
+	// staker ...
+	ToStaker string `protobuf:"bytes,5,opt,name=to_staker,json=toStaker,proto3" json:"to_staker,omitempty"`
+	// amount ...
+	Amount uint64 `protobuf:"varint,6,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *MsgRedelegatePool) Reset()         { *m = MsgRedelegatePool{} }
+func (m *MsgRedelegatePool) String() string { return proto.CompactTextString(m) }
+func (*MsgRedelegatePool) ProtoMessage()    {}
+func (*MsgRedelegatePool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{6}
+}
+func (m *MsgRedelegatePool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRedelegatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRedelegatePool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRedelegatePool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRedelegatePool.Merge(m, src)
+}
+func (m *MsgRedelegatePool) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRedelegatePool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRedelegatePool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRedelegatePool proto.InternalMessageInfo
+
+func (m *MsgRedelegatePool) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgRedelegatePool) GetFromPoolId() uint64 {
+	if m != nil {
+		return m.FromPoolId
+	}
+	return 0
+}
+
+func (m *MsgRedelegatePool) GetFromStaker() string {
+	if m != nil {
+		return m.FromStaker
+	}
+	return ""
+}
+
+func (m *MsgRedelegatePool) GetToPoolId() uint64 {
+	if m != nil {
+		return m.ToPoolId
+	}
+	return 0
+}
+
+func (m *MsgRedelegatePool) GetToStaker() string {
+	if m != nil {
+		return m.ToStaker
+	}
+	return ""
+}
+
+func (m *MsgRedelegatePool) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+// MsgUndelegatePoolResponse defines the Msg/UndelegatePool response type.
+type MsgRedelegatePoolResponse struct {
+}
+
+func (m *MsgRedelegatePoolResponse) Reset()         { *m = MsgRedelegatePoolResponse{} }
+func (m *MsgRedelegatePoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRedelegatePoolResponse) ProtoMessage()    {}
+func (*MsgRedelegatePoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_cfef676107453bda, []int{7}
+}
+func (m *MsgRedelegatePoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgRedelegatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgRedelegatePoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgRedelegatePoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRedelegatePoolResponse.Merge(m, src)
+}
+func (m *MsgRedelegatePoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgRedelegatePoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRedelegatePoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgRedelegatePoolResponse proto.InternalMessageInfo
+
+func init() {
+	proto.RegisterType((*MsgDelegatePool)(nil), "kyvenetwork.chain.delegation.MsgDelegatePool")
+	proto.RegisterType((*MsgDelegatePoolResponse)(nil), "kyvenetwork.chain.delegation.MsgDelegatePoolResponse")
+	proto.RegisterType((*MsgWithdrawPool)(nil), "kyvenetwork.chain.delegation.MsgWithdrawPool")
+	proto.RegisterType((*MsgWithdrawPoolResponse)(nil), "kyvenetwork.chain.delegation.MsgWithdrawPoolResponse")
+	proto.RegisterType((*MsgUndelegatePool)(nil), "kyvenetwork.chain.delegation.MsgUndelegatePool")
+	proto.RegisterType((*MsgUndelegatePoolResponse)(nil), "kyvenetwork.chain.delegation.MsgUndelegatePoolResponse")
+	proto.RegisterType((*MsgRedelegatePool)(nil), "kyvenetwork.chain.delegation.MsgRedelegatePool")
+	proto.RegisterType((*MsgRedelegatePoolResponse)(nil), "kyvenetwork.chain.delegation.MsgRedelegatePoolResponse")
+}
+
 func init() { proto.RegisterFile("kyve/delegation/v1beta1/tx.proto", fileDescriptor_cfef676107453bda) }
 
 var fileDescriptor_cfef676107453bda = []byte{
-	// 150 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xc8, 0xae, 0x2c, 0x4b,
-	0xd5, 0x4f, 0x49, 0xcd, 0x49, 0x4d, 0x4f, 0x2c, 0xc9, 0xcc, 0xcf, 0xd3, 0x2f, 0x33, 0x4c, 0x4a,
-	0x2d, 0x49, 0x34, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x92, 0x01, 0xa9,
-	0xc8, 0x4b, 0x2d, 0x29, 0xcf, 0x2f, 0xca, 0xd6, 0x4b, 0xce, 0x48, 0xcc, 0xcc, 0xd3, 0x43, 0x28,
-	0x37, 0x62, 0xe5, 0x62, 0xf6, 0x2d, 0x4e, 0x77, 0xf2, 0x3c, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23,
-	0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6,
-	0x63, 0x39, 0x86, 0x28, 0xfd, 0xf4, 0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d,
-	0xef, 0xc8, 0x30, 0x57, 0x3f, 0x88, 0x49, 0xfa, 0x60, 0x93, 0xf4, 0x2b, 0x90, 0xad, 0x2e, 0xa9,
-	0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03, 0x5b, 0x6b, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xf5, 0x79,
-	0xc0, 0xeb, 0x9a, 0x00, 0x00, 0x00,
+	// 428 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0xcb, 0xce, 0xd2, 0x50,
+	0x10, 0xa6, 0xf2, 0xdb, 0xff, 0x67, 0x24, 0x1a, 0xbb, 0x90, 0x72, 0x49, 0x6d, 0x58, 0xb1, 0xb1,
+	0x27, 0x68, 0x8c, 0x7b, 0xa3, 0x0b, 0x62, 0x30, 0xa4, 0x44, 0x8d, 0xc6, 0x84, 0x14, 0x7a, 0x2c,
+	0x0d, 0xd0, 0x69, 0xda, 0xe1, 0xe6, 0x53, 0xf8, 0x4e, 0x6e, 0x5c, 0xb2, 0x74, 0x69, 0x60, 0xe5,
+	0x5b, 0x98, 0x9e, 0x52, 0x6c, 0x2b, 0x11, 0x48, 0x8c, 0xcb, 0x99, 0x7c, 0xb7, 0x69, 0xbf, 0x1c,
+	0xd0, 0x27, 0xeb, 0x05, 0x67, 0x36, 0x9f, 0x72, 0xc7, 0x22, 0x17, 0x3d, 0xb6, 0x68, 0x0f, 0x39,
+	0x59, 0x6d, 0x46, 0x2b, 0xc3, 0x0f, 0x90, 0x50, 0x69, 0x44, 0x08, 0x8f, 0xd3, 0x12, 0x83, 0x89,
+	0x31, 0x1a, 0x5b, 0xae, 0x67, 0xfc, 0x86, 0x37, 0x09, 0xee, 0x75, 0x43, 0xe7, 0x45, 0xbc, 0xe0,
+	0x3d, 0xc4, 0xa9, 0xa2, 0xc2, 0xf5, 0x28, 0xe0, 0x16, 0x61, 0xa0, 0x4a, 0xba, 0xd4, 0x2a, 0x99,
+	0xc9, 0xa8, 0x54, 0xe0, 0xda, 0x47, 0x9c, 0x0e, 0x5c, 0x5b, 0xbd, 0xa5, 0x4b, 0xad, 0x2b, 0x53,
+	0x8e, 0xc6, 0x8e, 0xad, 0x3c, 0x00, 0x39, 0x24, 0x6b, 0xc2, 0x03, 0xb5, 0x28, 0x18, 0xfb, 0x29,
+	0xda, 0x5b, 0x33, 0x9c, 0x7b, 0xa4, 0x5e, 0xc5, 0xf8, 0x78, 0x6a, 0x56, 0xa1, 0x92, 0x73, 0x35,
+	0x79, 0xe8, 0xa3, 0x17, 0xf2, 0xe6, 0x47, 0x11, 0xe8, 0x9d, 0x4b, 0x63, 0x3b, 0xb0, 0x96, 0xff,
+	0x38, 0xd0, 0xde, 0x38, 0xad, 0x7e, 0x30, 0x5e, 0xc0, 0xfd, 0x6e, 0xe8, 0xbc, 0xf1, 0xec, 0xff,
+	0xfc, 0x2d, 0xea, 0x50, 0xfd, 0xc3, 0xf7, 0x10, 0xea, 0xab, 0x24, 0x52, 0x99, 0xfc, 0xcc, 0x54,
+	0x3a, 0x94, 0x3f, 0x05, 0x38, 0x1b, 0x64, 0xa3, 0x41, 0xb4, 0xeb, 0xc5, 0xf1, 0x1e, 0xc2, 0x1d,
+	0x81, 0xc8, 0x64, 0x14, 0x80, 0x7e, 0x9c, 0xb3, 0x01, 0x40, 0x78, 0x10, 0x88, 0xb3, 0xde, 0x10,
+	0xee, 0xe9, 0x75, 0x28, 0x11, 0x26, 0xe4, 0xdb, 0x82, 0x7c, 0x43, 0xd8, 0xcf, 0x9f, 0x28, 0x1f,
+	0x39, 0x31, 0x7b, 0x44, 0x72, 0xe2, 0xe3, 0x9f, 0x45, 0x28, 0x76, 0x43, 0x47, 0x21, 0x28, 0x67,
+	0x6a, 0xf8, 0xc8, 0xf8, 0x5b, 0x71, 0x8d, 0x5c, 0x7f, 0x6a, 0x4f, 0x2f, 0x82, 0x27, 0xee, 0x91,
+	0x6b, 0xa6, 0x6b, 0xa7, 0x5d, 0xd3, 0xf0, 0x33, 0x5c, 0x8f, 0x75, 0x4d, 0xf9, 0x0c, 0x77, 0x73,
+	0x45, 0x63, 0x27, 0x85, 0xb2, 0x84, 0xda, 0xb3, 0x0b, 0x09, 0x69, 0xef, 0x5c, 0x9d, 0x4e, 0x7b,
+	0x67, 0x09, 0x67, 0x78, 0x1f, 0xff, 0xd7, 0xcf, 0x3b, 0xdf, 0xb6, 0x9a, 0xb4, 0xd9, 0x6a, 0xd2,
+	0x8f, 0xad, 0x26, 0x7d, 0xd9, 0x69, 0x85, 0xcd, 0x4e, 0x2b, 0x7c, 0xdf, 0x69, 0x85, 0x0f, 0xcc,
+	0x71, 0x69, 0x3c, 0x1f, 0x1a, 0x23, 0x9c, 0xb1, 0x57, 0xef, 0xdf, 0xbe, 0x7c, 0x1d, 0x8b, 0x33,
+	0x21, 0xce, 0x56, 0xe9, 0x17, 0x8e, 0xd6, 0x3e, 0x0f, 0x87, 0xb2, 0x78, 0xdd, 0x9e, 0xfc, 0x0a,
+	0x00, 0x00, 0xff, 0xff, 0xd8, 0x36, 0x2b, 0xd7, 0x01, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -51,6 +533,14 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// DelegatePool ...
+	DelegatePool(ctx context.Context, in *MsgDelegatePool, opts ...grpc.CallOption) (*MsgDelegatePoolResponse, error)
+	// WithdrawPool ...
+	WithdrawPool(ctx context.Context, in *MsgWithdrawPool, opts ...grpc.CallOption) (*MsgWithdrawPoolResponse, error)
+	// UndelegatePool ...
+	UndelegatePool(ctx context.Context, in *MsgUndelegatePool, opts ...grpc.CallOption) (*MsgUndelegatePoolResponse, error)
+	// RedelegatePool ...
+	RedelegatePool(ctx context.Context, in *MsgRedelegatePool, opts ...grpc.CallOption) (*MsgRedelegatePoolResponse, error)
 }
 
 type msgClient struct {
@@ -61,22 +551,1529 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
+func (c *msgClient) DelegatePool(ctx context.Context, in *MsgDelegatePool, opts ...grpc.CallOption) (*MsgDelegatePoolResponse, error) {
+	out := new(MsgDelegatePoolResponse)
+	err := c.cc.Invoke(ctx, "/kyvenetwork.chain.delegation.Msg/DelegatePool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) WithdrawPool(ctx context.Context, in *MsgWithdrawPool, opts ...grpc.CallOption) (*MsgWithdrawPoolResponse, error) {
+	out := new(MsgWithdrawPoolResponse)
+	err := c.cc.Invoke(ctx, "/kyvenetwork.chain.delegation.Msg/WithdrawPool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UndelegatePool(ctx context.Context, in *MsgUndelegatePool, opts ...grpc.CallOption) (*MsgUndelegatePoolResponse, error) {
+	out := new(MsgUndelegatePoolResponse)
+	err := c.cc.Invoke(ctx, "/kyvenetwork.chain.delegation.Msg/UndelegatePool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) RedelegatePool(ctx context.Context, in *MsgRedelegatePool, opts ...grpc.CallOption) (*MsgRedelegatePoolResponse, error) {
+	out := new(MsgRedelegatePoolResponse)
+	err := c.cc.Invoke(ctx, "/kyvenetwork.chain.delegation.Msg/RedelegatePool", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// DelegatePool ...
+	DelegatePool(context.Context, *MsgDelegatePool) (*MsgDelegatePoolResponse, error)
+	// WithdrawPool ...
+	WithdrawPool(context.Context, *MsgWithdrawPool) (*MsgWithdrawPoolResponse, error)
+	// UndelegatePool ...
+	UndelegatePool(context.Context, *MsgUndelegatePool) (*MsgUndelegatePoolResponse, error)
+	// RedelegatePool ...
+	RedelegatePool(context.Context, *MsgRedelegatePool) (*MsgRedelegatePoolResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
+func (*UnimplementedMsgServer) DelegatePool(ctx context.Context, req *MsgDelegatePool) (*MsgDelegatePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DelegatePool not implemented")
+}
+func (*UnimplementedMsgServer) WithdrawPool(ctx context.Context, req *MsgWithdrawPool) (*MsgWithdrawPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WithdrawPool not implemented")
+}
+func (*UnimplementedMsgServer) UndelegatePool(ctx context.Context, req *MsgUndelegatePool) (*MsgUndelegatePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UndelegatePool not implemented")
+}
+func (*UnimplementedMsgServer) RedelegatePool(ctx context.Context, req *MsgRedelegatePool) (*MsgRedelegatePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RedelegatePool not implemented")
+}
+
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
+}
+
+func _Msg_DelegatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgDelegatePool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).DelegatePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kyvenetwork.chain.delegation.Msg/DelegatePool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).DelegatePool(ctx, req.(*MsgDelegatePool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_WithdrawPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgWithdrawPool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).WithdrawPool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kyvenetwork.chain.delegation.Msg/WithdrawPool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).WithdrawPool(ctx, req.(*MsgWithdrawPool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UndelegatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUndelegatePool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UndelegatePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kyvenetwork.chain.delegation.Msg/UndelegatePool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UndelegatePool(ctx, req.(*MsgUndelegatePool))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_RedelegatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRedelegatePool)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RedelegatePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kyvenetwork.chain.delegation.Msg/RedelegatePool",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RedelegatePool(ctx, req.(*MsgRedelegatePool))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kyvenetwork.chain.delegation.Msg",
 	HandlerType: (*MsgServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "kyve/delegation/v1beta1/tx.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "DelegatePool",
+			Handler:    _Msg_DelegatePool_Handler,
+		},
+		{
+			MethodName: "WithdrawPool",
+			Handler:    _Msg_WithdrawPool_Handler,
+		},
+		{
+			MethodName: "UndelegatePool",
+			Handler:    _Msg_UndelegatePool_Handler,
+		},
+		{
+			MethodName: "RedelegatePool",
+			Handler:    _Msg_RedelegatePool_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "kyve/delegation/v1beta1/tx.proto",
 }
+
+func (m *MsgDelegatePool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDelegatePool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDelegatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Staker) > 0 {
+		i -= len(m.Staker)
+		copy(dAtA[i:], m.Staker)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Staker)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgDelegatePoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgDelegatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgDelegatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgWithdrawPool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgWithdrawPool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgWithdrawPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Staker) > 0 {
+		i -= len(m.Staker)
+		copy(dAtA[i:], m.Staker)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Staker)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgWithdrawPoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgWithdrawPoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgWithdrawPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUndelegatePool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUndelegatePool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUndelegatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Staker) > 0 {
+		i -= len(m.Staker)
+		copy(dAtA[i:], m.Staker)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Staker)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUndelegatePoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUndelegatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUndelegatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRedelegatePool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRedelegatePool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRedelegatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.ToStaker) > 0 {
+		i -= len(m.ToStaker)
+		copy(dAtA[i:], m.ToStaker)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.ToStaker)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.ToPoolId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.ToPoolId))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.FromStaker) > 0 {
+		i -= len(m.FromStaker)
+		copy(dAtA[i:], m.FromStaker)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.FromStaker)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.FromPoolId != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.FromPoolId))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgRedelegatePoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgRedelegatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgRedelegatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
+	offset -= sovTx(v)
+	base := offset
+	for v >= 1<<7 {
+		dAtA[offset] = uint8(v&0x7f | 0x80)
+		v >>= 7
+		offset++
+	}
+	dAtA[offset] = uint8(v)
+	return base
+}
+func (m *MsgDelegatePool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.PoolId != 0 {
+		n += 1 + sovTx(uint64(m.PoolId))
+	}
+	l = len(m.Staker)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovTx(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *MsgDelegatePoolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgWithdrawPool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.PoolId != 0 {
+		n += 1 + sovTx(uint64(m.PoolId))
+	}
+	l = len(m.Staker)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgWithdrawPoolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgUndelegatePool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.PoolId != 0 {
+		n += 1 + sovTx(uint64(m.PoolId))
+	}
+	l = len(m.Staker)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovTx(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *MsgUndelegatePoolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *MsgRedelegatePool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.FromPoolId != 0 {
+		n += 1 + sovTx(uint64(m.FromPoolId))
+	}
+	l = len(m.FromStaker)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.ToPoolId != 0 {
+		n += 1 + sovTx(uint64(m.ToPoolId))
+	}
+	l = len(m.ToStaker)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovTx(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *MsgRedelegatePoolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func sovTx(x uint64) (n int) {
+	return (math_bits.Len64(x|1) + 6) / 7
+}
+func sozTx(x uint64) (n int) {
+	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgDelegatePool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDelegatePool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDelegatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Staker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Staker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgDelegatePoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgDelegatePoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgDelegatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgWithdrawPool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgWithdrawPool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgWithdrawPool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Staker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Staker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgWithdrawPoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgWithdrawPoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgWithdrawPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUndelegatePool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUndelegatePool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUndelegatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Staker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Staker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUndelegatePoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUndelegatePoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUndelegatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRedelegatePool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRedelegatePool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRedelegatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromPoolId", wireType)
+			}
+			m.FromPoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.FromPoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromStaker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FromStaker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToPoolId", wireType)
+			}
+			m.ToPoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ToPoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToStaker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ToStaker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgRedelegatePoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgRedelegatePoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgRedelegatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func skipTx(dAtA []byte) (n int, err error) {
+	l := len(dAtA)
+	iNdEx := 0
+	depth := 0
+	for iNdEx < l {
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return 0, ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return 0, io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		wireType := int(wire & 0x7)
+		switch wireType {
+		case 0:
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				iNdEx++
+				if dAtA[iNdEx-1] < 0x80 {
+					break
+				}
+			}
+		case 1:
+			iNdEx += 8
+		case 2:
+			var length int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return 0, ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return 0, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				length |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if length < 0 {
+				return 0, ErrInvalidLengthTx
+			}
+			iNdEx += length
+		case 3:
+			depth++
+		case 4:
+			if depth == 0 {
+				return 0, ErrUnexpectedEndOfGroupTx
+			}
+			depth--
+		case 5:
+			iNdEx += 4
+		default:
+			return 0, fmt.Errorf("proto: illegal wireType %d", wireType)
+		}
+		if iNdEx < 0 {
+			return 0, ErrInvalidLengthTx
+		}
+		if depth == 0 {
+			return iNdEx, nil
+		}
+	}
+	return 0, io.ErrUnexpectedEOF
+}
+
+var (
+	ErrInvalidLengthTx        = fmt.Errorf("proto: negative length found during unmarshaling")
+	ErrIntOverflowTx          = fmt.Errorf("proto: integer overflow")
+	ErrUnexpectedEndOfGroupTx = fmt.Errorf("proto: unexpected end of group")
+)

@@ -1,13 +1,79 @@
 syntax = "proto3";
 package kyvenetwork.chain.delegation;
 
-// this line is used by starport scaffolding # proto/tx/import
-
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+  // DelegatePool ...
+  rpc DelegatePool(MsgDelegatePool) returns (MsgDelegatePoolResponse);
+  // WithdrawPool ...
+  rpc WithdrawPool(MsgWithdrawPool) returns (MsgWithdrawPoolResponse);
+  // UndelegatePool ...
+  rpc UndelegatePool(MsgUndelegatePool) returns (MsgUndelegatePoolResponse);
+  // RedelegatePool ...
+  rpc RedelegatePool(MsgRedelegatePool) returns (MsgRedelegatePoolResponse);
 }
 
-// this line is used by starport scaffolding # proto/tx/message
+// MsgDelegatePool defines a SDK message for delegating to a protocol node in a specific pool.
+message MsgDelegatePool {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 pool_id = 2;
+  // staker ...
+  string staker = 3;
+  // amount ...
+  uint64 amount = 4;
+}
+
+// MsgDelegatePoolResponse defines the Msg/DelegatePool response type.
+message MsgDelegatePoolResponse {}
+
+// MsgWithdrawPool defines a SDK message for withdrawing delegation rewards from a specific pool.
+message MsgWithdrawPool {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 pool_id = 2;
+  // staker ...
+  string staker = 3;
+}
+
+// MsgWithdrawPoolResponse defines the Msg/WithdrawPool response type.
+message MsgWithdrawPoolResponse {}
+
+// MsgUndelegatePool defines a SDK message for undelegating from a specific pool.
+message MsgUndelegatePool {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 pool_id = 2;
+  // staker ...
+  string staker = 3;
+  // amount ...
+  uint64 amount = 4;
+}
+
+// MsgUndelegatePoolResponse defines the Msg/UndelegatePool response type.
+message MsgUndelegatePoolResponse {}
+
+// MsgRedelegatePool defines a SDK message for redelegating from a
+// staker in a pool to another staker in the same or another pool
+message MsgRedelegatePool {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 from_pool_id = 2;
+  // staker ...
+  string from_staker = 3;
+  // id ...
+  uint64 to_pool_id = 4;
+  // staker ...
+  string to_staker = 5;
+  // amount ...
+  uint64 amount = 6;
+}
+
+// MsgUndelegatePoolResponse defines the Msg/UndelegatePool response type.
+message MsgRedelegatePoolResponse {}
