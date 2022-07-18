@@ -6,7 +6,59 @@ option go_package = "github.com/KYVENetwork/chain/x/pool/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+    // this line is used by starport scaffolding # proto/tx/rpc#
+
+  // DefundPool ...
+  rpc CreatePool(MsgCreatePool) returns (MsgCreatePoolResponse);
+
+  // TODO add UpdatePool
+
+
+  // TODO upgrade stuff
+
+  // FundPool ...
+  rpc FundPool(MsgFundPool) returns (MsgFundPoolResponse);
+  // DefundPool ...
+  rpc DefundPool(MsgDefundPool) returns (MsgDefundPoolResponse);
 }
+
+// MsgFundPool defines a SDK message for funding a pool.
+message MsgFundPool {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 id = 2;
+  // amount ...
+  uint64 amount = 3;
+}
+
+// MsgFundPoolResponse defines the Msg/FundPool response type.
+message MsgFundPoolResponse {}
+
+// MsgDefundPool defines a SDK message for defunding a pool.
+message MsgDefundPool {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 id = 2;
+  // amount ...
+  uint64 amount = 3;
+}
+
+// MsgDefundPoolResponse defines the Msg/DefundPool response type.
+message MsgDefundPoolResponse {}
+
+// MsgDefundPool defines a SDK message for defunding a pool.
+message MsgCreatePool {
+  // creator ...
+  string creator = 1;
+  // amount ...
+  string name = 2;
+
+  // TODO add remaining params
+}
+
+// MsgDefundPoolResponse defines the Msg/DefundPool response type.
+message MsgCreatePoolResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

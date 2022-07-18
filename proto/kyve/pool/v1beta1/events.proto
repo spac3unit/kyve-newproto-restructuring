@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package kyve.registry.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KYVENetwork/chain/x/pool/types";
+
+// EventFundPool is an event emitted when a pool is funded.
+message EventFundPool {
+  // pool_id is the unique ID of the pool.
+  uint64 pool_id = 1;
+  // address is the account address of the pool funder.
+  string address = 2;
+  // amount ...
+  uint64 amount = 3;
+}
+
+// EventDefundPool is an event emitted when a pool is defunded.
+message EventDefundPool {
+  // pool_id is the unique ID of the pool.
+  uint64 pool_id = 1;
+  // address is the account address of the pool funder.
+  string address = 2;
+  // amount ...
+  uint64 amount = 3;
+}

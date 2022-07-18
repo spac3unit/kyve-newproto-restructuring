@@ -1,10 +1,10 @@
 package pool_test
 
 import (
+	"github.com/KYVENetwork/chain/testutil/nullify"
 	"testing"
 
 	keepertest "github.com/KYVENetwork/chain/testutil/keeper"
-	"github.com/KYVENetwork/chain/testutil/nullify"
 	"github.com/KYVENetwork/chain/x/pool"
 	"github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/stretchr/testify/require"

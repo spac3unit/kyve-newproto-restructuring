@@ -47,6 +47,15 @@ message UpgradePlan {
   uint64 duration = 4;
 }
 
+// Funder ...
+message Funder {
+  // fund_id ...
+  uint64 pool_id = 1;
+  // account ...
+  string account = 2;
+  // amount ...
+  uint64 amount = 3;
+}
 
 // Pool ...
 message Pool {
@@ -75,7 +84,7 @@ message Pool {
   // protocol ...
   Protocol protocol = 11;
   // upgrade_plan ...
- UpgradePlan upgrade_plan = 12;
+  UpgradePlan upgrade_plan = 12;
 
   // start_key ...
   string start_key = 13;
@@ -98,14 +107,13 @@ message Pool {
 //  uint64 total_bundle_rewards = 11;
 
 
-
-  // TODO Funders ?
-//  // funders ...
-//  repeated string funders = 16;
-//  // lowest_funder ...
-//  string lowest_funder = 17;
-//  // total_funds ...
-//  uint64 total_funds = 18;
+  // TODO maybe refactor funders to use sorted list, KV-binary tree, or go heap, for better performance
+  // TODO maybe dont update all funders after payout, but store amount to subtract and only update,
+  // TODO when funders list changes (e.g funding, defunding, lowest funder getting kicked out)
+  // funders ...
+  repeated Funder funders = 18;
+  // total_funds ...
+  uint64 total_funds = 20;
 
   // TODO stakers + total_delegation
 //  // stakers ...

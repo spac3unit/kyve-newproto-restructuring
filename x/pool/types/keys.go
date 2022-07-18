@@ -17,6 +17,15 @@ const (
 	MemStoreKey = "mem_pool"
 )
 
+const (
+	MaxFunders = 50 // maximum amount of funders which are allowed
+)
+
+var (
+	PoolKey      = []byte{1}
+	PoolCountKey = []byte{2}
+)
+
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }

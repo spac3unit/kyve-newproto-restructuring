@@ -1,12 +1,15 @@
 package types
 
-// DONTCOVER
-
 import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// x/pool module sentinel errors
 var (
-	ErrSample = sdkerrors.Register(ModuleName, 1100, "sample error")
+	ErrPoolNotFound = sdkerrors.Register(ModuleName, 1100, "pool with id %v does not exist")
+)
+
+// funding errors
+var (
+	ErrFundsTooLow   = sdkerrors.Register(ModuleName, 1101, "minimum funding amount of %vkyve not reached")
+	ErrDefundTooHigh = sdkerrors.Register(ModuleName, 1102, "maximum defunding amount of %vkyve surpassed")
 )

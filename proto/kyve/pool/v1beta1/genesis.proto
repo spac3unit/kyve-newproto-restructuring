@@ -3,12 +3,16 @@ package kyve.pool.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "kyve/pool/v1beta1/params.proto";
-// this line is used by starport scaffolding # genesis/proto/import
+import "kyve/pool/v1beta1/pool.proto";
+
 
 option go_package = "github.com/KYVENetwork/chain/x/pool/types";
 
 // GenesisState defines the pool module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  // this line is used by starport scaffolding # genesis/proto/state
+  // pool_list ...
+  repeated Pool pool_list = 2 [(gogoproto.nullable) = false];
+  // pool_count ...
+  uint64 pool_count = 3;
 }
