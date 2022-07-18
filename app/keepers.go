@@ -61,6 +61,10 @@ import (
 	poolkeeper "github.com/KYVENetwork/chain/x/pool/keeper"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 
+	// Delegation
+	delegationkeeper "github.com/KYVENetwork/chain/x/delegation/keeper"
+	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
+
 	// Slashing
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
@@ -95,8 +99,9 @@ type Keepers struct {
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
-	RegistryKeeper registrykeeper.Keeper
-	PoolKeeper     poolkeeper.Keeper
+	RegistryKeeper   registrykeeper.Keeper
+	PoolKeeper       poolkeeper.Keeper
+	DelegationKeeper delegationkeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 }
 
@@ -116,6 +121,7 @@ func (app *App) initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(registrytypes.ModuleName)
 	paramsKeeper.Subspace(pooltypes.ModuleName)
+	paramsKeeper.Subspace(delegationtypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
@@ -139,6 +145,7 @@ func KVStoreKeys() []string {
 		capabilitytypes.StoreKey,
 		registrytypes.StoreKey,
 		pooltypes.StoreKey,
+		delegationtypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	}
 }

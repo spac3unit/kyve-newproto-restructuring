@@ -1,6 +1,7 @@
 package app
 
 import (
+	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/KYVENetwork/chain/x/pool"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 
@@ -102,6 +103,7 @@ var moduleAccountPermissions = map[string][]string{
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	registrytypes.ModuleName:       {authtypes.Minter, authtypes.Burner, authtypes.Staking},
 	pooltypes.ModuleName:           {authtypes.Minter, authtypes.Burner},
+	delegationtypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 	// this line is used by starport scaffolding # stargate/app/maccPerms
 }
 

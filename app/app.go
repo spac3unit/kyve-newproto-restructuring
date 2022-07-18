@@ -108,6 +108,11 @@ import (
 	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
 	poolmodulekeeper "github.com/KYVENetwork/chain/x/pool/keeper"
 	poolmoduletypes "github.com/KYVENetwork/chain/x/pool/types"
+
+	delegationmodule "github.com/KYVENetwork/chain/x/delegation"
+	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
+	delegationmodulekeeper "github.com/KYVENetwork/chain/x/delegation/keeper"
+	delegationmoduletypes "github.com/KYVENetwork/chain/x/delegation/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -323,6 +328,16 @@ func NewApp(
 		app.BankKeeper,
 	)
 
+	app.DelegationKeeper = *delegationmodulekeeper.NewKeeper(
+		appCodec,
+		keys[poolmoduletypes.StoreKey],
+		keys[poolmoduletypes.MemStoreKey],
+		app.GetSubspace(poolmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.PoolKeeper,
+	)
+
 	app.RegistryKeeper = *registrymodulekeeper.NewKeeper(
 		appCodec,
 		keys[registrymoduletypes.StoreKey],
@@ -392,6 +407,7 @@ func NewApp(
 		transferModule,
 		registryModule,
 		poolmodule.NewAppModule(appCodec, app.PoolKeeper, app.AccountKeeper, app.BankKeeper),
+		delegationmodule.NewAppModule(appCodec, app.DelegationKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -419,6 +435,7 @@ func NewApp(
 		paramstypes.ModuleName,
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
+		delegationmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -442,6 +459,7 @@ func NewApp(
 		ibctransfertypes.ModuleName,
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
+		delegationmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -470,6 +488,7 @@ func NewApp(
 		feegrant.ModuleName,
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
+		delegationmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 

@@ -4,6 +4,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func (k Keeper) GetDelegationAmount(poolId uint64, staker string) uint64 {
+
+	return 0
+}
+
+func (k Keeper) PayoutRewards(poolId uint64, staker string, amount uint64) {
+
+}
+
 // Delegate performs a safe delegation with all necessary checks
 // Warning: does not transfer the amount (only the rewards)
 func (k Keeper) Delegate(ctx sdk.Context, stakerAddress string, poolId uint64, delegatorAddress string, amount uint64) error {

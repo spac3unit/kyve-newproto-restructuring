@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"fmt"
+	poolkeeper "github.com/KYVENetwork/chain/x/pool/keeper"
+	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -17,6 +19,8 @@ type (
 		storeKey   sdk.StoreKey
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
+		bankKeeper bankkeeper.Keeper
+		poolKeeper poolkeeper.Keeper
 	}
 )
 
@@ -26,6 +30,8 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 
+	bankKeeper bankkeeper.Keeper,
+	poolKeeper poolkeeper.Keeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -33,11 +39,12 @@ func NewKeeper(
 	}
 
 	return &Keeper{
-
 		cdc:        cdc,
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
+		bankKeeper: bankKeeper,
+		poolKeeper: poolKeeper,
 	}
 }
 
