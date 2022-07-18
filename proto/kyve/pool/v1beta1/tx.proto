@@ -10,16 +10,16 @@ service Msg {
 
   // DefundPool ...
   rpc CreatePool(MsgCreatePool) returns (MsgCreatePoolResponse);
-
-  // TODO add UpdatePool
-
-
-  // TODO upgrade stuff
+  // UpdatePool ...
+  // TODO update pool
+//  rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
 
   // FundPool ...
   rpc FundPool(MsgFundPool) returns (MsgFundPoolResponse);
   // DefundPool ...
   rpc DefundPool(MsgDefundPool) returns (MsgDefundPoolResponse);
+
+  // TODO protocol node upgrade plans
 }
 
 // MsgFundPool defines a SDK message for funding a pool.
@@ -60,5 +60,18 @@ message MsgCreatePool {
 
 // MsgDefundPoolResponse defines the Msg/DefundPool response type.
 message MsgCreatePoolResponse {}
+
+//// MsgDefundPool defines a SDK message for defunding a pool.
+//message MsgUpdatePool {
+//  // creator ...
+//  string creator = 1;
+//  // amount ...
+//  string name = 2;
+//
+//  // TODO add remaining params
+//}
+//
+//// MsgDefundPoolResponse defines the Msg/DefundPool response type.
+//message MsgUpdatePoolResponse {}
 
 // this line is used by starport scaffolding # proto/tx/message

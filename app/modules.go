@@ -1,6 +1,9 @@
 package app
 
 import (
+	"github.com/KYVENetwork/chain/x/pool"
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
+
 	// Cosmos SDK Utilities
 	"github.com/cosmos/cosmos-sdk/types/module"
 
@@ -84,6 +87,7 @@ var appModuleBasics = []module.AppModuleBasic{
 	transfer.AppModuleBasic{},
 	vesting.AppModuleBasic{},
 	registry.AppModuleBasic{},
+	pool.AppModuleBasic{},
 	// this line is used by starport scaffolding # stargate/app/moduleBasic
 }
 
@@ -97,6 +101,7 @@ var moduleAccountPermissions = map[string][]string{
 	govtypes.ModuleName:            {authtypes.Burner},
 	ibctransfertypes.ModuleName:    {authtypes.Minter, authtypes.Burner},
 	registrytypes.ModuleName:       {authtypes.Minter, authtypes.Burner, authtypes.Staking},
+	pooltypes.ModuleName:           {authtypes.Minter, authtypes.Burner},
 	// this line is used by starport scaffolding # stargate/app/maccPerms
 }
 

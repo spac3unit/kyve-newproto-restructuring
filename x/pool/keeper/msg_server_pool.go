@@ -3,9 +3,36 @@ package keeper
 import (
 	"context"
 	"github.com/KYVENetwork/chain/x/pool/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k msgServer) CreatePool(ctx context.Context, pool *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	k.AppendPool(ctx, types.Pool{
+		Creator: msg.Creator,
+		Name:    msg.Name,
+		// TODO fill rest
+		Runtime:        "",
+		Logo:           "",
+		Config:         "",
+		UploadInterval: 0,
+		OperatingCost:  0,
+		Paused:         false,
+		MaxBundleSize:  0,
+		Protocol:       nil,
+		UpgradePlan:    nil,
+		StartKey:       "",
+		CurrentKey:     "",
+		CurrentValue:   "",
+		MinStake:       0,
+		Status:         0,
+		Funders:        nil,
+		TotalFunds:     0,
+	})
+
+	// TODO emit event ?
+
+	return &types.MsgCreatePoolResponse{}, nil
 }

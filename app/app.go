@@ -103,6 +103,11 @@ import (
 	registrymoduleclient "github.com/KYVENetwork/chain/x/registry/client"
 	registrymodulekeeper "github.com/KYVENetwork/chain/x/registry/keeper"
 	registrymoduletypes "github.com/KYVENetwork/chain/x/registry/types"
+
+	poolmodule "github.com/KYVENetwork/chain/x/pool"
+	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
+	poolmodulekeeper "github.com/KYVENetwork/chain/x/pool/keeper"
+	poolmoduletypes "github.com/KYVENetwork/chain/x/pool/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -131,6 +136,7 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		registrymoduleclient.UnpausePoolHandler,
 		registrymoduleclient.SchedulePoolUpgradeHandler,
 		registrymoduleclient.CancelPoolUpgradeHandler,
+		// TODO maybe add gov handlers
 	)
 
 	return govProposalHandlers
@@ -308,6 +314,15 @@ func NewApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	app.PoolKeeper = *poolmodulekeeper.NewKeeper(
+		appCodec,
+		keys[poolmoduletypes.StoreKey],
+		keys[poolmoduletypes.MemStoreKey],
+		app.GetSubspace(poolmoduletypes.ModuleName),
+
+		app.BankKeeper,
+	)
+
 	app.RegistryKeeper = *registrymodulekeeper.NewKeeper(
 		appCodec,
 		keys[registrymoduletypes.StoreKey],
@@ -328,6 +343,7 @@ func NewApp(
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(registrymoduletypes.RouterKey, registrymodule.NewRegistryProposalHandler(app.RegistryKeeper))
+	// TODO maybe add gov route?
 
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -375,6 +391,7 @@ func NewApp(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		registryModule,
+		poolmodule.NewAppModule(appCodec, app.PoolKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -401,6 +418,7 @@ func NewApp(
 		feegrant.ModuleName,
 		paramstypes.ModuleName,
 		registrymoduletypes.ModuleName,
+		poolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -423,6 +441,7 @@ func NewApp(
 		ibchost.ModuleName,
 		ibctransfertypes.ModuleName,
 		registrymoduletypes.ModuleName,
+		poolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -450,6 +469,7 @@ func NewApp(
 		ibctransfertypes.ModuleName,
 		feegrant.ModuleName,
 		registrymoduletypes.ModuleName,
+		poolmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 

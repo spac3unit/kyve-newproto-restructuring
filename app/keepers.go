@@ -57,6 +57,10 @@ import (
 	registrykeeper "github.com/KYVENetwork/chain/x/registry/keeper"
 	registrytypes "github.com/KYVENetwork/chain/x/registry/types"
 
+	// Pool
+	poolkeeper "github.com/KYVENetwork/chain/x/pool/keeper"
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
+
 	// Slashing
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
@@ -92,6 +96,7 @@ type Keepers struct {
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
 	RegistryKeeper registrykeeper.Keeper
+	PoolKeeper     poolkeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 }
 
@@ -110,6 +115,7 @@ func (app *App) initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(registrytypes.ModuleName)
+	paramsKeeper.Subspace(pooltypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
@@ -132,6 +138,7 @@ func KVStoreKeys() []string {
 		ibctransfertypes.StoreKey,
 		capabilitytypes.StoreKey,
 		registrytypes.StoreKey,
+		pooltypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	}
 }
