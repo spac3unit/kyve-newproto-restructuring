@@ -52,8 +52,8 @@ func handleCreatePoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.CreateP
 		},
 		UpgradePlan: &types.UpgradePlan{},
 		StartKey:    p.StartKey,
-		Status: types.POOL_STATUS_NOT_ENOUGH_VALIDATORS,
-		MinStake: p.MinStake,
+		Status:      types.POOL_STATUS_NOT_ENOUGH_VALIDATORS,
+		MinStake:    p.MinStake,
 	}
 
 	k.AppendPool(ctx, pool)
@@ -198,7 +198,7 @@ func handleResetPoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.ResetPoo
 	}
 
 	fmt.Println("proposals")
-	
+
 	// Delete all proposals created after reset proposal
 	for _, proposal := range k.GetProposalsByPoolIdSinceBundleId(ctx, p.Id, p.BundleId) {
 		fmt.Printf("%v\n", proposal)
@@ -214,13 +214,13 @@ func handleResetPoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.ResetPoo
 		pool.CurrentValue = ""
 		pool.BundleProposal = &types.BundleProposal{
 			NextUploader: pool.BundleProposal.NextUploader,
-			CreatedAt: uint64(ctx.BlockTime().Unix()),
+			CreatedAt:    uint64(ctx.BlockTime().Unix()),
 		}
 	} else {
 		// Check if reset proposal can be found with bundle id
-		resetProposal, foundResetProposal := k.GetProposalByPoolIdAndBundleId(ctx, p.Id, p.BundleId - 1)
+		resetProposal, foundResetProposal := k.GetProposalByPoolIdAndBundleId(ctx, p.Id, p.BundleId-1)
 		if !foundResetProposal {
-			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrProposalNotFound.Error(), p.Id, p.BundleId - 1)
+			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrProposalNotFound.Error(), p.Id, p.BundleId-1)
 		}
 
 		// reset pool to previous valid bundle
@@ -230,7 +230,7 @@ func handleResetPoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.ResetPoo
 		pool.CurrentValue = resetProposal.Value
 		pool.BundleProposal = &types.BundleProposal{
 			NextUploader: pool.BundleProposal.NextUploader,
-			CreatedAt: uint64(ctx.BlockTime().Unix()),
+			CreatedAt:    uint64(ctx.BlockTime().Unix()),
 		}
 	}
 

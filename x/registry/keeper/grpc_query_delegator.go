@@ -31,10 +31,10 @@ func (k Keeper) Delegator(goCtx context.Context, req *types.QueryDelegatorReques
 
 	if !found {
 		response.Delegator = &types.StakerDelegatorResponse{
-			Delegator: "",
-			CurrentReward: 0,
+			Delegator:        "",
+			CurrentReward:    0,
 			DelegationAmount: 0,
-			Staker: "",
+			Staker:           "",
 		}
 
 		return &response, nil
@@ -49,10 +49,10 @@ func (k Keeper) Delegator(goCtx context.Context, req *types.QueryDelegatorReques
 	}
 
 	response.Delegator = &types.StakerDelegatorResponse{
-		Delegator: delegator.Delegator,
-		CurrentReward: f1.getCurrentReward(),
+		Delegator:        delegator.Delegator,
+		CurrentReward:    f1.getCurrentReward(),
 		DelegationAmount: delegator.DelegationAmount,
-		Staker: delegator.Staker,
+		Staker:           delegator.Staker,
 	}
 
 	return &response, nil

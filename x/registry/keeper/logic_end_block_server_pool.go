@@ -99,8 +99,8 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 					ToKey:        pool.BundleProposal.ToKey,
 					ToValue:      pool.BundleProposal.ToValue,
 					Id:           0,
-					Abstain: abstain,
-					Total: total,
+					Abstain:      abstain,
+					Total:        total,
 				})
 
 				pool.BundleProposal = &types.BundleProposal{

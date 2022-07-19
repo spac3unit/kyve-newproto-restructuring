@@ -46,7 +46,7 @@ var (
 	ErrToHeight               = sdkerrors.Register(ModuleName, 1123, "invalid to height")
 	ErrFromKey                = sdkerrors.Register(ModuleName, 1124, "invalid from key")
 	ErrProposalNotFound       = sdkerrors.Register(ModuleName, 1125, "proposal with pool id %v and bundle id %v does not exist")
-	ErrNotEnoughStake   = sdkerrors.Register(ModuleName, 1126, "not enough stake in pool")
+	ErrNotEnoughStake         = sdkerrors.Register(ModuleName, 1126, "not enough stake in pool")
 )
 
 // delegation errors

@@ -25,10 +25,10 @@ func (k Keeper) VoteStatus(c context.Context, req *types.QueryVoteStatusRequest)
 
 	return &types.QueryVoteStatusResponse{
 		VoteStatus: &types.VoteStatusResponse{
-			Valid: valid,
+			Valid:   valid,
 			Invalid: invalid,
 			Abstain: abstain,
-			Total: total,
+			Total:   total,
 		},
 	}, nil
 }

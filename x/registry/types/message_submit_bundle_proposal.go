@@ -13,13 +13,13 @@ func NewMsgSubmitBundleProposal(creator string, id uint64, storageId string, byt
 	return &MsgSubmitBundleProposal{
 		Creator:    creator,
 		Id:         id,
-		StorageId:   storageId,
+		StorageId:  storageId,
 		ByteSize:   byteSize,
 		FromHeight: fromHeight,
-		ToHeight: toHeight,
-		FromKey: fromKey,
-		ToKey: toKey,
-		ToValue: toValue,
+		ToHeight:   toHeight,
+		FromKey:    fromKey,
+		ToKey:      toKey,
+		ToValue:    toValue,
 	}
 }
 

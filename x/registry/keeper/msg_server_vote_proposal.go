@@ -129,10 +129,10 @@ func (k msgServer) VoteProposal(
 
 	// Emit a vote event.
 	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleVote{
-		PoolId:   msg.Id,
-		Address:  msg.Creator,
+		PoolId:    msg.Id,
+		Address:   msg.Creator,
 		StorageId: msg.StorageId,
-		Vote:     msg.Vote,
+		Vote:      msg.Vote,
 	})
 	if err != nil {
 		return nil, err

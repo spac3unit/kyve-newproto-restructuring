@@ -34,9 +34,9 @@ func CmdCanVote() *cobra.Command {
 
 			params := &types.QueryCanVoteRequest{
 
-				PoolId:   reqId,
+				PoolId:    reqId,
 				StorageId: reqStorageId,
-				Voter:    reqVoter,
+				Voter:     reqVoter,
 			}
 
 			res, err := queryClient.CanVote(cmd.Context(), params)

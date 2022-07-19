@@ -139,13 +139,13 @@ func (k msgServer) SubmitBundleProposal(
 		pool.BundleProposal = &types.BundleProposal{
 			Uploader:     msg.Creator,
 			NextUploader: k.getNextUploaderByRandom(ctx, &pool, pool.Stakers),
-			StorageId:     msg.StorageId,
+			StorageId:    msg.StorageId,
 			ByteSize:     msg.ByteSize,
 			ToHeight:     msg.ToHeight,
 			CreatedAt:    uint64(ctx.BlockTime().Unix()),
 			ToKey:        msg.ToKey,
 			ToValue:      msg.ToValue,
-			BundleHash: msg.BundleHash,
+			BundleHash:   msg.BundleHash,
 		}
 
 		k.SetPool(ctx, pool)
@@ -267,7 +267,7 @@ func (k msgServer) SubmitBundleProposal(
 				pool.BundleProposal = &types.BundleProposal{
 					Uploader:      pool.BundleProposal.Uploader,
 					NextUploader:  pool.BundleProposal.NextUploader,
-					StorageId:      pool.BundleProposal.StorageId,
+					StorageId:     pool.BundleProposal.StorageId,
 					ByteSize:      pool.BundleProposal.ByteSize,
 					ToHeight:      pool.BundleProposal.ToHeight,
 					CreatedAt:     uint64(ctx.BlockTime().Unix()),
@@ -275,7 +275,7 @@ func (k msgServer) SubmitBundleProposal(
 					VotersInvalid: pool.BundleProposal.VotersInvalid,
 					ToKey:         pool.BundleProposal.ToKey,
 					ToValue:       pool.BundleProposal.ToValue,
-					BundleHash: pool.BundleProposal.BundleHash,
+					BundleHash:    pool.BundleProposal.BundleHash,
 				}
 
 				k.SetPool(ctx, pool)
@@ -283,7 +283,7 @@ func (k msgServer) SubmitBundleProposal(
 				// Emit a bundle dropped event because of insufficient funds.
 				errEmit := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalised{
 					PoolId:       pool.Id,
-					StorageId:     pool.BundleProposal.StorageId,
+					StorageId:    pool.BundleProposal.StorageId,
 					ByteSize:     pool.BundleProposal.ByteSize,
 					Uploader:     pool.BundleProposal.Uploader,
 					NextUploader: pool.BundleProposal.NextUploader,
@@ -296,9 +296,9 @@ func (k msgServer) SubmitBundleProposal(
 					ToKey:        pool.BundleProposal.ToKey,
 					ToValue:      pool.BundleProposal.ToValue,
 					Id:           0,
-					BundleHash: pool.BundleProposal.BundleHash,
-					Abstain: abstain,
-					Total: total,
+					BundleHash:   pool.BundleProposal.BundleHash,
+					Abstain:      abstain,
+					Total:        total,
 				})
 				if errEmit != nil {
 					return nil, errEmit
@@ -368,7 +368,7 @@ func (k msgServer) SubmitBundleProposal(
 
 		// save valid bundle
 		k.SetProposal(ctx, types.Proposal{
-			StorageId:    pool.BundleProposal.StorageId,
+			StorageId:   pool.BundleProposal.StorageId,
 			PoolId:      pool.Id,
 			Id:          pool.TotalBundles,
 			Uploader:    pool.BundleProposal.Uploader,
@@ -377,7 +377,7 @@ func (k msgServer) SubmitBundleProposal(
 			FinalizedAt: uint64(ctx.BlockHeight()),
 			Key:         pool.BundleProposal.ToKey,
 			Value:       pool.BundleProposal.ToValue,
-			BundleHash: pool.BundleProposal.BundleHash,
+			BundleHash:  pool.BundleProposal.BundleHash,
 		})
 
 		// Finalise the proposal, saving useful information.
@@ -392,7 +392,7 @@ func (k msgServer) SubmitBundleProposal(
 		// Emit a valid bundle event.
 		errEmit := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalised{
 			PoolId:       pool.Id,
-			StorageId:     pool.BundleProposal.StorageId,
+			StorageId:    pool.BundleProposal.StorageId,
 			ByteSize:     pool.BundleProposal.ByteSize,
 			Uploader:     pool.BundleProposal.Uploader,
 			NextUploader: pool.BundleProposal.NextUploader,
@@ -405,9 +405,9 @@ func (k msgServer) SubmitBundleProposal(
 			ToKey:        pool.BundleProposal.ToKey,
 			ToValue:      pool.BundleProposal.ToValue,
 			Id:           pool.TotalBundles - 1,
-			BundleHash: pool.BundleProposal.BundleHash,
-			Abstain: abstain,
-			Total: total,
+			BundleHash:   pool.BundleProposal.BundleHash,
+			Abstain:      abstain,
+			Total:        total,
 		})
 		if errEmit != nil {
 			return nil, errEmit
@@ -417,13 +417,13 @@ func (k msgServer) SubmitBundleProposal(
 		pool.BundleProposal = &types.BundleProposal{
 			Uploader:     msg.Creator,
 			NextUploader: nextUploader,
-			StorageId:     msg.StorageId,
+			StorageId:    msg.StorageId,
 			ByteSize:     msg.ByteSize,
 			ToHeight:     msg.ToHeight,
 			CreatedAt:    uint64(ctx.BlockTime().Unix()),
 			ToKey:        msg.ToKey,
 			ToValue:      msg.ToValue,
-			BundleHash: msg.BundleHash,
+			BundleHash:   msg.BundleHash,
 		}
 
 		k.SetPool(ctx, pool)
@@ -465,7 +465,7 @@ func (k msgServer) SubmitBundleProposal(
 		// Emit an invalid bundle event.
 		errEmit = ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalised{
 			PoolId:       pool.Id,
-			StorageId:     pool.BundleProposal.StorageId,
+			StorageId:    pool.BundleProposal.StorageId,
 			ByteSize:     pool.BundleProposal.ByteSize,
 			Uploader:     pool.BundleProposal.Uploader,
 			NextUploader: pool.BundleProposal.NextUploader,
@@ -478,9 +478,9 @@ func (k msgServer) SubmitBundleProposal(
 			ToKey:        pool.BundleProposal.ToKey,
 			ToValue:      pool.BundleProposal.ToValue,
 			Id:           0,
-			BundleHash: pool.BundleProposal.BundleHash,
-			Abstain: abstain,
-			Total: total,
+			BundleHash:   pool.BundleProposal.BundleHash,
+			Abstain:      abstain,
+			Total:        total,
 		})
 		if errEmit != nil {
 			return nil, errEmit

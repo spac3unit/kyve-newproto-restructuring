@@ -37,8 +37,8 @@ func CmdCanPropose() *cobra.Command {
 
 			params := &types.QueryCanProposeRequest{
 
-				PoolId:   reqId,
-				Proposer: reqProposer,
+				PoolId:     reqId,
+				Proposer:   reqProposer,
 				FromHeight: reqFromHeight,
 			}
 

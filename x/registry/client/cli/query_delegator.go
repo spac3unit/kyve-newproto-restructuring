@@ -34,8 +34,8 @@ func CmdDelegator() *cobra.Command {
 
 			params := &types.QueryDelegatorRequest{
 
-				PoolId: reqId,
-				Staker: reqStaker,
+				PoolId:    reqId,
+				Staker:    reqStaker,
 				Delegator: reqDelegator,
 			}
 

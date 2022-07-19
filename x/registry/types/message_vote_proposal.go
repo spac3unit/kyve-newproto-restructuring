@@ -11,10 +11,10 @@ var _ sdk.Msg = &MsgVoteProposal{}
 
 func NewMsgVoteProposal(creator string, id uint64, storageId string, vote VoteType) *MsgVoteProposal {
 	return &MsgVoteProposal{
-		Creator:  creator,
-		Id:       id,
+		Creator:   creator,
+		Id:        id,
 		StorageId: storageId,
-		Vote:     vote,
+		Vote:      vote,
 	}
 }
 

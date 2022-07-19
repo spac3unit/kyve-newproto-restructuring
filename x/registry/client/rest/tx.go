@@ -322,8 +322,8 @@ type ResetPoolRequest struct {
 	Description string       `json:"description" yaml:"description"`
 	IsExpedited bool         `json:"is_expedited" yaml:"is_expedited"`
 	Deposit     sdk.Coins    `json:"deposit" yaml:"deposit"`
-	Id     uint64       `json:"id" yaml:"id"`
-	BundleId     uint64       `json:"bundleId" yaml:"bundleId"`
+	Id          uint64       `json:"id" yaml:"id"`
+	BundleId    uint64       `json:"bundleId" yaml:"bundleId"`
 }
 
 func ProposalResetPoolRESTHandler(clientCtx client.Context) govrest.ProposalRESTHandler {

@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	ProposalTypeCreatePool  = "CreatePool"
-	ProposalTypeUpdatePool  = "UpdatePool"
-	ProposalTypePausePool   = "PausePool"
-	ProposalTypeUnpausePool = "UnpausePool"
+	ProposalTypeCreatePool          = "CreatePool"
+	ProposalTypeUpdatePool          = "UpdatePool"
+	ProposalTypePausePool           = "PausePool"
+	ProposalTypeUnpausePool         = "UnpausePool"
 	ProposalTypeSchedulePoolUpgrade = "SchedulePoolUpgrade"
-	ProposalTypeCancelPoolUpgrade = "CancelPoolUpgrade"
-	ProposalTypeResetPool = "ResetPool"
+	ProposalTypeCancelPoolUpgrade   = "CancelPoolUpgrade"
+	ProposalTypeResetPool           = "ResetPool"
 )
 
 func init() {
@@ -43,19 +43,19 @@ var (
 
 func NewCreatePoolProposal(title string, description string, name string, runtime string, logo string, config string, uploadInterval uint64, operatingCost uint64, maxBundleSize uint64, version string, binaries string, startKey string, minStake uint64) govtypes.Content {
 	return &CreatePoolProposal{
-		Title:         title,
-		Description:   description,
-		Name:          name,
-		Runtime:       runtime,
-		Logo:          logo,
-		Config:        config,
+		Title:          title,
+		Description:    description,
+		Name:           name,
+		Runtime:        runtime,
+		Logo:           logo,
+		Config:         config,
 		UploadInterval: uploadInterval,
-		OperatingCost: operatingCost,
-		MaxBundleSize: maxBundleSize,
-		Version: version,
-		Binaries: binaries,
-		StartKey: startKey,
-		MinStake: minStake,
+		OperatingCost:  operatingCost,
+		MaxBundleSize:  maxBundleSize,
+		Version:        version,
+		Binaries:       binaries,
+		StartKey:       startKey,
+		MinStake:       minStake,
 	}
 }
 
@@ -76,17 +76,17 @@ func (p *CreatePoolProposal) ValidateBasic() error {
 
 func NewUpdatePoolProposal(title string, description string, id uint64, name string, runtime string, logo string, config string, uploadInterval uint64, operatingCost uint64, maxBundleSize uint64, minStake uint64) govtypes.Content {
 	return &UpdatePoolProposal{
-		Title:         title,
-		Description:   description,
-		Id:            id,
-		Name:          name,
-		Runtime:       runtime,
-		Logo:          logo,
-		Config:        config,
+		Title:          title,
+		Description:    description,
+		Id:             id,
+		Name:           name,
+		Runtime:        runtime,
+		Logo:           logo,
+		Config:         config,
 		UploadInterval: uploadInterval,
-		OperatingCost: operatingCost,
-		MaxBundleSize: maxBundleSize,
-		MinStake: minStake,
+		OperatingCost:  operatingCost,
+		MaxBundleSize:  maxBundleSize,
+		MinStake:       minStake,
 	}
 }
 
@@ -155,11 +155,11 @@ func NewSchedulePoolUpgradeProposal(title string, description string, runtime st
 	return &SchedulePoolUpgradeProposal{
 		Title:       title,
 		Description: description,
-		Runtime:          runtime,
-		Version: version,
+		Runtime:     runtime,
+		Version:     version,
 		ScheduledAt: scheduled_at,
-		Duration: duration,
-		Binaries: binaries,
+		Duration:    duration,
+		Binaries:    binaries,
 	}
 }
 
@@ -182,7 +182,7 @@ func NewCancelPoolUpgradeProposal(title string, description string, runtime stri
 	return &CancelPoolUpgradeProposal{
 		Title:       title,
 		Description: description,
-		Runtime:          runtime,
+		Runtime:     runtime,
 	}
 }
 
@@ -206,7 +206,7 @@ func NewResetPoolProposal(title string, description string, id uint64, bundleId 
 		Title:       title,
 		Description: description,
 		Id:          id,
-		BundleId: bundleId,
+		BundleId:    bundleId,
 	}
 }
 
