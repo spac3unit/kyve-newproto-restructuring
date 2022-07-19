@@ -1,0 +1,66 @@
+syntax = "proto3";
+package kyve.stakers.v1beta1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
+
+// StakerStatus ...
+enum StakerStatus {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // STAKER_STATUS_UNSPECIFIED ...
+  STAKER_STATUS_UNSPECIFIED = 0;
+  // STAKER_STATUS_ACTIVE ...
+  STAKER_STATUS_ACTIVE = 1;
+  // STAKER_STATUS_INACTIVE ...
+  STAKER_STATUS_INACTIVE = 2;
+}
+
+// Staker ...
+message Staker {
+  // pool_id ...
+  uint64 pool_id = 1;
+  // staker ...
+  string account = 2;
+  // amount ...
+  uint64 amount = 3;
+  // unbonding_amount ...
+  uint64 unbonding_amount = 4;
+  // commission ...
+  string commission = 5;
+  // moniker ...
+  string moniker = 6;
+  // website ...
+  string website = 7;
+  // logo
+  string logo = 8;
+  // points // TODO should points be in bundles
+  uint64 points = 9;
+  // status
+  StakerStatus status = 10;
+}
+
+// UnbondingStakingEntry
+// Creates an entry for an upcoming unbonding of a staker which is put in the unbonding fifo queue and
+// executed after the unbonding time is over.
+message UnbondingStakingQueueEntry {
+  // index is a monotonically increasing integer to order the entries
+  uint64 index = 1;
+  // staker ...
+  string staker = 2;
+  // pool_id ...
+  uint64 pool_id = 3;
+  // amount ...
+  uint64 amount = 4;
+  // creation_time ...
+  uint64 creation_time = 5;
+}
+
+// UnbondingState stores the state for the unbonding of stakes and delegations.
+message UnbondingStakingQueueState {
+  // low_index ...
+  uint64 low_index = 1;
+  // high_index ...
+  uint64 high_index = 2;
+}

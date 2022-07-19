@@ -9,11 +9,6 @@ type msgServer struct {
 	Keeper
 }
 
-func (m msgServer) StakePool(goCtx context.Context, msg *types.MsgStakePool) (*types.MsgStakePoolResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (m msgServer) ReactivateStaker(goCtx context.Context, msg *types.MsgReactivateStaker) (*types.MsgReactivateStakerResponse, error) {
 	//TODO implement me
 	panic("implement me")
