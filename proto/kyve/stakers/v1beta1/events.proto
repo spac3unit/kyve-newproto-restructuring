@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package kyve.stakers.v1beta1;
+
+import "kyve/stakers/v1beta1/stakers.proto";
+
+option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
+
+
+// EventStakePool is an event emitted when a protocol node stakes in a pool.
+message EventStakePool {
+  // pool_id is the unique ID of the pool.
+  uint64 pool_id = 1;
+  // address is the account address of the protocol node.
+  string address = 2;
+  // amount ...
+  uint64 amount = 3;
+}
+
+// EventUnstakePool is an event emitted when a protocol node unstakes from a pool.
+message EventUnstakePool {
+  // pool_id is the unique ID of the pool.
+  uint64 pool_id = 1;
+  // address is the account address of the protocol node.
+  string address = 2;
+  // amount ...
+  uint64 amount = 3;
+}
+
+// EventStakerStatusChanged ...
+message EventStakerStatusChanged {
+  // pool_id is the unique ID of the pool.
+  uint64 pool_id = 1;
+  // address is the account address of the protocol node.
+  string address = 2;
+  // amount ...
+  StakerStatus status = 3;
+}

@@ -6,6 +6,18 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// ChangeStakerStatus sets the status of the user, adjusts the sizes for active/inactive count
+// and adjusts the pool total stakes / inactive stakes
+func (k Keeper) ChangeStakerStatus(ctx sdk.Context, poolId uint64, address string, status types.StakerStatus) {
+	// TODO implement me
+}
+
+// AddAmountToStaker adds the given amount to an already existing staker
+// It also checks the status of the staker and adjust the corresponding pool stake.
+func (k Keeper) AddAmountToStaker(ctx sdk.Context, poolId uint64, address string, amount uint64) {
+
+}
+
 func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
 	// TODO implement
 }
@@ -19,15 +31,15 @@ func (k Keeper) GetStakerCount() uint64 {
 	return 0
 }
 
-// SetStaker set a specific staker in the store from its index
-func (k Keeper) SetStaker(ctx sdk.Context, staker types.Staker) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
-	b := k.cdc.MustMarshal(&staker)
-	store.Set(types.StakerKey(
-		staker.Account,
-		staker.PoolId,
-	), b)
-}
+//// SetStaker set a specific staker in the store from its index
+//func (k Keeper) SetStaker(ctx sdk.Context, staker types.Staker) {
+//	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
+//	b := k.cdc.MustMarshal(&staker)
+//	store.Set(types.StakerKey(
+//		staker.Account,
+//		staker.PoolId,
+//	), b)
+//}
 
 // GetStaker returns a staker from its index
 func (k Keeper) GetStaker(
