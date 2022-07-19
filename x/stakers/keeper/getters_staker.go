@@ -8,6 +8,12 @@ import (
 
 // ChangeStakerStatus sets the status of the user, adjusts the sizes for active/inactive count
 // and adjusts the pool total stakes / inactive stakes
+func (k Keeper) UpdateStakerMetadata(ctx sdk.Context, poolId uint64, address string, moniker string, website string, logo string) {
+	// TODO implement me
+}
+
+// ChangeStakerStatus sets the status of the user, adjusts the sizes for active/inactive count
+// and adjusts the pool total stakes / inactive stakes
 func (k Keeper) ChangeStakerStatus(ctx sdk.Context, poolId uint64, address string, status types.StakerStatus) {
 	// TODO implement me
 }

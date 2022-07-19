@@ -36,3 +36,17 @@ message EventStakerStatusChanged {
   // amount ...
   StakerStatus status = 3;
 }
+
+// EventUpdateMetadata is an event emitted when a protocol node updates their metadata.
+message EventUpdateMetadata {
+  // pool_id is the unique ID of the pool.
+  uint64 pool_id = 1;
+  // address is the account address of the protocol node.
+  string address = 2;
+  // moniker ...
+  string moniker = 3;
+  // website ...
+  string website = 4;
+  // logo ...
+  string logo = 5;
+}

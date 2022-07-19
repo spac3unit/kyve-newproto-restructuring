@@ -97,42 +97,41 @@ message Pool {
   // status ...
   PoolStatus status = 17;
 
+
+  // Aggregated Variables
+
+  // total_stake ...
+  uint64 total_stake = 18;
+
+  // total_stake ...
+  uint64 total_inactive_stake = 19;
+
+  // total_delegation ...
+  uint64 total_delegation = 20;
+
 //  // current_height ...
 //  uint64 current_height = 8;
-//  // total_bytes ...
-//  uint64 total_bytes = 9;
 //  // total_bundles ...
 //  uint64 total_bundles = 10;
-//  // total_bundle_rewards ...
-//  uint64 total_bundle_rewards = 11;
+
+  // bundle_proposal ...
+  // TODO BUNDLES MODULE
+  //  kyve.registry.v1beta1.BundleProposal bundle_proposal = 23;
 
 
   // TODO maybe refactor funders to use sorted list, KV-binary tree, or go heap, for better performance
   // TODO maybe dont update all funders after payout, but store amount to subtract and only update,
   // TODO when funders list changes (e.g funding, defunding, lowest funder getting kicked out)
   // funders ...
-  repeated Funder funders = 18;
+  repeated Funder funders = 21;
   // total_funds ...
-  uint64 total_funds = 20;
+  uint64 total_funds = 22;
 
-  // TODO stakers + total_delegation
-//  // stakers ...
-//  repeated string stakers = 19;
-//  // lowest_staker ...
-//  string lowest_staker = 20;
-//  // total_stake ...
-//  uint64 total_stake = 21;
-//  // total_delegation ...
-//  uint64 total_delegation = 22;
-//  // inactive_stakers ...
-//  repeated string inactive_stakers = 30;
-//  // total_inactive_stake ...
-//  uint64 total_inactive_stake = 31;
-//  // min_stake ...
 
-  // bundle_proposal ...
-  // TODO BUNDLES MODULE
-//  kyve.registry.v1beta1.BundleProposal bundle_proposal = 23;
+  // Request stakers list from stakers-module
 
+  // Request delegators from delegation-module
+
+  // Request current bundle-proposal from bundles-module
 
 }
