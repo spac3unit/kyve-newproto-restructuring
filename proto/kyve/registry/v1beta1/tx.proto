@@ -10,13 +10,14 @@ option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 service Msg {
   // (DE)FUNDING
 
-  // FundPool ...
+  // FundPool ... -> moved to x/pool
   rpc FundPool(MsgFundPool) returns (MsgFundPoolResponse);
-  // DefundPool ...
+  // DefundPool ... -> moved to x/pool
   rpc DefundPool(MsgDefundPool) returns (MsgDefundPoolResponse);
 
   // (UN)STAKING
 
+  // TODO move to x/stakers
   // StakePool ...
   rpc StakePool(MsgStakePool) returns (MsgStakePoolResponse);
   // MsgReactivateStaker ...
@@ -26,23 +27,26 @@ service Msg {
 
   // DELEGATION
 
-  // DelegatePool ...
+  // DelegatePool ... -> moved to x/delegation
   rpc DelegatePool(MsgDelegatePool) returns (MsgDelegatePoolResponse);
-  // WithdrawPool ...
+  // WithdrawPool ... -> moved to x/delegation
   rpc WithdrawPool(MsgWithdrawPool) returns (MsgWithdrawPoolResponse);
-  // UndelegatePool ...
+  // UndelegatePool ... -> moved to x/delegation
   rpc UndelegatePool(MsgUndelegatePool) returns (MsgUndelegatePoolResponse);
-  // RedelegatePool ...
+  // RedelegatePool ... -> moved to x/delegation
   rpc RedelegatePool(MsgRedelegatePool) returns (MsgRedelegatePoolResponse);
 
   // POOL Query for protocol nodes
 
+  // TODO move to x/bundles
   // SubmitBundleProposal ...
   rpc SubmitBundleProposal(MsgSubmitBundleProposal) returns (MsgSubmitBundleProposalResponse);
   // VoteProposal ...
   rpc VoteProposal(MsgVoteProposal) returns (MsgVoteProposalResponse);
   // ClaimUploaderRole ...
   rpc ClaimUploaderRole(MsgClaimUploaderRole) returns (MsgClaimUploaderRoleResponse);
+
+  // TODO move to x/stakers
   // UpdateMetadata ...
   rpc UpdateMetadata(MsgUpdateMetadata) returns (MsgUpdateMetadataResponse);
   // UpdateCommission ...
