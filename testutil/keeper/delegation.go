@@ -36,12 +36,17 @@ func DelegationKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"DelegationParams",
 	)
-	k := keeper.NewKeeper(
-		cdc,
-		storeKey,
-		memStoreKey,
-		paramsSubspace,
-	)
+	//k := keeper.NewKeeper(
+	//	cdc,
+	//	storeKey,
+	//	memStoreKey,
+	//	paramsSubspace,
+	//
+	//	nil,
+	//	nil,
+	//)
+	_ = paramsSubspace
+	var k *keeper.Keeper
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 

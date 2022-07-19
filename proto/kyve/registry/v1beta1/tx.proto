@@ -17,7 +17,6 @@ service Msg {
 
   // (UN)STAKING
 
-  // TODO move to x/stakers
   // StakePool ...
   rpc StakePool(MsgStakePool) returns (MsgStakePoolResponse);
   // MsgReactivateStaker ...
@@ -38,7 +37,6 @@ service Msg {
 
   // POOL Query for protocol nodes
 
-  // TODO move to x/bundles
   // SubmitBundleProposal ...
   rpc SubmitBundleProposal(MsgSubmitBundleProposal) returns (MsgSubmitBundleProposalResponse);
   // VoteProposal ...
@@ -46,7 +44,6 @@ service Msg {
   // ClaimUploaderRole ...
   rpc ClaimUploaderRole(MsgClaimUploaderRole) returns (MsgClaimUploaderRoleResponse);
 
-  // TODO move to x/stakers
   // UpdateMetadata ...
   rpc UpdateMetadata(MsgUpdateMetadata) returns (MsgUpdateMetadataResponse);
   // UpdateCommission ...

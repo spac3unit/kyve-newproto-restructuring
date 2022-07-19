@@ -2,12 +2,84 @@ syntax = "proto3";
 package kyve.bundles.v1beta1;
 
 // this line is used by starport scaffolding # proto/tx/import
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/bundles/types";
 
 // Msg defines the Msg service.
 service Msg {
     // this line is used by starport scaffolding # proto/tx/rpc
+  // SubmitBundleProposal ...
+  rpc SubmitBundleProposal(MsgSubmitBundleProposal) returns (MsgSubmitBundleProposalResponse);
+  // VoteProposal ...
+  rpc VoteProposal(MsgVoteProposal) returns (MsgVoteProposalResponse);
+  // ClaimUploaderRole ...
+  rpc ClaimUploaderRole(MsgClaimUploaderRole) returns (MsgClaimUploaderRoleResponse);
 }
 
-// this line is used by starport scaffolding # proto/tx/message
+// MsgSubmitBundleProposal defines a SDK message for submitting a bundle proposal.
+message MsgSubmitBundleProposal {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 id = 2;
+  // storage_id ...
+  string storage_id = 3;
+  // byte_size ...
+  uint64 byte_size = 4;
+  // from_height
+  uint64 from_height = 5;
+  // to_height ...
+  uint64 to_height = 6;
+  // from_key
+  string from_key = 7;
+  // to_key ...
+  string to_key = 8;
+  // to_value ...
+  string to_value = 9;
+  // bundle_hash ...
+  string bundle_hash = 10;
+}
+
+// MsgSubmitBundleProposalResponse defines the Msg/SubmitBundleProposal response type.
+message MsgSubmitBundleProposalResponse {}
+
+// VoteType ...
+enum VoteType {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  // VOTE_TYPE_UNSPECIFIED ...
+  VOTE_TYPE_UNSPECIFIED = 0;
+  // VOTE_TYPE_YES ...
+  VOTE_TYPE_YES = 1;
+  // VOTE_TYPE_NO ...
+  VOTE_TYPE_NO = 2;
+  // VOTE_TYPE_ABSTAIN ...
+  VOTE_TYPE_ABSTAIN = 3;
+}
+
+// MsgVoteProposal defines a SDK message for voting on a bundle proposal.
+message MsgVoteProposal {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 id = 2;
+  // storage_id ...
+  string storage_id = 3;
+  // vote ...
+  VoteType vote = 4;
+}
+
+// MsgVoteProposalResponse defines the Msg/VoteProposal response type.
+message MsgVoteProposalResponse {}
+
+// MsgClaimUploaderRole defines a SDK message for claiming the uploader role.
+message MsgClaimUploaderRole {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 id = 2;
+}
+
+// MsgClaimUploaderRoleResponse defines the Msg/ClaimUploaderRole response type.
+message MsgClaimUploaderRoleResponse {}

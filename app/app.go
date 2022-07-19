@@ -113,6 +113,16 @@ import (
 	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
 	delegationmodulekeeper "github.com/KYVENetwork/chain/x/delegation/keeper"
 	delegationmoduletypes "github.com/KYVENetwork/chain/x/delegation/types"
+
+	stakersmodule "github.com/KYVENetwork/chain/x/stakers"
+	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
+	stakersmodulekeeper "github.com/KYVENetwork/chain/x/stakers/keeper"
+	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
+
+	bundlesmodule "github.com/KYVENetwork/chain/x/bundles"
+	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
+	bundlesmodulekeeper "github.com/KYVENetwork/chain/x/bundles/keeper"
+	bundlesmoduletypes "github.com/KYVENetwork/chain/x/bundles/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -141,7 +151,7 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		registrymoduleclient.UnpausePoolHandler,
 		registrymoduleclient.SchedulePoolUpgradeHandler,
 		registrymoduleclient.CancelPoolUpgradeHandler,
-		// TODO maybe add gov handlers
+		// TODO maybe add gov handlers for bundles, pool, stakers, etc. ?
 	)
 
 	return govProposalHandlers
@@ -328,6 +338,28 @@ func NewApp(
 		app.BankKeeper,
 	)
 
+	app.StakersKeeper = *stakersmodulekeeper.NewKeeper(
+		appCodec,
+		keys[poolmoduletypes.StoreKey],
+		keys[poolmoduletypes.MemStoreKey],
+		app.GetSubspace(poolmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.PoolKeeper,
+	)
+
+	app.BundlesKeeper = *bundlesmodulekeeper.NewKeeper(
+		appCodec,
+		keys[poolmoduletypes.StoreKey],
+		keys[poolmoduletypes.MemStoreKey],
+		app.GetSubspace(poolmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.PoolKeeper,
+		app.StakersKeeper,
+		app.DelegationKeeper,
+	)
+
 	app.DelegationKeeper = *delegationmodulekeeper.NewKeeper(
 		appCodec,
 		keys[poolmoduletypes.StoreKey],
@@ -408,6 +440,8 @@ func NewApp(
 		registryModule,
 		poolmodule.NewAppModule(appCodec, app.PoolKeeper, app.AccountKeeper, app.BankKeeper),
 		delegationmodule.NewAppModule(appCodec, app.DelegationKeeper, app.AccountKeeper, app.BankKeeper),
+		stakersmodule.NewAppModule(appCodec, app.StakersKeeper, app.AccountKeeper, app.BankKeeper),
+		bundlesmodule.NewAppModule(appCodec, app.BundlesKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -436,6 +470,8 @@ func NewApp(
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
 		delegationmoduletypes.ModuleName,
+		stakersmoduletypes.ModuleName,
+		bundlesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -460,6 +496,8 @@ func NewApp(
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
 		delegationmoduletypes.ModuleName,
+		stakersmoduletypes.ModuleName,
+		bundlesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -489,6 +527,8 @@ func NewApp(
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
 		delegationmoduletypes.ModuleName,
+		stakersmoduletypes.ModuleName,
+		bundlesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 

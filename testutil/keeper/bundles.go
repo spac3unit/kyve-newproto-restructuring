@@ -36,12 +36,14 @@ func BundlesKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"BundlesParams",
 	)
-	k := keeper.NewKeeper(
-		cdc,
-		storeKey,
-		memStoreKey,
-		paramsSubspace,
-	)
+	//k := keeper.NewKeeper(
+	//	cdc,
+	//	storeKey,
+	//	memStoreKey,
+	//	paramsSubspace,
+	//)
+	_ = paramsSubspace
+	var k *keeper.Keeper
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 

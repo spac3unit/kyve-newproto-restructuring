@@ -61,6 +61,14 @@ import (
 	poolkeeper "github.com/KYVENetwork/chain/x/pool/keeper"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 
+	// Stakers
+	stakerskeeper "github.com/KYVENetwork/chain/x/stakers/keeper"
+	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
+
+	// Bundles
+	bundleskeeper "github.com/KYVENetwork/chain/x/bundles/keeper"
+	bundlestypes "github.com/KYVENetwork/chain/x/bundles/types"
+
 	// Delegation
 	delegationkeeper "github.com/KYVENetwork/chain/x/delegation/keeper"
 	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
@@ -102,6 +110,8 @@ type Keepers struct {
 	RegistryKeeper   registrykeeper.Keeper
 	PoolKeeper       poolkeeper.Keeper
 	DelegationKeeper delegationkeeper.Keeper
+	StakersKeeper    stakerskeeper.Keeper
+	BundlesKeeper    bundleskeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 }
 
@@ -122,6 +132,8 @@ func (app *App) initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.
 	paramsKeeper.Subspace(registrytypes.ModuleName)
 	paramsKeeper.Subspace(pooltypes.ModuleName)
 	paramsKeeper.Subspace(delegationtypes.ModuleName)
+	paramsKeeper.Subspace(stakerstypes.ModuleName)
+	paramsKeeper.Subspace(bundlestypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
@@ -146,6 +158,8 @@ func KVStoreKeys() []string {
 		registrytypes.StoreKey,
 		pooltypes.StoreKey,
 		delegationtypes.StoreKey,
+		stakerstypes.StoreKey,
+		bundlestypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	}
 }
