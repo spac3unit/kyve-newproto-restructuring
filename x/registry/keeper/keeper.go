@@ -62,6 +62,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
+// TODO export into other modules (or maybe keep here?)
+
 func (k Keeper) IterateProtocolBonding(ctx sdk.Context, address sdk.AccAddress, fn func(poolId uint64, amount sdk.Int) (stop bool)) {
 	for _, pool := range k.GetAllPool(ctx) {
 		total := uint64(0)

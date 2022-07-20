@@ -4,7 +4,6 @@ package kyve.registry.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "kyve/registry/v1beta1/registry.proto";
-import "kyve/registry/v1beta1/tx.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 
@@ -78,17 +77,6 @@ message EventBundleFinalised {
   uint64 total = 17;
 }
 
-// EventBundleVote is an event emitted when a protocol node votes on a bundle.
-message EventBundleVote {
-  // pool_id is the unique ID of the pool.
-  uint64 pool_id = 1;
-  // address is the account address of the protocol node.
-  string address = 2;
-  // storage_id is the unique ID of the bundle.
-  string storage_id = 3;
-  // vote is the vote type of the protocol node.
-  VoteType vote = 4;
-}
 
 // ---------- Delegating Events ----------
 
