@@ -58,9 +58,7 @@ func (k msgServer) UpdateMetadata(
 ) (*types.MsgUpdateMetadataResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO Create a PoolExists function on pool module which doesn't do unmarshalling etc.
-	_, poolErr := k.poolKeeper.GetPoolWithError(ctx, msg.PoolId)
-	if poolErr != nil {
+	if poolErr := k.poolKeeper.AssertPoolExists(ctx, msg.PoolId); poolErr != nil {
 		return nil, poolErr
 	}
 

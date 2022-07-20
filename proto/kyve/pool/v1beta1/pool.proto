@@ -110,11 +110,6 @@ message Pool {
 //  // total_bundles ...
 //  uint64 total_bundles = 10;
 
-  // bundle_proposal ...
-  // TODO BUNDLES MODULE
-  //  kyve.registry.v1beta1.BundleProposal bundle_proposal = 23;
-
-
 
   // Request stakers list + total (inactive) stake from stakers-module
 

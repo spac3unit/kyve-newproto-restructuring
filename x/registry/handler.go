@@ -23,15 +23,6 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgDefundPool:
 			res, err := msgServer.DefundPool(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgStakePool:
-			res, err := msgServer.StakePool(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgReactivateStaker:
-			res, err := msgServer.ReactivateStaker(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUnstakePool:
-			res, err := msgServer.UnstakePool(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgSubmitBundleProposal:
 			res, err := msgServer.SubmitBundleProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
@@ -52,12 +43,6 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgRedelegatePool:
 			res, err := msgServer.RedelegatePool(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpdateMetadata:
-			res, err := msgServer.UpdateMetadata(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUpdateCommission:
-			res, err := msgServer.UpdateCommission(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 			// this line is used by starport scaffolding # 1
 		default:

@@ -9,14 +9,6 @@ const TypeMsgStakePool = "stake_pool"
 
 var _ sdk.Msg = &MsgStakePool{}
 
-func NewMsgStakePool(creator string, id uint64, amount uint64) *MsgStakePool {
-	return &MsgStakePool{
-		Creator: creator,
-		Id:      id,
-		Amount:  amount,
-	}
-}
-
 func (msg *MsgStakePool) Route() string {
 	return RouterKey
 }

@@ -9,14 +9,6 @@ const TypeMsgUnstakePool = "unstake_pool"
 
 var _ sdk.Msg = &MsgUnstakePool{}
 
-func NewMsgUnstakePool(creator string, id uint64, amount uint64) *MsgUnstakePool {
-	return &MsgUnstakePool{
-		Creator: creator,
-		Id:      id,
-		Amount:  amount,
-	}
-}
-
 func (msg *MsgUnstakePool) Route() string {
 	return RouterKey
 }

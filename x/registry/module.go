@@ -175,7 +175,6 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 // returns no validator updates.
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	am.keeper.HandleUploadTimeout(sdk.WrapSDKContext(ctx))
-	am.keeper.ProcessStakerUnbondingQueue(ctx)
 	am.keeper.ProcessDelegatorUnbondingQueue(ctx)
 	am.keeper.ProcessCommissionChangeUnbondingQueue(ctx)
 
