@@ -8,13 +8,6 @@ option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 
 // Msg defines the registry Msg service.
 service Msg {
-  // (DE)FUNDING
-
-  // FundPool ...
-  rpc FundPool(MsgFundPool) returns (MsgFundPoolResponse);
-  // DefundPool ...
-  rpc DefundPool(MsgDefundPool) returns (MsgDefundPoolResponse);
-
   // DELEGATION
 
   // DelegatePool ...
