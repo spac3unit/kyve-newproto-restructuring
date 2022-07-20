@@ -14,9 +14,7 @@ func (k msgServer) UnstakePool(
 	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO Create a PoolExists function on pool module which doesnt do unmarshalling etc.
-	_, poolErr := k.poolKeeper.GetPoolWithError(ctx, msg.PoolId)
-	if poolErr != nil {
+	if poolErr := k.poolKeeper.AssertPoolExists(ctx, msg.PoolId); poolErr != nil {
 		return nil, poolErr
 	}
 

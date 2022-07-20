@@ -9,11 +9,6 @@ type msgServer struct {
 	Keeper
 }
 
-func (m msgServer) SubmitBundleProposal(goCtx context.Context, msg *types.MsgSubmitBundleProposal) (*types.MsgSubmitBundleProposalResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
 func (m msgServer) VoteProposal(goCtx context.Context, msg *types.MsgVoteProposal) (*types.MsgVoteProposalResponse, error) {
 	//TODO implement me
 	panic("implement me")

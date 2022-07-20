@@ -97,17 +97,13 @@ message Pool {
   // status ...
   PoolStatus status = 17;
 
-
-  // Aggregated Variables
-
-  // total_stake ...
-  uint64 total_stake = 18;
-
-  // total_stake ...
-  uint64 total_inactive_stake = 19;
-
-  // total_delegation ...
-  uint64 total_delegation = 20;
+  // TODO maybe refactor funders to use sorted list, KV-binary tree, or go heap, for better performance
+  // TODO maybe dont update all funders after payout, but store amount to subtract and only update,
+  // TODO when funders list changes (e.g funding, defunding, lowest funder getting kicked out)
+  // funders ...
+  repeated Funder funders = 18;
+  // total_funds ...
+  uint64 total_funds = 19;
 
 //  // current_height ...
 //  uint64 current_height = 8;
@@ -119,18 +115,10 @@ message Pool {
   //  kyve.registry.v1beta1.BundleProposal bundle_proposal = 23;
 
 
-  // TODO maybe refactor funders to use sorted list, KV-binary tree, or go heap, for better performance
-  // TODO maybe dont update all funders after payout, but store amount to subtract and only update,
-  // TODO when funders list changes (e.g funding, defunding, lowest funder getting kicked out)
-  // funders ...
-  repeated Funder funders = 21;
-  // total_funds ...
-  uint64 total_funds = 22;
 
+  // Request stakers list + total (inactive) stake from stakers-module
 
-  // Request stakers list from stakers-module
-
-  // Request delegators from delegation-module
+  // Request delegators + total delegation from delegation-module
 
   // Request current bundle-proposal from bundles-module
 
