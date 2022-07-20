@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package kyve.registry.v1beta1;
+package kyve.delegation.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "kyve/delegation/v1beta1/delegation.proto";
