@@ -33,8 +33,6 @@ func GetTxCmd() *cobra.Command {
 
 	cmd.AddCommand(CmdFundPool())
 	cmd.AddCommand(CmdDefundPool())
-	cmd.AddCommand(CmdStakePool())
-	cmd.AddCommand(CmdUnstakePool())
 	cmd.AddCommand(CmdSubmitBundleProposal())
 	cmd.AddCommand(CmdVoteProposal())
 	cmd.AddCommand(CmdClaimUploaderRole())
@@ -42,8 +40,6 @@ func GetTxCmd() *cobra.Command {
 	cmd.AddCommand(CmdWithdrawPool())
 	cmd.AddCommand(CmdUndelegatePool())
 	cmd.AddCommand(CmdRedelegatePool())
-	cmd.AddCommand(CmdUpdateMetadata())
-	cmd.AddCommand(CmdUpdateCommission())
 
 	cmd.AddCommand(CmdSubmitCreatePoolProposal())
 	cmd.AddCommand(CmdSubmitUpdatePoolProposal())

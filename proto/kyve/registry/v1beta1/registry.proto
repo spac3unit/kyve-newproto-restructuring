@@ -64,6 +64,8 @@ message Protocol {
   string binaries = 2;
   // last_upgrade ...
   uint64 last_upgrade = 3;
+  // test
+  string test = 4;
 }
 
 // Upgrade ...
@@ -78,7 +80,7 @@ message UpgradePlan {
   uint64 duration = 4;
 }
 
-// deprecated DelegationEntries ... -> moved to delegation
+// DelegationEntries ...
 message DelegationEntries {
   // id ...
   uint64 id = 1;
@@ -90,7 +92,7 @@ message DelegationEntries {
   uint64 k_index = 4;
 }
 
-// deprecated DelegationPoolData ... -> moved to delegation
+// DelegationPoolData ...
 message DelegationPoolData {
   // Primary keys
 
@@ -116,7 +118,7 @@ message DelegationPoolData {
   bool latest_index_was_undelegation = 7;
 }
 
-// deprecated Delegator ... -> moved to delegation
+// Delegator ...
 message Delegator {
   // id ...
   uint64 id = 1;
@@ -314,7 +316,7 @@ message UnbondingStakingQueueState {
   uint64 high_index = 2;
 }
 
-// UnbondingStakingEntry -> moved to delegation
+// UnbondingStakingEntry
 // Creates an entry for an upcoming unbonding of a staker which is put in the unbonding fifo queue and
 // executed after the unbonding time is over.
 message UnbondingDelegationQueueEntry {
@@ -332,7 +334,6 @@ message UnbondingDelegationQueueEntry {
   uint64 creation_time = 6;
 }
 
-// deprecated -> moved to delegation
 // UnbondingState stores the state for the unbonding of stakes and delegations.
 message UnbondingDelegationQueueState {
   // low_index ...
