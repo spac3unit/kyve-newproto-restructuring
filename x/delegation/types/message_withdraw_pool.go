@@ -9,14 +9,6 @@ const TypeMsgWithdrawPool = "withdraw_pool"
 
 var _ sdk.Msg = &MsgWithdrawPool{}
 
-func NewMsgWithdrawPool(creator string, id uint64, staker string) *MsgWithdrawPool {
-	return &MsgWithdrawPool{
-		Creator: creator,
-		Id:      id,
-		Staker:  staker,
-	}
-}
-
 func (msg *MsgWithdrawPool) Route() string {
 	return RouterKey
 }

@@ -8,19 +8,15 @@ import (
 )
 
 // StakePool handles the logic of an SDK message that allows protocol nodes to stake in a specified pool.
-func (k msgServer) StakePool(goCtx context.Context, msg *types.MsgStakePool) (*types.MsgStakePoolResponse, error) {
+func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.MsgStakeResponse, error) {
 	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if poolErr := k.poolKeeper.AssertPoolExists(ctx, msg.PoolId); poolErr != nil {
-		return nil, poolErr
-	}
-
 	// Check if the sender is already a staker.
-	_, stakerExists := k.GetStaker(ctx, msg.Creator, msg.PoolId)
+	_, stakerExists := k.GetStaker(ctx, msg.Creator)
 
 	if stakerExists {
-		k.AddAmountToStaker(ctx, msg.PoolId, msg.Creator, msg.Amount)
+		k.AddAmountToStaker(ctx, msg.Creator, msg.Amount)
 	} else {
 		// Check if we have reached the maximum number of stakers.
 		// If we are staking more than the lowest staker, remove them.

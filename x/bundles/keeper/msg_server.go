@@ -1,22 +1,11 @@
 package keeper
 
 import (
-	"context"
 	"github.com/KYVENetwork/chain/x/bundles/types"
 )
 
 type msgServer struct {
 	Keeper
-}
-
-func (m msgServer) VoteProposal(goCtx context.Context, msg *types.MsgVoteProposal) (*types.MsgVoteProposalResponse, error) {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (m msgServer) ClaimUploaderRole(goCtx context.Context, msg *types.MsgClaimUploaderRole) (*types.MsgClaimUploaderRoleResponse, error) {
-	//TODO implement me
-	panic("implement me")
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface

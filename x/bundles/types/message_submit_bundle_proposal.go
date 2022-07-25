@@ -9,20 +9,6 @@ const TypeMsgSubmitBundleProposal = "submit_bundle_proposal"
 
 var _ sdk.Msg = &MsgSubmitBundleProposal{}
 
-func NewMsgSubmitBundleProposal(creator string, id uint64, storageId string, byteSize uint64, fromHeight uint64, toHeight uint64, fromKey string, toKey string, toValue string) *MsgSubmitBundleProposal {
-	return &MsgSubmitBundleProposal{
-		Creator:    creator,
-		Id:         id,
-		StorageId:  storageId,
-		ByteSize:   byteSize,
-		FromHeight: fromHeight,
-		ToHeight:   toHeight,
-		FromKey:    fromKey,
-		ToKey:      toKey,
-		ToValue:    toValue,
-	}
-}
-
 func (msg *MsgSubmitBundleProposal) Route() string {
 	return RouterKey
 }

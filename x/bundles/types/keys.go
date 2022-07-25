@@ -1,5 +1,7 @@
 package types
 
+import "github.com/KYVENetwork/chain/util"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "bundles"
@@ -17,6 +19,12 @@ const (
 	MemStoreKey = "mem_bundles"
 )
 
-func KeyPrefix(p string) []byte {
-	return []byte(p)
+var (
+	// BundleKeyPrefix ...
+	BundleKeyPrefix = []byte{1}
+)
+
+// BundleProposalKey ...
+func BundleProposalKey(poolId uint64) []byte {
+	return util.GetByteKey(poolId)
 }

@@ -41,6 +41,10 @@ const (
 )
 
 // StakerKey returns the store Key to retrieve a Staker from the index fields
-func StakerKey(staker string, poolId uint64) []byte {
-	return util.GetByteKey(staker, poolId)
+func StakerKey(staker string) []byte {
+	return util.GetByteKey(staker)
+}
+
+func StakerByPoolAndAmountIndex(poolId uint64, amount uint64, staker string) []byte {
+	return util.GetByteKey(poolId, amount, staker)
 }

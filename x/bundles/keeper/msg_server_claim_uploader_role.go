@@ -2,10 +2,10 @@ package keeper
 
 import (
 	"context"
-
-	"github.com/KYVENetwork/chain/x/registry/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
+
+	"github.com/KYVENetwork/chain/x/bundles/types"
 )
 
 // ClaimUploaderRole handles the logic of an SDK message that allows protocol nodes to claim the uploader role.
@@ -16,53 +16,28 @@ func (k msgServer) ClaimUploaderRole(
 ) (*types.MsgClaimUploaderRoleResponse, error) {
 	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	pool, found := k.GetPool(ctx, msg.Id)
 
-	// Error if the pool isn't found.
-	if !found {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), msg.Id)
+	if poolErr := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId); poolErr != nil {
+		return nil, poolErr
 	}
 
+	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
+
 	// Error if the pool isn't in "genesis state".
-	if pool.BundleProposal.NextUploader != "" {
+	if bundleProposal.NextUploader != "" {
 		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrUploaderAlreadyClaimed.Error())
 	}
 
-	// Check if the sender is a protocol node (aka has staked into this pool).
-	_, isStaker := k.GetStaker(ctx, msg.Creator, msg.Id)
-	if !isStaker {
-		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrNoStaker.Error())
-	}
+	// TODO check staker is in pool
 
-	// Check if enough nodes are online
-	if len(pool.Stakers) < 2 {
-		return nil, types.ErrNotEnoughNodesOnline
-	}
+	// TODO pool has at least two stakers (is this still necessary)
 
-	// Check if minimum stake is reached
-	if pool.TotalStake < pool.MinStake {
-		return nil, types.ErrNotEnoughStake
-	}
+	// TODO check pool reached min stake
 
-	// Error if the pool has no funds.
-	if len(pool.Funders) == 0 {
-		return nil, sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrFundsTooLow.Error())
-	}
+	bundleProposal.NextUploader = msg.Creator
+	bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 
-	// Error if the pool is paused.
-	if pool.Paused {
-		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolPaused.Error())
-	}
-
-	// Error if the pool is upgrading.
-	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
-		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolCurrentlyUpgrading.Error())
-	}
-
-	// Update and return.
-	pool.BundleProposal.NextUploader = msg.Creator
-	pool.BundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
-	k.SetPool(ctx, pool)
+	k.SetBundleProposal(ctx, bundleProposal)
 
 	return &types.MsgClaimUploaderRoleResponse{}, nil
 }

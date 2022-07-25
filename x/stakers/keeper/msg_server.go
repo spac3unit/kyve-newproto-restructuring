@@ -26,14 +26,8 @@ func (k msgServer) UpdateCommission(
 	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO Create a PoolExists function on pool module which doesn't do unmarshalling etc.
-	_, poolErr := k.poolKeeper.GetPoolWithError(ctx, msg.PoolId)
-	if poolErr != nil {
-		return nil, poolErr
-	}
-
 	// Check if the sender is a protocol node (aka has staked into this pool).
-	_, isStaker := k.GetStaker(ctx, msg.Creator, msg.PoolId)
+	_, isStaker := k.GetStaker(ctx, msg.Creator)
 	if !isStaker {
 		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrNoStaker.Error())
 	}
@@ -48,7 +42,7 @@ func (k msgServer) UpdateCommission(
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidCommission.Error(), msg.Commission)
 	}
 
-	k.orderNewCommissionChange(ctx, msg.PoolId, msg.Creator, msg.Commission)
+	k.orderNewCommissionChange(ctx, msg.Creator, msg.Commission)
 
 	return &types.MsgUpdateCommissionResponse{}, nil
 }
@@ -58,21 +52,16 @@ func (k msgServer) UpdateMetadata(
 ) (*types.MsgUpdateMetadataResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if poolErr := k.poolKeeper.AssertPoolExists(ctx, msg.PoolId); poolErr != nil {
-		return nil, poolErr
-	}
-
 	// Check if the sender is a protocol node (aka has staked into this pool).
-	_, isStaker := k.GetStaker(ctx, msg.Creator, msg.PoolId)
+	_, isStaker := k.GetStaker(ctx, msg.Creator)
 	if !isStaker {
 		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrNoStaker.Error())
 	}
 
-	k.UpdateStakerMetadata(ctx, msg.PoolId, msg.Creator, msg.Moniker, msg.Website, msg.Logo)
+	k.UpdateStakerMetadata(ctx, msg.Creator, msg.Moniker, msg.Website, msg.Logo)
 
 	// Event an event.
 	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventUpdateMetadata{
-		PoolId:  msg.PoolId,
 		Address: msg.Creator,
 		Moniker: msg.Moniker,
 		Website: msg.Website,

@@ -9,15 +9,6 @@ const TypeMsgVoteProposal = "vote_proposal"
 
 var _ sdk.Msg = &MsgVoteProposal{}
 
-func NewMsgVoteProposal(creator string, id uint64, storageId string, vote VoteType) *MsgVoteProposal {
-	return &MsgVoteProposal{
-		Creator:   creator,
-		Id:        id,
-		StorageId: storageId,
-		Vote:      vote,
-	}
-}
-
 func (msg *MsgVoteProposal) Route() string {
 	return RouterKey
 }

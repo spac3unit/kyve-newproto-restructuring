@@ -9,15 +9,6 @@ const TypeMsgUndelegatePool = "undelegate_pool"
 
 var _ sdk.Msg = &MsgUndelegatePool{}
 
-func NewMsgUndelegatePool(creator string, id uint64, staker string, amount uint64) *MsgUndelegatePool {
-	return &MsgUndelegatePool{
-		Creator: creator,
-		Id:      id,
-		Staker:  staker,
-		Amount:  amount,
-	}
-}
-
 func (msg *MsgUndelegatePool) Route() string {
 	return RouterKey
 }

@@ -10,6 +10,8 @@ var (
 
 // funding errors
 var (
-	ErrFundsTooLow   = sdkerrors.Register(ModuleName, 1101, "minimum funding amount of %vkyve not reached")
-	ErrDefundTooHigh = sdkerrors.Register(ModuleName, 1102, "maximum defunding amount of %vkyve surpassed")
+	ErrFundsTooLow            = sdkerrors.Register(ModuleName, 1101, "minimum funding amount of %vkyve not reached")
+	ErrDefundTooHigh          = sdkerrors.Register(ModuleName, 1102, "maximum defunding amount of %vkyve surpassed")
+	ErrPoolPaused             = sdkerrors.Register(ModuleName, 1103, "pool is paused")
+	ErrPoolCurrentlyUpgrading = sdkerrors.Register(ModuleName, 1104, "pool currently upgrading")
 )

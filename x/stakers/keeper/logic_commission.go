@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) orderNewCommissionChange(ctx sdk.Context, poolId uint64, staker string, commission string) {
+func (k Keeper) orderNewCommissionChange(ctx sdk.Context, staker string, commission string) {
 
 	// TODO
 

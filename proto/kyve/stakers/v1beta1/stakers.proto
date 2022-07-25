@@ -33,10 +33,10 @@ enum StakerStatus {
 
 // Staker ...
 message Staker {
-  // pool_id ...
-  uint64 pool_id = 1;
-  // staker ...
-  string account = 2;
+  // address ...
+  string address = 1;
+  // pools
+  repeated uint64 pools = 2;
   // amount ...
   uint64 amount = 3;
   // unbonding_amount ...
@@ -49,7 +49,7 @@ message Staker {
   string website = 7;
   // logo
   string logo = 8;
-  // points // TODO should points be in bundles
+  // points // TODO should points be in bundles or make method to increase points ?
   uint64 points = 9;
   // status
   StakerStatus status = 10;
@@ -63,12 +63,10 @@ message UnbondingStakingQueueEntry {
   uint64 index = 1;
   // staker ...
   string staker = 2;
-  // pool_id ...
-  uint64 pool_id = 3;
   // amount ...
-  uint64 amount = 4;
+  uint64 amount = 3;
   // creation_time ...
-  uint64 creation_time = 5;
+  uint64 creation_time = 4;
 }
 
 // UnbondingState stores the state for the unbonding of stakes and delegations.

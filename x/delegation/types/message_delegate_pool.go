@@ -9,15 +9,6 @@ const TypeMsgDelegatePool = "delegate_pool"
 
 var _ sdk.Msg = &MsgDelegatePool{}
 
-func NewMsgDelegatePool(creator string, id uint64, staker string, amount uint64) *MsgDelegatePool {
-	return &MsgDelegatePool{
-		Creator: creator,
-		Id:      id,
-		Staker:  staker,
-		Amount:  amount,
-	}
-}
-
 func (msg *MsgDelegatePool) Route() string {
 	return RouterKey
 }

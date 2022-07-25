@@ -2,27 +2,24 @@ package keeper
 
 import (
 	"context"
+	"github.com/KYVENetwork/chain/util"
 
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/delegation/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // WithdrawPool handles the logic of an SDK message that allows delegators to collect all rewards from a specified pool.
-func (k msgServer) WithdrawPool(
-	goCtx context.Context, msg *types.MsgWithdrawPool,
-) (*types.MsgWithdrawPoolResponse, error) {
+func (k msgServer) WithdrawPool(goCtx context.Context, msg *types.MsgWithdrawPool) (*types.MsgWithdrawPoolResponse, error) {
 	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	_, found := k.GetPool(ctx, msg.Id)
 
-	// Error if the pool isn't found.
-	if !found {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), msg.Id)
+	if poolErr := k.poolKeeper.AssertPoolExists(ctx, msg.PoolId); poolErr != nil {
+		return nil, poolErr
 	}
 
 	// Check if the sender is a delegator in this pool.
-	_, isDelegator := k.GetDelegator(ctx, msg.Id, msg.Staker, msg.Creator)
+	_, isDelegator := k.GetDelegator(ctx, msg.PoolId, msg.Staker, msg.Creator)
 	if !isDelegator {
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
 	}
@@ -31,7 +28,7 @@ func (k msgServer) WithdrawPool(
 	f1Distribution := F1Distribution{
 		k:                k.Keeper,
 		ctx:              ctx,
-		poolId:           msg.Id,
+		poolId:           msg.PoolId,
 		stakerAddress:    msg.Staker,
 		delegatorAddress: msg.Creator,
 	}
@@ -40,7 +37,7 @@ func (k msgServer) WithdrawPool(
 	reward := f1Distribution.Withdraw()
 
 	// Transfer tokens from this module to sender.
-	err := k.TransferToAddress(ctx, msg.Creator, reward)
+	err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, msg.Creator, reward)
 	if err != nil {
 		return nil, err
 	}

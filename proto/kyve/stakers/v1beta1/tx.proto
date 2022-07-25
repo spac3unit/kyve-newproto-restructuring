@@ -10,67 +10,63 @@ service Msg {
     // this line is used by starport scaffolding # proto/tx/rpc
 
   // StakePool ...
-  rpc StakePool(MsgStakePool) returns (MsgStakePoolResponse);
+  rpc Stake(MsgStake) returns (MsgStakeResponse);
   // MsgReactivateStaker ...
   rpc ReactivateStaker(MsgReactivateStaker) returns (MsgReactivateStakerResponse);
   // UnstakePool ...
-  rpc UnstakePool(MsgUnstakePool) returns (MsgUnstakePoolResponse);
+  rpc Unstake(MsgUnstake) returns (MsgUnstakeResponse);
   // UpdateMetadata ...
   rpc UpdateMetadata(MsgUpdateMetadata) returns (MsgUpdateMetadataResponse);
   // UpdateCommission ...
   rpc UpdateCommission(MsgUpdateCommission) returns (MsgUpdateCommissionResponse);
+  // EnterPool ...
+  rpc EnterPool(MsgEnterPool) returns (MsgEnterPoolResponse);
+  // LeavePool ...
+  rpc LeavePool(MsgLeavePool) returns (MsgLeavePoolResponse);
 
 }
 
 // MsgStakePool defines a SDK message for staking in a pool.
-message MsgStakePool {
+message MsgStake {
   // creator ...
   string creator = 1;
-  // id ...
-  uint64 pool_id = 2;
   // amount ...
-  uint64 amount = 3;
+  uint64 amount = 2;
 }
 
 // MsgStakePoolResponse defines the Msg/StakePool response type.
-message MsgStakePoolResponse {}
+message MsgStakeResponse {}
 
 // MsgReactivateStaker ...
 message MsgReactivateStaker {
   // creator ...
   string creator = 1;
-  // id ...
-  uint64 pool_id = 2;
 }
 
 // MsgReactivateStakerResponse ...
 message MsgReactivateStakerResponse {}
 
 // MsgUnstakePool defines a SDK message for unstaking from a pool.
-message MsgUnstakePool {
+message MsgUnstake {
   // creator ...
   string creator = 1;
-  // id ...
-  uint64 pool_id = 2;
   // amount ...
-  uint64 amount = 3;
+  uint64 amount = 2;
 }
 
 // MsgUnstakePoolResponse defines the Msg/UnstakePool response type.
-message MsgUnstakePoolResponse {}
+message MsgUnstakeResponse {}
 
 // MsgUpdateMetadata defines a SDK message for claiming the uploader role.
 message MsgUpdateMetadata {
   // creator ...
   string creator = 1;
-  // id ...
-  uint64 pool_id = 2;
   // moniker ...
-  string moniker = 3;
+  string moniker = 2;
   // website ...
-  string website = 4;
+  string website = 3;
   // logo
-  string logo = 5;
+  string logo = 4;
 }
 
 // MsgUpdateMetadataResponse defines the Msg/MsgUpdateMetadata response type.
@@ -80,11 +76,31 @@ message MsgUpdateMetadataResponse {}
 message MsgUpdateCommission {
   // creator ...
   string creator = 1;
-  // id ...
-  uint64 pool_id = 2;
   // commission ...
-  string commission = 3;
+  string commission = 2;
 }
 
 // ...
 message MsgUpdateCommissionResponse {}
+
+// MsgStakePool defines a SDK message for staking in a pool.
+message MsgEnterPool {
+  // creator ...
+  string creator = 1;
+  // amount ...
+  uint64 pool_id = 2;
+}
+
+// MsgStakePoolResponse defines the Msg/StakePool response type.
+message MsgEnterPoolResponse {}
+
+// MsgReactivateStaker ...
+message MsgLeavePool {
+  // creator ...
+  string creator = 1;
+  // pool_id ...
+  uint64 pool_id = 2;
+}
+
+// MsgReactivateStakerResponse ...
+message MsgLeavePoolResponse {}

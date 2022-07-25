@@ -2,7 +2,7 @@ package keeper
 
 import sdk "github.com/cosmos/cosmos-sdk/types"
 
-func (k Keeper) StartUnbondingStaker(ctx sdk.Context, poolId uint64, staker string, amount uint64) (error error) {
+func (k Keeper) StartUnbondingStaker(ctx sdk.Context, staker string, amount uint64) (error error) {
 
 	//// Check if user is able to unstake more
 	//unbondingStaker, foundUnbondingStaker := k.GetUnbondingStaker(ctx, poolId, staker)

@@ -18,7 +18,7 @@ func TransferToAddress(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module str
 }
 
 // TransferToRegistry sends tokens from a specified address to the given module.
-func TransferToRegistry(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module string, address string, amount uint64) error {
+func TransferToModule(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module string, address string, amount uint64) error {
 	sender, errAddress := sdk.AccAddressFromBech32(address)
 	if errAddress != nil {
 		return errAddress
@@ -29,11 +29,11 @@ func TransferToRegistry(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module st
 	return err
 }
 
-//// transferToTreasury sends tokens from this module to the treasury (community spend pool).
-//func (k Keeper) transferToTreasury(ctx sdk.Context, amount uint64) error {
-//	sender := k.accountKeeper.GetModuleAddress(types.ModuleName)
-//	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
-//
-//	err := k.distrKeeper.FundCommunityPool(ctx, coins, sender)
-//	return err
-//}
+// transferToTreasury sends tokens from this module to the treasury (community spend pool).
+func transferToTreasury(bankKeeper bankkeeper.Keeper, ctx sdk.Context, amount uint64) error {
+	sender := bankKeeper.accountKeeper.GetModuleAddress(types.ModuleName)
+	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
+
+	err := k.distrKeeper.FundCommunityPool(ctx, coins, sender)
+	return err
+}
