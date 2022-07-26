@@ -119,89 +119,6 @@ func (m *MsgStakeResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgStakeResponse proto.InternalMessageInfo
 
-// MsgReactivateStaker ...
-type MsgReactivateStaker struct {
-	// creator ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-}
-
-func (m *MsgReactivateStaker) Reset()         { *m = MsgReactivateStaker{} }
-func (m *MsgReactivateStaker) String() string { return proto.CompactTextString(m) }
-func (*MsgReactivateStaker) ProtoMessage()    {}
-func (*MsgReactivateStaker) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{2}
-}
-func (m *MsgReactivateStaker) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgReactivateStaker) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgReactivateStaker.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgReactivateStaker) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgReactivateStaker.Merge(m, src)
-}
-func (m *MsgReactivateStaker) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgReactivateStaker) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgReactivateStaker.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgReactivateStaker proto.InternalMessageInfo
-
-func (m *MsgReactivateStaker) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-// MsgReactivateStakerResponse ...
-type MsgReactivateStakerResponse struct {
-}
-
-func (m *MsgReactivateStakerResponse) Reset()         { *m = MsgReactivateStakerResponse{} }
-func (m *MsgReactivateStakerResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgReactivateStakerResponse) ProtoMessage()    {}
-func (*MsgReactivateStakerResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{3}
-}
-func (m *MsgReactivateStakerResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgReactivateStakerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgReactivateStakerResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgReactivateStakerResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgReactivateStakerResponse.Merge(m, src)
-}
-func (m *MsgReactivateStakerResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgReactivateStakerResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgReactivateStakerResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgReactivateStakerResponse proto.InternalMessageInfo
-
 // MsgUnstakePool defines a SDK message for unstaking from a pool.
 type MsgUnstake struct {
 	// creator ...
@@ -214,7 +131,7 @@ func (m *MsgUnstake) Reset()         { *m = MsgUnstake{} }
 func (m *MsgUnstake) String() string { return proto.CompactTextString(m) }
 func (*MsgUnstake) ProtoMessage()    {}
 func (*MsgUnstake) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{4}
+	return fileDescriptor_f52b730e69b9fb06, []int{2}
 }
 func (m *MsgUnstake) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -265,7 +182,7 @@ func (m *MsgUnstakeResponse) Reset()         { *m = MsgUnstakeResponse{} }
 func (m *MsgUnstakeResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUnstakeResponse) ProtoMessage()    {}
 func (*MsgUnstakeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{5}
+	return fileDescriptor_f52b730e69b9fb06, []int{3}
 }
 func (m *MsgUnstakeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -310,7 +227,7 @@ func (m *MsgUpdateMetadata) Reset()         { *m = MsgUpdateMetadata{} }
 func (m *MsgUpdateMetadata) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateMetadata) ProtoMessage()    {}
 func (*MsgUpdateMetadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{6}
+	return fileDescriptor_f52b730e69b9fb06, []int{4}
 }
 func (m *MsgUpdateMetadata) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -375,7 +292,7 @@ func (m *MsgUpdateMetadataResponse) Reset()         { *m = MsgUpdateMetadataResp
 func (m *MsgUpdateMetadataResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateMetadataResponse) ProtoMessage()    {}
 func (*MsgUpdateMetadataResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{7}
+	return fileDescriptor_f52b730e69b9fb06, []int{5}
 }
 func (m *MsgUpdateMetadataResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -416,7 +333,7 @@ func (m *MsgUpdateCommission) Reset()         { *m = MsgUpdateCommission{} }
 func (m *MsgUpdateCommission) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateCommission) ProtoMessage()    {}
 func (*MsgUpdateCommission) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{8}
+	return fileDescriptor_f52b730e69b9fb06, []int{6}
 }
 func (m *MsgUpdateCommission) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -467,7 +384,7 @@ func (m *MsgUpdateCommissionResponse) Reset()         { *m = MsgUpdateCommission
 func (m *MsgUpdateCommissionResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateCommissionResponse) ProtoMessage()    {}
 func (*MsgUpdateCommissionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{9}
+	return fileDescriptor_f52b730e69b9fb06, []int{7}
 }
 func (m *MsgUpdateCommissionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -496,26 +413,26 @@ func (m *MsgUpdateCommissionResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateCommissionResponse proto.InternalMessageInfo
 
-// MsgStakePool defines a SDK message for staking in a pool.
-type MsgEnterPool struct {
+// MsgJoinPool ...
+type MsgJoinPool struct {
 	// creator ...
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	// amount ...
 	PoolId uint64 `protobuf:"varint,2,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
 }
 
-func (m *MsgEnterPool) Reset()         { *m = MsgEnterPool{} }
-func (m *MsgEnterPool) String() string { return proto.CompactTextString(m) }
-func (*MsgEnterPool) ProtoMessage()    {}
-func (*MsgEnterPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{10}
+func (m *MsgJoinPool) Reset()         { *m = MsgJoinPool{} }
+func (m *MsgJoinPool) String() string { return proto.CompactTextString(m) }
+func (*MsgJoinPool) ProtoMessage()    {}
+func (*MsgJoinPool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f52b730e69b9fb06, []int{8}
 }
-func (m *MsgEnterPool) XXX_Unmarshal(b []byte) error {
+func (m *MsgJoinPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEnterPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgJoinPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEnterPool.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgJoinPool.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -525,48 +442,48 @@ func (m *MsgEnterPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error)
 		return b[:n], nil
 	}
 }
-func (m *MsgEnterPool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEnterPool.Merge(m, src)
+func (m *MsgJoinPool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgJoinPool.Merge(m, src)
 }
-func (m *MsgEnterPool) XXX_Size() int {
+func (m *MsgJoinPool) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEnterPool) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEnterPool.DiscardUnknown(m)
+func (m *MsgJoinPool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgJoinPool.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEnterPool proto.InternalMessageInfo
+var xxx_messageInfo_MsgJoinPool proto.InternalMessageInfo
 
-func (m *MsgEnterPool) GetCreator() string {
+func (m *MsgJoinPool) GetCreator() string {
 	if m != nil {
 		return m.Creator
 	}
 	return ""
 }
 
-func (m *MsgEnterPool) GetPoolId() uint64 {
+func (m *MsgJoinPool) GetPoolId() uint64 {
 	if m != nil {
 		return m.PoolId
 	}
 	return 0
 }
 
-// MsgStakePoolResponse defines the Msg/StakePool response type.
-type MsgEnterPoolResponse struct {
+// MsgJoinPoolResponse ...
+type MsgJoinPoolResponse struct {
 }
 
-func (m *MsgEnterPoolResponse) Reset()         { *m = MsgEnterPoolResponse{} }
-func (m *MsgEnterPoolResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgEnterPoolResponse) ProtoMessage()    {}
-func (*MsgEnterPoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{11}
+func (m *MsgJoinPoolResponse) Reset()         { *m = MsgJoinPoolResponse{} }
+func (m *MsgJoinPoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgJoinPoolResponse) ProtoMessage()    {}
+func (*MsgJoinPoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f52b730e69b9fb06, []int{9}
 }
-func (m *MsgEnterPoolResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgJoinPoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgEnterPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgJoinPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgEnterPoolResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgJoinPoolResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -576,19 +493,19 @@ func (m *MsgEnterPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *MsgEnterPoolResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgEnterPoolResponse.Merge(m, src)
+func (m *MsgJoinPoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgJoinPoolResponse.Merge(m, src)
 }
-func (m *MsgEnterPoolResponse) XXX_Size() int {
+func (m *MsgJoinPoolResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgEnterPoolResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgEnterPoolResponse.DiscardUnknown(m)
+func (m *MsgJoinPoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgJoinPoolResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgEnterPoolResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgJoinPoolResponse proto.InternalMessageInfo
 
-// MsgReactivateStaker ...
+// MsgLeavePool ...
 type MsgLeavePool struct {
 	// creator ...
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
@@ -600,7 +517,7 @@ func (m *MsgLeavePool) Reset()         { *m = MsgLeavePool{} }
 func (m *MsgLeavePool) String() string { return proto.CompactTextString(m) }
 func (*MsgLeavePool) ProtoMessage()    {}
 func (*MsgLeavePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{12}
+	return fileDescriptor_f52b730e69b9fb06, []int{10}
 }
 func (m *MsgLeavePool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -651,7 +568,7 @@ func (m *MsgLeavePoolResponse) Reset()         { *m = MsgLeavePoolResponse{} }
 func (m *MsgLeavePoolResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgLeavePoolResponse) ProtoMessage()    {}
 func (*MsgLeavePoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f52b730e69b9fb06, []int{13}
+	return fileDescriptor_f52b730e69b9fb06, []int{11}
 }
 func (m *MsgLeavePoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -683,16 +600,14 @@ var xxx_messageInfo_MsgLeavePoolResponse proto.InternalMessageInfo
 func init() {
 	proto.RegisterType((*MsgStake)(nil), "kyve.stakers.v1beta1.MsgStake")
 	proto.RegisterType((*MsgStakeResponse)(nil), "kyve.stakers.v1beta1.MsgStakeResponse")
-	proto.RegisterType((*MsgReactivateStaker)(nil), "kyve.stakers.v1beta1.MsgReactivateStaker")
-	proto.RegisterType((*MsgReactivateStakerResponse)(nil), "kyve.stakers.v1beta1.MsgReactivateStakerResponse")
 	proto.RegisterType((*MsgUnstake)(nil), "kyve.stakers.v1beta1.MsgUnstake")
 	proto.RegisterType((*MsgUnstakeResponse)(nil), "kyve.stakers.v1beta1.MsgUnstakeResponse")
 	proto.RegisterType((*MsgUpdateMetadata)(nil), "kyve.stakers.v1beta1.MsgUpdateMetadata")
 	proto.RegisterType((*MsgUpdateMetadataResponse)(nil), "kyve.stakers.v1beta1.MsgUpdateMetadataResponse")
 	proto.RegisterType((*MsgUpdateCommission)(nil), "kyve.stakers.v1beta1.MsgUpdateCommission")
 	proto.RegisterType((*MsgUpdateCommissionResponse)(nil), "kyve.stakers.v1beta1.MsgUpdateCommissionResponse")
-	proto.RegisterType((*MsgEnterPool)(nil), "kyve.stakers.v1beta1.MsgEnterPool")
-	proto.RegisterType((*MsgEnterPoolResponse)(nil), "kyve.stakers.v1beta1.MsgEnterPoolResponse")
+	proto.RegisterType((*MsgJoinPool)(nil), "kyve.stakers.v1beta1.MsgJoinPool")
+	proto.RegisterType((*MsgJoinPoolResponse)(nil), "kyve.stakers.v1beta1.MsgJoinPoolResponse")
 	proto.RegisterType((*MsgLeavePool)(nil), "kyve.stakers.v1beta1.MsgLeavePool")
 	proto.RegisterType((*MsgLeavePoolResponse)(nil), "kyve.stakers.v1beta1.MsgLeavePoolResponse")
 }
@@ -700,39 +615,38 @@ func init() {
 func init() { proto.RegisterFile("kyve/stakers/v1beta1/tx.proto", fileDescriptor_f52b730e69b9fb06) }
 
 var fileDescriptor_f52b730e69b9fb06 = []byte{
-	// 512 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x94, 0x51, 0x6b, 0xd3, 0x50,
-	0x14, 0xc7, 0x1b, 0xd7, 0xad, 0xf6, 0x20, 0x32, 0xaf, 0x65, 0xc6, 0x8c, 0x85, 0x92, 0x07, 0xed,
-	0x44, 0x12, 0xaa, 0xaf, 0x22, 0xa8, 0x4c, 0x10, 0x8d, 0x93, 0xc8, 0x04, 0xf5, 0x41, 0x6e, 0xd3,
-	0x43, 0x16, 0xdb, 0xe4, 0x86, 0xdc, 0xdb, 0x6e, 0xfb, 0x16, 0x7e, 0x1b, 0xbf, 0x82, 0x8f, 0x7b,
-	0xf4, 0x51, 0xda, 0x2f, 0x22, 0x49, 0x73, 0x6f, 0x6b, 0xbb, 0xa4, 0xc5, 0xbd, 0xe5, 0xdc, 0xff,
-	0xff, 0xfc, 0xce, 0xe1, 0xf0, 0x27, 0x70, 0x30, 0xb8, 0x18, 0xa3, 0xc3, 0x05, 0x1d, 0x60, 0xca,
-	0x9d, 0x71, 0xb7, 0x87, 0x82, 0x76, 0x1d, 0x71, 0x6e, 0x27, 0x29, 0x13, 0x8c, 0xb4, 0x32, 0xd9,
-	0x2e, 0x64, 0xbb, 0x90, 0xad, 0x67, 0x70, 0xd3, 0xe5, 0xc1, 0xc7, 0xec, 0x95, 0xe8, 0xd0, 0xf0,
-	0x53, 0xa4, 0x82, 0xa5, 0xba, 0xd6, 0xd6, 0x3a, 0x4d, 0x4f, 0x96, 0x64, 0x0f, 0x76, 0x68, 0xc4,
-	0x46, 0xb1, 0xd0, 0x6f, 0xb4, 0xb5, 0x4e, 0xdd, 0x2b, 0x2a, 0x8b, 0xc0, 0xae, 0xec, 0xf6, 0x90,
-	0x27, 0x2c, 0xe6, 0x68, 0x39, 0x70, 0xd7, 0xe5, 0x81, 0x87, 0xd4, 0x17, 0xe1, 0x98, 0x0a, 0xcc,
-	0xd5, 0xb4, 0x1c, 0x6e, 0x1d, 0xc0, 0xfe, 0x15, 0x0d, 0x8a, 0xf7, 0x1c, 0xc0, 0xe5, 0xc1, 0x49,
-	0xcc, 0xff, 0x73, 0xc7, 0x16, 0x90, 0x79, 0xbf, 0xa2, 0x8e, 0xe0, 0x4e, 0xf6, 0x9a, 0xf4, 0xa9,
-	0x40, 0x17, 0x05, 0xed, 0x53, 0x41, 0x2b, 0xe0, 0x3a, 0x34, 0x22, 0x16, 0x87, 0x03, 0x4c, 0x73,
-	0x7a, 0xd3, 0x93, 0x65, 0xa6, 0x9c, 0x61, 0x8f, 0x87, 0x02, 0xf5, 0xad, 0x99, 0x52, 0x94, 0x84,
-	0x40, 0x7d, 0xc8, 0x02, 0xa6, 0xd7, 0xf3, 0xe7, 0xfc, 0xdb, 0xda, 0x87, 0xfb, 0x2b, 0x63, 0xd5,
-	0x4e, 0xc7, 0xf9, 0xe5, 0x66, 0xe2, 0x2b, 0x16, 0x45, 0x21, 0xe7, 0x21, 0x8b, 0x2b, 0xb6, 0x32,
-	0x01, 0x7c, 0xe5, 0x2b, 0x16, 0x5b, 0x78, 0x29, 0x2e, 0xbb, 0x0c, 0x54, 0xf3, 0x5e, 0xc0, 0x2d,
-	0x97, 0x07, 0x47, 0xb1, 0xc0, 0xf4, 0x03, 0x63, 0xc3, 0x8a, 0x41, 0xf7, 0xa0, 0x91, 0x30, 0x36,
-	0xfc, 0x16, 0xf6, 0xe5, 0x71, 0xb3, 0xf2, 0x4d, 0xdf, 0xda, 0x83, 0xd6, 0x22, 0x62, 0x09, 0xfd,
-	0x0e, 0xe9, 0x18, 0xaf, 0x87, 0x56, 0x08, 0x89, 0x7e, 0xf2, 0x73, 0x1b, 0xb6, 0x5c, 0x1e, 0x90,
-	0x63, 0xd8, 0x9e, 0xc5, 0xd6, 0xb4, 0xaf, 0x4a, 0xb6, 0x2d, 0x83, 0x69, 0x3c, 0xa8, 0xd6, 0x25,
-	0x98, 0x24, 0xb0, 0xbb, 0x92, 0xda, 0xc3, 0xd2, 0xde, 0x65, 0xab, 0xd1, 0xdd, 0xd8, 0xaa, 0x26,
-	0x9e, 0x40, 0x43, 0xe6, 0xba, 0x5d, 0xda, 0x5d, 0x38, 0x8c, 0xce, 0x3a, 0x87, 0xc2, 0x7e, 0x87,
-	0xdb, 0x4b, 0xc1, 0x7e, 0x58, 0xde, 0xfb, 0x8f, 0xd1, 0x70, 0x36, 0x34, 0x2e, 0x1e, 0x6d, 0x25,
-	0xb0, 0x87, 0x6b, 0x20, 0x73, 0x6b, 0xc5, 0xd1, 0xca, 0x52, 0x4b, 0xbe, 0x42, 0x73, 0x1e, 0x59,
-	0xab, 0xb4, 0x5f, 0x79, 0x8c, 0x47, 0xeb, 0x3d, 0x8b, 0xf0, 0x79, 0x68, 0xcb, 0xe1, 0xca, 0x53,
-	0x01, 0x5f, 0x49, 0xee, 0xcb, 0xd7, 0xbf, 0x26, 0xa6, 0x76, 0x39, 0x31, 0xb5, 0x3f, 0x13, 0x53,
-	0xfb, 0x31, 0x35, 0x6b, 0x97, 0x53, 0xb3, 0xf6, 0x7b, 0x6a, 0xd6, 0xbe, 0x3c, 0x0e, 0x42, 0x71,
-	0x3a, 0xea, 0xd9, 0x3e, 0x8b, 0x9c, 0xb7, 0x9f, 0x3f, 0x1d, 0xbd, 0x47, 0x71, 0xc6, 0xd2, 0x81,
-	0xe3, 0x9f, 0xd2, 0x30, 0x76, 0xce, 0xd5, 0x4f, 0x5d, 0x5c, 0x24, 0xc8, 0x7b, 0x3b, 0xf9, 0x0f,
-	0xfd, 0xe9, 0xdf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x60, 0x7b, 0x04, 0x61, 0xf1, 0x05, 0x00, 0x00,
+	// 487 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x94, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0x86, 0x63, 0x1a, 0x9a, 0x66, 0x40, 0xa8, 0x2c, 0xa1, 0x18, 0x57, 0x5d, 0x05, 0x1f, 0x20,
+	0x45, 0xc8, 0x56, 0xe0, 0x8a, 0x10, 0x1f, 0x02, 0x89, 0x0f, 0x53, 0x14, 0x54, 0xc4, 0xc7, 0x01,
+	0x6d, 0x92, 0x95, 0xbb, 0x24, 0xf6, 0x58, 0xde, 0x4d, 0xda, 0xfe, 0x0b, 0x7e, 0x13, 0x27, 0x8e,
+	0x3d, 0x72, 0x44, 0xc9, 0x1f, 0x41, 0x76, 0xbd, 0x9b, 0xd2, 0x36, 0x71, 0x95, 0x9b, 0x67, 0xde,
+	0x77, 0x9e, 0x19, 0x59, 0xaf, 0x16, 0xb6, 0x06, 0x87, 0x63, 0xee, 0x4b, 0xc5, 0x06, 0x3c, 0x95,
+	0xfe, 0xb8, 0xdd, 0xe5, 0x8a, 0xb5, 0x7d, 0x75, 0xe0, 0x25, 0x29, 0x2a, 0x24, 0x8d, 0x4c, 0xf6,
+	0x0a, 0xd9, 0x2b, 0x64, 0xf7, 0x31, 0xac, 0x05, 0x32, 0xfc, 0x98, 0x75, 0x89, 0x0d, 0xb5, 0x5e,
+	0xca, 0x99, 0xc2, 0xd4, 0xb6, 0x9a, 0x56, 0xab, 0xde, 0xd1, 0x25, 0xd9, 0x80, 0x55, 0x16, 0xe1,
+	0x28, 0x56, 0xf6, 0xa5, 0xa6, 0xd5, 0xaa, 0x76, 0x8a, 0xca, 0x25, 0xb0, 0xae, 0xa7, 0x3b, 0x5c,
+	0x26, 0x18, 0x4b, 0xee, 0x3e, 0x01, 0x08, 0x64, 0xb8, 0x1b, 0xcb, 0x25, 0x99, 0x0d, 0x20, 0xb3,
+	0x79, 0x43, 0x1d, 0xc1, 0xf5, 0xac, 0x9b, 0xf4, 0x99, 0xe2, 0x01, 0x57, 0xac, 0xcf, 0x14, 0x5b,
+	0x00, 0xb7, 0xa1, 0x16, 0x61, 0x2c, 0x06, 0x3c, 0xcd, 0xe9, 0xf5, 0x8e, 0x2e, 0x33, 0x65, 0x9f,
+	0x77, 0xa5, 0x50, 0xdc, 0x5e, 0x39, 0x56, 0x8a, 0x92, 0x10, 0xa8, 0x0e, 0x31, 0x44, 0xbb, 0x9a,
+	0xb7, 0xf3, 0x6f, 0x77, 0x13, 0x6e, 0x9f, 0x59, 0x6b, 0x6e, 0xda, 0x81, 0x1b, 0x46, 0x7c, 0x81,
+	0x51, 0x24, 0xa4, 0x14, 0x18, 0x2f, 0xb8, 0x8a, 0x02, 0xf4, 0x8c, 0xaf, 0x38, 0xec, 0x44, 0xc7,
+	0xdd, 0x82, 0xcd, 0x73, 0x80, 0x66, 0xdf, 0x53, 0xb8, 0x12, 0xc8, 0xf0, 0x0d, 0x8a, 0xf8, 0x03,
+	0xe2, 0x70, 0xc1, 0x9e, 0x5b, 0x50, 0x4b, 0x10, 0x87, 0xdf, 0x45, 0x5f, 0xff, 0xdb, 0xac, 0x7c,
+	0xdd, 0x77, 0x6f, 0xe6, 0x17, 0x6b, 0x82, 0x01, 0x3f, 0x83, 0xab, 0x81, 0x0c, 0xdf, 0x71, 0x36,
+	0xe6, 0xcb, 0x92, 0x37, 0xa0, 0x71, 0x12, 0xa1, 0xd1, 0x0f, 0x7f, 0x55, 0x61, 0x25, 0x90, 0x21,
+	0xd9, 0x81, 0xcb, 0xc7, 0x21, 0xa3, 0xde, 0x79, 0x39, 0xf4, 0x74, 0x8c, 0x9c, 0xbb, 0x8b, 0x75,
+	0x0d, 0x26, 0xbb, 0x50, 0xd3, 0x19, 0x6b, 0xce, 0x1d, 0x29, 0x1c, 0x4e, 0xab, 0xcc, 0x61, 0xb0,
+	0x3f, 0xe0, 0xda, 0xa9, 0x90, 0xdd, 0x9b, 0x3f, 0xfb, 0x9f, 0xd1, 0xf1, 0x2f, 0x68, 0x34, 0xbb,
+	0x12, 0x58, 0x3f, 0x13, 0x9e, 0xed, 0x12, 0xc8, 0xcc, 0xea, 0xb4, 0x2f, 0x6c, 0x35, 0x1b, 0x3f,
+	0xc3, 0x9a, 0x89, 0xcf, 0x9d, 0xb9, 0xe3, 0xda, 0xe2, 0x6c, 0x97, 0x5a, 0x0c, 0xf9, 0x1b, 0xd4,
+	0x67, 0xf9, 0x71, 0xe7, 0xce, 0x19, 0x8f, 0x73, 0xbf, 0xdc, 0xa3, 0xe1, 0xcf, 0x5f, 0xfd, 0x9e,
+	0x50, 0xeb, 0x68, 0x42, 0xad, 0xbf, 0x13, 0x6a, 0xfd, 0x9c, 0xd2, 0xca, 0xd1, 0x94, 0x56, 0xfe,
+	0x4c, 0x69, 0xe5, 0xeb, 0x83, 0x50, 0xa8, 0xbd, 0x51, 0xd7, 0xeb, 0x61, 0xe4, 0xbf, 0xfd, 0xf2,
+	0xe9, 0xe5, 0x7b, 0xae, 0xf6, 0x31, 0x1d, 0xf8, 0xbd, 0x3d, 0x26, 0x62, 0xff, 0xc0, 0xbc, 0x86,
+	0xea, 0x30, 0xe1, 0xb2, 0xbb, 0x9a, 0xbf, 0x84, 0x8f, 0xfe, 0x05, 0x00, 0x00, 0xff, 0xff, 0x99,
+	0x99, 0x9a, 0x77, 0x2a, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -749,16 +663,14 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// StakePool ...
 	Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error)
-	// MsgReactivateStaker ...
-	ReactivateStaker(ctx context.Context, in *MsgReactivateStaker, opts ...grpc.CallOption) (*MsgReactivateStakerResponse, error)
 	// UnstakePool ...
 	Unstake(ctx context.Context, in *MsgUnstake, opts ...grpc.CallOption) (*MsgUnstakeResponse, error)
 	// UpdateMetadata ...
 	UpdateMetadata(ctx context.Context, in *MsgUpdateMetadata, opts ...grpc.CallOption) (*MsgUpdateMetadataResponse, error)
 	// UpdateCommission ...
 	UpdateCommission(ctx context.Context, in *MsgUpdateCommission, opts ...grpc.CallOption) (*MsgUpdateCommissionResponse, error)
-	// EnterPool ...
-	EnterPool(ctx context.Context, in *MsgEnterPool, opts ...grpc.CallOption) (*MsgEnterPoolResponse, error)
+	// JoinPool ...
+	JoinPool(ctx context.Context, in *MsgJoinPool, opts ...grpc.CallOption) (*MsgJoinPoolResponse, error)
 	// LeavePool ...
 	LeavePool(ctx context.Context, in *MsgLeavePool, opts ...grpc.CallOption) (*MsgLeavePoolResponse, error)
 }
@@ -774,15 +686,6 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 func (c *msgClient) Stake(ctx context.Context, in *MsgStake, opts ...grpc.CallOption) (*MsgStakeResponse, error) {
 	out := new(MsgStakeResponse)
 	err := c.cc.Invoke(ctx, "/kyve.stakers.v1beta1.Msg/Stake", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) ReactivateStaker(ctx context.Context, in *MsgReactivateStaker, opts ...grpc.CallOption) (*MsgReactivateStakerResponse, error) {
-	out := new(MsgReactivateStakerResponse)
-	err := c.cc.Invoke(ctx, "/kyve.stakers.v1beta1.Msg/ReactivateStaker", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -816,9 +719,9 @@ func (c *msgClient) UpdateCommission(ctx context.Context, in *MsgUpdateCommissio
 	return out, nil
 }
 
-func (c *msgClient) EnterPool(ctx context.Context, in *MsgEnterPool, opts ...grpc.CallOption) (*MsgEnterPoolResponse, error) {
-	out := new(MsgEnterPoolResponse)
-	err := c.cc.Invoke(ctx, "/kyve.stakers.v1beta1.Msg/EnterPool", in, out, opts...)
+func (c *msgClient) JoinPool(ctx context.Context, in *MsgJoinPool, opts ...grpc.CallOption) (*MsgJoinPoolResponse, error) {
+	out := new(MsgJoinPoolResponse)
+	err := c.cc.Invoke(ctx, "/kyve.stakers.v1beta1.Msg/JoinPool", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -838,16 +741,14 @@ func (c *msgClient) LeavePool(ctx context.Context, in *MsgLeavePool, opts ...grp
 type MsgServer interface {
 	// StakePool ...
 	Stake(context.Context, *MsgStake) (*MsgStakeResponse, error)
-	// MsgReactivateStaker ...
-	ReactivateStaker(context.Context, *MsgReactivateStaker) (*MsgReactivateStakerResponse, error)
 	// UnstakePool ...
 	Unstake(context.Context, *MsgUnstake) (*MsgUnstakeResponse, error)
 	// UpdateMetadata ...
 	UpdateMetadata(context.Context, *MsgUpdateMetadata) (*MsgUpdateMetadataResponse, error)
 	// UpdateCommission ...
 	UpdateCommission(context.Context, *MsgUpdateCommission) (*MsgUpdateCommissionResponse, error)
-	// EnterPool ...
-	EnterPool(context.Context, *MsgEnterPool) (*MsgEnterPoolResponse, error)
+	// JoinPool ...
+	JoinPool(context.Context, *MsgJoinPool) (*MsgJoinPoolResponse, error)
 	// LeavePool ...
 	LeavePool(context.Context, *MsgLeavePool) (*MsgLeavePoolResponse, error)
 }
@@ -859,9 +760,6 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) Stake(ctx context.Context, req *MsgStake) (*MsgStakeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Stake not implemented")
 }
-func (*UnimplementedMsgServer) ReactivateStaker(ctx context.Context, req *MsgReactivateStaker) (*MsgReactivateStakerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReactivateStaker not implemented")
-}
 func (*UnimplementedMsgServer) Unstake(ctx context.Context, req *MsgUnstake) (*MsgUnstakeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Unstake not implemented")
 }
@@ -871,8 +769,8 @@ func (*UnimplementedMsgServer) UpdateMetadata(ctx context.Context, req *MsgUpdat
 func (*UnimplementedMsgServer) UpdateCommission(ctx context.Context, req *MsgUpdateCommission) (*MsgUpdateCommissionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCommission not implemented")
 }
-func (*UnimplementedMsgServer) EnterPool(ctx context.Context, req *MsgEnterPool) (*MsgEnterPoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EnterPool not implemented")
+func (*UnimplementedMsgServer) JoinPool(ctx context.Context, req *MsgJoinPool) (*MsgJoinPoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinPool not implemented")
 }
 func (*UnimplementedMsgServer) LeavePool(ctx context.Context, req *MsgLeavePool) (*MsgLeavePoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LeavePool not implemented")
@@ -896,24 +794,6 @@ func _Msg_Stake_Handler(srv interface{}, ctx context.Context, dec func(interface
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).Stake(ctx, req.(*MsgStake))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_ReactivateStaker_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgReactivateStaker)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).ReactivateStaker(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.stakers.v1beta1.Msg/ReactivateStaker",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ReactivateStaker(ctx, req.(*MsgReactivateStaker))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -972,20 +852,20 @@ func _Msg_UpdateCommission_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_EnterPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgEnterPool)
+func _Msg_JoinPool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgJoinPool)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).EnterPool(ctx, in)
+		return srv.(MsgServer).JoinPool(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/kyve.stakers.v1beta1.Msg/EnterPool",
+		FullMethod: "/kyve.stakers.v1beta1.Msg/JoinPool",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).EnterPool(ctx, req.(*MsgEnterPool))
+		return srv.(MsgServer).JoinPool(ctx, req.(*MsgJoinPool))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1017,10 +897,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_Stake_Handler,
 		},
 		{
-			MethodName: "ReactivateStaker",
-			Handler:    _Msg_ReactivateStaker_Handler,
-		},
-		{
 			MethodName: "Unstake",
 			Handler:    _Msg_Unstake_Handler,
 		},
@@ -1033,8 +909,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateCommission_Handler,
 		},
 		{
-			MethodName: "EnterPool",
-			Handler:    _Msg_EnterPool_Handler,
+			MethodName: "JoinPool",
+			Handler:    _Msg_JoinPool_Handler,
 		},
 		{
 			MethodName: "LeavePool",
@@ -1096,59 +972,6 @@ func (m *MsgStakeResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *MsgStakeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgReactivateStaker) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgReactivateStaker) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgReactivateStaker) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgReactivateStakerResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgReactivateStakerResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgReactivateStakerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1348,7 +1171,7 @@ func (m *MsgUpdateCommissionResponse) MarshalToSizedBuffer(dAtA []byte) (int, er
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEnterPool) Marshal() (dAtA []byte, err error) {
+func (m *MsgJoinPool) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1358,12 +1181,12 @@ func (m *MsgEnterPool) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEnterPool) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgJoinPool) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEnterPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgJoinPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1383,7 +1206,7 @@ func (m *MsgEnterPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgEnterPoolResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgJoinPoolResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1393,12 +1216,12 @@ func (m *MsgEnterPoolResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgEnterPoolResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgJoinPoolResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgEnterPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgJoinPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1500,28 +1323,6 @@ func (m *MsgStakeResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgReactivateStaker) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgReactivateStakerResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func (m *MsgUnstake) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1607,7 +1408,7 @@ func (m *MsgUpdateCommissionResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgEnterPool) Size() (n int) {
+func (m *MsgJoinPool) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1623,7 +1424,7 @@ func (m *MsgEnterPool) Size() (n int) {
 	return n
 }
 
-func (m *MsgEnterPoolResponse) Size() (n int) {
+func (m *MsgJoinPoolResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1791,138 +1592,6 @@ func (m *MsgStakeResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgStakeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgReactivateStaker) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgReactivateStaker: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgReactivateStaker: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgReactivateStakerResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgReactivateStakerResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgReactivateStakerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -2489,7 +2158,7 @@ func (m *MsgUpdateCommissionResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEnterPool) Unmarshal(dAtA []byte) error {
+func (m *MsgJoinPool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2512,10 +2181,10 @@ func (m *MsgEnterPool) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEnterPool: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgJoinPool: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEnterPool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgJoinPool: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2590,7 +2259,7 @@ func (m *MsgEnterPool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgEnterPoolResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgJoinPoolResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2613,10 +2282,10 @@ func (m *MsgEnterPoolResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgEnterPoolResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgJoinPoolResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgEnterPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgJoinPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

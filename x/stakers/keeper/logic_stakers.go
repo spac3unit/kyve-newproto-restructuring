@@ -22,7 +22,7 @@ func (k Keeper) Slash(
 
 		if staker.Amount == slash {
 			// If we are slashing the entire staking amount, remove the staker.
-			k.RemoveStaker(ctx, staker)
+			k.removeStaker(ctx, staker)
 		} else {
 			// Subtract slashing amount from staking amount, and update the pool's total stake.
 			k.RemoveAmountFromStaker(ctx, staker.Address, slash)
@@ -42,16 +42,6 @@ func (k Keeper) Slash(
 	return slash
 }
 
-func (k Keeper) GetActiveStake(ctx sdk.Context, poolId uint64, address string) uint64 {
-	staker, found := k.GetStaker(ctx, address, poolId)
-	if found {
-		if staker.Status == types.STAKER_STATUS_ACTIVE {
-			return staker.Amount
-		}
-	}
-	return 0
-}
-
 func (k Keeper) GetTotalStake(ctx sdk.Context, poolId uint64) uint64 {
 	return k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE)
 }
@@ -62,21 +52,16 @@ func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, address string) {
 }
 
 func (k Keeper) EnsureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {
-	if k.GetStakerCount(ctx, poolId) >= types.MaxStakers {
+
+	if k.GetStakerCountOfPool(ctx, poolId) >= types.MaxStakers /* TODO introduce param */ {
 		lowestStaker, _ := k.GetLowestStaker(ctx, poolId)
 
 		if stakeAmount > lowestStaker.Amount {
 
-			if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventStakerStatusChanged{
-				PoolId:  poolId,
-				Address: lowestStaker.Address,
-				Status:  types.STAKER_STATUS_INACTIVE,
-			}); errEmit != nil {
-				return errEmit
-			}
+			// TODO emit leave pool event
 
 			// Move the lowest staker to inactive staker set
-			k.ChangeStakerStatus(ctx, poolId, lowestStaker.Address, types.STAKER_STATUS_INACTIVE)
+			k.RemoveStakerFromPool(ctx, poolId, lowestStaker.Address)
 
 		} else {
 			return sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrStakeTooLow.Error(), lowestStaker.Amount)

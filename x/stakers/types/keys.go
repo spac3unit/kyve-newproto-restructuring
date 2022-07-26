@@ -24,6 +24,11 @@ const (
 var (
 	// StakerKeyPrefix is the prefix to retrieve all Staker
 	StakerKeyPrefix = []byte{1}
+
+	// CommissionChangeQueueEntryKeyPrefix ...
+	CommissionChangeEntryKeyPrefix = []byte{15}
+	// CommissionChangeQueueEntryKeyPrefixIndex2 ...
+	CommissionChangeEntryKeyPrefixIndex2 = []byte{16}
 )
 
 // ENUM aggregated data types
@@ -47,4 +52,13 @@ func StakerKey(staker string) []byte {
 
 func StakerByPoolAndAmountIndex(poolId uint64, amount uint64, staker string) []byte {
 	return util.GetByteKey(poolId, amount, staker)
+}
+
+func CommissionChangeEntryKey(index uint64) []byte {
+	return util.GetByteKey(index)
+}
+
+// Important: only one queue entry per staker+poolId is allowed at a time.
+func CommissionChangeEntryKeyIndex2(staker string) []byte {
+	return util.GetByteKey(staker)
 }

@@ -19,24 +19,47 @@ func (k Keeper) UpdateStakerMetadata(ctx sdk.Context, address string, moniker st
 	}
 }
 
-// ChangeStakerStatus sets the status of the user, adjusts the sizes for active/inactive count
-// and adjusts the pool total stakes / inactive stakes
-func (k Keeper) ChangeStakerStatus(ctx sdk.Context, poolId uint64, address string, status types.StakerStatus) {
+// UpdateStakerCommission ...
+func (k Keeper) UpdateStakerCommission(ctx sdk.Context, address string, commission string) {
 	staker, found := k.GetStaker(ctx, address)
 	if found {
-		if staker.Status == status {
-			// Nothing needs to be changed
-			return
-		} else {
-			if status == types.STAKER_STATUS_ACTIVE {
-				// Change to active
-				k.subtractFromTotalInactiveStake(ctx, poolId, staker.Amount)
-				k.addToTotalStake(ctx, poolId, staker.Amount)
-			} else if status == types.STAKER_STATUS_INACTIVE {
-				// Change to inactive
-				k.subtractFromTotalStake(ctx, poolId, staker.Amount)
-				k.addToTotalInactive(ctx, poolId, staker.Amount)
-			}
+		staker.Commission = commission
+		k.setStaker(ctx, staker)
+	}
+}
+
+// RemoveStakerFromPool removes a staker from a given pool and updates
+// all aggregated variables. If the staker is not in the pool nothing happens.
+func (k Keeper) RemoveStakerFromPool(ctx sdk.Context, poolId uint64, address string) {
+	staker, found := k.GetStaker(ctx, address)
+	if found {
+		newPools, removed := util.RemoveFromArrayStable(staker.Pools, poolId)
+		if removed {
+			staker.Pools = newPools
+
+			k.subtractFromTotalStake(ctx, poolId, staker.Amount)
+			k.subtractOneFromCount(ctx, poolId)
+			// TODO what about delegation ??
+
+			k.setStaker(ctx, staker)
+		}
+	}
+}
+
+// AddStakerToPool adds a staker to a pool.
+// If staker already belongs to pool, nothing happens.
+// TODO consider using a sorted list for faster lookup times.
+func (k Keeper) AddStakerToPool(ctx sdk.Context, poolId uint64, address string) {
+	staker, found := k.GetStaker(ctx, address)
+	if found {
+		if !util.Contains(staker.Pools, poolId) {
+			staker.Pools = append(staker.Pools, poolId)
+
+			k.addToTotalStake(ctx, poolId, staker.Amount)
+			k.addOneToCount(ctx, poolId)
+			// TODO what about delegation ??
+
+			k.setStaker(ctx, staker)
 		}
 	}
 }
@@ -47,36 +70,28 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, address string, amount uint64
 	staker, found := k.GetStaker(ctx, address)
 	if found {
 		staker.Amount += amount
-		if staker.Status == types.STAKER_STATUS_ACTIVE {
-			for _, poolId := range staker.Pools {
-				k.addToTotalStake(ctx, poolId, amount)
-			}
-		} else if staker.Status == types.STAKER_STATUS_INACTIVE {
-			for _, poolId := range staker.Pools {
-				k.addToTotalInactive(ctx, poolId, amount)
-			}
+
+		for _, poolId := range staker.Pools {
+			k.addToTotalStake(ctx, poolId, amount)
 		}
+
 		k.setStaker(ctx, staker)
 	}
 }
 
 // RemoveAmountFromStaker ...
+// Ensure that amount <= staker.Amount -> otherwise overflow
+// TODO maybe cap it to prevent an overflow. Or maybe do nothing if that happens?
 func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, address string, amount uint64) {
-	staker, found := k.GetStaker(ctx, address, poolId)
+	staker, found := k.GetStaker(ctx, address)
 	if found {
 		staker.Amount -= amount
-		if staker.Status == types.STAKER_STATUS_ACTIVE {
+		for _, poolId := range staker.Pools {
 			k.subtractFromTotalStake(ctx, poolId, amount)
-		} else if staker.Status == types.STAKER_STATUS_INACTIVE {
-			k.subtractFromTotalInactiveStake(ctx, poolId, amount)
 		}
+
 		k.setStaker(ctx, staker)
 	}
-}
-
-func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
-	k.setStaker(ctx, staker)
-	k.addOneToCount(ctx, staker.PoolId)
 }
 
 func (k Keeper) GetLowestStaker(ctx sdk.Context, poolId uint64) (val types.Staker, found bool) {
@@ -84,37 +99,25 @@ func (k Keeper) GetLowestStaker(ctx sdk.Context, poolId uint64) (val types.Stake
 	return types.Staker{}, false
 }
 
-func (k Keeper) GetStakerCount(ctx sdk.Context, poolId uint64) uint64 {
-	return k.getStat(ctx, poolId, types.STAKER_STATS_COUNT)
+func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
+	k.setStaker(ctx, staker)
+	// TODO add total staker count
 }
 
-// EnterPool ...
-// Asserts that the staker already exists
-func (k Keeper) EnterPool(ctx sdk.Context, address string, poolId uint64) {
-	staker, _ := k.GetStaker(ctx, address)
-	staker.AddPool(poolId)
-
-}
-
-func (k Keeper) LeavePool(ctx sdk.Context, address string, poolId uint64) {
-
-}
+// #############################
+// #  Raw KV-Store operations  #
+// #############################
 
 // RemoveStaker removes a staker from the store
 // TODO only called very rarely,
-func (k Keeper) RemoveStaker(ctx sdk.Context, staker types.Staker) {
+func (k Keeper) removeStaker(ctx sdk.Context, staker types.Staker) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
 	store.Delete(types.StakerKey(
 		staker.Address,
 	))
 
-	if staker.Status == types.STAKER_STATUS_ACTIVE {
-		k.subtractFromTotalStake(ctx, staker.PoolId, staker.Amount)
-	} else if staker.Status == types.STAKER_STATUS_INACTIVE {
-		k.subtractFromTotalInactiveStake(ctx, staker.PoolId, staker.Amount)
-	}
-
-	k.subtractOneFromCount(ctx, staker.PoolId)
+	// TODO remove stake from all pools
+	// TODO What about delegation ?
 }
 
 // SetStaker set a specific staker in the store from its index
@@ -144,6 +147,12 @@ func (k Keeper) GetStaker(
 	return val, true
 }
 
+// DoesStakerExist returns true if the staker exists
+func (k Keeper) DoesStakerExist(ctx sdk.Context, staker string) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
+	return store.Has(types.StakerKey(staker))
+}
+
 // GetAllStakers returns all staker
 func (k Keeper) GetAllStakers(ctx sdk.Context) (list []types.Staker) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
@@ -160,7 +169,14 @@ func (k Keeper) GetAllStakers(ctx sdk.Context) (list []types.Staker) {
 	return
 }
 
-// Aggregated data
+// #############################
+// #     Aggregation Data      #
+// #############################
+
+func (k Keeper) GetStakerCountOfPool(ctx sdk.Context, poolId uint64) uint64 {
+	return k.getStat(ctx, poolId, types.STAKER_STATS_COUNT)
+}
+
 func (k Keeper) addOneToCount(ctx sdk.Context, poolId uint64) {
 	count := k.getStat(ctx, poolId, types.STAKER_STATS_COUNT)
 	k.setStat(ctx, poolId, types.STAKER_STATS_COUNT, count+1)
@@ -176,19 +192,9 @@ func (k Keeper) addToTotalStake(ctx sdk.Context, poolId uint64, amount uint64) {
 	k.setStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE, stake+amount)
 }
 
-func (k Keeper) addToTotalInactive(ctx sdk.Context, poolId uint64, amount uint64) {
-	inactiveStake := k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_INACTIVE_STAKE)
-	k.setStat(ctx, poolId, types.STAKER_STATS_TOTAL_INACTIVE_STAKE, inactiveStake+amount)
-}
-
 func (k Keeper) subtractFromTotalStake(ctx sdk.Context, poolId uint64, amount uint64) {
 	stake := k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE)
 	k.setStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE, stake-amount)
-}
-
-func (k Keeper) subtractFromTotalInactiveStake(ctx sdk.Context, poolId uint64, amount uint64) {
-	stake := k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_INACTIVE_STAKE)
-	k.setStat(ctx, poolId, types.STAKER_STATS_TOTAL_INACTIVE_STAKE, stake-amount)
 }
 
 // getStat get the total number of pool

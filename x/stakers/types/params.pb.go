@@ -25,6 +25,18 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Params defines the parameters for the module.
 type Params struct {
+	// vote_slash ...
+	VoteSlash string `protobuf:"bytes,1,opt,name=vote_slash,json=voteSlash,proto3" json:"vote_slash,omitempty"`
+	// upload_slash ...
+	UploadSlash string `protobuf:"bytes,2,opt,name=upload_slash,json=uploadSlash,proto3" json:"upload_slash,omitempty"`
+	// timeout_slash ...
+	TimeoutSlash string `protobuf:"bytes,3,opt,name=timeout_slash,json=timeoutSlash,proto3" json:"timeout_slash,omitempty"`
+	// max_points ...
+	MaxPoints uint64 `protobuf:"varint,4,opt,name=max_points,json=maxPoints,proto3" json:"max_points,omitempty"`
+	// unbonding_staking_time ...
+	UnbondingStakingTime uint64 `protobuf:"varint,5,opt,name=unbonding_staking_time,json=unbondingStakingTime,proto3" json:"unbonding_staking_time,omitempty"`
+	// commission_change_time ...
+	CommissionChangeTime uint64 `protobuf:"varint,6,opt,name=commission_change_time,json=commissionChangeTime,proto3" json:"commission_change_time,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -59,6 +71,48 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
+func (m *Params) GetVoteSlash() string {
+	if m != nil {
+		return m.VoteSlash
+	}
+	return ""
+}
+
+func (m *Params) GetUploadSlash() string {
+	if m != nil {
+		return m.UploadSlash
+	}
+	return ""
+}
+
+func (m *Params) GetTimeoutSlash() string {
+	if m != nil {
+		return m.TimeoutSlash
+	}
+	return ""
+}
+
+func (m *Params) GetMaxPoints() uint64 {
+	if m != nil {
+		return m.MaxPoints
+	}
+	return 0
+}
+
+func (m *Params) GetUnbondingStakingTime() uint64 {
+	if m != nil {
+		return m.UnbondingStakingTime
+	}
+	return 0
+}
+
+func (m *Params) GetCommissionChangeTime() uint64 {
+	if m != nil {
+		return m.CommissionChangeTime
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*Params)(nil), "kyve.stakers.v1beta1.Params")
 }
@@ -66,18 +120,27 @@ func init() {
 func init() { proto.RegisterFile("kyve/stakers/v1beta1/params.proto", fileDescriptor_405cabd7005fc18b) }
 
 var fileDescriptor_405cabd7005fc18b = []byte{
-	// 167 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xcc, 0xae, 0x2c, 0x4b,
-	0xd5, 0x2f, 0x2e, 0x49, 0xcc, 0x4e, 0x2d, 0x2a, 0xd6, 0x2f, 0x33, 0x4c, 0x4a, 0x2d, 0x49, 0x34,
-	0xd4, 0x2f, 0x48, 0x2c, 0x4a, 0xcc, 0x2d, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x01,
-	0x29, 0xd1, 0x83, 0x2a, 0xd1, 0x83, 0x2a, 0x91, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x2b, 0xd0,
-	0x07, 0xb1, 0x20, 0x6a, 0x95, 0xf8, 0xb8, 0xd8, 0x02, 0xc0, 0x7a, 0xad, 0x58, 0x66, 0x2c, 0x90,
-	0x67, 0x70, 0x72, 0x3b, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18,
-	0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0x9d, 0xf4,
-	0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d, 0xef, 0xc8, 0x30, 0x57, 0xbf, 0xd4,
-	0x92, 0xf2, 0xfc, 0xa2, 0x6c, 0xfd, 0xe4, 0x8c, 0xc4, 0xcc, 0x3c, 0xfd, 0x0a, 0xb8, 0x93, 0x4a,
-	0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0xc6, 0x1b, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x27,
-	0x86, 0x67, 0xb4, 0xaf, 0x00, 0x00, 0x00,
+	// 319 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x44, 0xd1, 0x41, 0x4b, 0xf3, 0x30,
+	0x1c, 0x06, 0xf0, 0x76, 0xef, 0xde, 0xc1, 0xe2, 0xbc, 0x94, 0x21, 0x43, 0x58, 0xdc, 0xf4, 0xb2,
+	0x83, 0x34, 0x0c, 0x3d, 0x79, 0x54, 0xf4, 0x22, 0xc8, 0xd8, 0x44, 0xd0, 0x4b, 0x49, 0xbb, 0xd0,
+	0x86, 0x2d, 0xf9, 0x97, 0x26, 0x9d, 0xdb, 0xcd, 0x8f, 0xe0, 0xd1, 0xa3, 0x1f, 0xc7, 0xe3, 0x8e,
+	0x1e, 0x65, 0xfd, 0x22, 0x92, 0xa4, 0xcc, 0x53, 0xcb, 0xf3, 0xfc, 0x9e, 0x42, 0x13, 0x34, 0x5c,
+	0x6c, 0x56, 0x8c, 0x28, 0x4d, 0x17, 0xac, 0x50, 0x64, 0x35, 0x8e, 0x99, 0xa6, 0x63, 0x92, 0xd3,
+	0x82, 0x0a, 0x15, 0xe6, 0x05, 0x68, 0x08, 0xba, 0x86, 0x84, 0x35, 0x09, 0x6b, 0x72, 0xdc, 0x4d,
+	0x21, 0x05, 0x0b, 0x88, 0x79, 0x73, 0xf6, 0xf4, 0xad, 0x81, 0x5a, 0x13, 0x3b, 0x0e, 0xfa, 0x08,
+	0xad, 0x40, 0xb3, 0x48, 0x2d, 0xa9, 0xca, 0x7a, 0xfe, 0xc0, 0x1f, 0xb5, 0xa7, 0x6d, 0x93, 0xcc,
+	0x4c, 0x10, 0x0c, 0x51, 0xa7, 0xcc, 0x97, 0x40, 0xe7, 0x35, 0x68, 0x58, 0x70, 0xe0, 0x32, 0x47,
+	0xce, 0xd0, 0xa1, 0xe6, 0x82, 0x41, 0xa9, 0x6b, 0xf3, 0xcf, 0x9a, 0x4e, 0x1d, 0x3a, 0xd4, 0x47,
+	0x48, 0xd0, 0x75, 0x94, 0x03, 0x97, 0x5a, 0xf5, 0x9a, 0x03, 0x7f, 0xd4, 0x9c, 0xb6, 0x05, 0x5d,
+	0x4f, 0x6c, 0x10, 0x5c, 0xa2, 0xa3, 0x52, 0xc6, 0x20, 0xe7, 0x5c, 0xa6, 0x91, 0xf9, 0x07, 0xf3,
+	0x34, 0x1f, 0xe8, 0xfd, 0xb7, 0xb4, 0xbb, 0x6f, 0x67, 0xae, 0x7c, 0xe4, 0x82, 0x99, 0x55, 0x02,
+	0x42, 0x70, 0xa5, 0x38, 0xc8, 0x28, 0xc9, 0xa8, 0x4c, 0x99, 0x5b, 0xb5, 0xdc, 0xea, 0xaf, 0xbd,
+	0xb1, 0xa5, 0x59, 0x5d, 0x35, 0x3f, 0x3e, 0x4f, 0xbc, 0xeb, 0xbb, 0xaf, 0x1d, 0xf6, 0xb7, 0x3b,
+	0xec, 0xff, 0xec, 0xb0, 0xff, 0x5e, 0x61, 0x6f, 0x5b, 0x61, 0xef, 0xbb, 0xc2, 0xde, 0xcb, 0x79,
+	0xca, 0x75, 0x56, 0xc6, 0x61, 0x02, 0x82, 0xdc, 0x3f, 0x3f, 0xdd, 0x3e, 0x30, 0xfd, 0x0a, 0xc5,
+	0x82, 0x24, 0x19, 0xe5, 0x92, 0xac, 0xf7, 0xb7, 0xa0, 0x37, 0x39, 0x53, 0x71, 0xcb, 0x9e, 0xe8,
+	0xc5, 0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x94, 0xb3, 0x88, 0xab, 0xa2, 0x01, 0x00, 0x00,
 }
 
 func (m *Params) Marshal() (dAtA []byte, err error) {
@@ -100,6 +163,42 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.CommissionChangeTime != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.CommissionChangeTime))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.UnbondingStakingTime != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.UnbondingStakingTime))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.MaxPoints != 0 {
+		i = encodeVarintParams(dAtA, i, uint64(m.MaxPoints))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.TimeoutSlash) > 0 {
+		i -= len(m.TimeoutSlash)
+		copy(dAtA[i:], m.TimeoutSlash)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.TimeoutSlash)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.UploadSlash) > 0 {
+		i -= len(m.UploadSlash)
+		copy(dAtA[i:], m.UploadSlash)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.UploadSlash)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.VoteSlash) > 0 {
+		i -= len(m.VoteSlash)
+		copy(dAtA[i:], m.VoteSlash)
+		i = encodeVarintParams(dAtA, i, uint64(len(m.VoteSlash)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -120,6 +219,27 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
+	l = len(m.VoteSlash)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.UploadSlash)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	l = len(m.TimeoutSlash)
+	if l > 0 {
+		n += 1 + l + sovParams(uint64(l))
+	}
+	if m.MaxPoints != 0 {
+		n += 1 + sovParams(uint64(m.MaxPoints))
+	}
+	if m.UnbondingStakingTime != 0 {
+		n += 1 + sovParams(uint64(m.UnbondingStakingTime))
+	}
+	if m.CommissionChangeTime != 0 {
+		n += 1 + sovParams(uint64(m.CommissionChangeTime))
+	}
 	return n
 }
 
@@ -158,6 +278,159 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VoteSlash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VoteSlash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UploadSlash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.UploadSlash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TimeoutSlash", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthParams
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthParams
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.TimeoutSlash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxPoints", wireType)
+			}
+			m.MaxPoints = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaxPoints |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UnbondingStakingTime", wireType)
+			}
+			m.UnbondingStakingTime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.UnbondingStakingTime |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CommissionChangeTime", wireType)
+			}
+			m.CommissionChangeTime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowParams
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CommissionChangeTime |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipParams(dAtA[iNdEx:])

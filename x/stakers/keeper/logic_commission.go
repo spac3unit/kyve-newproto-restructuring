@@ -1,84 +1,54 @@
 package keeper
 
 import (
-	// TODO "github.com/KYVENetwork/chain/x/stakers/types"
+	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func (k Keeper) orderNewCommissionChange(ctx sdk.Context, staker string, commission string) {
 
-	// TODO
+	// Remove existing queue entry
+	queueEntry, found := k.GetCommissionChangeEntryByIndex2(ctx, staker)
+	if found {
+		k.RemoveCommissionChangeEntry(ctx, &queueEntry)
+	}
 
-	//// unbondingState stores the start and the end of the queue with all unbonding entries
-	//// the queue is ordered by time
-	//commissionChangeState := k.GetCommissionChangeQueueState(ctx)
-	//
-	//// Increase topIndex as a new entry is about to be appended
-	//commissionChangeState.HighIndex += 1
-	//k.SetCommissionChangeQueueState(ctx, commissionChangeState)
-	//
-	//// Remove existing queue entry
-	//queueEntry, found := k.GetCommissionChangeQueueEntryByIndex2(ctx, staker, poolId)
-	//if found {
-	//	k.RemoveCommissionChangeQueueEntry(ctx, &queueEntry)
-	//}
-	//
-	//// ...
-	//commissionChangeEntry := types.CommissionChangeQueueEntry{
-	//	Index:        commissionChangeState.HighIndex,
-	//	Staker:       staker,
-	//	PoolId:       poolId,
-	//	Commission:   commission,
-	//	CreationDate: ctx.BlockTime().Unix(),
-	//}
-	//
-	//k.SetCommissionChangeQueueEntry(ctx, commissionChangeEntry)
+	queueIndex := k.getNextQueueSlot(ctx, "commission" /* TODO TYPE */)
 
+	commissionChangeEntry := types.CommissionChangeEntry{
+		Index:        queueIndex,
+		Staker:       staker,
+		Commission:   commission,
+		CreationDate: ctx.BlockTime().Unix(),
+	}
+
+	k.SetCommissionChangeEntry(ctx, commissionChangeEntry)
 }
 
-// ProcessCommissionChangeUnbondingQueue ...
-func (k Keeper) ProcessCommissionChangeUnbondingQueue(ctx sdk.Context) {
+// ProcessCommissionChangeQueue ...
+func (k Keeper) ProcessCommissionChangeQueue(ctx sdk.Context) {
 
-	// TODO
+	k.processQueue(ctx, "commission" /* TODO TYPE */, func(index uint64) bool {
 
-	//// Get Queue information
-	//queueState := k.GetCommissionChangeQueueState(ctx)
-	//
-	//// flag for computing every entry at the end of the queue which is due.
-	//// start processing the end of the queue
-	//for commissionChangePerformed := true; commissionChangePerformed; {
-	//	commissionChangePerformed = false
-	//
-	//	// Get end of queue
-	//	queueEntry, found := k.GetCommissionChangeQueueEntry(ctx, queueState.LowIndex+1)
-	//
-	//	if !found {
-	//		// If there are still entries in the queue, continue with processing
-	//		if queueState.LowIndex < queueState.HighIndex {
-	//			queueState.LowIndex += 1
-	//			commissionChangePerformed = true
-	//		}
-	//	} else if queueEntry.CreationDate+int64(k.CommissionChangeTime(ctx)) <= ctx.BlockTime().Unix() {
-	//
-	//		queueState.LowIndex += 1
-	//		commissionChangePerformed = true
-	//
-	//		k.RemoveCommissionChangeQueueEntry(ctx, &queueEntry)
-	//
-	//		staker, stakerFound := k.GetStaker(ctx, queueEntry.Staker, queueEntry.PoolId)
-	//		if stakerFound {
-	//			staker.Commission = queueEntry.Commission
-	//			k.SetStaker(ctx, staker)
-	//		}
-	//
-	//		// Event an event.
-	//		ctx.EventManager().EmitTypedEvent(&types.EventUpdateCommission{
-	//			PoolId:     queueEntry.PoolId,
-	//			Address:    queueEntry.Staker,
-	//			Commission: queueEntry.Commission,
-	//		})
-	//	}
-	//
-	//}
-	//k.SetCommissionChangeQueueState(ctx, queueState)
+		// Get queue entry in question
+		queueEntry, found := k.GetCommissionChangeEntry(ctx, index)
+
+		if !found {
+			// continue with the next entry
+			return true
+		} else if queueEntry.CreationDate+int64(k.CommissionChangeTime(ctx)) /* TODO PARAM */ <= ctx.BlockTime().Unix() {
+			k.RemoveCommissionChangeEntry(ctx, &queueEntry)
+
+			k.UpdateStakerCommission(ctx, queueEntry.Staker, queueEntry.Commission)
+
+			// Event an event.
+			ctx.EventManager().EmitTypedEvent(&types.EventUpdateCommission{
+				Address:    queueEntry.Staker,
+				Commission: queueEntry.Commission,
+			})
+			return true
+		}
+		return false
+	})
+
 }

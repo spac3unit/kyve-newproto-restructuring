@@ -59,38 +59,6 @@ func (SlashType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_d209d1a2a74d375d, []int{0}
 }
 
-// StakerStatus ...
-type StakerStatus int32
-
-const (
-	// STAKER_STATUS_UNSPECIFIED ...
-	STAKER_STATUS_UNSPECIFIED StakerStatus = 0
-	// STAKER_STATUS_ACTIVE ...
-	STAKER_STATUS_ACTIVE StakerStatus = 1
-	// STAKER_STATUS_INACTIVE ...
-	STAKER_STATUS_INACTIVE StakerStatus = 2
-)
-
-var StakerStatus_name = map[int32]string{
-	0: "STAKER_STATUS_UNSPECIFIED",
-	1: "STAKER_STATUS_ACTIVE",
-	2: "STAKER_STATUS_INACTIVE",
-}
-
-var StakerStatus_value = map[string]int32{
-	"STAKER_STATUS_UNSPECIFIED": 0,
-	"STAKER_STATUS_ACTIVE":      1,
-	"STAKER_STATUS_INACTIVE":    2,
-}
-
-func (x StakerStatus) String() string {
-	return proto.EnumName(StakerStatus_name, int32(x))
-}
-
-func (StakerStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_d209d1a2a74d375d, []int{1}
-}
-
 // Staker ...
 type Staker struct {
 	// address ...
@@ -111,8 +79,6 @@ type Staker struct {
 	Logo string `protobuf:"bytes,8,opt,name=logo,proto3" json:"logo,omitempty"`
 	// points // TODO should points be in bundles or make method to increase points ?
 	Points uint64 `protobuf:"varint,9,opt,name=points,proto3" json:"points,omitempty"`
-	// status
-	Status StakerStatus `protobuf:"varint,10,opt,name=status,proto3,enum=kyve.stakers.v1beta1.StakerStatus" json:"status,omitempty"`
 }
 
 func (m *Staker) Reset()         { *m = Staker{} }
@@ -211,39 +177,30 @@ func (m *Staker) GetPoints() uint64 {
 	return 0
 }
 
-func (m *Staker) GetStatus() StakerStatus {
-	if m != nil {
-		return m.Status
-	}
-	return STAKER_STATUS_UNSPECIFIED
-}
-
-// UnbondingStakingEntry
-// Creates an entry for an upcoming unbonding of a staker which is put in the unbonding fifo queue and
-// executed after the unbonding time is over.
-type UnbondingStakingQueueEntry struct {
-	// index is a monotonically increasing integer to order the entries
+// CommissionChangeEntry ...
+type CommissionChangeEntry struct {
+	// index ...
 	Index uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
 	// staker ...
 	Staker string `protobuf:"bytes,2,opt,name=staker,proto3" json:"staker,omitempty"`
-	// amount ...
-	Amount uint64 `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	// creation_time ...
-	CreationTime uint64 `protobuf:"varint,4,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
+	// commission ...
+	Commission string `protobuf:"bytes,3,opt,name=commission,proto3" json:"commission,omitempty"`
+	// creation_date ...
+	CreationDate int64 `protobuf:"varint,4,opt,name=creation_date,json=creationDate,proto3" json:"creation_date,omitempty"`
 }
 
-func (m *UnbondingStakingQueueEntry) Reset()         { *m = UnbondingStakingQueueEntry{} }
-func (m *UnbondingStakingQueueEntry) String() string { return proto.CompactTextString(m) }
-func (*UnbondingStakingQueueEntry) ProtoMessage()    {}
-func (*UnbondingStakingQueueEntry) Descriptor() ([]byte, []int) {
+func (m *CommissionChangeEntry) Reset()         { *m = CommissionChangeEntry{} }
+func (m *CommissionChangeEntry) String() string { return proto.CompactTextString(m) }
+func (*CommissionChangeEntry) ProtoMessage()    {}
+func (*CommissionChangeEntry) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d209d1a2a74d375d, []int{1}
 }
-func (m *UnbondingStakingQueueEntry) XXX_Unmarshal(b []byte) error {
+func (m *CommissionChangeEntry) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *UnbondingStakingQueueEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CommissionChangeEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_UnbondingStakingQueueEntry.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CommissionChangeEntry.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -253,66 +210,68 @@ func (m *UnbondingStakingQueueEntry) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *UnbondingStakingQueueEntry) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UnbondingStakingQueueEntry.Merge(m, src)
+func (m *CommissionChangeEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CommissionChangeEntry.Merge(m, src)
 }
-func (m *UnbondingStakingQueueEntry) XXX_Size() int {
+func (m *CommissionChangeEntry) XXX_Size() int {
 	return m.Size()
 }
-func (m *UnbondingStakingQueueEntry) XXX_DiscardUnknown() {
-	xxx_messageInfo_UnbondingStakingQueueEntry.DiscardUnknown(m)
+func (m *CommissionChangeEntry) XXX_DiscardUnknown() {
+	xxx_messageInfo_CommissionChangeEntry.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_UnbondingStakingQueueEntry proto.InternalMessageInfo
+var xxx_messageInfo_CommissionChangeEntry proto.InternalMessageInfo
 
-func (m *UnbondingStakingQueueEntry) GetIndex() uint64 {
+func (m *CommissionChangeEntry) GetIndex() uint64 {
 	if m != nil {
 		return m.Index
 	}
 	return 0
 }
 
-func (m *UnbondingStakingQueueEntry) GetStaker() string {
+func (m *CommissionChangeEntry) GetStaker() string {
 	if m != nil {
 		return m.Staker
 	}
 	return ""
 }
 
-func (m *UnbondingStakingQueueEntry) GetAmount() uint64 {
+func (m *CommissionChangeEntry) GetCommission() string {
 	if m != nil {
-		return m.Amount
+		return m.Commission
+	}
+	return ""
+}
+
+func (m *CommissionChangeEntry) GetCreationDate() int64 {
+	if m != nil {
+		return m.CreationDate
 	}
 	return 0
 }
 
-func (m *UnbondingStakingQueueEntry) GetCreationTime() uint64 {
-	if m != nil {
-		return m.CreationTime
-	}
-	return 0
+// UnbondingStakeEntry ...
+type UnbondingStakeEntry struct {
+	// index ...
+	Index uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	// staker ...
+	Staker string `protobuf:"bytes,2,opt,name=staker,proto3" json:"staker,omitempty"`
+	// amount ...
+	Amount uint64 `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
-// UnbondingState stores the state for the unbonding of stakes and delegations.
-type UnbondingStakingQueueState struct {
-	// low_index ...
-	LowIndex uint64 `protobuf:"varint,1,opt,name=low_index,json=lowIndex,proto3" json:"low_index,omitempty"`
-	// high_index ...
-	HighIndex uint64 `protobuf:"varint,2,opt,name=high_index,json=highIndex,proto3" json:"high_index,omitempty"`
-}
-
-func (m *UnbondingStakingQueueState) Reset()         { *m = UnbondingStakingQueueState{} }
-func (m *UnbondingStakingQueueState) String() string { return proto.CompactTextString(m) }
-func (*UnbondingStakingQueueState) ProtoMessage()    {}
-func (*UnbondingStakingQueueState) Descriptor() ([]byte, []int) {
+func (m *UnbondingStakeEntry) Reset()         { *m = UnbondingStakeEntry{} }
+func (m *UnbondingStakeEntry) String() string { return proto.CompactTextString(m) }
+func (*UnbondingStakeEntry) ProtoMessage()    {}
+func (*UnbondingStakeEntry) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d209d1a2a74d375d, []int{2}
 }
-func (m *UnbondingStakingQueueState) XXX_Unmarshal(b []byte) error {
+func (m *UnbondingStakeEntry) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *UnbondingStakingQueueState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *UnbondingStakeEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_UnbondingStakingQueueState.Marshal(b, m, deterministic)
+		return xxx_messageInfo_UnbondingStakeEntry.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -322,26 +281,218 @@ func (m *UnbondingStakingQueueState) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *UnbondingStakingQueueState) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UnbondingStakingQueueState.Merge(m, src)
+func (m *UnbondingStakeEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnbondingStakeEntry.Merge(m, src)
 }
-func (m *UnbondingStakingQueueState) XXX_Size() int {
+func (m *UnbondingStakeEntry) XXX_Size() int {
 	return m.Size()
 }
-func (m *UnbondingStakingQueueState) XXX_DiscardUnknown() {
-	xxx_messageInfo_UnbondingStakingQueueState.DiscardUnknown(m)
+func (m *UnbondingStakeEntry) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnbondingStakeEntry.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_UnbondingStakingQueueState proto.InternalMessageInfo
+var xxx_messageInfo_UnbondingStakeEntry proto.InternalMessageInfo
 
-func (m *UnbondingStakingQueueState) GetLowIndex() uint64 {
+func (m *UnbondingStakeEntry) GetIndex() uint64 {
+	if m != nil {
+		return m.Index
+	}
+	return 0
+}
+
+func (m *UnbondingStakeEntry) GetStaker() string {
+	if m != nil {
+		return m.Staker
+	}
+	return ""
+}
+
+func (m *UnbondingStakeEntry) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+// LeavePool ...
+type LeavePool struct {
+	// index ...
+	Index uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	// staker ...
+	Staker string `protobuf:"bytes,2,opt,name=staker,proto3" json:"staker,omitempty"`
+	// poolId ...
+	PoolId uint64 `protobuf:"varint,3,opt,name=poolId,proto3" json:"poolId,omitempty"`
+}
+
+func (m *LeavePool) Reset()         { *m = LeavePool{} }
+func (m *LeavePool) String() string { return proto.CompactTextString(m) }
+func (*LeavePool) ProtoMessage()    {}
+func (*LeavePool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d209d1a2a74d375d, []int{3}
+}
+func (m *LeavePool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *LeavePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_LeavePool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *LeavePool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LeavePool.Merge(m, src)
+}
+func (m *LeavePool) XXX_Size() int {
+	return m.Size()
+}
+func (m *LeavePool) XXX_DiscardUnknown() {
+	xxx_messageInfo_LeavePool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LeavePool proto.InternalMessageInfo
+
+func (m *LeavePool) GetIndex() uint64 {
+	if m != nil {
+		return m.Index
+	}
+	return 0
+}
+
+func (m *LeavePool) GetStaker() string {
+	if m != nil {
+		return m.Staker
+	}
+	return ""
+}
+
+func (m *LeavePool) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+// UnbondingStakingEntry
+// Creates an entry for an upcoming unbonding of a staker which is put in the unbonding fifo queue and
+// executed after the unbonding time is over.
+type QueueEntry struct {
+	// index is a monotonically increasing integer to order the entries
+	Index uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	// creation_time ...
+	CreationTime uint64 `protobuf:"varint,2,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
+	//
+	Payload []byte `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+}
+
+func (m *QueueEntry) Reset()         { *m = QueueEntry{} }
+func (m *QueueEntry) String() string { return proto.CompactTextString(m) }
+func (*QueueEntry) ProtoMessage()    {}
+func (*QueueEntry) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d209d1a2a74d375d, []int{4}
+}
+func (m *QueueEntry) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueueEntry) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueueEntry.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueueEntry) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueueEntry.Merge(m, src)
+}
+func (m *QueueEntry) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueueEntry) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueueEntry.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueueEntry proto.InternalMessageInfo
+
+func (m *QueueEntry) GetIndex() uint64 {
+	if m != nil {
+		return m.Index
+	}
+	return 0
+}
+
+func (m *QueueEntry) GetCreationTime() uint64 {
+	if m != nil {
+		return m.CreationTime
+	}
+	return 0
+}
+
+func (m *QueueEntry) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
+// UnbondingState stores the state for the unbonding of stakes and delegations.
+type QueueState struct {
+	// low_index ...
+	LowIndex uint64 `protobuf:"varint,1,opt,name=low_index,json=lowIndex,proto3" json:"low_index,omitempty"`
+	// high_index ...
+	HighIndex uint64 `protobuf:"varint,2,opt,name=high_index,json=highIndex,proto3" json:"high_index,omitempty"`
+}
+
+func (m *QueueState) Reset()         { *m = QueueState{} }
+func (m *QueueState) String() string { return proto.CompactTextString(m) }
+func (*QueueState) ProtoMessage()    {}
+func (*QueueState) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d209d1a2a74d375d, []int{5}
+}
+func (m *QueueState) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueueState) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueueState.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueueState) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueueState.Merge(m, src)
+}
+func (m *QueueState) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueueState) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueueState.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueueState proto.InternalMessageInfo
+
+func (m *QueueState) GetLowIndex() uint64 {
 	if m != nil {
 		return m.LowIndex
 	}
 	return 0
 }
 
-func (m *UnbondingStakingQueueState) GetHighIndex() uint64 {
+func (m *QueueState) GetHighIndex() uint64 {
 	if m != nil {
 		return m.HighIndex
 	}
@@ -350,10 +501,12 @@ func (m *UnbondingStakingQueueState) GetHighIndex() uint64 {
 
 func init() {
 	proto.RegisterEnum("kyve.stakers.v1beta1.SlashType", SlashType_name, SlashType_value)
-	proto.RegisterEnum("kyve.stakers.v1beta1.StakerStatus", StakerStatus_name, StakerStatus_value)
 	proto.RegisterType((*Staker)(nil), "kyve.stakers.v1beta1.Staker")
-	proto.RegisterType((*UnbondingStakingQueueEntry)(nil), "kyve.stakers.v1beta1.UnbondingStakingQueueEntry")
-	proto.RegisterType((*UnbondingStakingQueueState)(nil), "kyve.stakers.v1beta1.UnbondingStakingQueueState")
+	proto.RegisterType((*CommissionChangeEntry)(nil), "kyve.stakers.v1beta1.CommissionChangeEntry")
+	proto.RegisterType((*UnbondingStakeEntry)(nil), "kyve.stakers.v1beta1.UnbondingStakeEntry")
+	proto.RegisterType((*LeavePool)(nil), "kyve.stakers.v1beta1.LeavePool")
+	proto.RegisterType((*QueueEntry)(nil), "kyve.stakers.v1beta1.QueueEntry")
+	proto.RegisterType((*QueueState)(nil), "kyve.stakers.v1beta1.QueueState")
 }
 
 func init() {
@@ -361,42 +514,43 @@ func init() {
 }
 
 var fileDescriptor_d209d1a2a74d375d = []byte{
-	// 559 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x93, 0x4d, 0x6e, 0xd3, 0x4c,
-	0x1c, 0xc6, 0xe3, 0x34, 0x4d, 0x9b, 0xbf, 0xfa, 0xbe, 0x35, 0x43, 0xa8, 0x86, 0xa0, 0x5a, 0x51,
-	0xd8, 0x84, 0x0a, 0xc5, 0x2a, 0xec, 0xd8, 0x99, 0xd6, 0x15, 0x56, 0x4b, 0x5b, 0x6c, 0xa7, 0xa2,
-	0x6c, 0x2c, 0x27, 0x19, 0x39, 0xa3, 0xc4, 0x33, 0xc1, 0x33, 0x6e, 0x9a, 0x13, 0xc0, 0x92, 0x3b,
-	0x70, 0x08, 0xae, 0xc0, 0xb2, 0x4b, 0x96, 0xa8, 0xb9, 0x08, 0xf2, 0xd8, 0xa9, 0x5c, 0x44, 0x77,
-	0x7e, 0x3e, 0x32, 0xf3, 0xcb, 0x23, 0x0d, 0x74, 0x26, 0x8b, 0x2b, 0x62, 0x0a, 0x19, 0x4e, 0x48,
-	0x22, 0xcc, 0xab, 0xfd, 0x01, 0x91, 0xe1, 0xfe, 0x4a, 0xf7, 0x66, 0x09, 0x97, 0x1c, 0x35, 0xb3,
-	0x4e, 0x6f, 0xe5, 0x15, 0x9d, 0x56, 0x33, 0xe2, 0x11, 0x57, 0x05, 0x33, 0xfb, 0xca, 0xbb, 0x9d,
-	0x1f, 0x55, 0xa8, 0x7b, 0xaa, 0x89, 0x30, 0x6c, 0x84, 0xa3, 0x51, 0x42, 0x84, 0xc0, 0x5a, 0x5b,
-	0xeb, 0x36, 0xdc, 0x95, 0x44, 0x4d, 0x58, 0x9f, 0x71, 0x3e, 0x15, 0xb8, 0xda, 0x5e, 0xeb, 0xd6,
-	0xdc, 0x5c, 0xa0, 0x1d, 0xa8, 0x87, 0x31, 0x4f, 0x99, 0xc4, 0x6b, 0x6d, 0xad, 0x5b, 0x73, 0x0b,
-	0x85, 0x5e, 0x80, 0x9e, 0xb2, 0x01, 0x67, 0x23, 0xca, 0xa2, 0xa0, 0x68, 0xd4, 0x54, 0x63, 0xfb,
-	0xce, 0xb7, 0xf2, 0xaa, 0x01, 0x30, 0xe4, 0x71, 0x4c, 0x85, 0xa0, 0x9c, 0xe1, 0x75, 0x75, 0x6b,
-	0xc9, 0xc9, 0x90, 0x62, 0xce, 0xe8, 0x84, 0x24, 0xb8, 0x9e, 0x23, 0x15, 0x32, 0x4b, 0xe6, 0x64,
-	0x20, 0xa8, 0x24, 0x78, 0x23, 0x4f, 0x0a, 0x89, 0x10, 0xd4, 0xa6, 0x3c, 0xe2, 0x78, 0x53, 0xd9,
-	0xea, 0x3b, 0x43, 0x9d, 0x71, 0xca, 0xa4, 0xc0, 0x8d, 0x1c, 0x35, 0x57, 0xe8, 0x0d, 0xd4, 0x85,
-	0x0c, 0x65, 0x2a, 0x30, 0xb4, 0xb5, 0xee, 0xff, 0xaf, 0x3a, 0xbd, 0x7f, 0x4d, 0xd7, 0xcb, 0x07,
-	0xf2, 0x54, 0xd3, 0x2d, 0x7e, 0xd1, 0xf9, 0xa2, 0x41, 0xab, 0xbf, 0xfa, 0x3f, 0x59, 0x83, 0xb2,
-	0xe8, 0x43, 0x4a, 0x52, 0x62, 0x33, 0x99, 0x2c, 0xb2, 0xcd, 0x28, 0x1b, 0x91, 0x6b, 0xb5, 0x65,
-	0xcd, 0xcd, 0x45, 0x06, 0x92, 0x1f, 0x8e, 0xab, 0x0a, 0xaf, 0x50, 0x0f, 0x6e, 0xf9, 0x1c, 0xfe,
-	0x1b, 0x26, 0x24, 0x94, 0x94, 0xb3, 0x40, 0xd2, 0x98, 0x14, 0x43, 0x6e, 0xad, 0x4c, 0x9f, 0xc6,
-	0xa4, 0xf3, 0xf1, 0x01, 0x90, 0x0c, 0x98, 0xa0, 0x67, 0xd0, 0x98, 0xf2, 0x79, 0x50, 0x86, 0xd9,
-	0x9c, 0xf2, 0xb9, 0xa3, 0x78, 0x76, 0x01, 0xc6, 0x34, 0x1a, 0x17, 0x69, 0x55, 0xa5, 0x8d, 0xcc,
-	0x51, 0xf1, 0xde, 0x67, 0x68, 0x78, 0xd3, 0x50, 0x8c, 0xfd, 0xc5, 0x8c, 0xa0, 0x16, 0xec, 0x78,
-	0x27, 0x96, 0xf7, 0x2e, 0xf0, 0x2f, 0xcf, 0xed, 0xa0, 0x7f, 0xea, 0x9d, 0xdb, 0x07, 0xce, 0x91,
-	0x63, 0x1f, 0xea, 0x15, 0xb4, 0x03, 0xa8, 0x94, 0xf9, 0xce, 0x7b, 0xfb, 0xac, 0xef, 0xeb, 0x1a,
-	0x7a, 0x0c, 0xdb, 0x25, 0xff, 0xe2, 0xcc, 0xb7, 0xf5, 0x2a, 0x7a, 0x02, 0x8f, 0xca, 0x07, 0x9d,
-	0x9f, 0x9c, 0x59, 0x87, 0xfa, 0x5a, 0xab, 0xf6, 0xf5, 0xbb, 0x51, 0xd9, 0xa3, 0xb0, 0x55, 0x9e,
-	0x1b, 0xed, 0xc2, 0x53, 0xcf, 0xb7, 0x8e, 0x6d, 0x37, 0xf0, 0x7c, 0xcb, 0xef, 0x7b, 0x7f, 0x5d,
-	0x8c, 0xa1, 0x79, 0x3f, 0xb6, 0x0e, 0x7c, 0xe7, 0xc2, 0xd6, 0x35, 0x85, 0x7b, 0x2f, 0x71, 0x4e,
-	0x8b, 0xac, 0x9a, 0x5f, 0xf5, 0xf6, 0xe8, 0xe7, 0xad, 0xa1, 0xdd, 0xdc, 0x1a, 0xda, 0xef, 0x5b,
-	0x43, 0xfb, 0xb6, 0x34, 0x2a, 0x37, 0x4b, 0xa3, 0xf2, 0x6b, 0x69, 0x54, 0x3e, 0xbd, 0x8c, 0xa8,
-	0x1c, 0xa7, 0x83, 0xde, 0x90, 0xc7, 0xe6, 0xf1, 0xe5, 0x85, 0x7d, 0x4a, 0xe4, 0x9c, 0x27, 0x13,
-	0x73, 0x38, 0x0e, 0x29, 0x33, 0xaf, 0xef, 0xde, 0x9f, 0x5c, 0xcc, 0x88, 0x18, 0xd4, 0xd5, 0x53,
-	0x7a, 0xfd, 0x27, 0x00, 0x00, 0xff, 0xff, 0x94, 0x86, 0x36, 0xf3, 0x9c, 0x03, 0x00, 0x00,
+	// 562 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x53, 0xcd, 0x6e, 0xd3, 0x4c,
+	0x14, 0x8d, 0x1b, 0x37, 0xad, 0x47, 0xfd, 0xd4, 0x7c, 0xd3, 0x1f, 0x59, 0x45, 0x58, 0x95, 0xd9,
+	0x14, 0x84, 0x6a, 0x55, 0x3c, 0x41, 0x48, 0x5c, 0x35, 0x22, 0x34, 0xa9, 0xed, 0x54, 0x2a, 0x2c,
+	0xa2, 0x49, 0x3c, 0xb2, 0x47, 0xb1, 0x67, 0x8c, 0x3d, 0x49, 0x9a, 0x37, 0x40, 0xac, 0x78, 0x07,
+	0x5e, 0x86, 0x65, 0x97, 0x2c, 0x51, 0xf2, 0x18, 0x6c, 0x90, 0x67, 0xec, 0x60, 0x81, 0x40, 0x82,
+	0xdd, 0x9c, 0x73, 0x8f, 0xee, 0x39, 0xf7, 0x5e, 0x0d, 0x30, 0xa7, 0xcb, 0x39, 0xb6, 0x32, 0x8e,
+	0xa6, 0x38, 0xcd, 0xac, 0xf9, 0xc5, 0x18, 0x73, 0x74, 0x51, 0xe2, 0xf3, 0x24, 0x65, 0x9c, 0xc1,
+	0xc3, 0x5c, 0x73, 0x5e, 0x72, 0x85, 0xe6, 0xe4, 0x30, 0x60, 0x01, 0x13, 0x02, 0x2b, 0x7f, 0x49,
+	0xad, 0xf9, 0x4d, 0x01, 0x0d, 0x57, 0x28, 0xa1, 0x0e, 0x76, 0x90, 0xef, 0xa7, 0x38, 0xcb, 0x74,
+	0xe5, 0x54, 0x39, 0xd3, 0x9c, 0x12, 0xc2, 0x43, 0xb0, 0x9d, 0x30, 0x16, 0x65, 0xfa, 0xd6, 0x69,
+	0xfd, 0x4c, 0x75, 0x24, 0x80, 0xc7, 0xa0, 0x81, 0x62, 0x36, 0xa3, 0x5c, 0xaf, 0x9f, 0x2a, 0x67,
+	0xaa, 0x53, 0x20, 0xf8, 0x14, 0x34, 0x67, 0x74, 0xcc, 0xa8, 0x4f, 0x68, 0x30, 0x2a, 0x14, 0xaa,
+	0x50, 0xec, 0x6f, 0xf8, 0x96, 0x94, 0x1a, 0x00, 0x4c, 0x58, 0x1c, 0x93, 0x2c, 0x23, 0x8c, 0xea,
+	0xdb, 0xc2, 0xb5, 0xc2, 0xe4, 0x91, 0x62, 0x46, 0xc9, 0x14, 0xa7, 0x7a, 0x43, 0x46, 0x2a, 0x60,
+	0x5e, 0x59, 0xe0, 0x71, 0x46, 0x38, 0xd6, 0x77, 0x64, 0xa5, 0x80, 0x10, 0x02, 0x35, 0x62, 0x01,
+	0xd3, 0x77, 0x05, 0x2d, 0xde, 0x79, 0xd4, 0x84, 0x11, 0xca, 0x33, 0x5d, 0x93, 0x51, 0x25, 0x32,
+	0x3f, 0x28, 0xe0, 0xa8, 0xbd, 0xb1, 0x6b, 0x87, 0x88, 0x06, 0xd8, 0xa6, 0x3c, 0x5d, 0xe6, 0x23,
+	0x13, 0xea, 0xe3, 0x7b, 0xb1, 0x0a, 0xd5, 0x91, 0x20, 0xef, 0x23, 0xd7, 0xaa, 0x6f, 0x89, 0xee,
+	0x05, 0xfa, 0x69, 0x8e, 0xfa, 0x2f, 0x73, 0x3c, 0x01, 0xff, 0x4d, 0x52, 0x8c, 0x38, 0x61, 0x74,
+	0xe4, 0x23, 0x8e, 0xc5, 0x3e, 0xea, 0xce, 0x5e, 0x49, 0x76, 0x10, 0xc7, 0xe6, 0x5b, 0x70, 0x30,
+	0x2c, 0xf7, 0x23, 0x4e, 0xf2, 0x2f, 0x49, 0x7e, 0x73, 0x14, 0xf3, 0x06, 0x68, 0x3d, 0x8c, 0xe6,
+	0x78, 0xc0, 0x58, 0xf4, 0xf7, 0x2d, 0xf3, 0x83, 0x77, 0xfd, 0xb2, 0xa5, 0x44, 0x26, 0x02, 0xe0,
+	0x66, 0x86, 0x67, 0x7f, 0x8c, 0x59, 0x1d, 0x9c, 0x93, 0x18, 0x8b, 0xd6, 0xea, 0x8f, 0xc1, 0x3d,
+	0x12, 0xe3, 0xfc, 0x96, 0x09, 0x5a, 0x46, 0x0c, 0x49, 0x87, 0x3d, 0xa7, 0x84, 0xe6, 0x55, 0x61,
+	0xe1, 0x72, 0xc4, 0x31, 0x7c, 0x04, 0xb4, 0x88, 0x2d, 0x46, 0x55, 0x9b, 0xdd, 0x88, 0x2d, 0xba,
+	0xc2, 0xe9, 0x31, 0x00, 0x21, 0x09, 0xc2, 0xa2, 0x2a, 0x6d, 0xb4, 0x9c, 0x11, 0xe5, 0x67, 0xef,
+	0x80, 0xe6, 0x46, 0x28, 0x0b, 0xbd, 0x65, 0x82, 0xe1, 0x09, 0x38, 0x76, 0x7b, 0x2d, 0xf7, 0x6a,
+	0xe4, 0xdd, 0x0d, 0xec, 0xd1, 0xf0, 0xda, 0x1d, 0xd8, 0xed, 0xee, 0x65, 0xd7, 0xee, 0x34, 0x6b,
+	0xf0, 0x18, 0xc0, 0x4a, 0xcd, 0xeb, 0xbe, 0xb6, 0xfb, 0x43, 0xaf, 0xa9, 0xc0, 0x03, 0xb0, 0x5f,
+	0xe1, 0x6f, 0xfb, 0x9e, 0xdd, 0xdc, 0x82, 0x47, 0xe0, 0xff, 0x6a, 0xa3, 0x41, 0xaf, 0xdf, 0xea,
+	0x34, 0xeb, 0x27, 0xea, 0xfb, 0x4f, 0x46, 0xed, 0xe5, 0xe5, 0xe7, 0x95, 0xa1, 0x3c, 0xac, 0x0c,
+	0xe5, 0xeb, 0xca, 0x50, 0x3e, 0xae, 0x8d, 0xda, 0xc3, 0xda, 0xa8, 0x7d, 0x59, 0x1b, 0xb5, 0x37,
+	0xcf, 0x03, 0xc2, 0xc3, 0xd9, 0xf8, 0x7c, 0xc2, 0x62, 0xeb, 0xd5, 0xdd, 0xad, 0x7d, 0x8d, 0xf9,
+	0x82, 0xa5, 0x53, 0x6b, 0x12, 0x22, 0x42, 0xad, 0xfb, 0xcd, 0xf7, 0xe6, 0xcb, 0x04, 0x67, 0xe3,
+	0x86, 0xf8, 0xa9, 0x2f, 0xbe, 0x07, 0x00, 0x00, 0xff, 0xff, 0x06, 0x99, 0xef, 0x81, 0xfb, 0x03,
+	0x00, 0x00,
 }
 
 func (m *Staker) Marshal() (dAtA []byte, err error) {
@@ -419,11 +573,6 @@ func (m *Staker) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Status != 0 {
-		i = encodeVarintStakers(dAtA, i, uint64(m.Status))
-		i--
-		dAtA[i] = 0x50
-	}
 	if m.Points != 0 {
 		i = encodeVarintStakers(dAtA, i, uint64(m.Points))
 		i--
@@ -495,7 +644,7 @@ func (m *Staker) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *UnbondingStakingQueueEntry) Marshal() (dAtA []byte, err error) {
+func (m *CommissionChangeEntry) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -505,21 +654,63 @@ func (m *UnbondingStakingQueueEntry) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *UnbondingStakingQueueEntry) MarshalTo(dAtA []byte) (int, error) {
+func (m *CommissionChangeEntry) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *UnbondingStakingQueueEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CommissionChangeEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.CreationTime != 0 {
-		i = encodeVarintStakers(dAtA, i, uint64(m.CreationTime))
+	if m.CreationDate != 0 {
+		i = encodeVarintStakers(dAtA, i, uint64(m.CreationDate))
 		i--
 		dAtA[i] = 0x20
 	}
+	if len(m.Commission) > 0 {
+		i -= len(m.Commission)
+		copy(dAtA[i:], m.Commission)
+		i = encodeVarintStakers(dAtA, i, uint64(len(m.Commission)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Staker) > 0 {
+		i -= len(m.Staker)
+		copy(dAtA[i:], m.Staker)
+		i = encodeVarintStakers(dAtA, i, uint64(len(m.Staker)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Index != 0 {
+		i = encodeVarintStakers(dAtA, i, uint64(m.Index))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UnbondingStakeEntry) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UnbondingStakeEntry) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UnbondingStakeEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
 	if m.Amount != 0 {
 		i = encodeVarintStakers(dAtA, i, uint64(m.Amount))
 		i--
@@ -540,7 +731,7 @@ func (m *UnbondingStakingQueueEntry) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
-func (m *UnbondingStakingQueueState) Marshal() (dAtA []byte, err error) {
+func (m *LeavePool) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -550,12 +741,92 @@ func (m *UnbondingStakingQueueState) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *UnbondingStakingQueueState) MarshalTo(dAtA []byte) (int, error) {
+func (m *LeavePool) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *UnbondingStakingQueueState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *LeavePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		i = encodeVarintStakers(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Staker) > 0 {
+		i -= len(m.Staker)
+		copy(dAtA[i:], m.Staker)
+		i = encodeVarintStakers(dAtA, i, uint64(len(m.Staker)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Index != 0 {
+		i = encodeVarintStakers(dAtA, i, uint64(m.Index))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueueEntry) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueueEntry) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueueEntry) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Payload) > 0 {
+		i -= len(m.Payload)
+		copy(dAtA[i:], m.Payload)
+		i = encodeVarintStakers(dAtA, i, uint64(len(m.Payload)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.CreationTime != 0 {
+		i = encodeVarintStakers(dAtA, i, uint64(m.CreationTime))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Index != 0 {
+		i = encodeVarintStakers(dAtA, i, uint64(m.Index))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueueState) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueueState) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueueState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -626,13 +897,33 @@ func (m *Staker) Size() (n int) {
 	if m.Points != 0 {
 		n += 1 + sovStakers(uint64(m.Points))
 	}
-	if m.Status != 0 {
-		n += 1 + sovStakers(uint64(m.Status))
+	return n
+}
+
+func (m *CommissionChangeEntry) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Index != 0 {
+		n += 1 + sovStakers(uint64(m.Index))
+	}
+	l = len(m.Staker)
+	if l > 0 {
+		n += 1 + l + sovStakers(uint64(l))
+	}
+	l = len(m.Commission)
+	if l > 0 {
+		n += 1 + l + sovStakers(uint64(l))
+	}
+	if m.CreationDate != 0 {
+		n += 1 + sovStakers(uint64(m.CreationDate))
 	}
 	return n
 }
 
-func (m *UnbondingStakingQueueEntry) Size() (n int) {
+func (m *UnbondingStakeEntry) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -648,13 +939,48 @@ func (m *UnbondingStakingQueueEntry) Size() (n int) {
 	if m.Amount != 0 {
 		n += 1 + sovStakers(uint64(m.Amount))
 	}
-	if m.CreationTime != 0 {
-		n += 1 + sovStakers(uint64(m.CreationTime))
+	return n
+}
+
+func (m *LeavePool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Index != 0 {
+		n += 1 + sovStakers(uint64(m.Index))
+	}
+	l = len(m.Staker)
+	if l > 0 {
+		n += 1 + l + sovStakers(uint64(l))
+	}
+	if m.PoolId != 0 {
+		n += 1 + sovStakers(uint64(m.PoolId))
 	}
 	return n
 }
 
-func (m *UnbondingStakingQueueState) Size() (n int) {
+func (m *QueueEntry) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Index != 0 {
+		n += 1 + sovStakers(uint64(m.Index))
+	}
+	if m.CreationTime != 0 {
+		n += 1 + sovStakers(uint64(m.CreationTime))
+	}
+	l = len(m.Payload)
+	if l > 0 {
+		n += 1 + l + sovStakers(uint64(l))
+	}
+	return n
+}
+
+func (m *QueueState) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -997,11 +1323,61 @@ func (m *Staker) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 10:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipStakers(dAtA[iNdEx:])
+			if err != nil {
+				return err
 			}
-			m.Status = 0
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthStakers
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CommissionChangeEntry) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowStakers
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CommissionChangeEntry: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CommissionChangeEntry: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			m.Index = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowStakers
@@ -1011,7 +1387,90 @@ func (m *Staker) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Status |= StakerStatus(b&0x7F) << shift
+				m.Index |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Staker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStakers
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStakers
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Staker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Commission", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStakers
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStakers
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Commission = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreationDate", wireType)
+			}
+			m.CreationDate = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreationDate |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1037,7 +1496,7 @@ func (m *Staker) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *UnbondingStakingQueueEntry) Unmarshal(dAtA []byte) error {
+func (m *UnbondingStakeEntry) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1060,10 +1519,10 @@ func (m *UnbondingStakingQueueEntry) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: UnbondingStakingQueueEntry: wiretype end group for non-group")
+			return fmt.Errorf("proto: UnbondingStakeEntry: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: UnbondingStakingQueueEntry: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: UnbondingStakeEntry: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1136,11 +1595,61 @@ func (m *UnbondingStakingQueueEntry) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreationTime", wireType)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipStakers(dAtA[iNdEx:])
+			if err != nil {
+				return err
 			}
-			m.CreationTime = 0
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthStakers
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LeavePool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowStakers
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LeavePool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LeavePool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			m.Index = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowStakers
@@ -1150,7 +1659,58 @@ func (m *UnbondingStakingQueueEntry) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.CreationTime |= uint64(b&0x7F) << shift
+				m.Index |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Staker", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthStakers
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStakers
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Staker = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1176,7 +1736,7 @@ func (m *UnbondingStakingQueueEntry) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *UnbondingStakingQueueState) Unmarshal(dAtA []byte) error {
+func (m *QueueEntry) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1199,10 +1759,132 @@ func (m *UnbondingStakingQueueState) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: UnbondingStakingQueueState: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueueEntry: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: UnbondingStakingQueueState: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueueEntry: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			m.Index = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Index |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreationTime", wireType)
+			}
+			m.CreationTime = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreationTime |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowStakers
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthStakers
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthStakers
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Payload = append(m.Payload[:0], dAtA[iNdEx:postIndex]...)
+			if m.Payload == nil {
+				m.Payload = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipStakers(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthStakers
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueueState) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowStakers
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueueState: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueueState: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

@@ -12,21 +12,6 @@ import (
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 var (
-	KeyVoteSlash            = []byte("VoteSlash")
-	DefaultVoteSlash string = "0.1"
-)
-
-var (
-	KeyUploadSlash            = []byte("UploadSlash")
-	DefaultUploadSlash string = "0.2"
-)
-
-var (
-	KeyTimeoutSlash            = []byte("TimeoutSlash")
-	DefaultTimeoutSlash string = "0.02"
-)
-
-var (
 	KeyUploadTimeout            = []byte("UploadTimeout")
 	DefaultUploadTimeout uint64 = 600
 )
@@ -39,16 +24,6 @@ var (
 var (
 	KeyNetworkFee            = []byte("NetworkFee")
 	DefaultNetworkFee string = "0.01"
-)
-
-var (
-	KeyMaxPoints            = []byte("MaxPoints")
-	DefaultMaxPoints uint64 = 5
-)
-
-var (
-	KeyUnbondingStakingTime            = []byte("UnbondingStakingTime")
-	DefaultUnbondingStakingTime uint64 = 60 * 60 * 24 * 5
 )
 
 var (
@@ -66,11 +41,6 @@ var (
 	DefaultRedelegationMaxAmount uint64 = 5
 )
 
-var (
-	KeyCommissionChangeTime            = []byte("KeyCommissionChangeTime")
-	DefaultCommissionChangeTime uint64 = 60 * 60 * 24 * 5
-)
-
 // ParamKeyTable the param Key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
@@ -78,50 +48,35 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams(
-	voteSlash string,
-	uploadSlash string,
-	timeoutSlash string,
+
 	uploadTimeout uint64,
 	storageCost uint64,
 	networkFee string,
-	maxPoints uint64,
-	unbondingStakingTime uint64,
+
 	unbondingDelegationTime uint64,
 	redelegationCooldown uint64,
 	redelegationMaxAmount uint64,
-	commissionChangeTime uint64,
+
 ) Params {
 	return Params{
-		VoteSlash:               voteSlash,
-		UploadSlash:             uploadSlash,
-		TimeoutSlash:            timeoutSlash,
 		UploadTimeout:           uploadTimeout,
 		StorageCost:             storageCost,
 		NetworkFee:              networkFee,
-		MaxPoints:               maxPoints,
-		UnbondingStakingTime:    unbondingStakingTime,
 		UnbondingDelegationTime: unbondingDelegationTime,
 		RedelegationCooldown:    redelegationCooldown,
 		RedelegationMaxAmount:   redelegationMaxAmount,
-		CommissionChangeTime:    commissionChangeTime,
 	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
 	return NewParams(
-		DefaultVoteSlash,
-		DefaultUploadSlash,
-		DefaultTimeoutSlash,
 		DefaultUploadTimeout,
 		DefaultStorageCost,
 		DefaultNetworkFee,
-		DefaultMaxPoints,
-		DefaultUnbondingStakingTime,
 		DefaultUnbondingDelegationTime,
 		DefaultRedelegationCooldown,
 		DefaultRedelegationMaxAmount,
-		DefaultCommissionChangeTime,
 	)
 }
 
@@ -145,17 +100,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 
 // Validate validates the set of params
 func (p Params) Validate() error {
-	if err := validateVoteSlash(p.VoteSlash); err != nil {
-		return err
-	}
-
-	if err := validateUploadSlash(p.UploadSlash); err != nil {
-		return err
-	}
-
-	if err := validateTimeoutSlash(p.TimeoutSlash); err != nil {
-		return err
-	}
 
 	if err := validateUploadTimeout(p.UploadTimeout); err != nil {
 		return err
@@ -166,14 +110,6 @@ func (p Params) Validate() error {
 	}
 
 	if err := validateNetworkFee(p.NetworkFee); err != nil {
-		return err
-	}
-
-	if err := validateMaxPoints(p.MaxPoints); err != nil {
-		return err
-	}
-
-	if err := validateUnbondingStakingTime(p.UnbondingStakingTime); err != nil {
 		return err
 	}
 
@@ -192,21 +128,6 @@ func validateTrue(v interface{}) error {
 func (p Params) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
-}
-
-// validateVoteSlash validates the VoteSlash param
-func validateVoteSlash(v interface{}) error {
-	return validatePercentage(v)
-}
-
-// validateUploadSlash validates the UploadSlash param
-func validateUploadSlash(v interface{}) error {
-	return validatePercentage(v)
-}
-
-// validateTimeoutSlash validates the TimeoutSlash param
-func validateTimeoutSlash(v interface{}) error {
-	return validatePercentage(v)
 }
 
 // validateUploadTimeout validates the uploadTimeout param
@@ -238,29 +159,6 @@ func validateStorageCost(v interface{}) error {
 // validateNetworkFee validates the NetworkFee param
 func validateNetworkFee(v interface{}) error {
 	return validatePercentage(v)
-}
-
-// validateMaxPoints validates the MaxPoints param
-func validateMaxPoints(v interface{}) error {
-	maxPoints, ok := v.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
-	}
-
-	// TODO implement validation
-	_ = maxPoints
-
-	return nil
-}
-
-// validateMaxPoints validates the MaxPoints param
-func validateUnbondingStakingTime(v interface{}) error {
-	_, ok := v.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
-	}
-
-	return nil
 }
 
 // validateMaxPoints validates the MaxPoints param
