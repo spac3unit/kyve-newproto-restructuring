@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -8,7 +9,7 @@ import (
 
 // insertQueueEntry inserts an entry into the queue identified by `identifier`
 // It automatically updates the queue state and uses the block time.
-func (k Keeper) getNextQueueSlot(ctx sdk.Context, identifier string) (index uint64) {
+func (k Keeper) getNextQueueSlot(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER) (index uint64) {
 
 	// unbondingState stores the start and the end of the queue with all unbonding entries
 	// the queue is ordered by time
@@ -23,7 +24,7 @@ func (k Keeper) getNextQueueSlot(ctx sdk.Context, identifier string) (index uint
 }
 
 // processQueue ...
-func (k Keeper) processQueue(ctx sdk.Context, identifier string, processEntry func(index uint64) bool) {
+func (k Keeper) processQueue(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER, processEntry func(index uint64) bool) {
 	// Get Queue information
 	queueState := k.GetQueueState(ctx, identifier)
 

@@ -39,6 +39,11 @@ var (
 	DefaultCommissionChangeTime uint64 = 60 * 60 * 24 * 5
 )
 
+var (
+	KeyLeavePoolTime            = []byte("KeyLeavePoolTime")
+	DefaultLeavePoolTime uint64 = 60 * 60 * 24 * 5
+)
+
 // ParamKeyTable the param key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
@@ -52,6 +57,7 @@ func NewParams(
 	maxPoints uint64,
 	unbondingStakingTime uint64,
 	commissionChangeTime uint64,
+	leavePoolTime uint64,
 ) Params {
 	return Params{
 		VoteSlash:            voteSlash,
@@ -60,6 +66,7 @@ func NewParams(
 		MaxPoints:            maxPoints,
 		UnbondingStakingTime: unbondingStakingTime,
 		CommissionChangeTime: commissionChangeTime,
+		LeavePoolTime:        leavePoolTime,
 	}
 }
 
@@ -72,6 +79,7 @@ func DefaultParams() Params {
 		DefaultMaxPoints,
 		DefaultUnbondingStakingTime,
 		DefaultCommissionChangeTime,
+		DefaultLeavePoolTime,
 	)
 }
 
@@ -84,6 +92,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyMaxPoints, &p.MaxPoints, validateMaxPoints),
 		paramtypes.NewParamSetPair(KeyUnbondingStakingTime, &p.UnbondingStakingTime, validateUnbondingStakingTime),
 		paramtypes.NewParamSetPair(KeyCommissionChangeTime, &p.CommissionChangeTime, validateTrue),
+		paramtypes.NewParamSetPair(KeyLeavePoolTime, &p.LeavePoolTime, validateTrue),
 	}
 }
 

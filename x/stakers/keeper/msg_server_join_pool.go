@@ -28,14 +28,12 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 
 	k.AddStakerToPool(ctx, msg.PoolId, msg.Creator)
 
-	// TODO emit enter pool event
-	//if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventStakerStatusChanged{
-	//	PoolId:  msg.PoolId,
-	//	Address: msg.Creator,
-	//	Status:  types.STAKER_STATUS_ACTIVE,
-	//}); errEmit != nil {
-	//	return nil, errEmit
-	//}
+	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventJoinPool{
+		PoolId:  msg.PoolId,
+		Address: msg.Creator,
+	}); errEmit != nil {
+		return nil, errEmit
+	}
 
 	return &types.MsgJoinPoolResponse{}, nil
 }

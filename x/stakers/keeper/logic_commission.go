@@ -13,7 +13,7 @@ func (k Keeper) orderNewCommissionChange(ctx sdk.Context, staker string, commiss
 		k.RemoveCommissionChangeEntry(ctx, &queueEntry)
 	}
 
-	queueIndex := k.getNextQueueSlot(ctx, "commission" /* TODO TYPE */)
+	queueIndex := k.getNextQueueSlot(ctx, types.QUEUE_IDENTIFIER_COMMISSION)
 
 	commissionChangeEntry := types.CommissionChangeEntry{
 		Index:        queueIndex,
@@ -28,7 +28,7 @@ func (k Keeper) orderNewCommissionChange(ctx sdk.Context, staker string, commiss
 // ProcessCommissionChangeQueue ...
 func (k Keeper) ProcessCommissionChangeQueue(ctx sdk.Context) {
 
-	k.processQueue(ctx, "commission" /* TODO TYPE */, func(index uint64) bool {
+	k.processQueue(ctx, types.QUEUE_IDENTIFIER_COMMISSION, func(index uint64) bool {
 
 		// Get queue entry in question
 		queueEntry, found := k.GetCommissionChangeEntry(ctx, index)
@@ -36,7 +36,7 @@ func (k Keeper) ProcessCommissionChangeQueue(ctx sdk.Context) {
 		if !found {
 			// continue with the next entry
 			return true
-		} else if queueEntry.CreationDate+int64(k.CommissionChangeTime(ctx)) /* TODO PARAM */ <= ctx.BlockTime().Unix() {
+		} else if queueEntry.CreationDate+int64(k.CommissionChangeTime(ctx)) <= ctx.BlockTime().Unix() {
 			k.RemoveCommissionChangeEntry(ctx, &queueEntry)
 
 			k.UpdateStakerCommission(ctx, queueEntry.Staker, queueEntry.Commission)

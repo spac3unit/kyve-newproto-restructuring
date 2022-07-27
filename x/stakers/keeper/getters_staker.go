@@ -82,10 +82,15 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, address string, amount uint64
 // RemoveAmountFromStaker ...
 // Ensure that amount <= staker.Amount -> otherwise overflow
 // TODO maybe cap it to prevent an overflow. Or maybe do nothing if that happens?
-func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, address string, amount uint64) {
+func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, address string, amount uint64, isUnstake bool) {
 	staker, found := k.GetStaker(ctx, address)
 	if found {
 		staker.Amount -= amount
+
+		if isUnstake {
+			staker.UnbondingAmount -= amount
+		}
+
 		for _, poolId := range staker.Pools {
 			k.subtractFromTotalStake(ctx, poolId, amount)
 		}

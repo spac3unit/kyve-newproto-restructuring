@@ -25,10 +25,23 @@ var (
 	// StakerKeyPrefix is the prefix to retrieve all Staker
 	StakerKeyPrefix = []byte{1}
 
+	// QueueStateKeyPrefix ...
+	QueueStateKeyPrefix = []byte{3}
+
 	// CommissionChangeQueueEntryKeyPrefix ...
 	CommissionChangeEntryKeyPrefix = []byte{15}
 	// CommissionChangeQueueEntryKeyPrefixIndex2 ...
 	CommissionChangeEntryKeyPrefixIndex2 = []byte{16}
+
+	// UnbondingStakingQueueEntryKeyPrefix ...
+	UnbondingStakingEntryKeyPrefix = []byte{9}
+	// UnbondingStakingQueueEntryKeyPrefixIndex2 ...
+	UnbondingStakingEntryKeyPrefixIndex2 = []byte{10}
+
+	// UnbondingStakingQueueEntryKeyPrefix ...
+	LeavePoolEntryKeyPrefix = []byte{21}
+	// UnbondingStakingQueueEntryKeyPrefixIndex2 ...
+	LeavePoolEntryKeyPrefixIndex2 = []byte{22}
 )
 
 // ENUM aggregated data types
@@ -38,6 +51,15 @@ var (
 	STAKER_STATS_TOTAL_STAKE          STAKER_STATS = "total_stake"
 	STAKER_STATS_TOTAL_INACTIVE_STAKE STAKER_STATS = "total_inactive_stake"
 	STAKER_STATS_COUNT                STAKER_STATS = "total_inactive_stake"
+)
+
+// ENUM queue types identifiers
+type QUEUE_IDENTIFIER []byte
+
+var (
+	QUEUE_IDENTIFIER_UNSTAKING  QUEUE_IDENTIFIER = []byte{30, 1}
+	QUEUE_IDENTIFIER_COMMISSION QUEUE_IDENTIFIER = []byte{30, 2}
+	QUEUE_IDENTIFIER_LEAVE      QUEUE_IDENTIFIER = []byte{30, 3}
 )
 
 const (
@@ -61,4 +83,18 @@ func CommissionChangeEntryKey(index uint64) []byte {
 // Important: only one queue entry per staker+poolId is allowed at a time.
 func CommissionChangeEntryKeyIndex2(staker string) []byte {
 	return util.GetByteKey(staker)
+}
+
+func UnbondingStakeEntryKey(index uint64) []byte {
+	return util.GetByteKey(index)
+}
+func UnbondingStakeEntryKeyIndex2(staker string, index uint64) []byte {
+	return util.GetByteKey(staker, index)
+}
+
+func LeavePoolEntryKey(index uint64) []byte {
+	return util.GetByteKey(index)
+}
+func LeavePoolEntryKeyIndex2(staker string, poolId uint64) []byte {
+	return util.GetByteKey(staker, poolId)
 }

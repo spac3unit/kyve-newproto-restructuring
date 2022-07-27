@@ -6,11 +6,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// GetUnbondingStakingQueueState returns the state for the unstaking queue
-func (k Keeper) GetQueueState(ctx sdk.Context, identifier string) (state types.QueueState) {
+// GetQueueState ...
+func (k Keeper) GetQueueState(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER) (state types.QueueState) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	// TODO
-	b := store.Get(types.UnbondingStakingQueueStateKey)
+	b := store.Get(identifier)
 
 	if b == nil {
 		return state
@@ -20,10 +19,9 @@ func (k Keeper) GetQueueState(ctx sdk.Context, identifier string) (state types.Q
 	return
 }
 
-// SetUnbondingStakingQueueState saves the unstaking queue state
-func (k Keeper) SetQueueState(ctx sdk.Context, identifier string, state types.QueueState) {
+// SetQueueState ...
+func (k Keeper) SetQueueState(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER, state types.QueueState) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	// TODO
 	b := k.cdc.MustMarshal(&state)
-	store.Set(types.UnbondingStakingQueueStateKey, b)
+	store.Set(identifier, b)
 }

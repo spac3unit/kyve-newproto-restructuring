@@ -25,7 +25,7 @@ func (k Keeper) Slash(
 			k.removeStaker(ctx, staker)
 		} else {
 			// Subtract slashing amount from staking amount, and update the pool's total stake.
-			k.RemoveAmountFromStaker(ctx, staker.Address, slash)
+			k.RemoveAmountFromStaker(ctx, staker.Address, slash, false)
 		}
 
 		// emit slashing event
