@@ -44,21 +44,21 @@ func (k Keeper) DelegatorsByPoolAndStaker(goCtx context.Context, req *types.Quer
 				return false, nil
 			}
 
-			// Calculate current rewards for the delegator
-			f1 := F1Distribution{
-				k:                k,
-				ctx:              ctx,
-				poolId:           pool.Id,
-				stakerAddress:    delegator.Staker,
-				delegatorAddress: delegator.Delegator,
-			}
-
-			delegators = append(delegators, types.StakerDelegatorResponse{
-				Delegator:        delegator.Delegator,
-				CurrentReward:    f1.getCurrentReward(),
-				DelegationAmount: delegator.DelegationAmount,
-				Staker:           req.Staker,
-			})
+			//// Calculate current rewards for the delegator
+			//f1 := F1Distribution{
+			//	k:                k,
+			//	ctx:              ctx,
+			//	poolId:           pool.Id,
+			//	stakerAddress:    delegator.Staker,
+			//	delegatorAddress: delegator.Delegator,
+			//}
+			//
+			//delegators = append(delegators, types.StakerDelegatorResponse{
+			//	Delegator:        delegator.Delegator,
+			//	CurrentReward:    f1.getCurrentReward(),
+			//	DelegationAmount: delegator.DelegationAmount,
+			//	Staker:           req.Staker,
+			//})
 		}
 
 		return true, nil

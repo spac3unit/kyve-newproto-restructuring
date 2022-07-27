@@ -1,18 +1,17 @@
-package v0_5_3
+package v0_7_0
 
 import (
-	"fmt"
+	registrykeeper "github.com/KYVENetwork/chain/x/registry/keeper"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
 
-func CreateUpgradeHandler() upgradetypes.UpgradeHandler {
+func CreateUpgradeHandler(registryKeeper *registrykeeper.Keeper) upgradetypes.UpgradeHandler {
 	return func(ctx sdk.Context, plan upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
 
-		fmt.Printf("Process emergency upgrade: %s\n", UpgradeName)
+		_ = registryKeeper
 
-		// Return.
 		return vm, nil
 	}
 }

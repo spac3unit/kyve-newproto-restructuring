@@ -40,20 +40,22 @@ func (k Keeper) Delegator(goCtx context.Context, req *types.QueryDelegatorReques
 		return &response, nil
 	}
 
-	f1 := F1Distribution{
-		k:                k,
-		ctx:              ctx,
-		poolId:           req.PoolId,
-		stakerAddress:    delegator.Staker,
-		delegatorAddress: delegator.Delegator,
-	}
+	_ = delegator
 
-	response.Delegator = &types.StakerDelegatorResponse{
-		Delegator:        delegator.Delegator,
-		CurrentReward:    f1.getCurrentReward(),
-		DelegationAmount: delegator.DelegationAmount,
-		Staker:           delegator.Staker,
-	}
+	//f1 := F1Distribution{
+	//	k:                k,
+	//	ctx:              ctx,
+	//	poolId:           req.PoolId,
+	//	stakerAddress:    delegator.Staker,
+	//	delegatorAddress: delegator.Delegator,
+	//}
+	//
+	//response.Delegator = &types.StakerDelegatorResponse{
+	//	Delegator:        delegator.Delegator,
+	//	CurrentReward:    f1.getCurrentReward(),
+	//	DelegationAmount: delegator.DelegationAmount,
+	//	Staker:           delegator.Staker,
+	//}
 
 	return &response, nil
 }

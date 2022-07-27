@@ -31,9 +31,11 @@ func TransferToModule(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module stri
 
 // transferToTreasury sends tokens from this module to the treasury (community spend pool).
 func transferToTreasury(bankKeeper bankkeeper.Keeper, ctx sdk.Context, amount uint64) error {
-	sender := bankKeeper.accountKeeper.GetModuleAddress(types.ModuleName)
-	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
-
-	err := k.distrKeeper.FundCommunityPool(ctx, coins, sender)
-	return err
+	//sender := bankKeeper.accountKeeper.GetModuleAddress(types.ModuleName)
+	//coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
+	//
+	//err := k.distrKeeper.FundCommunityPool(ctx, coins, sender)
+	//return err
+	// TODO implement treasury transfer
+	return nil
 }

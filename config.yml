@@ -123,3 +123,5 @@ genesis:
 validator:
   name: alice
   staked: "1000000000000000tkyve"
+build:
+  main: "cmd/kyved"

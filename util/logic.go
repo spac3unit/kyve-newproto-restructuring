@@ -9,18 +9,16 @@ type KeyPrefixBuilder struct {
 	Key []byte
 }
 
-func (k KeyPrefixBuilder) AInt(n uint64) KeyPrefixBuilder {
+func (k *KeyPrefixBuilder) AInt(n uint64) {
 	indexBytes := make([]byte, 8)
 	binary.BigEndian.PutUint64(indexBytes, n)
 	k.Key = append(k.Key, indexBytes...)
 	k.Key = append(k.Key, []byte("/")...)
-	return k
 }
 
-func (k KeyPrefixBuilder) AString(s string) KeyPrefixBuilder {
+func (k *KeyPrefixBuilder) AString(s string) {
 	k.Key = append(k.Key, []byte(s)...)
 	k.Key = append(k.Key, []byte("/")...)
-	return k
 }
 
 func GetByteKey(keys ...interface{}) []byte {
