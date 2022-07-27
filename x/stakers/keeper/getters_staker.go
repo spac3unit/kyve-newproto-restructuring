@@ -205,7 +205,7 @@ func (k Keeper) subtractFromTotalStake(ctx sdk.Context, poolId uint64, amount ui
 // getStat get the total number of pool
 func (k Keeper) getStat(ctx sdk.Context, poolId uint64, statType types.STAKER_STATS) uint64 {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
-	bz := store.Get(util.GetByteKey(statType, poolId))
+	bz := store.Get(util.GetByteKey(string(statType), poolId))
 	if bz == nil {
 		return 0
 	}
@@ -217,5 +217,5 @@ func (k Keeper) setStat(ctx sdk.Context, poolId uint64, statType types.STAKER_ST
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, count)
-	store.Set(util.GetByteKey(statType, poolId), bz)
+	store.Set(util.GetByteKey(string(statType), poolId), bz)
 }
