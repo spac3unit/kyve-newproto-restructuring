@@ -23,180 +23,28 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// EventDelegatePool is an event emitted when someone delegates to a protocol node.
-type EventDelegatePool struct {
-	// pool_id is the unique ID of the pool.
-	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	// address is the account address of the delegator.
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	// node is the account address of the protocol node.
-	Node string `protobuf:"bytes,3,opt,name=node,proto3" json:"node,omitempty"`
-	// amount ...
-	Amount uint64 `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
-}
-
-func (m *EventDelegatePool) Reset()         { *m = EventDelegatePool{} }
-func (m *EventDelegatePool) String() string { return proto.CompactTextString(m) }
-func (*EventDelegatePool) ProtoMessage()    {}
-func (*EventDelegatePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d01988a9108a2e89, []int{0}
-}
-func (m *EventDelegatePool) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *EventDelegatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_EventDelegatePool.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *EventDelegatePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventDelegatePool.Merge(m, src)
-}
-func (m *EventDelegatePool) XXX_Size() int {
-	return m.Size()
-}
-func (m *EventDelegatePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventDelegatePool.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventDelegatePool proto.InternalMessageInfo
-
-func (m *EventDelegatePool) GetPoolId() uint64 {
-	if m != nil {
-		return m.PoolId
-	}
-	return 0
-}
-
-func (m *EventDelegatePool) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-func (m *EventDelegatePool) GetNode() string {
-	if m != nil {
-		return m.Node
-	}
-	return ""
-}
-
-func (m *EventDelegatePool) GetAmount() uint64 {
-	if m != nil {
-		return m.Amount
-	}
-	return 0
-}
-
-// EventUndelegatePool is an event emitted when someone undelegates from a protocol node.
-type EventUndelegatePool struct {
-	// pool_id is the unique ID of the pool.
-	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	// address is the account address of the delegator.
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	// node is the account address of the protocol node.
-	Node string `protobuf:"bytes,3,opt,name=node,proto3" json:"node,omitempty"`
-	// amount ...
-	Amount uint64 `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
-}
-
-func (m *EventUndelegatePool) Reset()         { *m = EventUndelegatePool{} }
-func (m *EventUndelegatePool) String() string { return proto.CompactTextString(m) }
-func (*EventUndelegatePool) ProtoMessage()    {}
-func (*EventUndelegatePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d01988a9108a2e89, []int{1}
-}
-func (m *EventUndelegatePool) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *EventUndelegatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_EventUndelegatePool.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *EventUndelegatePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventUndelegatePool.Merge(m, src)
-}
-func (m *EventUndelegatePool) XXX_Size() int {
-	return m.Size()
-}
-func (m *EventUndelegatePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventUndelegatePool.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EventUndelegatePool proto.InternalMessageInfo
-
-func (m *EventUndelegatePool) GetPoolId() uint64 {
-	if m != nil {
-		return m.PoolId
-	}
-	return 0
-}
-
-func (m *EventUndelegatePool) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-func (m *EventUndelegatePool) GetNode() string {
-	if m != nil {
-		return m.Node
-	}
-	return ""
-}
-
-func (m *EventUndelegatePool) GetAmount() uint64 {
-	if m != nil {
-		return m.Amount
-	}
-	return 0
-}
-
-// EventRedelegatePool is an event emitted when someone redelegates from one protocol node to another.
-type EventRedelegatePool struct {
+// EventDelegate is an event emitted when someone delegates to a protocol node.
+type EventDelegate struct {
 	// address is the account address of the delegator.
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	// from_pool is the unique ID of the pool the user withdraws its delegation from
-	FromPool uint64 `protobuf:"varint,2,opt,name=from_pool,json=fromPool,proto3" json:"from_pool,omitempty"`
-	// from_node is the account address of the protocol node the users withdraws from.
-	FromNode string `protobuf:"bytes,3,opt,name=from_node,json=fromNode,proto3" json:"from_node,omitempty"`
-	// pool_id is the unique ID of the pool of the new pool the user delegates to
-	ToPool uint64 `protobuf:"varint,4,opt,name=to_pool,json=toPool,proto3" json:"to_pool,omitempty"`
-	// address is the account address of the new staker in the the pool
-	ToNode string `protobuf:"bytes,5,opt,name=to_node,json=toNode,proto3" json:"to_node,omitempty"`
+	// node is the account address of the protocol node.
+	Node string `protobuf:"bytes,2,opt,name=node,proto3" json:"node,omitempty"`
 	// amount ...
-	Amount uint64 `protobuf:"varint,6,opt,name=amount,proto3" json:"amount,omitempty"`
+	Amount uint64 `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
-func (m *EventRedelegatePool) Reset()         { *m = EventRedelegatePool{} }
-func (m *EventRedelegatePool) String() string { return proto.CompactTextString(m) }
-func (*EventRedelegatePool) ProtoMessage()    {}
-func (*EventRedelegatePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d01988a9108a2e89, []int{2}
+func (m *EventDelegate) Reset()         { *m = EventDelegate{} }
+func (m *EventDelegate) String() string { return proto.CompactTextString(m) }
+func (*EventDelegate) ProtoMessage()    {}
+func (*EventDelegate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d01988a9108a2e89, []int{0}
 }
-func (m *EventRedelegatePool) XXX_Unmarshal(b []byte) error {
+func (m *EventDelegate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventRedelegatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventDelegate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventRedelegatePool.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventDelegate.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -206,54 +54,170 @@ func (m *EventRedelegatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *EventRedelegatePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventRedelegatePool.Merge(m, src)
+func (m *EventDelegate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventDelegate.Merge(m, src)
 }
-func (m *EventRedelegatePool) XXX_Size() int {
+func (m *EventDelegate) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventRedelegatePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventRedelegatePool.DiscardUnknown(m)
+func (m *EventDelegate) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventDelegate.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventRedelegatePool proto.InternalMessageInfo
+var xxx_messageInfo_EventDelegate proto.InternalMessageInfo
 
-func (m *EventRedelegatePool) GetAddress() string {
+func (m *EventDelegate) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *EventRedelegatePool) GetFromPool() uint64 {
+func (m *EventDelegate) GetNode() string {
 	if m != nil {
-		return m.FromPool
+		return m.Node
+	}
+	return ""
+}
+
+func (m *EventDelegate) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
 	}
 	return 0
 }
 
-func (m *EventRedelegatePool) GetFromNode() string {
+// EventUndelegate is an event emitted when someone undelegates from a protocol node.
+type EventUndelegate struct {
+	// address is the account address of the delegator.
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	// node is the account address of the protocol node.
+	Node string `protobuf:"bytes,2,opt,name=node,proto3" json:"node,omitempty"`
+	// amount ...
+	Amount uint64 `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *EventUndelegate) Reset()         { *m = EventUndelegate{} }
+func (m *EventUndelegate) String() string { return proto.CompactTextString(m) }
+func (*EventUndelegate) ProtoMessage()    {}
+func (*EventUndelegate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d01988a9108a2e89, []int{1}
+}
+func (m *EventUndelegate) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventUndelegate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventUndelegate.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventUndelegate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventUndelegate.Merge(m, src)
+}
+func (m *EventUndelegate) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventUndelegate) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventUndelegate.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventUndelegate proto.InternalMessageInfo
+
+func (m *EventUndelegate) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *EventUndelegate) GetNode() string {
+	if m != nil {
+		return m.Node
+	}
+	return ""
+}
+
+func (m *EventUndelegate) GetAmount() uint64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+// EventRedelegate is an event emitted when someone redelegates from one protocol node to another.
+type EventRedelegate struct {
+	// address is the account address of the delegator.
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	// from_node is the account address of the protocol node the users withdraws from.
+	FromNode string `protobuf:"bytes,2,opt,name=from_node,json=fromNode,proto3" json:"from_node,omitempty"`
+	// address is the account address of the new staker in the the pool
+	ToNode string `protobuf:"bytes,3,opt,name=to_node,json=toNode,proto3" json:"to_node,omitempty"`
+	// amount ...
+	Amount uint64 `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
+}
+
+func (m *EventRedelegate) Reset()         { *m = EventRedelegate{} }
+func (m *EventRedelegate) String() string { return proto.CompactTextString(m) }
+func (*EventRedelegate) ProtoMessage()    {}
+func (*EventRedelegate) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d01988a9108a2e89, []int{2}
+}
+func (m *EventRedelegate) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventRedelegate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventRedelegate.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventRedelegate) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventRedelegate.Merge(m, src)
+}
+func (m *EventRedelegate) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventRedelegate) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventRedelegate.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventRedelegate proto.InternalMessageInfo
+
+func (m *EventRedelegate) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *EventRedelegate) GetFromNode() string {
 	if m != nil {
 		return m.FromNode
 	}
 	return ""
 }
 
-func (m *EventRedelegatePool) GetToPool() uint64 {
-	if m != nil {
-		return m.ToPool
-	}
-	return 0
-}
-
-func (m *EventRedelegatePool) GetToNode() string {
+func (m *EventRedelegate) GetToNode() string {
 	if m != nil {
 		return m.ToNode
 	}
 	return ""
 }
 
-func (m *EventRedelegatePool) GetAmount() uint64 {
+func (m *EventRedelegate) GetAmount() uint64 {
 	if m != nil {
 		return m.Amount
 	}
@@ -261,9 +225,9 @@ func (m *EventRedelegatePool) GetAmount() uint64 {
 }
 
 func init() {
-	proto.RegisterType((*EventDelegatePool)(nil), "kyve.delegation.v1beta1.EventDelegatePool")
-	proto.RegisterType((*EventUndelegatePool)(nil), "kyve.delegation.v1beta1.EventUndelegatePool")
-	proto.RegisterType((*EventRedelegatePool)(nil), "kyve.delegation.v1beta1.EventRedelegatePool")
+	proto.RegisterType((*EventDelegate)(nil), "kyve.delegation.v1beta1.EventDelegate")
+	proto.RegisterType((*EventUndelegate)(nil), "kyve.delegation.v1beta1.EventUndelegate")
+	proto.RegisterType((*EventRedelegate)(nil), "kyve.delegation.v1beta1.EventRedelegate")
 }
 
 func init() {
@@ -271,31 +235,29 @@ func init() {
 }
 
 var fileDescriptor_d01988a9108a2e89 = []byte{
-	// 336 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x91, 0x4f, 0x4e, 0xfa, 0x40,
-	0x14, 0xc7, 0x99, 0xdf, 0xaf, 0x16, 0x99, 0x9d, 0xd5, 0x48, 0x83, 0x49, 0x43, 0x88, 0x0b, 0x56,
-	0x9d, 0x10, 0x6f, 0x60, 0x64, 0x41, 0x4c, 0x88, 0x69, 0xa2, 0x89, 0x6e, 0x48, 0x61, 0x9e, 0xa5,
-	0x01, 0xe6, 0x91, 0xf6, 0x81, 0x70, 0x0b, 0xef, 0xe2, 0x25, 0x5c, 0xb2, 0x74, 0x69, 0xe0, 0x22,
-	0x66, 0x66, 0x20, 0xb6, 0x0b, 0xb6, 0xee, 0xe6, 0xcd, 0x7c, 0xbe, 0x7f, 0x26, 0x8f, 0x5f, 0x4f,
-	0xd6, 0x4b, 0x10, 0x12, 0xa6, 0x90, 0xc4, 0x94, 0xa2, 0x12, 0xcb, 0xce, 0x10, 0x28, 0xee, 0x08,
-	0x58, 0x82, 0xa2, 0x3c, 0x9c, 0x67, 0x48, 0xe8, 0xd5, 0x35, 0x15, 0xfe, 0x52, 0xe1, 0x9e, 0x6a,
-	0x5c, 0x24, 0x98, 0xa0, 0x61, 0x84, 0x3e, 0x59, 0xbc, 0xd1, 0x3e, 0x66, 0x5a, 0x70, 0xb0, 0x64,
-	0xf3, 0x18, 0x49, 0x2b, 0x4b, 0xb4, 0x32, 0x7e, 0xd6, 0xd5, 0x55, 0xee, 0x2c, 0x03, 0x0f, 0x88,
-	0x53, 0xaf, 0xce, 0xab, 0x73, 0xc4, 0xe9, 0x20, 0x95, 0x3e, 0x6b, 0xb2, 0xb6, 0x13, 0xb9, 0x7a,
-	0xec, 0x49, 0xcf, 0xe7, 0xd5, 0x58, 0xca, 0x0c, 0xf2, 0xdc, 0xff, 0xd7, 0x64, 0xed, 0x5a, 0x74,
-	0x18, 0x3d, 0x8f, 0x3b, 0x0a, 0x25, 0xf8, 0xff, 0xcd, 0xb5, 0x39, 0x7b, 0x97, 0xdc, 0x8d, 0x67,
-	0xb8, 0x50, 0xe4, 0x3b, 0xd6, 0xc5, 0x4e, 0x2d, 0xe2, 0xe7, 0x26, 0xf3, 0x51, 0xc9, 0x3f, 0x4c,
-	0xfd, 0x60, 0xfb, 0xd8, 0x08, 0x4a, 0xb1, 0x05, 0x77, 0x56, 0x76, 0xbf, 0xe2, 0xb5, 0xd7, 0x0c,
-	0x67, 0x03, 0x5d, 0xc3, 0x24, 0x3b, 0xd1, 0xa9, 0xbe, 0x30, 0xb2, 0xc3, 0x63, 0x21, 0xdf, 0x3c,
-	0xf6, 0x75, 0x87, 0x3a, 0xaf, 0x12, 0x5a, 0xdd, 0xbe, 0x04, 0xe1, 0xe1, 0x8f, 0x84, 0x56, 0x73,
-	0x62, 0x34, 0x2e, 0x61, 0xbf, 0xdc, 0xda, 0x2d, 0xb6, 0xbe, 0xed, 0x7d, 0x6e, 0x03, 0xb6, 0xd9,
-	0x06, 0xec, 0x7b, 0x1b, 0xb0, 0xf7, 0x5d, 0x50, 0xd9, 0xec, 0x82, 0xca, 0xd7, 0x2e, 0xa8, 0xbc,
-	0x88, 0x24, 0xa5, 0xf1, 0x62, 0x18, 0x8e, 0x70, 0x26, 0xee, 0x9f, 0x9f, 0xba, 0x7d, 0xa0, 0x37,
-	0xcc, 0x26, 0x62, 0x34, 0x8e, 0x53, 0x25, 0x56, 0xc5, 0xad, 0xd3, 0x7a, 0x0e, 0xf9, 0xd0, 0x35,
-	0x1b, 0xbf, 0xf9, 0x09, 0x00, 0x00, 0xff, 0xff, 0xc3, 0xc7, 0x80, 0x30, 0x94, 0x02, 0x00, 0x00,
+	// 291 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xc9, 0xae, 0x2c, 0x4b,
+	0xd5, 0x4f, 0x49, 0xcd, 0x49, 0x4d, 0x4f, 0x2c, 0xc9, 0xcc, 0xcf, 0xd3, 0x2f, 0x33, 0x4c, 0x4a,
+	0x2d, 0x49, 0x34, 0xd4, 0x4f, 0x2d, 0x4b, 0xcd, 0x2b, 0x29, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9,
+	0x17, 0x12, 0x07, 0xa9, 0xd2, 0x43, 0xa8, 0xd2, 0x83, 0xaa, 0x92, 0x12, 0x49, 0xcf, 0x4f, 0xcf,
+	0x07, 0xab, 0xd1, 0x07, 0xb1, 0x20, 0xca, 0xa5, 0x34, 0x70, 0x19, 0x8a, 0x64, 0x02, 0x44, 0xa5,
+	0x02, 0x2e, 0x95, 0x25, 0x15, 0x10, 0x15, 0x4a, 0xa1, 0x5c, 0xbc, 0xae, 0x20, 0xa7, 0xb8, 0x40,
+	0xd4, 0xa4, 0x0a, 0x49, 0x70, 0xb1, 0x27, 0xa6, 0xa4, 0x14, 0xa5, 0x16, 0x17, 0x4b, 0x30, 0x2a,
+	0x30, 0x6a, 0x70, 0x06, 0xc1, 0xb8, 0x42, 0x42, 0x5c, 0x2c, 0x79, 0xf9, 0x29, 0xa9, 0x12, 0x4c,
+	0x60, 0x61, 0x30, 0x5b, 0x48, 0x8c, 0x8b, 0x2d, 0x31, 0x37, 0xbf, 0x34, 0xaf, 0x44, 0x82, 0x59,
+	0x81, 0x51, 0x83, 0x25, 0x08, 0xca, 0x53, 0x0a, 0xe7, 0xe2, 0x07, 0x1b, 0x1b, 0x9a, 0x97, 0x42,
+	0x5d, 0x83, 0x2b, 0xa1, 0x06, 0x07, 0xa5, 0x12, 0x61, 0xb0, 0x34, 0x17, 0x67, 0x5a, 0x51, 0x7e,
+	0x6e, 0x3c, 0x92, 0xe9, 0x1c, 0x20, 0x01, 0x3f, 0x90, 0x0d, 0xe2, 0x5c, 0xec, 0x25, 0xf9, 0x10,
+	0x29, 0x66, 0xb0, 0x14, 0x5b, 0x49, 0xbe, 0x1f, 0xaa, 0xd5, 0x2c, 0xc8, 0x56, 0x3b, 0x79, 0x9e,
+	0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31,
+	0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43, 0x94, 0x7e, 0x7a, 0x66, 0x49, 0x46, 0x69,
+	0x92, 0x5e, 0x72, 0x7e, 0xae, 0xbe, 0x77, 0x64, 0x98, 0xab, 0x5f, 0x6a, 0x49, 0x79, 0x7e, 0x51,
+	0xb6, 0x7e, 0x72, 0x46, 0x62, 0x66, 0x9e, 0x7e, 0x05, 0x72, 0x04, 0x94, 0x54, 0x16, 0xa4, 0x16,
+	0x27, 0xb1, 0x81, 0x03, 0xdf, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x05, 0x16, 0x0f, 0xf8, 0x1f,
+	0x02, 0x00, 0x00,
 }
 
-func (m *EventDelegatePool) Marshal() (dAtA []byte, err error) {
+func (m *EventDelegate) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -305,12 +267,96 @@ func (m *EventDelegatePool) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventDelegatePool) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventDelegate) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventDelegatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventDelegate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Node) > 0 {
+		i -= len(m.Node)
+		copy(dAtA[i:], m.Node)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Node)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventUndelegate) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventUndelegate) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventUndelegate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Amount != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Amount))
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Node) > 0 {
+		i -= len(m.Node)
+		copy(dAtA[i:], m.Node)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Node)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventRedelegate) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventRedelegate) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventRedelegate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -319,124 +365,20 @@ func (m *EventDelegatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i = encodeVarintEvents(dAtA, i, uint64(m.Amount))
 		i--
 		dAtA[i] = 0x20
-	}
-	if len(m.Node) > 0 {
-		i -= len(m.Node)
-		copy(dAtA[i:], m.Node)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Node)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.PoolId != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.PoolId))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *EventUndelegatePool) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *EventUndelegatePool) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *EventUndelegatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Amount))
-		i--
-		dAtA[i] = 0x20
-	}
-	if len(m.Node) > 0 {
-		i -= len(m.Node)
-		copy(dAtA[i:], m.Node)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Node)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.PoolId != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.PoolId))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *EventRedelegatePool) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *EventRedelegatePool) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *EventRedelegatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Amount))
-		i--
-		dAtA[i] = 0x30
 	}
 	if len(m.ToNode) > 0 {
 		i -= len(m.ToNode)
 		copy(dAtA[i:], m.ToNode)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.ToNode)))
 		i--
-		dAtA[i] = 0x2a
-	}
-	if m.ToPool != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ToPool))
-		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x1a
 	}
 	if len(m.FromNode) > 0 {
 		i -= len(m.FromNode)
 		copy(dAtA[i:], m.FromNode)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.FromNode)))
 		i--
-		dAtA[i] = 0x1a
-	}
-	if m.FromPool != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.FromPool))
-		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
@@ -459,15 +401,12 @@ func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *EventDelegatePool) Size() (n int) {
+func (m *EventDelegate) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.PoolId != 0 {
-		n += 1 + sovEvents(uint64(m.PoolId))
-	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -482,15 +421,12 @@ func (m *EventDelegatePool) Size() (n int) {
 	return n
 }
 
-func (m *EventUndelegatePool) Size() (n int) {
+func (m *EventUndelegate) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.PoolId != 0 {
-		n += 1 + sovEvents(uint64(m.PoolId))
-	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
@@ -505,7 +441,7 @@ func (m *EventUndelegatePool) Size() (n int) {
 	return n
 }
 
-func (m *EventRedelegatePool) Size() (n int) {
+func (m *EventRedelegate) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -514,16 +450,10 @@ func (m *EventRedelegatePool) Size() (n int) {
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
-	}
-	if m.FromPool != 0 {
-		n += 1 + sovEvents(uint64(m.FromPool))
 	}
 	l = len(m.FromNode)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
-	}
-	if m.ToPool != 0 {
-		n += 1 + sovEvents(uint64(m.ToPool))
 	}
 	l = len(m.ToNode)
 	if l > 0 {
@@ -541,7 +471,7 @@ func sovEvents(x uint64) (n int) {
 func sozEvents(x uint64) (n int) {
 	return sovEvents(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *EventDelegatePool) Unmarshal(dAtA []byte) error {
+func (m *EventDelegate) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -564,32 +494,13 @@ func (m *EventDelegatePool) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventDelegatePool: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventDelegate: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventDelegatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventDelegate: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
-			}
-			m.PoolId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PoolId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -621,7 +532,7 @@ func (m *EventDelegatePool) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Node", wireType)
 			}
@@ -653,7 +564,7 @@ func (m *EventDelegatePool) Unmarshal(dAtA []byte) error {
 			}
 			m.Node = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -693,7 +604,7 @@ func (m *EventDelegatePool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventUndelegatePool) Unmarshal(dAtA []byte) error {
+func (m *EventUndelegate) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -716,32 +627,13 @@ func (m *EventUndelegatePool) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventUndelegatePool: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventUndelegate: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventUndelegatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventUndelegate: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
-			}
-			m.PoolId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PoolId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -773,7 +665,7 @@ func (m *EventUndelegatePool) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Node", wireType)
 			}
@@ -805,7 +697,7 @@ func (m *EventUndelegatePool) Unmarshal(dAtA []byte) error {
 			}
 			m.Node = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}
@@ -845,7 +737,7 @@ func (m *EventUndelegatePool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventRedelegatePool) Unmarshal(dAtA []byte) error {
+func (m *EventRedelegate) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -868,10 +760,10 @@ func (m *EventRedelegatePool) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventRedelegatePool: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventRedelegate: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventRedelegatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventRedelegate: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -907,25 +799,6 @@ func (m *EventRedelegatePool) Unmarshal(dAtA []byte) error {
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field FromPool", wireType)
-			}
-			m.FromPool = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.FromPool |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field FromNode", wireType)
 			}
@@ -957,26 +830,7 @@ func (m *EventRedelegatePool) Unmarshal(dAtA []byte) error {
 			}
 			m.FromNode = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ToPool", wireType)
-			}
-			m.ToPool = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ToPool |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ToNode", wireType)
 			}
@@ -1008,7 +862,7 @@ func (m *EventRedelegatePool) Unmarshal(dAtA []byte) error {
 			}
 			m.ToNode = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
 			}

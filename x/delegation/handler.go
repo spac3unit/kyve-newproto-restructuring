@@ -17,17 +17,17 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgDelegatePool:
-			res, err := msgServer.DelegatePool(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgDelegate:
+			res, err := msgServer.Delegate(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgWithdrawPool:
-			res, err := msgServer.WithdrawPool(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUndelegate:
+			res, err := msgServer.Undelegate(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUndelegatePool:
-			res, err := msgServer.UndelegatePool(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgRedelegate:
+			res, err := msgServer.Redelegate(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgRedelegatePool:
-			res, err := msgServer.RedelegatePool(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgWithdrawRewards:
+			res, err := msgServer.WithdrawRewards(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		// this line is used by starport scaffolding # 1
 		default:

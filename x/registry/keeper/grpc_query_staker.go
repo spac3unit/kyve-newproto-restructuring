@@ -54,7 +54,7 @@ func (k Keeper) Staker(goCtx context.Context, req *types.QueryStakerRequest) (*t
 	}
 
 	if staker.Status == types.STAKER_STATUS_ACTIVE {
-		stakerResponse.UploadProbability = k.GetUploadProbability(ctx, staker.Account, staker.PoolId).String()
+		//stakerResponse.UploadProbability = k.GetUploadProbability(ctx, staker.Account, staker.PoolId).String()
 	}
 
 	commissionChangeEntry, foundCommissionChange := k.GetCommissionChangeQueueEntryByIndex2(ctx, staker.Account, staker.PoolId)
@@ -62,7 +62,7 @@ func (k Keeper) Staker(goCtx context.Context, req *types.QueryStakerRequest) (*t
 		stakerResponse.PendingCommissionChange = &types.PendingCommissionChange{
 			NewCommission: commissionChangeEntry.Commission,
 			CreationDate:  commissionChangeEntry.CreationDate,
-			FinishDate:    commissionChangeEntry.CreationDate + int64(k.CommissionChangeTime(ctx)),
+			FinishDate:    commissionChangeEntry.CreationDate + int64(0 /*COMMISSION CHANGE TIME*/),
 		}
 	}
 

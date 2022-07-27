@@ -9,17 +9,13 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// WithdrawPool handles the logic of an SDK message that allows delegators to collect all rewards from a specified pool.
-func (k msgServer) WithdrawPool(goCtx context.Context, msg *types.MsgWithdrawPool) (*types.MsgWithdrawPoolResponse, error) {
+// WithdrawRewards handles the logic of an SDK message that allows delegators to collect all rewards from a specified pool.
+func (k msgServer) WithdrawRewards(goCtx context.Context, msg *types.MsgWithdrawRewards) (*types.MsgWithdrawRewardsResponse, error) {
 	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if poolErr := k.poolKeeper.AssertPoolExists(ctx, msg.PoolId); poolErr != nil {
-		return nil, poolErr
-	}
-
 	// Check if the sender is a delegator in this pool.
-	_, isDelegator := k.GetDelegator(ctx, msg.PoolId, msg.Staker, msg.Creator)
+	_, isDelegator := k.GetDelegator(ctx, msg.Staker, msg.Creator)
 	if !isDelegator {
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
 	}
@@ -28,7 +24,6 @@ func (k msgServer) WithdrawPool(goCtx context.Context, msg *types.MsgWithdrawPoo
 	f1Distribution := F1Distribution{
 		k:                k.Keeper,
 		ctx:              ctx,
-		poolId:           msg.PoolId,
 		stakerAddress:    msg.Staker,
 		delegatorAddress: msg.Creator,
 	}
@@ -42,5 +37,5 @@ func (k msgServer) WithdrawPool(goCtx context.Context, msg *types.MsgWithdrawPoo
 		return nil, err
 	}
 
-	return &types.MsgWithdrawPoolResponse{}, nil
+	return &types.MsgWithdrawRewardsResponse{}, nil
 }

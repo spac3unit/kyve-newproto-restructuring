@@ -6,8 +6,8 @@ import (
 	"github.com/KYVENetwork/chain/x/delegation/types"
 )
 
-// RedelegatePool lets a user redelegate from one staker to another staker
-func (k msgServer) RedelegatePool(goCtx context.Context, msg *types.MsgRedelegatePool) (*types.MsgRedelegatePoolResponse, error) {
+// Redelegate lets a user redelegate from one staker to another staker
+func (k msgServer) Redelegate(goCtx context.Context, msg *types.MsgRedelegate) (*types.MsgRedelegateResponse, error) {
 
 	//// Unwrap context and attempt to fetch the pool.
 	//ctx := sdk.UnwrapSDKContext(goCtx)
@@ -62,5 +62,5 @@ func (k msgServer) RedelegatePool(goCtx context.Context, msg *types.MsgRedelegat
 	//	return nil, errEmit
 	//}
 
-	return &types.MsgRedelegatePoolResponse{}, nil
+	return &types.MsgRedelegateResponse{}, nil
 }

@@ -8,7 +8,6 @@ import (
 type F1Distribution struct {
 	k                Keeper
 	ctx              sdk.Context
-	poolId           uint64
 	stakerAddress    string
 	delegatorAddress string
 }
@@ -23,7 +22,7 @@ func (f1 F1Distribution) updateEntries(
 
 	// get last but one entry for F1Distribution, init with zero if it is the first delegator
 	// F1Paper: Entry_{f-1}
-	f1fMinus1, found := f1.k.GetDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, fMinus1Index)
+	f1fMinus1, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, fMinus1Index)
 	f1fMinus1Balance := sdk.NewDec(0)
 	if found {
 		f1fMinus1Balance, _ = sdk.NewDecFromStr(f1fMinus1.Balance)
@@ -45,12 +44,11 @@ func (f1 F1Distribution) updateEntries(
 
 	if deleteOldEntry {
 		//Remove Old entry
-		f1.k.RemoveDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, fMinus1Index)
+		f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, fMinus1Index)
 	}
 
 	// Insert Entry_F
 	f1.k.SetDelegationEntries(f1.ctx, types.DelegationEntries{
-		PoolId:  f1.poolId,
 		Balance: entryFBalance.String(),
 		Staker:  f1.stakerAddress,
 		KIndex:  indexF,
@@ -66,12 +64,11 @@ func (f1 F1Distribution) Delegate(amount uint64) {
 	}
 
 	// Fetch metadata
-	delegationPoolData, found := f1.k.GetDelegationPoolData(f1.ctx, f1.poolId, f1.stakerAddress)
+	delegationPoolData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
 
 	// Init default data-set, if this is the first delegator
 	if !found {
-		delegationPoolData = types.DelegationPoolData{
-			PoolId:          f1.poolId,
+		delegationPoolData = types.DelegationData{
 			CurrentRewards:  0,
 			TotalDelegation: 0,
 			LatestIndexK:    0,
@@ -93,11 +90,10 @@ func (f1 F1Distribution) Delegate(amount uint64) {
 
 	delegationPoolData.LatestIndexK = indexF
 
-	f1.k.SetDelegationPoolData(f1.ctx, delegationPoolData)
+	f1.k.SetDelegationData(f1.ctx, delegationPoolData)
 
 	f1.k.SetDelegator(f1.ctx, types.Delegator{
 		Staker:           f1.stakerAddress,
-		PoolId:           f1.poolId,
 		Delegator:        f1.delegatorAddress,
 		DelegationAmount: amount,
 		KIndex:           indexF,
@@ -110,7 +106,7 @@ func (f1 F1Distribution) Delegate(amount uint64) {
 func (f1 F1Distribution) Undelegate() (undelegatedAmount uint64) {
 
 	// Fetch metadata
-	delegationPoolData, found := f1.k.GetDelegationPoolData(f1.ctx, f1.poolId, f1.stakerAddress)
+	delegationData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
 
 	// Init default data-set, if this is the first delegator
 	if !found {
@@ -118,37 +114,37 @@ func (f1 F1Distribution) Undelegate() (undelegatedAmount uint64) {
 		//f1.k.PanicHalt(f1.ctx, "No delegationData although somebody is delegating")
 	}
 
-	delegator, found := f1.k.GetDelegator(f1.ctx, f1.poolId, f1.stakerAddress, f1.delegatorAddress)
+	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
 	if !found {
 		// TODO
 		//f1.k.PanicHalt(f1.ctx, "Not a delegator")
 	}
 
-	_, indexF := f1.updateEntries(delegationPoolData.LatestIndexK, delegationPoolData.CurrentRewards,
-		delegationPoolData.TotalDelegation, delegationPoolData.LatestIndexWasUndelegation)
+	_, indexF := f1.updateEntries(delegationData.LatestIndexK, delegationData.CurrentRewards,
+		delegationData.TotalDelegation, delegationData.LatestIndexWasUndelegation)
 
 	// add flag that entry can be deleted after next entry is created
-	delegationPoolData.LatestIndexWasUndelegation = true
+	delegationData.LatestIndexWasUndelegation = true
 
 	// Reset Values according to F1Paper, i.e T=0
-	delegationPoolData.CurrentRewards = 0
-	delegationPoolData.LatestIndexK = indexF
+	delegationData.CurrentRewards = 0
+	delegationData.LatestIndexK = indexF
 
 	// Update Metadata
-	delegationPoolData.TotalDelegation -= delegator.DelegationAmount
-	delegationPoolData.DelegatorCount -= 1
+	delegationData.TotalDelegation -= delegator.DelegationAmount
+	delegationData.DelegatorCount -= 1
 
 	//Remove Delegator
-	f1.k.RemoveDelegator(f1.ctx, delegator.PoolId, delegator.Staker, delegator.Delegator)
+	f1.k.RemoveDelegator(f1.ctx, delegator.Staker, delegator.Delegator)
 
 	//Remove Old entry
-	f1.k.RemoveDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, delegator.KIndex)
+	f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
 
-	if delegationPoolData.DelegatorCount == 0 {
-		f1.k.RemoveDelegationPoolData(f1.ctx, delegationPoolData.PoolId, delegationPoolData.Staker)
-		f1.k.RemoveDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, indexF)
+	if delegationData.DelegatorCount == 0 {
+		f1.k.RemoveDelegationData(f1.ctx, delegationData.Staker)
+		f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, indexF)
 	} else {
-		f1.k.SetDelegationPoolData(f1.ctx, delegationPoolData)
+		f1.k.SetDelegationData(f1.ctx, delegationData)
 	}
 
 	return delegator.DelegationAmount
@@ -159,7 +155,7 @@ func (f1 F1Distribution) Undelegate() (undelegatedAmount uint64) {
 // The Method does NOT transfer the money.
 func (f1 F1Distribution) Withdraw() (reward uint64) {
 	// Fetch metadata
-	delegationPoolData, found := f1.k.GetDelegationPoolData(f1.ctx, f1.poolId, f1.stakerAddress)
+	delegationPoolData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
 
 	// Init default data-set, if this is the first delegator
 	if !found {
@@ -167,7 +163,7 @@ func (f1 F1Distribution) Withdraw() (reward uint64) {
 		//f1.k.PanicHalt(f1.ctx, "No delegationData although somebody is delegating")
 	}
 
-	delegator, found := f1.k.GetDelegator(f1.ctx, f1.poolId, f1.stakerAddress, f1.delegatorAddress)
+	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
 	if !found {
 		// TODO
 		//f1.k.PanicHalt(f1.ctx, "Not a delegator")
@@ -182,17 +178,17 @@ func (f1 F1Distribution) Withdraw() (reward uint64) {
 	delegationPoolData.CurrentRewards = 0
 	delegationPoolData.LatestIndexK = indexF
 
-	f1.k.SetDelegationPoolData(f1.ctx, delegationPoolData)
+	f1.k.SetDelegationData(f1.ctx, delegationPoolData)
 
 	//Calculate Reward
-	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, delegator.KIndex)
+	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
 	if !found {
 		// TODO
 		//f1.k.PanicHalt(f1.ctx, "Delegator does not have entry")
 	}
 
 	//Remove Old entry
-	f1.k.RemoveDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, delegator.KIndex)
+	f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
 
 	//Update Delegator
 	delegator.KIndex = indexF
@@ -206,14 +202,14 @@ func (f1 F1Distribution) Withdraw() (reward uint64) {
 // Calculates and returns the current reward, *without* performing any state changes
 func (f1 F1Distribution) getCurrentReward() (reward uint64) {
 
-	delegator, found := f1.k.GetDelegator(f1.ctx, f1.poolId, f1.stakerAddress, f1.delegatorAddress)
+	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
 	if !found {
 		// TODO
 		//f1.k.PanicHalt(f1.ctx, "Not a delegator")
 	}
 
 	// Fetch metadata
-	delegationPoolData, found := f1.k.GetDelegationPoolData(f1.ctx, f1.poolId, f1.stakerAddress)
+	delegationPoolData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
 	if !found {
 		// TODO
 		//f1.k.PanicHalt(f1.ctx, "No delegationData although somebody is delegating")
@@ -221,7 +217,7 @@ func (f1 F1Distribution) getCurrentReward() (reward uint64) {
 
 	// get last but one entry for F1Distribution, init with zero if it is the first delegator
 	// F1Paper: Entry_{f-1}
-	f1fMinus1, found := f1.k.GetDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, delegationPoolData.LatestIndexK)
+	f1fMinus1, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegationPoolData.LatestIndexK)
 	f1fMinus1Balance := sdk.NewDec(0)
 	if found {
 		f1fMinus1Balance, _ = sdk.NewDecFromStr(f1fMinus1.Balance)
@@ -239,7 +235,7 @@ func (f1 F1Distribution) getCurrentReward() (reward uint64) {
 	f1FinalBalance = f1FinalBalance.Add(f1fMinus1Balance)
 
 	//Calculate Reward
-	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.poolId, f1.stakerAddress, delegator.KIndex)
+	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
 	if !found {
 		// TODO
 		//f1.k.PanicHalt(f1.ctx, "Delegator does not have entry")

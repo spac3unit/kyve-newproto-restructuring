@@ -11,7 +11,6 @@ func (k Keeper) SetDelegator(ctx sdk.Context, delegator types.Delegator) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefix)
 	b := k.cdc.MustMarshal(&delegator)
 	store.Set(types.DelegatorKey(
-		delegator.PoolId,
 		delegator.Staker,
 		delegator.Delegator,
 	), b)
@@ -19,7 +18,6 @@ func (k Keeper) SetDelegator(ctx sdk.Context, delegator types.Delegator) {
 	indexStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefixIndex2)
 	indexStore.Set(types.DelegatorKeyIndex2(
 		delegator.Delegator,
-		delegator.PoolId,
 		delegator.Staker,
 	), []byte{1})
 }
@@ -27,14 +25,12 @@ func (k Keeper) SetDelegator(ctx sdk.Context, delegator types.Delegator) {
 // GetDelegator returns a delegator from its index
 func (k Keeper) GetDelegator(
 	ctx sdk.Context,
-	poolId uint64,
 	stakerAddress string,
 	delegatorAddress string,
 ) (val types.Delegator, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefix)
 
 	b := store.Get(types.DelegatorKey(
-		poolId,
 		stakerAddress,
 		delegatorAddress,
 	))
@@ -49,20 +45,17 @@ func (k Keeper) GetDelegator(
 // RemoveDelegator removes a delegator from the store
 func (k Keeper) RemoveDelegator(
 	ctx sdk.Context,
-	poolId uint64,
 	stakerAddress string,
 	delegatorAddress string,
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefix)
 	store.Delete(types.DelegatorKey(
-		poolId,
 		stakerAddress,
 		delegatorAddress,
 	))
 	indexStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefixIndex2)
 	indexStore.Delete(types.DelegatorKeyIndex2(
 		delegatorAddress,
-		poolId,
 		stakerAddress,
 	))
 }

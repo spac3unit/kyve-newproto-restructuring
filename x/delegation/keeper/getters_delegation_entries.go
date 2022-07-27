@@ -11,7 +11,6 @@ func (k Keeper) SetDelegationEntries(ctx sdk.Context, delegationEntries types.De
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 	b := k.cdc.MustMarshal(&delegationEntries)
 	store.Set(types.DelegationEntriesKey(
-		delegationEntries.PoolId,
 		delegationEntries.Staker,
 		delegationEntries.KIndex,
 	), b)
@@ -20,7 +19,6 @@ func (k Keeper) SetDelegationEntries(ctx sdk.Context, delegationEntries types.De
 // GetDelegationEntries returns a delegationEntries from its index
 func (k Keeper) GetDelegationEntries(
 	ctx sdk.Context,
-	poolId uint64,
 	stakerAddress string,
 	kIndex uint64,
 
@@ -28,7 +26,6 @@ func (k Keeper) GetDelegationEntries(
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 
 	b := store.Get(types.DelegationEntriesKey(
-		poolId,
 		stakerAddress,
 		kIndex,
 	))
@@ -43,14 +40,12 @@ func (k Keeper) GetDelegationEntries(
 // RemoveDelegationEntries removes a delegationEntries from the store
 func (k Keeper) RemoveDelegationEntries(
 	ctx sdk.Context,
-	poolId uint64,
 	stakerAddress string,
 	kIndex uint64,
 
 ) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 	store.Delete(types.DelegationEntriesKey(
-		poolId,
 		stakerAddress,
 		kIndex,
 	))

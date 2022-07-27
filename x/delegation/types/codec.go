@@ -10,26 +10,26 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgDelegatePool{}, "registry/DelegatePool", nil)
-	cdc.RegisterConcrete(&MsgWithdrawPool{}, "registry/WithdrawPool", nil)
-	cdc.RegisterConcrete(&MsgUndelegatePool{}, "registry/UndelegatePool", nil)
-	cdc.RegisterConcrete(&MsgRedelegatePool{}, "registry/RedelegatePool", nil)
+	cdc.RegisterConcrete(&MsgDelegate{}, "registry/Delegate", nil)
+	cdc.RegisterConcrete(&MsgWithdrawRewards{}, "registry/WithdrawRewards", nil)
+	cdc.RegisterConcrete(&MsgUndelegate{}, "registry/Undelegate", nil)
+	cdc.RegisterConcrete(&MsgRedelegate{}, "registry/Redelegate", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	// this line is used by starport scaffolding # 3
 
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgDelegatePool{},
+		&MsgDelegate{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgWithdrawPool{},
+		&MsgWithdrawRewards{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUndelegatePool{},
+		&MsgUndelegate{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRedelegatePool{},
+		&MsgRedelegate{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)

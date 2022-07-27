@@ -17,20 +17,23 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgStakePool:
-			res, err := msgServer.StakePool(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgStake:
+			res, err := msgServer.Stake(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgReactivateStaker:
-			res, err := msgServer.ReactivateStaker(sdk.WrapSDKContext(ctx), msg)
-			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgUnstakePool:
-			res, err := msgServer.UnstakePool(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgUnstake:
+			res, err := msgServer.Unstake(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgUpdateMetadata:
 			res, err := msgServer.UpdateMetadata(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgUpdateCommission:
 			res, err := msgServer.UpdateCommission(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgJoinPool:
+			res, err := msgServer.JoinPool(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.MsgLeavePool:
+			res, err := msgServer.LeavePool(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)

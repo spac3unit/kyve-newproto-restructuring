@@ -10,6 +10,9 @@ import (
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// this line is used by starport scaffolding # genesis/module/init
+
+	// TODO init genesis
+
 	k.SetParams(ctx, genState.Params)
 }
 
@@ -19,6 +22,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
+
+	// TODO export genesis
 
 	return genesis
 }

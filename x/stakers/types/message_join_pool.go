@@ -5,19 +5,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgReactivateStaker = "reactivate_staker"
+const TypeMsgJoinPool = "join_pool"
 
-var _ sdk.Msg = &MsgReactivateStaker{}
+var _ sdk.Msg = &MsgJoinPool{}
 
-func (msg *MsgReactivateStaker) Route() string {
+func (msg *MsgJoinPool) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgReactivateStaker) Type() string {
-	return TypeMsgReactivateStaker
+func (msg *MsgJoinPool) Type() string {
+	return TypeMsgJoinPool
 }
 
-func (msg *MsgReactivateStaker) GetSigners() []sdk.AccAddress {
+func (msg *MsgJoinPool) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -25,12 +25,12 @@ func (msg *MsgReactivateStaker) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgReactivateStaker) GetSignBytes() []byte {
+func (msg *MsgJoinPool) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgReactivateStaker) ValidateBasic() error {
+func (msg *MsgJoinPool) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

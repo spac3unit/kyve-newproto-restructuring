@@ -11,23 +11,22 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	// this line is used by starport scaffolding # 2
-	cdc.RegisterConcrete(&MsgStakePool{}, "registry/StakePool", nil)
-	cdc.RegisterConcrete(&MsgUnstakePool{}, "registry/UnstakePool", nil)
+	cdc.RegisterConcrete(&MsgStake{}, "registry/Stake", nil)
+	cdc.RegisterConcrete(&MsgUnstake{}, "registry/Unstake", nil)
 	cdc.RegisterConcrete(&MsgUpdateMetadata{}, "registry/UpdateMetadata", nil)
+	cdc.RegisterConcrete(&MsgUpdateCommission{}, "registry/UpdateCommission", nil)
+	cdc.RegisterConcrete(&MsgJoinPool{}, "registry/MsgJoinPool", nil)
+	cdc.RegisterConcrete(&MsgLeavePool{}, "registry/MsgLeavePool", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
-	// this line is used by starport scaffolding # 3
 
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUpdateMetadata{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgStakePool{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgUnstakePool{},
-	)
+	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgStake{})
+	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgUnstake{})
+	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgUpdateCommission{})
+	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgUpdateMetadata{})
+	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgJoinPool{})
+	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgLeavePool{})
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

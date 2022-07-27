@@ -8,8 +8,7 @@ import (
 // ==== DELEGATION ====
 // ####################
 
-func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, poolId uint64, staker string,
-	delegatorAddress string, amount uint64) (error error) {
+func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegatorAddress string, amount uint64) (error error) {
 
 	//// unbondingState stores the start and the end of the queue with all unbonding entries
 	//// the queue is ordered by time

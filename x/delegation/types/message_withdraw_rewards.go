@@ -5,19 +5,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgDelegatePool = "delegate_pool"
+const TypeMsgWithdrawRewards = "withdraw_rewards"
 
-var _ sdk.Msg = &MsgDelegatePool{}
+var _ sdk.Msg = &MsgWithdrawRewards{}
 
-func (msg *MsgDelegatePool) Route() string {
+func (msg *MsgWithdrawRewards) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgDelegatePool) Type() string {
-	return TypeMsgDelegatePool
+func (msg *MsgWithdrawRewards) Type() string {
+	return TypeMsgWithdrawRewards
 }
 
-func (msg *MsgDelegatePool) GetSigners() []sdk.AccAddress {
+func (msg *MsgWithdrawRewards) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -25,12 +25,12 @@ func (msg *MsgDelegatePool) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgDelegatePool) GetSignBytes() []byte {
+func (msg *MsgWithdrawRewards) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgDelegatePool) ValidateBasic() error {
+func (msg *MsgWithdrawRewards) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
@@ -40,5 +40,6 @@ func (msg *MsgDelegatePool) ValidateBasic() error {
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid staker address (%s)", err)
 	}
+
 	return nil
 }

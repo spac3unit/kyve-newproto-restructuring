@@ -5,19 +5,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgUndelegatePool = "undelegate_pool"
+const TypeMsgUndelegate = "undelegate"
 
-var _ sdk.Msg = &MsgUndelegatePool{}
+var _ sdk.Msg = &MsgUndelegate{}
 
-func (msg *MsgUndelegatePool) Route() string {
+func (msg *MsgUndelegate) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgUndelegatePool) Type() string {
-	return TypeMsgUndelegatePool
+func (msg *MsgUndelegate) Type() string {
+	return TypeMsgUndelegate
 }
 
-func (msg *MsgUndelegatePool) GetSigners() []sdk.AccAddress {
+func (msg *MsgUndelegate) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -25,12 +25,12 @@ func (msg *MsgUndelegatePool) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgUndelegatePool) GetSignBytes() []byte {
+func (msg *MsgUndelegate) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUndelegatePool) ValidateBasic() error {
+func (msg *MsgUndelegate) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

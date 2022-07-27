@@ -10,42 +10,34 @@ option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 
 // ---------- Delegating Events ----------
 
-// EventDelegatePool is an event emitted when someone delegates to a protocol node.
-message EventDelegatePool {
-  // pool_id is the unique ID of the pool.
-  uint64 pool_id = 1;
-  // address is the account address of the delegator.
-  string address = 2;
-  // node is the account address of the protocol node.
-  string node = 3;
-  // amount ...
-  uint64 amount = 4;
-}
-
-// EventUndelegatePool is an event emitted when someone undelegates from a protocol node.
-message EventUndelegatePool {
-  // pool_id is the unique ID of the pool.
-  uint64 pool_id = 1;
-  // address is the account address of the delegator.
-  string address = 2;
-  // node is the account address of the protocol node.
-  string node = 3;
-  // amount ...
-  uint64 amount = 4;
-}
-
-// EventRedelegatePool is an event emitted when someone redelegates from one protocol node to another.
-message EventRedelegatePool {
+// EventDelegate is an event emitted when someone delegates to a protocol node.
+message EventDelegate {
   // address is the account address of the delegator.
   string address = 1;
-  // from_pool is the unique ID of the pool the user withdraws its delegation from
-  uint64 from_pool = 2;
-  // from_node is the account address of the protocol node the users withdraws from.
-  string from_node = 3;
-  // pool_id is the unique ID of the pool of the new pool the user delegates to
-  uint64 to_pool = 4;
-  // address is the account address of the new staker in the the pool
-  string to_node = 5;
+  // node is the account address of the protocol node.
+  string node = 2;
   // amount ...
-  uint64 amount = 6;
+  uint64 amount = 3;
+}
+
+// EventUndelegate is an event emitted when someone undelegates from a protocol node.
+message EventUndelegate {
+  // address is the account address of the delegator.
+  string address = 1;
+  // node is the account address of the protocol node.
+  string node = 2;
+  // amount ...
+  uint64 amount = 3;
+}
+
+// EventRedelegate is an event emitted when someone redelegates from one protocol node to another.
+message EventRedelegate {
+  // address is the account address of the delegator.
+  string address = 1;
+  // from_node is the account address of the protocol node the users withdraws from.
+  string from_node = 2;
+  // address is the account address of the new staker in the the pool
+  string to_node = 3;
+  // amount ...
+  uint64 amount = 4;
 }

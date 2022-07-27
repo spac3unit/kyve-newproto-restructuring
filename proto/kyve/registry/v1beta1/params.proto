@@ -19,11 +19,5 @@ message Params {
   string network_fee = 8;
 
 
-  // unbonding_delegation_time ...
-  uint64 unbonding_delegation_time = 11;
-  // unbonding_delegation_time ...
-  uint64 redelegation_cooldown = 12;
-  // unbonding_delegation_time ...
-  uint64 redelegation_max_amount = 13;
 
 }

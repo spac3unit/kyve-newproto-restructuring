@@ -83,18 +83,12 @@ func DefaultParams() Params {
 // ParamSetPairs get the params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyVoteSlash, &p.VoteSlash, validateVoteSlash),
-		paramtypes.NewParamSetPair(KeyUploadSlash, &p.UploadSlash, validateUploadSlash),
-		paramtypes.NewParamSetPair(KeyTimeoutSlash, &p.TimeoutSlash, validateTimeoutSlash),
 		paramtypes.NewParamSetPair(KeyUploadTimeout, &p.UploadTimeout, validateUploadTimeout),
 		paramtypes.NewParamSetPair(KeyStorageCost, &p.StorageCost, validateStorageCost),
 		paramtypes.NewParamSetPair(KeyNetworkFee, &p.NetworkFee, validateNetworkFee),
-		paramtypes.NewParamSetPair(KeyMaxPoints, &p.MaxPoints, validateMaxPoints),
-		paramtypes.NewParamSetPair(KeyUnbondingStakingTime, &p.UnbondingStakingTime, validateUnbondingStakingTime),
 		paramtypes.NewParamSetPair(KeyUnbondingDelegationTime, &p.UnbondingDelegationTime, validateUnbondingDelegationTime),
 		paramtypes.NewParamSetPair(KeyRedelegationCooldown, &p.RedelegationCooldown, validateTrue),
 		paramtypes.NewParamSetPair(KeyRedelegationMaxAmount, &p.RedelegationMaxAmount, validateTrue),
-		paramtypes.NewParamSetPair(KeyCommissionChangeTime, &p.CommissionChangeTime, validateTrue),
 	}
 }
 

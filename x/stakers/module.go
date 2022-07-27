@@ -172,6 +172,7 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 // returns no validator updates.
 func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	am.keeper.ProcessStakerUnbondingQueue(ctx)
-	am.keeper.ProcessCommissionChangeUnbondingQueue(ctx)
+	am.keeper.ProcessCommissionChangeQueue(ctx)
+	am.keeper.ProcessLeavePoolQueue(ctx)
 	return []abci.ValidatorUpdate{}
 }

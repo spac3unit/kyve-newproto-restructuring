@@ -30,54 +30,47 @@ message DelegationEntries {
 }
 
 // DelegationPoolData ...
-message DelegationPoolData {
+message DelegationData {
   // Primary keys
 
-  // id ...
-  uint64 pool_id = 1;
   // staker ...
-  string staker = 2;
+  string staker = 1;
 
   // F1Distribution
 
   // current_rewards ...
-  uint64 current_rewards = 3;
+  uint64 current_rewards = 2;
   // total_delegation ...
-  uint64 total_delegation = 4;
+  uint64 total_delegation = 3;
   // latest_index_k ...
-  uint64 latest_index_k = 5;
+  uint64 latest_index_k = 4;
 
   // Stats
 
   // delegator_count ...
-  uint64 delegator_count = 6;
+  uint64 delegator_count = 5;
   // latest_index_was_undelegation ...
-  bool latest_index_was_undelegation = 7;
+  bool latest_index_was_undelegation = 6;
 }
 
+// UndelegationQueueEntry ...
+message UndelegationQueueEntry {
+  // index ...
+  uint64 index = 1;
+  // staker ...
+  string staker = 2;
+  // delegator ...
+  string delegator = 3;
+  // amount ...
+  uint64 amount = 4;
+  // creation_time ...
+  uint64 creation_time = 5;
+}
 
-//
-//// Creates an entry for an upcoming unbonding of a staker which is put in the unbonding fifo queue and
-//// executed after the unbonding time is over.
-//message UnbondingDelegationQueueEntry {
-//  // index is a monotonically increasing integer to order the entries
-//  uint64 index = 1;
-//  // staker ...
-//  string staker = 2;
-//  // delegator ...
-//  string delegator = 3;
-//  // pool_id ...
-//  uint64 pool_id = 4;
-//  // amount ...
-//  uint64 amount = 5;
-//  // creation_time ...
-//  uint64 creation_time = 6;
-//}
-//
-//// UnbondingState stores the state for the unbonding of stakes and delegations.
-//message UnbondingDelegationQueueState {
-//  // low_index ...
-//  uint64 low_index = 1;
-//  // high_index ...
-//  uint64 high_index = 2;
-//}
+// QueueState ...
+message QueueState {
+  // low_index ...
+  uint64 low_index = 1;
+  // high_index ...
+  uint64 high_index = 2;
+}

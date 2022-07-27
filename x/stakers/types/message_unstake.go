@@ -5,19 +5,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgUnstakePool = "unstake_pool"
+const TypeMsgUnstake = "unstake"
 
-var _ sdk.Msg = &MsgUnstakePool{}
+var _ sdk.Msg = &MsgUnstake{}
 
-func (msg *MsgUnstakePool) Route() string {
+func (msg *MsgUnstake) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgUnstakePool) Type() string {
-	return TypeMsgUnstakePool
+func (msg *MsgUnstake) Type() string {
+	return TypeMsgUnstake
 }
 
-func (msg *MsgUnstakePool) GetSigners() []sdk.AccAddress {
+func (msg *MsgUnstake) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -25,12 +25,12 @@ func (msg *MsgUnstakePool) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgUnstakePool) GetSignBytes() []byte {
+func (msg *MsgUnstake) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgUnstakePool) ValidateBasic() error {
+func (msg *MsgUnstake) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
