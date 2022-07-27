@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"strconv"
-
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -11,15 +9,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
-func CmdClaimUploaderRole() *cobra.Command {
+func CmdUndelegate() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "claim-uploader-role [id]",
-		Short: "Broadcast message claim-uploader-role",
-		Args:  cobra.ExactArgs(1),
+		Use:   "undelegate [staker] [amount]",
+		Short: "Broadcast message undelegate",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argId, err := cast.ToUint64E(args[0])
+
+			argAmount, err := cast.ToUint64E(args[1])
 			if err != nil {
 				return err
 			}
@@ -29,14 +26,17 @@ func CmdClaimUploaderRole() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgClaimUploaderRole(
-				clientCtx.GetFromAddress().String(),
-				argId,
-			)
+			msg := types.MsgUndelegate{
+				Creator: clientCtx.GetFromAddress().String(),
+				Staker:  args[0],
+				Amount:  argAmount,
+			}
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 

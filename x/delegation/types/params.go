@@ -1,11 +1,27 @@
 package types
 
 import (
+	"fmt"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
+
+var (
+	KeyUnbondingDelegationTime            = []byte("UnbondingDelegationTime")
+	DefaultUnbondingDelegationTime uint64 = 60 * 60 * 24 * 5
+)
+
+var (
+	KeyRedelegationCooldown            = []byte("RedelegationCooldown")
+	DefaultRedelegationCooldown uint64 = 60 * 60 * 24 * 5
+)
+
+var (
+	KeyRedelegationMaxAmount            = []byte("KeyRedelegationMaxAmount")
+	DefaultRedelegationMaxAmount uint64 = 5
+)
 
 // ParamKeyTable the param key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {
@@ -13,18 +29,34 @@ func ParamKeyTable() paramtypes.KeyTable {
 }
 
 // NewParams creates a new Params instance
-func NewParams() Params {
-	return Params{}
+func NewParams(
+	unbondingDelegationTime uint64,
+	redelegationCooldown uint64,
+	redelegationMaxAmount uint64,
+) Params {
+	return Params{
+		UnbondingDelegationTime: unbondingDelegationTime,
+		RedelegationCooldown:    redelegationCooldown,
+		RedelegationMaxAmount:   redelegationMaxAmount,
+	}
 }
 
 // DefaultParams returns a default set of parameters
 func DefaultParams() Params {
-	return NewParams()
+	return NewParams(
+		DefaultUnbondingDelegationTime,
+		DefaultRedelegationCooldown,
+		DefaultRedelegationMaxAmount,
+	)
 }
 
 // ParamSetPairs get the params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
-	return paramtypes.ParamSetPairs{}
+	return paramtypes.ParamSetPairs{
+		paramtypes.NewParamSetPair(KeyUnbondingDelegationTime, &p.UnbondingDelegationTime, validateUint64),
+		paramtypes.NewParamSetPair(KeyRedelegationCooldown, &p.RedelegationCooldown, validateUint64),
+		paramtypes.NewParamSetPair(KeyRedelegationMaxAmount, &p.RedelegationMaxAmount, validateUint64),
+	}
 }
 
 // Validate validates the set of params
@@ -36,4 +68,14 @@ func (p Params) Validate() error {
 func (p Params) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
+}
+
+// validateMaxPoints validates the MaxPoints param
+func validateUint64(v interface{}) error {
+	_, ok := v.(uint64)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", v)
+	}
+
+	return nil
 }

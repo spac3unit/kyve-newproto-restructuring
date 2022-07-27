@@ -31,16 +31,6 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdFundPool())
-	cmd.AddCommand(CmdDefundPool())
-	cmd.AddCommand(CmdSubmitBundleProposal())
-	cmd.AddCommand(CmdVoteProposal())
-	cmd.AddCommand(CmdClaimUploaderRole())
-	cmd.AddCommand(CmdDelegatePool())
-	cmd.AddCommand(CmdWithdrawPool())
-	cmd.AddCommand(CmdUndelegatePool())
-	cmd.AddCommand(CmdRedelegatePool())
-
 	cmd.AddCommand(CmdSubmitCreatePoolProposal())
 	cmd.AddCommand(CmdSubmitUpdatePoolProposal())
 	cmd.AddCommand(CmdSubmitPausePoolProposal())

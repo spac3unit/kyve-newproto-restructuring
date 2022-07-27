@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"strconv"
-
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -11,18 +9,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
-func CmdDefundPool() *cobra.Command {
+func CmdDelegate() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "defund-pool [id] [amount]",
-		Short: "Broadcast message defund-pool",
+		Use:   "delegate [staker] [amount]",
+		Short: "Broadcast message delegate",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argId, err := cast.ToUint64E(args[0])
-			if err != nil {
-				return err
-			}
+
 			argAmount, err := cast.ToUint64E(args[1])
 			if err != nil {
 				return err
@@ -33,15 +26,17 @@ func CmdDefundPool() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDefundPool(
-				clientCtx.GetFromAddress().String(),
-				argId,
-				argAmount,
-			)
+			msg := types.MsgDelegate{
+				Creator: clientCtx.GetFromAddress().String(),
+				Staker:  args[0],
+				Amount:  argAmount,
+			}
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 

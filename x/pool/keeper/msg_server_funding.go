@@ -64,7 +64,7 @@ func (k msgServer) FundPool(goCtx context.Context, msg *types.MsgFundPool) (*typ
 		})
 	}
 
-	err := util.TransferToRegistry(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount)
+	err := util.TransferToModule(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

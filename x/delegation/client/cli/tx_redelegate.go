@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"strconv"
-
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
@@ -11,19 +9,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
-func CmdDelegatePool() *cobra.Command {
+func CmdRedelegate() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delegate-pool [pool-id] [staker-address] [amount]",
+		Use:   "delegate [from_staker] [to_staker] [amount]",
 		Short: "Broadcast message delegate-pool",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			argPoolId, err := cast.ToUint64E(args[0])
-			if err != nil {
-				return err
-			}
-			argStakerAddress := args[1]
+
 			argAmount, err := cast.ToUint64E(args[2])
 			if err != nil {
 				return err
@@ -34,16 +26,18 @@ func CmdDelegatePool() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDelegatePool(
-				clientCtx.GetFromAddress().String(),
-				argPoolId,
-				argStakerAddress,
-				argAmount,
-			)
+			msg := types.MsgRedelegate{
+				Creator:    clientCtx.GetFromAddress().String(),
+				FromStaker: args[0],
+				ToStaker:   args[1],
+				Amount:     argAmount,
+			}
+
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 

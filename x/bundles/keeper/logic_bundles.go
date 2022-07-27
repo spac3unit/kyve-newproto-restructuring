@@ -209,21 +209,28 @@ func (k Keeper) getNextUploaderByRandom(ctx sdk.Context, pool *types.Pool, candi
 func (k Keeper) getVoteDistribution(ctx sdk.Context, pool *types.Pool) (valid uint64, invalid uint64, abstain uint64, total uint64) {
 	// get $KYVE voted for valid
 	for _, voter := range pool.BundleProposal.VotersValid {
-		valid += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
+		// TODO get Voting power
+		//valid += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
+		_ = voter
 	}
 
 	// get $KYVE voted for invalid
 	for _, voter := range pool.BundleProposal.VotersInvalid {
-		invalid += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
+		// TODO get voting power
+		//invalid += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
+		_ = voter
 	}
 
 	// get $KYVE voted for abstain
 	for _, voter := range pool.BundleProposal.VotersAbstain {
-		abstain += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
+		// TODO get voting power
+		//abstain += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
+		_ = voter
 	}
 
 	// subtract uploader stake because he can not vote
-	total = k.stakerKeeper.GetTotalStake(ctx, pool.Id) - k.stakerKeeper.GetActiveStake(ctx, pool.Id, pool.BundleProposal.Uploader)
+	// TODO get voting power
+	//total = k.stakerKeeper.GetTotalStake(ctx, pool.Id) - k.stakerKeeper.GetActiveStake(ctx, pool.Id, pool.BundleProposal.Uploader)
 
 	return
 }
