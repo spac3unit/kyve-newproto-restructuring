@@ -10,40 +10,11 @@ import (
 )
 
 func TestIntegration(t *testing.T) {
-	testInitIntegration(t)
-	testIntegrationFunding(t)
 	testCommissionChange(t)
 	testStaking(t)
 }
 
-func testInitIntegration(t *testing.T) {
-	createGenesis(t)
-}
-
-func testIntegrationFunding(t *testing.T) {
-
-	fundPool0 := runTx(&types.MsgFundPool{
-		Creator: ALICE_ADDR,
-		Id:      0,
-		Amount:  99 * KYVE,
-	})
-
-	_, foundFunder0 := s.app.RegistryKeeper.GetFunder(s.ctx, ALICE_ADDR, 0)
-	require.True(t, fundPool0)
-	require.True(t, foundFunder0)
-
-	fundPool1 := runTx(&types.MsgFundPool{
-		Creator: ALICE_ADDR,
-		Id:      1,
-		Amount:  0,
-	})
-
-	_, foundFunder1 := s.app.RegistryKeeper.GetFunder(s.ctx, ALICE_ADDR, 1)
-	require.False(t, fundPool1)
-	require.False(t, foundFunder1)
-
-}
-
+// TODO migrate to stakers module
 func testCommissionChange(t *testing.T) {
 
 	QueueTime := time.Duration(s.app.RegistryKeeper.CommissionChangeTime(s.ctx)) * time.Second
@@ -151,6 +122,7 @@ func testCommissionChange(t *testing.T) {
 	fmt.Printf("state: %v\nentires: %v\n", s.app.RegistryKeeper.GetCommissionChangeQueueState(s.ctx), s.app.RegistryKeeper.GetAllCommissionChangeQueueEntries(s.ctx))
 }
 
+// TODO migrate to stakers module
 func testStaking(t *testing.T) {
 	UploadTimeout := s.app.RegistryKeeper.UploadTimeout(s.ctx)
 	UnstakingTime := s.app.RegistryKeeper.UnbondingStakingTime(s.ctx)

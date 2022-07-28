@@ -39,6 +39,7 @@ func (k Keeper) RemoveStakerFromPool(ctx sdk.Context, poolId uint64, address str
 
 			k.subtractFromTotalStake(ctx, poolId, staker.Amount)
 			k.subtractOneFromCount(ctx, poolId)
+			k.removeStakerIndex(ctx, poolId, staker.Amount, staker.Address)
 			// TODO what about delegation ??
 
 			k.setStaker(ctx, staker)
@@ -57,6 +58,7 @@ func (k Keeper) AddStakerToPool(ctx sdk.Context, poolId uint64, address string) 
 
 			k.addToTotalStake(ctx, poolId, staker.Amount)
 			k.addOneToCount(ctx, poolId)
+			k.setStakerIndex(ctx, poolId, staker.Amount, staker.Address)
 			// TODO what about delegation ??
 
 			k.setStaker(ctx, staker)
@@ -72,7 +74,9 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, address string, amount uint64
 		staker.Amount += amount
 
 		for _, poolId := range staker.Pools {
+			k.removeStakerIndex(ctx, poolId, staker.Amount-amount, address)
 			k.addToTotalStake(ctx, poolId, amount)
+			k.setStakerIndex(ctx, poolId, staker.Amount, address)
 		}
 
 		k.setStaker(ctx, staker)
@@ -92,7 +96,9 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, address string, amount u
 		}
 
 		for _, poolId := range staker.Pools {
+			k.removeStakerIndex(ctx, poolId, staker.Amount+amount, address)
 			k.subtractFromTotalStake(ctx, poolId, amount)
+			k.setStakerIndex(ctx, poolId, staker.Amount, address)
 		}
 
 		k.setStaker(ctx, staker)
@@ -112,6 +118,26 @@ func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
 // #############################
 // #  Raw KV-Store operations  #
 // #############################
+
+func (k Keeper) setStakerIndex(ctx sdk.Context, poolId uint64, amount uint64, address string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerByPoolAndAmountKeyPrefix)
+	store.Set(types.StakerByPoolAndAmountIndex(poolId, amount, address), []byte{})
+}
+
+func (k Keeper) removeStakerIndex(ctx sdk.Context, poolId uint64, amount uint64, address string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerByPoolAndAmountKeyPrefix)
+	store.Delete(types.StakerByPoolAndAmountIndex(poolId, amount, address))
+}
+
+func (k Keeper) getLowestStakerIndex(ctx sdk.Context, poolId uint64) (staker types.Staker, found bool) {
+	// TODO implement
+	return types.Staker{}, false
+}
+
+func (k Keeper) getAllStakersOfPool(ctx sdk.Context, poolId uint64) []types.Staker {
+	// TODO implement
+	return []types.Staker{}
+}
 
 // RemoveStaker removes a staker from the store
 // TODO only called very rarely,

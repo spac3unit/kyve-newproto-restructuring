@@ -51,7 +51,7 @@ func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, address string) {
 
 }
 
-func (k Keeper) EnsureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {
+func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {
 
 	if k.GetStakerCountOfPool(ctx, poolId) >= types.MaxStakers /* TODO introduce param */ {
 		lowestStaker, _ := k.GetLowestStaker(ctx, poolId)

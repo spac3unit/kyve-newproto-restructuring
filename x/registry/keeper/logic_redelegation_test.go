@@ -11,6 +11,7 @@ func TestRedelegation(t *testing.T) {
 	testRedelegation(t)
 }
 
+// TODO migrate to delegation module
 func testRedelegation(t *testing.T) {
 
 	runTxSuccess(t, &types.MsgStakePool{

@@ -36,3 +36,5 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 
 	return &types.MsgCreatePoolResponse{}, nil
 }
+
+// TODO create missing pool changes

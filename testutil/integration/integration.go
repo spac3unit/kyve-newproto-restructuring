@@ -4,7 +4,6 @@ import (
 	"crypto/ecdsa"
 	"crypto/rand"
 	"github.com/KYVENetwork/chain/app"
-	"github.com/KYVENetwork/chain/x/pool"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	"github.com/cosmos/cosmos-sdk/baseapp"
@@ -16,7 +15,6 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/crypto/secp256k1"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmcrypto "github.com/tendermint/tendermint/crypto"
@@ -24,41 +22,66 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmversion "github.com/tendermint/tendermint/proto/tendermint/version"
 	"github.com/tendermint/tendermint/version"
-	"testing"
+	mrand "math/rand"
 	"time"
 )
+
+const (
+	ALICE = "cosmos1jq304cthpx0lwhpqzrdjrcza559ukyy347ju8f"
+	BOB   = "cosmos1hvg7zsnrj6h29q9ss577mhrxa04rn94hfvl2ry"
+)
+
+var (
+	DUMMY []string
+)
+
+const KYVE = uint64(1_000_000_000)
 
 func NewCleanChain() KeeperTestSuite {
 	s := KeeperTestSuite{}
 	s.SetupTest()
+	s.initDummyAccounts()
 	return s
 }
 
-func (suite *KeeperTestSuite) RunTxWithResult(msg sdk.Msg) (*sdk.Result, error) {
-	cachedCtx, commit := suite.ctx.CacheContext()
-	// TODO generalize for all types of supported messages (modules)
-	resp, err := pool.NewHandler(suite.app.PoolKeeper)(cachedCtx, msg)
-	if err == nil {
-		commit()
-		return resp, nil
+func (suite *KeeperTestSuite) initDummyAccounts() {
+
+	suite.Mint(ALICE, 1000*KYVE)
+	suite.Mint(BOB, 1000*KYVE)
+
+	DUMMY = make([]string, 50)
+	mrand.Seed(1)
+	for i := 0; i < 50; i++ {
+		byteAddr := make([]byte, 20)
+		for k := 0; k < 20; k++ {
+			byteAddr[k] = byte(mrand.Int())
+		}
+		dummy, _ := sdk.Bech32ifyAddressBytes("cosmos", byteAddr)
+		DUMMY[i] = dummy
+		suite.Mint(dummy, 1000*KYVE)
 	}
-	return nil, err
 }
 
-func (suite *KeeperTestSuite) RunTx(msg sdk.Msg) (success bool) {
-	cachedCtx, commit := suite.ctx.CacheContext()
-	// TODO generalize for all types of supported messages (modules)
-	_, err := pool.NewHandler(suite.app.PoolKeeper)(cachedCtx, msg)
-	if err == nil {
-		commit()
-		return true
+func (suite *KeeperTestSuite) Mint(address string, amount uint64) error {
+	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
+	err := suite.app.BankKeeper.MintCoins(suite.ctx, "pool", coins)
+	if err != nil {
+		return err
 	}
-	return false
-}
 
-func (suite *KeeperTestSuite) RunTxSuccess(t *testing.T, msg sdk.Msg) {
-	success := suite.RunTx(msg)
-	require.True(t, success)
+	suite.Commit()
+
+	sender, err := sdk.AccAddressFromBech32(address)
+	if err != nil {
+		return err
+	}
+
+	err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, "pool", sender, coins)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 type QueryClients struct {
@@ -93,24 +116,10 @@ func (suite *KeeperTestSuite) SetupTest() {
 }
 
 func (suite *KeeperTestSuite) SetupApp() {
-	//t := suite.T()
-
 	suite.app = app.Setup()
 
 	suite.denom = "tkyve"
 
-	//fmt.Printf("%s\n", sdk.GetConfig().GetBech32AccountAddrPrefix())
-	//fmt.Printf("%s\n", sdk.GetConfig().GetBech32AccountPubPrefix())
-	//fmt.Printf("%s\n", sdk.GetConfig().GetBech32ValidatorAddrPrefix())
-	//fmt.Printf("%s\n", sdk.GetConfig().GetBech32ValidatorPubPrefix())
-	//fmt.Printf("%s\n", sdk.GetConfig().GetBech32ConsensusAddrPrefix())
-	//fmt.Printf("%s\n", sdk.GetConfig().GetBech32ConsensusPubPrefix())
-
-	//sdk.GetConfig().SetBech32PrefixForAccount("kyve", "kyvepub")
-	//sdk.GetConfig().SetBech32PrefixForValidator("kyvevaloper", "kyvevaloperpub")
-	//sdk.GetConfig().SetBech32PrefixForValidator("kyvevalcons", "kyvevalconspub")
-
-	// consensus key
 	privKey, err := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader)
 	_ = err
 	//require.NoError(t, err)
@@ -149,7 +158,7 @@ func (suite *KeeperTestSuite) SetupApp() {
 		ConsensusHash:      tmhash.Sum([]byte("consensus")),
 		LastResultsHash:    tmhash.Sum([]byte("last_result")),
 	})
-	suite.RegisterQueryClients()
+	suite.registerQueryClients()
 
 	mintParams := suite.app.MintKeeper.GetParams(suite.ctx)
 	mintParams.MintDenom = suite.denom
@@ -190,10 +199,10 @@ func (suite *KeeperTestSuite) CommitAfter(t time.Duration) {
 
 	suite.ctx = suite.app.BaseApp.NewContext(false, header)
 
-	suite.RegisterQueryClients()
+	suite.registerQueryClients()
 }
 
-func (suite *KeeperTestSuite) RegisterQueryClients() {
+func (suite *KeeperTestSuite) registerQueryClients() {
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, suite.app.InterfaceRegistry())
 
 	pooltypes.RegisterQueryServer(queryHelper, suite.app.PoolKeeper)

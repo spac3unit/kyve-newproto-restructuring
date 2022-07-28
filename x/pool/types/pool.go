@@ -4,39 +4,41 @@ import (
 	"sort"
 )
 
-// TODO update pool total stake
-
 func (m *Pool) UpdateFunder(funder Funder) {
-
-	oldFunder, found := m.GetFunder(funder.Account)
-	_ = oldFunder
-	if !found {
-		m.InsertFunder(funder)
-	} else {
-
-		sort.SliceStable(m.Funders, func(i, j int) bool {
-			return m.Funders[i].Amount < m.Funders[j].Amount
-		})
+	for _, v := range m.Funders {
+		if v.Account == funder.Account {
+			m.TotalFunds -= v.Amount
+			m.TotalFunds += funder.Amount
+			v.Amount = funder.Amount
+		}
 	}
+	sort.SliceStable(m.Funders, func(i, j int) bool {
+		return m.Funders[i].Amount < m.Funders[j].Amount
+	})
 }
 
 func (m *Pool) InsertFunder(funder Funder) {
 
 	m.Funders = append(m.Funders, &funder)
-
+	m.TotalFunds += funder.Amount
 	sort.SliceStable(m.Funders, func(i, j int) bool {
 		return m.Funders[i].Amount < m.Funders[j].Amount
 	})
 }
 
 func (m *Pool) RemoveFunder(funder Funder) {
-
 	index := sort.Search(len(m.Funders), func(i int) bool {
-		return m.Funders[i].Amount > funder.Amount
+		if m.Funders[i].Amount == funder.Amount {
+			return m.Funders[i].Account >= funder.Account
+		}
+		return m.Funders[i].Amount >= funder.Amount
 	})
-
-	// TODO check for same amount
-	m.Funders = append(m.Funders[0:index], m.Funders[index+1:len(m.Funders)]...)
+	if index < len(m.Funders) {
+		if m.Funders[index].Account == funder.Account {
+			m.Funders = append(m.Funders[0:index], m.Funders[index+1:len(m.Funders)]...)
+			m.TotalFunds -= funder.Amount
+		}
+	}
 }
 
 func (m *Pool) GetFunder(address string) (Funder, bool) {

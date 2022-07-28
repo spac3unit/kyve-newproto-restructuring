@@ -25,8 +25,7 @@ var (
 	// StakerKeyPrefix is the prefix to retrieve all Staker
 	StakerKeyPrefix = []byte{1}
 
-	// QueueStateKeyPrefix ...
-	QueueStateKeyPrefix = []byte{3}
+	StakerByPoolAndAmountKeyPrefix = []byte{2}
 
 	// CommissionChangeQueueEntryKeyPrefix ...
 	CommissionChangeEntryKeyPrefix = []byte{15}
