@@ -3,6 +3,7 @@ package kyve.stakers.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "kyve/stakers/v1beta1/params.proto";
+import "kyve/stakers/v1beta1/stakers.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
@@ -10,5 +11,11 @@ option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
 // GenesisState defines the stakers module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  // this line is used by starport scaffolding # genesis/proto/state
+  repeated Staker staker_list = 2 [(gogoproto.nullable) = false];
+  repeated CommissionChangeEntry commission_change_entries = 3 [(gogoproto.nullable) = false];
+  repeated UnbondingStakeEntry unbonding_stake_entries = 4 [(gogoproto.nullable) = false];
+  repeated LeavePoolEntry leave_pool_entries = 5 [(gogoproto.nullable) = false];
+  QueueState queue_state_unstaking = 6 [(gogoproto.nullable) = false];
+  QueueState queue_state_commission = 7 [(gogoproto.nullable) = false];
+  QueueState queue_state_leave = 8 [(gogoproto.nullable) = false];
 }

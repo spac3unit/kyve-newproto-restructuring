@@ -3,6 +3,7 @@ package kyve.delegation.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "kyve/delegation/v1beta1/params.proto";
+import "kyve/delegation/v1beta1/delegation.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
@@ -10,5 +11,10 @@ option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 // GenesisState defines the delegation module's genesis state.
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
-  // this line is used by starport scaffolding # genesis/proto/state
+  repeated Delegator delegator_list = 2 [(gogoproto.nullable) = false];
+  repeated DelegationEntries delegation_entries = 3 [(gogoproto.nullable) = false];
+  repeated DelegationData delegation_data = 4 [(gogoproto.nullable) = false];
+  repeated UndelegationQueueEntry undelegation_queue_entry = 5 [(gogoproto.nullable) = false];
+  QueueState queue_state_undelegation = 6 [(gogoproto.nullable) = false];
+  repeated RedelegationCooldown redelegation_cooldown_entries = 7 [(gogoproto.nullable) = false];
 }

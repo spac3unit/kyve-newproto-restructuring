@@ -15,6 +15,7 @@ func CmdCreatePool() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
+			// TODO allow json input and unmarshalling
 			name := args[0]
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -38,6 +39,8 @@ func CmdCreatePool() *cobra.Command {
 
 	return cmd
 }
+
+// TODO implement missing pool modifications
 
 //func CmdSubmitUpdatePoolProposal() *cobra.Command {
 //	cmd := &cobra.Command{

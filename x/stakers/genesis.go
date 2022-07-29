@@ -9,11 +9,27 @@ import (
 // InitGenesis initializes the capability module's state from a provided genesis
 // state.
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
-	// this line is used by starport scaffolding # genesis/module/init
-
-	// TODO init genesis
-
 	k.SetParams(ctx, genState.Params)
+
+	for _, staker := range genState.StakerList {
+		k.AppendStaker(ctx, staker)
+	}
+
+	for _, entry := range genState.CommissionChangeEntries {
+		k.SetCommissionChangeEntry(ctx, entry)
+	}
+
+	for _, entry := range genState.UnbondingStakeEntries {
+		k.SetUnbondingStakeEntry(ctx, entry)
+	}
+
+	for _, entry := range genState.LeavePoolEntries {
+		k.SetLeavePoolEntry(ctx, entry)
+	}
+
+	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_UNSTAKING, genState.QueueStateUnstaking)
+	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_COMMISSION, genState.QueueStateCommission)
+	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_LEAVE, genState.QueueStateLeave)
 }
 
 // ExportGenesis returns the capability module's exported genesis.
@@ -21,9 +37,19 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
 	genesis.Params = k.GetParams(ctx)
 
-	// this line is used by starport scaffolding # genesis/module/export
+	genesis.StakerList = k.GetAllStakers(ctx)
 
-	// TODO export genesis
+	genesis.CommissionChangeEntries = k.GetAllCommissionChangeEntries(ctx)
+
+	genesis.UnbondingStakeEntries = k.GetAllUnbondingStakeEntries(ctx)
+
+	genesis.LeavePoolEntries = k.GetAllLeavePoolEntries(ctx)
+
+	genesis.QueueStateUnstaking = k.GetQueueState(ctx, types.QUEUE_IDENTIFIER_UNSTAKING)
+
+	genesis.QueueStateCommission = k.GetQueueState(ctx, types.QUEUE_IDENTIFIER_COMMISSION)
+
+	genesis.QueueStateLeave = k.GetQueueState(ctx, types.QUEUE_IDENTIFIER_LEAVE)
 
 	return genesis
 }
