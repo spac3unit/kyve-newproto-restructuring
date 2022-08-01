@@ -57,16 +57,18 @@ func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, address string) {
 
 func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {
 
-	if k.GetStakerCountOfPool(ctx, poolId) >= types.MaxStakers /* TODO introduce param */ {
+	if k.GetStakerCountOfPool(ctx, poolId) >= types.MaxStakers {
 		lowestStaker, _ := k.GetLowestStaker(ctx, poolId)
 
 		if stakeAmount > lowestStaker.Amount {
+			k.RemoveValaccountFromPool(ctx, poolId, lowestStaker.Address)
 
-			// TODO emit leave pool event
-
-			// Move the lowest staker to inactive staker set
-			k.RemoveStakerFromPool(ctx, poolId, lowestStaker.Address)
-
+			if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventLeavePool{
+				PoolId: poolId,
+				Staker: lowestStaker.Address,
+			}); errEmit != nil {
+				return errEmit
+			}
 		} else {
 			return sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrStakeTooLow.Error(), lowestStaker.Amount)
 		}

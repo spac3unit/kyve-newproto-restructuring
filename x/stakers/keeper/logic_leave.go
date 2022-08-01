@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -42,24 +41,15 @@ func (k Keeper) ProcessLeavePoolQueue(ctx sdk.Context) {
 		} else if queueEntry.CreationDate+int64(k.LeavePoolTime(ctx)) <= ctx.BlockTime().Unix() {
 
 			k.RemoveLeavePoolEntry(ctx, &queueEntry)
+			k.RemoveValaccountFromPool(ctx, queueEntry.PoolId, queueEntry.Staker)
 
-			staker, stakerFound := k.GetStaker(ctx, queueEntry.Staker)
-			if stakerFound {
-
-				if util.ContainsUint64(staker.Pools, queueEntry.PoolId) {
-					k.RemoveStakerFromPool(ctx, queueEntry.PoolId, queueEntry.Staker)
-
-					// Event an event.
-					ctx.EventManager().EmitTypedEvent(&types.EventLeavePool{
-						Address: staker.Address,
-						PoolId:  queueEntry.PoolId,
-					})
-				}
-			}
+			ctx.EventManager().EmitTypedEvent(&types.EventLeavePool{
+				PoolId: queueEntry.PoolId,
+				Staker: queueEntry.Staker,
+			});
 
 			return true
 		}
 		return false
 	})
-
 }

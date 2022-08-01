@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"math"
 
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/stakers/types"
@@ -29,55 +30,41 @@ func (k Keeper) UpdateStakerCommission(ctx sdk.Context, address string, commissi
 	}
 }
 
-// RemoveStakerFromPool removes a staker from a given pool and updates
-// all aggregated variables. If the staker is not in the pool nothing happens.
-func (k Keeper) RemoveStakerFromPool(ctx sdk.Context, poolId uint64, address string) {
-	staker, found := k.GetStaker(ctx, address)
+// AddValaccountToPool adds a valaccount to a pool.
+// If valaccount already belongs to pool, nothing happens.
+func (k Keeper) AddValaccountToPool(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) {
+	_, found := k.GetStaker(ctx, stakerAddress)
+
 	if found {
-		newPools, removed := util.RemoveFromUint64ArrayStable(staker.Pools, poolId)
-		if removed {
-			staker.Pools = newPools
-
-			k.subtractFromTotalStake(ctx, poolId, staker.Amount)
-			k.subtractOneFromCount(ctx, poolId)
-			k.removeStakerIndex(ctx, poolId, staker.Amount, staker.Address)
-			// TODO what about delegation ??
-
-			k.setStaker(ctx, staker)
-		}
+		k.setValaccount(ctx, types.Valaccount{
+			PoolId: poolId,
+			Staker: stakerAddress,
+			Valaddress: valaddress,
+		})
 	}
 }
 
-// AddStakerToPool adds a staker to a pool.
-// If staker already belongs to pool, nothing happens.
-// TODO consider using a sorted list for faster lookup times.
-func (k Keeper) AddStakerToPool(ctx sdk.Context, poolId uint64, address string) {
-	staker, found := k.GetStaker(ctx, address)
-	if found {
-		if !util.ContainsUint64(staker.Pools, poolId) {
-			staker.Pools = append(staker.Pools, poolId)
+// RemoveValaccountFromPool removes a valaccount from a given pool and updates
+// all aggregated variables. If the valaccount is not in the pool nothing happens.
+func (k Keeper) RemoveValaccountFromPool(ctx sdk.Context, poolId uint64, stakerAddress string) {
+	valaccount, valaccountFound := k.GetValaccount(ctx, poolId, stakerAddress)
 
-			k.addToTotalStake(ctx, poolId, staker.Amount)
-			k.addOneToCount(ctx, poolId)
-			k.setStakerIndex(ctx, poolId, staker.Amount, staker.Address)
-			// TODO what about delegation ??
-
-			k.setStaker(ctx, staker)
-		}
+	if valaccountFound {
+		k.removeValaccount(ctx, valaccount)
 	}
 }
 
 // AddAmountToStaker adds the given amount to an already existing staker
 // It also checks the status of the staker and adjust the corresponding pool stake.
-func (k Keeper) AddAmountToStaker(ctx sdk.Context, address string, amount uint64) {
-	staker, found := k.GetStaker(ctx, address)
+func (k Keeper) AddAmountToStaker(ctx sdk.Context, stakerAddress string, amount uint64) {
+	staker, found := k.GetStaker(ctx, stakerAddress)
 	if found {
 		staker.Amount += amount
 
-		for _, poolId := range staker.Pools {
-			k.removeStakerIndex(ctx, poolId, staker.Amount-amount, address)
-			k.addToTotalStake(ctx, poolId, amount)
-			k.setStakerIndex(ctx, poolId, staker.Amount, address)
+		for _, valaccount := range k.getValaccountsFromStaker(ctx, stakerAddress) {
+			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount-amount, stakerAddress)
+			k.addToTotalStake(ctx, valaccount.PoolId, amount)
+			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
 		}
 
 		k.setStaker(ctx, staker)
@@ -87,8 +74,8 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, address string, amount uint64
 // RemoveAmountFromStaker ...
 // Ensure that amount <= staker.Amount -> otherwise overflow
 // TODO maybe cap it to prevent an overflow. Or maybe do nothing if that happens?
-func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, address string, amount uint64, isUnstake bool) {
-	staker, found := k.GetStaker(ctx, address)
+func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, amount uint64, isUnstake bool) {
+	staker, found := k.GetStaker(ctx, stakerAddress)
 	if found {
 		staker.Amount -= amount
 
@@ -96,10 +83,10 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, address string, amount u
 			staker.UnbondingAmount -= amount
 		}
 
-		for _, poolId := range staker.Pools {
-			k.removeStakerIndex(ctx, poolId, staker.Amount+amount, address)
-			k.subtractFromTotalStake(ctx, poolId, amount)
-			k.setStakerIndex(ctx, poolId, staker.Amount, address)
+		for _, valaccount := range k.getValaccountsFromStaker(ctx, stakerAddress) {
+			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount+amount, stakerAddress)
+			k.subtractFromTotalStake(ctx, valaccount.PoolId, amount)
+			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
 		}
 
 		k.setStaker(ctx, staker)
@@ -107,8 +94,16 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, address string, amount u
 }
 
 func (k Keeper) GetLowestStaker(ctx sdk.Context, poolId uint64) (val types.Staker, found bool) {
-	// TODO implement
-	return types.Staker{}, false
+	minAmount := uint64(math.Inf(0))
+
+	for _, staker := range k.getAllStakersOfPool(ctx, poolId) {
+		if staker.Amount <= minAmount {
+			minAmount = staker.Amount
+			val = staker
+		}
+	}
+
+	return
 }
 
 func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
@@ -136,8 +131,16 @@ func (k Keeper) getLowestStakerIndex(ctx sdk.Context, poolId uint64) (staker typ
 }
 
 func (k Keeper) getAllStakersOfPool(ctx sdk.Context, poolId uint64) []types.Staker {
-	// TODO implement
-	return []types.Staker{}
+	valaccounts := k.getAllValaccountsOfPool(ctx, poolId)
+
+	stakers := make([]types.Staker, 0)
+
+	for _, valaccount := range valaccounts {
+		staker, _ := k.GetStaker(ctx, valaccount.Staker)
+		stakers = append(stakers, staker)
+	}
+
+	return stakers
 }
 
 // RemoveStaker removes a staker from the store

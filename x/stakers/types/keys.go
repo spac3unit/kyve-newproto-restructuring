@@ -25,7 +25,8 @@ var (
 	// StakerKeyPrefix is the prefix to retrieve all Staker
 	StakerKeyPrefix = []byte{1}
 
-	ValaccountPrefix = []byte{2}
+	ValaccountPrefix = []byte{2,0}
+	ValaccountPrefixIndex2 = []byte{2,1}
 
 	StakerByPoolAndAmountKeyPrefix = []byte{3}
 
@@ -73,8 +74,12 @@ func StakerKey(staker string) []byte {
 	return util.GetByteKey(staker)
 }
 
-func ValaccountKey(poolId uint64, staker string, valaddress string) []byte {
-	return util.GetByteKey(poolId, staker, valaddress)
+func ValaccountKey(poolId uint64, staker string) []byte {
+	return util.GetByteKey(poolId, staker)
+}
+
+func ValaccountKeyIndex2(staker string, poolId uint64) []byte {
+	return util.GetByteKey(staker, poolId)
 }
 
 func StakerByPoolAndAmountIndex(poolId uint64, amount uint64, staker string) []byte {
