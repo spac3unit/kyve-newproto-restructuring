@@ -38,6 +38,7 @@ message Staker {
   // logo
   string logo = 8;
   // points // TODO should points be in bundles or make method to increase points ?
+  // TODO to array
   uint64 points = 9;
 }
 

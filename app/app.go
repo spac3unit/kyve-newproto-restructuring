@@ -487,8 +487,8 @@ func NewApp(
 		ibctransfertypes.ModuleName,
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
-		delegationmoduletypes.ModuleName,
 		stakersmoduletypes.ModuleName,
+		delegationmoduletypes.ModuleName,
 		bundlesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)

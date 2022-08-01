@@ -97,9 +97,6 @@ message Pool {
   // status ...
   PoolStatus status = 17;
 
-  // TODO maybe refactor funders to use sorted list, KV-binary tree, or go heap, for better performance
-  // TODO maybe dont update all funders after payout, but store amount to subtract and only update,
-  // TODO when funders list changes (e.g funding, defunding, lowest funder getting kicked out)
   // funders ...
   repeated Funder funders = 18;
   // total_funds ...
