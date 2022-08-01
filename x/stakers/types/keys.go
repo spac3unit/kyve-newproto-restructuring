@@ -25,17 +25,19 @@ var (
 	// StakerKeyPrefix is the prefix to retrieve all Staker
 	StakerKeyPrefix = []byte{1}
 
-	StakerByPoolAndAmountKeyPrefix = []byte{2}
+	ValaccountPrefix = []byte{2}
 
-	// CommissionChangeQueueEntryKeyPrefix ...
-	CommissionChangeEntryKeyPrefix = []byte{15}
-	// CommissionChangeQueueEntryKeyPrefixIndex2 ...
-	CommissionChangeEntryKeyPrefixIndex2 = []byte{16}
+	StakerByPoolAndAmountKeyPrefix = []byte{3}
 
 	// UnbondingStakingQueueEntryKeyPrefix ...
 	UnbondingStakingEntryKeyPrefix = []byte{9}
 	// UnbondingStakingQueueEntryKeyPrefixIndex2 ...
 	UnbondingStakingEntryKeyPrefixIndex2 = []byte{10}
+
+	// CommissionChangeQueueEntryKeyPrefix ...
+	CommissionChangeEntryKeyPrefix = []byte{15}
+	// CommissionChangeQueueEntryKeyPrefixIndex2 ...
+	CommissionChangeEntryKeyPrefixIndex2 = []byte{16}
 
 	// UnbondingStakingQueueEntryKeyPrefix ...
 	LeavePoolEntryKeyPrefix = []byte{21}
@@ -49,7 +51,7 @@ type STAKER_STATS string
 var (
 	STAKER_STATS_TOTAL_STAKE          STAKER_STATS = "total_stake"
 	STAKER_STATS_TOTAL_INACTIVE_STAKE STAKER_STATS = "total_inactive_stake"
-	STAKER_STATS_COUNT                STAKER_STATS = "total_inactive_stake"
+	STAKER_STATS_COUNT                STAKER_STATS = "total_stakers"
 )
 
 // ENUM queue types identifiers
@@ -69,6 +71,10 @@ const (
 // StakerKey returns the store Key to retrieve a Staker from the index fields
 func StakerKey(staker string) []byte {
 	return util.GetByteKey(staker)
+}
+
+func ValaccountKey(poolId uint64, staker string, valaddress string) []byte {
+	return util.GetByteKey(poolId, staker, valaddress)
 }
 
 func StakerByPoolAndAmountIndex(poolId uint64, amount uint64, staker string) []byte {

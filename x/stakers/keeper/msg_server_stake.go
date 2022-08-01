@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,8 +22,8 @@ func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.Msg
 		// Append new staker
 		k.AppendStaker(ctx, types.Staker{
 			Address: msg.Creator,
-			Pools:   nil,
 			Amount:  msg.Amount,
+			Commission: types.DefaultCommission,
 		})
 	}
 
