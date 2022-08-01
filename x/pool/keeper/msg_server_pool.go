@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -11,7 +12,6 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	k.AppendPool(ctx, types.Pool{
-		Creator: msg.Creator,
 		Name:    msg.Name,
 		// TODO fill rest
 		Runtime:        "",
@@ -27,7 +27,6 @@ func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (
 		CurrentKey:     "",
 		CurrentValue:   "",
 		MinStake:       0,
-		Status:         0,
 		Funders:        nil,
 		TotalFunds:     0,
 	})

@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -36,7 +37,7 @@ func (k msgServer) FundPool(goCtx context.Context, msg *types.MsgFundPool) (*typ
 			if msg.Amount > lowestFunder.Amount {
 				// Unstake lowest Funder
 
-				err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, lowestFunder.Account, lowestFunder.Amount)
+				err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, lowestFunder.Address, lowestFunder.Amount)
 				if err != nil {
 					return nil, err
 				}
@@ -44,7 +45,7 @@ func (k msgServer) FundPool(goCtx context.Context, msg *types.MsgFundPool) (*typ
 				// Emit a defund event.
 				if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventDefundPool{
 					PoolId:  msg.Id,
-					Address: lowestFunder.Account,
+					Address: lowestFunder.Address,
 					Amount:  lowestFunder.Amount,
 				}); errEmit != nil {
 					return nil, errEmit
@@ -58,8 +59,7 @@ func (k msgServer) FundPool(goCtx context.Context, msg *types.MsgFundPool) (*typ
 		}
 
 		pool.InsertFunder(types.Funder{
-			PoolId:  msg.Id,
-			Account: msg.Creator,
+			Address: msg.Creator,
 			Amount:  msg.Amount,
 		})
 	}
@@ -105,7 +105,7 @@ func (k msgServer) DefundPool(goCtx context.Context, msg *types.MsgDefundPool) (
 
 	// Check if the sender is trying to defund more than they have funded.
 	if msg.Amount > funder.Amount {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrDefundTooHigh.Error(), funder.Account)
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrDefundTooHigh.Error(), funder.Address)
 	}
 
 	// Update state variables (or completely remove if fully defunding).
