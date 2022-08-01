@@ -5,7 +5,6 @@ package kyve.registry.v1beta1;
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "kyve/registry/v1beta1/params.proto";
 import "kyve/registry/v1beta1/registry.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/registry/types";
@@ -14,10 +13,6 @@ option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 service Query {
   // PARAMS
 
-  // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/params";
-  }
 
   // POOL
 
@@ -160,14 +155,6 @@ service Query {
 // =====   PARAMS   =====
 // ######################
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
-message QueryParamsRequest {}
-
-// QueryParamsResponse is response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params holds all the parameters of this module.
-  kyve.registry.v1beta1.Params params = 1 [(gogoproto.nullable) = false];
-}
 
 // ######################
 // =====    POOL    =====

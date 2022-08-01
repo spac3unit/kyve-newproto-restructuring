@@ -19,6 +19,10 @@ const (
 	MemStoreKey = "mem_bundles"
 )
 
+const (
+	KYVE_NO_DATA_BUNDLE = "KYVE_NO_DATA_BUNDLE"
+)
+
 var (
 	// BundleKeyPrefix ...
 	BundleKeyPrefix = []byte{1}

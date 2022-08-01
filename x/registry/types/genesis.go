@@ -17,7 +17,7 @@ func DefaultGenesis() *GenesisState {
 		DelegationPoolDataList: []DelegationPoolData{},
 		DelegationEntriesList:  []DelegationEntries{},
 		// this line is used by starport scaffolding # genesis/types/default
-		Params: DefaultParams(),
+		//Params: DefaultParams(),
 	}
 }
 
@@ -98,5 +98,6 @@ func (gs GenesisState) Validate() error {
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 
-	return gs.Params.Validate()
+	//return gs.Params.Validate()
+	return nil
 }

@@ -51,6 +51,10 @@ func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, address string) {
 
 }
 
+func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, address string) {
+
+}
+
 func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {
 
 	if k.GetStakerCountOfPool(ctx, poolId) >= types.MaxStakers /* TODO introduce param */ {
@@ -68,5 +72,19 @@ func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint6
 		}
 	}
 
+	return nil
+}
+
+func (k Keeper) GetAuthorizedStaker(ctx sdk.Context, stakerAddress string, authAddress string) {
+	// TODO
+}
+
+func (k Keeper) AssertAuthorized(ctx sdk.Context, stakerAddress string, authAddress string, poolId uint64) error {
+	// // Check if the sender is a protocol node (aka has staked into this pool).
+	//	staker, isStaker := k.GetStaker(ctx, msg.Creator, msg.Id)
+	//	if !isStaker {
+	//		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrNoStaker.Error())
+	//	}
+	// TODO
 	return nil
 }

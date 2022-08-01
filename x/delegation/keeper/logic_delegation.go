@@ -7,13 +7,19 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k Keeper) GetDelegationAmount(poolId uint64, staker string) uint64 {
-
-	return 0
+func (k Keeper) GetDelegationAmount(ctx sdk.Context, staker string) uint64 {
+	delegationData, _ := k.GetDelegationData(ctx, staker)
+	return delegationData.TotalDelegation
 }
 
-func (k Keeper) PayoutRewards(poolId uint64, staker string, amount uint64) {
-
+func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64) {
+	delegationData, found := k.GetDelegationData(ctx, staker)
+	// TODO handle found
+	_ = found
+	// TODO transfer tokens from pools module to delegation module
+	delegationData.CurrentRewards += amount
+	// TODO move set method to getter
+	k.SetDelegationData(ctx, delegationData)
 }
 
 // Delegate performs a safe delegation with all necessary checks

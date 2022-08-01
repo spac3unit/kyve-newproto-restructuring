@@ -3,104 +3,92 @@ package keeper
 import (
 	"context"
 	"github.com/KYVENetwork/chain/x/bundles/types"
-	//	sdk "github.com/cosmos/cosmos-sdk/types"
-	//	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
-	//	"strings"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 // SubmitBundleProposal handles the logic of an SDK message that allows protocol nodes to submit a new bundle proposal.
 func (k msgServer) SubmitBundleProposal(
 	goCtx context.Context, msg *types.MsgSubmitBundleProposal,
 ) (*types.MsgSubmitBundleProposalResponse, error) {
-	return nil, nil
-	//	// Unwrap context and attempt to fetch the pool.
-	//	ctx := sdk.UnwrapSDKContext(goCtx)
-	//
-	//	// TODO Create a PoolExists function on pool module which doesnt do unmarshalling etc.
-	//	pool, poolErr := k.poolKeeper.GetPoolWithError(ctx, msg.PoolId)
-	//	if poolErr != nil {
-	//		return nil, poolErr
-	//	}
-	//
-	//	// Check if enough nodes are online
-	//	if k.stakerKeeper.GetStakerCount(ctx, msg.PoolId) > 2 {
-	//		return nil, types.ErrNotEnoughNodesOnline
-	//	}
-	//
-	//	// Check if minimum stake is reached
-	//	if pool.TotalStake < pool.MinStake {
-	//		return nil, types.ErrNotEnoughStake
-	//	}
-	//
-	//	// Error if the pool has no funds.
-	//	if len(pool.Funders) == 0 {
-	//		return nil, sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrFundsTooLow.Error())
-	//	}
-	//
-	//	// Error if the pool is paused.
-	//	if pool.Paused {
-	//		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolPaused.Error())
-	//	}
-	//
-	//	// Error if the pool is upgrading.
-	//	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
-	//		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolCurrentlyUpgrading.Error())
-	//	}
-	//
-	//	// Check if the sender is a protocol node (aka has staked into this pool).
-	//	_, isStaker := k.stakerKeeper.GetStaker(ctx, msg.Creator, msg.PoolId)
-	//	if !isStaker {
-	//		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrNoStaker.Error())
-	//	}
-	//
-	//	// Validate bundle id.
-	//	if msg.StorageId == "" {
-	//		return nil, types.ErrInvalidArgs
-	//	}
-	//
-	//	// Get current height from where the bundle proposal should resume
-	//	// TODO where to handle current Height?
-	//	current_height := pool.CurrentHeight
-	//
-	//	// TODO custom bundle proposal
-	//	if pool.BundleProposal.ToHeight != 0 {
-	//		current_height = pool.BundleProposal.ToHeight
-	//	}
-	//
-	//	// Validate from height
-	//	if msg.FromHeight != current_height {
-	//		return nil, types.ErrFromHeight
-	//	}
-	//
-	//	// Validate to height
-	//	if msg.ToHeight < current_height {
-	//		return nil, types.ErrToHeight
-	//	}
-	//
-	//	if msg.ToHeight-current_height > pool.MaxBundleSize {
-	//		return nil, types.ErrMaxBundleSize
-	//	}
-	//
-	//	current_key := pool.CurrentKey
-	//
-	//	if pool.BundleProposal.ToKey != "" {
-	//		current_key = pool.BundleProposal.ToKey
-	//	}
-	//
-	//	// Validate from key
-	//	if msg.FromKey != current_key {
-	//		return nil, types.ErrFromKey
-	//	}
-	//
-	//	// Check if the sender is the designated uploader.
-	//	if pool.BundleProposal.NextUploader != msg.Creator {
-	//		return nil, types.ErrNotDesignatedUploader
-	//	}
-	//
-	//	// Check if upload_interval has been surpassed
-	//	if uint64(ctx.BlockTime().Unix()) < (pool.BundleProposal.CreatedAt + pool.UploadInterval) {
-	//		return nil, types.ErrUploadInterval
-	//	}
+
+	// Unwrap context and attempt to fetch the pool.
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// TODO function should check minstake
+	poolErr := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId)
+	if poolErr != nil {
+		return nil, poolErr
+	}
+
+	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.Staker, msg.Creator, msg.PoolId); err != nil {
+		return nil, err
+	}
+
+	// TODO BEGIN BUNDLE LOGIC
+
+	// Validate bundle id.
+	if msg.StorageId == "" {
+		return nil, types.ErrInvalidArgs
+	}
+
+	// Get current height from where the bundle proposal should resume
+	// TODO where to handle current Height? pool module or bundle
+
+	current_height := uint64(0)
+	_ = current_height
+
+	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
+
+	// TODO outsource checks as they all just check for errors
+
+	if bundleProposal.ToHeight != 0 {
+		current_height = bundleProposal.ToHeight
+	}
+
+	// Validate from height
+	if msg.FromHeight != current_height {
+		return nil, types.ErrFromHeight
+	}
+
+	// Validate to height
+	if msg.ToHeight < current_height {
+		return nil, types.ErrToHeight
+	}
+
+	// TODO GET max bundle size from pool settings ?
+	//if msg.ToHeight-current_height > pool.MaxBundleSize {
+	//	return nil, types.ErrMaxBundleSize
+	//}
+
+	// TODO fetch current key from bundle module? I don't think this belongs to pool module
+	//current_key := pool.CurrentKey
+	current_key := ""
+
+	// TODO also outsource checks
+
+	if bundleProposal.ToKey != "" {
+		current_key = bundleProposal.ToKey
+	}
+
+	// Validate from key
+	if msg.FromKey != current_key {
+		return nil, types.ErrFromKey
+	}
+
+	// Check if the sender is the designated uploader.
+	if bundleProposal.NextUploader != msg.Creator {
+		return nil, types.ErrNotDesignatedUploader
+	}
+
+	// Check if upload_interval has been surpassed
+	//if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval) {
+	if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + 0 /* TODO fetch upload interval */) {
+		return nil, types.ErrUploadInterval
+	}
+
+	// TODO the entire process of evaluating the round could probably also be outsourced to a different file
+	// TODO and then be reused by the endblock logic as well.
+
 	//
 	//	// EVALUATE PREVIOUS ROUND
 	//
@@ -505,4 +493,7 @@ func (k msgServer) SubmitBundleProposal(
 	//	} else {
 	//		return nil, types.ErrQuorumNotReached
 	//	}
+
+	return nil, nil
+
 }

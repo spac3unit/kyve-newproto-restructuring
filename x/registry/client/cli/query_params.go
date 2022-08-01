@@ -25,14 +25,17 @@ func CmdParams() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryParamsRequest{}
+			_ = queryClient
 
-			res, err := queryClient.Params(cmd.Context(), params)
-			if err != nil {
-				return err
-			}
+			//params := &types.QueryParamsRequest{}
 
-			return clientCtx.PrintProto(res)
+			//res, err := queryClient.Params(cmd.Context(), params)
+			//if err != nil {
+			//	return err
+			//}
+
+			//return clientCtx.PrintProto(res)
+			return nil
 		},
 	}
 

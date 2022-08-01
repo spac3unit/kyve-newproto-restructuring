@@ -13,6 +13,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 	//// Iterate over all pools.
 	//for _, pool := range pools {
 	//	// Set pool status
+	//  // TODO is this required for code or could this just be determined in the query?
 	//	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
 	//		pool.Status = types.POOL_STATUS_UPGRADING
 	//	} else if pool.Paused {
@@ -36,6 +37,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 	//	k.SetPool(ctx, pool)
 	//
 	//	// Check if there is an upcoming pool upgrade
+	//  // TODO maybe put into pool module?
 	//	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
 	//		// Check if pool upgrade already has been applied
 	//		if pool.Protocol.Version != pool.UpgradePlan.Version || pool.Protocol.Binaries != pool.UpgradePlan.Binaries {

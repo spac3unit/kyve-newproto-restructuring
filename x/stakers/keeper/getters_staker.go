@@ -33,7 +33,7 @@ func (k Keeper) UpdateStakerCommission(ctx sdk.Context, address string, commissi
 func (k Keeper) RemoveStakerFromPool(ctx sdk.Context, poolId uint64, address string) {
 	staker, found := k.GetStaker(ctx, address)
 	if found {
-		newPools, removed := util.RemoveFromArrayStable(staker.Pools, poolId)
+		newPools, removed := util.RemoveFromUint64ArrayStable(staker.Pools, poolId)
 		if removed {
 			staker.Pools = newPools
 
@@ -53,7 +53,7 @@ func (k Keeper) RemoveStakerFromPool(ctx sdk.Context, poolId uint64, address str
 func (k Keeper) AddStakerToPool(ctx sdk.Context, poolId uint64, address string) {
 	staker, found := k.GetStaker(ctx, address)
 	if found {
-		if !util.Contains(staker.Pools, poolId) {
+		if !util.ContainsUint64(staker.Pools, poolId) {
 			staker.Pools = append(staker.Pools, poolId)
 
 			k.addToTotalStake(ctx, poolId, staker.Amount)

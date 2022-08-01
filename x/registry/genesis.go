@@ -69,14 +69,11 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.RedelegationCooldownList {
 		k.SetRedelegationCooldown(ctx, elem)
 	}
-
-	k.SetParams(ctx, genState.Params)
 }
 
 // ExportGenesis returns the capability module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
-	genesis.Params = k.GetParams(ctx)
 
 	// Migrated
 	genesis.PoolList = k.GetAllPool(ctx)

@@ -46,7 +46,7 @@ func (k Keeper) ProcessLeavePoolQueue(ctx sdk.Context) {
 			staker, stakerFound := k.GetStaker(ctx, queueEntry.Staker)
 			if stakerFound {
 
-				if util.Contains(staker.Pools, queueEntry.PoolId) {
+				if util.ContainsUint64(staker.Pools, queueEntry.PoolId) {
 					k.RemoveStakerFromPool(ctx, queueEntry.PoolId, queueEntry.Staker)
 
 					// Event an event.

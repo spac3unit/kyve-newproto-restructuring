@@ -3,15 +3,12 @@ syntax = "proto3";
 package kyve.registry.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "kyve/registry/v1beta1/params.proto";
 import "kyve/registry/v1beta1/registry.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 
 // GenesisState defines the registry module's genesis state.
 message GenesisState {
-  // params defines all the parameters of the module.
-  kyve.registry.v1beta1.Params params = 1 [(gogoproto.nullable) = false];
   // pool_list ...
   repeated kyve.registry.v1beta1.Pool pool_list = 2 [(gogoproto.nullable) = false];
   // pool_count ...
