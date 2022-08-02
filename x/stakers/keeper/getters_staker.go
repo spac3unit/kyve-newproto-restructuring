@@ -141,7 +141,7 @@ func (k Keeper) getLowestStakerIndex(ctx sdk.Context, poolId uint64) (staker typ
 }
 
 func (k Keeper) getAllStakersOfPool(ctx sdk.Context, poolId uint64) []types.Staker {
-	valaccounts := k.getAllValaccountsOfPool(ctx, poolId)
+	valaccounts := k.GetAllValaccountsOfPool(ctx, poolId)
 
 	stakers := make([]types.Staker, 0)
 

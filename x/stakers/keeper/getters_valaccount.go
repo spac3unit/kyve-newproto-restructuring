@@ -64,7 +64,7 @@ func (k Keeper) GetValaccount(
 	return val, true
 }
 
-// GetValaccount returns a Valaccount from its index
+// DoesValaccountExist returns a Valaccount from its index
 func (k Keeper) DoesValaccountExist(
 	ctx sdk.Context,
 	poolId uint64,
@@ -74,8 +74,8 @@ func (k Keeper) DoesValaccountExist(
 	return store.Has(types.ValaccountKey(poolId, staker))
 }
 
-// getAllValaccountsOfPool returns a Valaccount from its index
-func (k Keeper) getAllValaccountsOfPool(
+// GetAllValaccountsOfPool returns a Valaccount from its index
+func (k Keeper) GetAllValaccountsOfPool(
 	ctx sdk.Context,
 	poolId uint64,
 ) (val []types.Valaccount) {

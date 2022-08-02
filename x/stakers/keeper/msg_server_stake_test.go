@@ -13,6 +13,8 @@ import (
 var _ = Describe("Staking", Ordered, func() {
 	s := i.NewCleanChain()
 
+	initialBalanceAlice := s.GetBalanceFromAddress(i.ALICE)
+
 	BeforeAll(func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
@@ -30,9 +32,14 @@ var _ = Describe("Staking", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
+		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
+
 		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
 
 		Expect(found).To(BeTrue())
+
+		Expect(initialBalanceAlice - balanceAfter).To(Equal(100 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.ALICE))
 		Expect(staker.Amount).To(Equal(100 * i.KYVE))
@@ -42,6 +49,35 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(staker.Moniker).To(BeEmpty())
 		Expect(staker.Logo).To(BeEmpty())
 		Expect(staker.Website).To(BeEmpty())
+
+		Expect(valaccounts).To(HaveLen(0))
+	})
+
+	It("Stake additional 50 KYVE", func() {
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.ALICE,
+			Amount:  50 * i.KYVE,
+		})
+
+		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
+
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+
+		Expect(found).To(BeTrue())
+
+		Expect(initialBalanceAlice - balanceAfter).To(Equal(150 * i.KYVE))
+
+		Expect(staker.Address).To(Equal(i.ALICE))
+		Expect(staker.Amount).To(Equal(150 * i.KYVE))
+		Expect(staker.UnbondingAmount).To(BeZero())
+		Expect(staker.Commission).To(Equal(types.DefaultCommission))
+
+		Expect(staker.Moniker).To(BeEmpty())
+		Expect(staker.Logo).To(BeEmpty())
+		Expect(staker.Website).To(BeEmpty())
+
+		Expect(valaccounts).To(HaveLen(0))
 	})
 })
 

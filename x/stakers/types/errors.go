@@ -10,6 +10,7 @@ var (
 	ErrUnstakeTooHigh = sdkerrors.Register(ModuleName, 1104, "maximum unstaking amount of %vkyve surpassed")
 	ErrNoStaker       = sdkerrors.Register(ModuleName, 1105, "sender is no staker")
 	ErrAlreadyJoinedPool = sdkerrors.Register(ModuleName, 1106, "already joined pool")
+	ErrAlreadyLeftPool = sdkerrors.Register(ModuleName, 1107, "already left pool")
 
 	ErrInvalidCommission          = sdkerrors.Register(ModuleName, 1116, "invalid commission %v")
 	ErrPoolLeaveAlreadyInProgress = sdkerrors.Register(ModuleName, 1117, "Pool leave is already in progress")
