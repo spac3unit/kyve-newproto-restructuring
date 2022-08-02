@@ -98,4 +98,29 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		Expect(err).ToNot(BeNil())
 	})
+
+	It("Try to leave pool twice", func() {
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator: i.ALICE,
+			PoolId: 0,
+			Valaddress: i.BOB,
+		})
+
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		Expect(valaccountsOfStaker).To(HaveLen(1))
+
+		_, err := s.RunTxStakers(&stakerstypes.MsgLeavePool{
+			Creator: i.ALICE,
+			PoolId: 0,
+		})
+
+		Expect(err).To(BeNil())
+
+		_, err = s.RunTxStakers(&stakerstypes.MsgLeavePool{
+			Creator: i.ALICE,
+			PoolId: 0,
+		})
+
+		Expect(err).NotTo(BeNil())
+	})
 })
