@@ -14,7 +14,7 @@ func (k msgServer) SubmitBundleProposal(
 	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO function should check minstake
+	// TODO check min stake+delegation
 	poolErr := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId)
 	if poolErr != nil {
 		return nil, poolErr

@@ -29,6 +29,13 @@ func TransferToModule(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module stri
 	return err
 }
 
+// TransferInterModule ...
+func TransferInterModule(bankKeeper bankkeeper.Keeper, ctx sdk.Context, fromModule string, toModule string, amount uint64) error {
+	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
+	err := bankKeeper.SendCoinsFromModuleToModule(ctx, fromModule, toModule, coins)
+	return err
+}
+
 // transferToTreasury sends tokens from this module to the treasury (community spend pool).
 func transferToTreasury(bankKeeper bankkeeper.Keeper, ctx sdk.Context, amount uint64) error {
 	//sender := bankKeeper.accountKeeper.GetModuleAddress(types.ModuleName)

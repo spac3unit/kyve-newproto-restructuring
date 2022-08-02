@@ -6,6 +6,18 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+func (k Keeper) GetStakerAddressesOfPool(ctx sdk.Context, poolId uint64) []string {
+	return []string{}
+}
+
+func (k Keeper) GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress string) uint64 {
+	if k.DoesValaccountExist(ctx, poolId, stakerAddress) {
+		staker, _ := k.GetStaker(ctx, stakerAddress)
+		return staker.Amount
+	}
+	return 0
+}
+
 // Slash removed a certain amount of the user and transfers it to the treasury
 // If a user loses all tokens, the function takes care of removing the user completely
 func (k Keeper) Slash(

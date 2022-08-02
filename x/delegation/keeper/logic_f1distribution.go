@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/delegation/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -120,19 +121,17 @@ func (f1 F1Distribution) Delegate(amount uint64) {
 // Withdraw() must be called before, otherwise the reward is gone
 func (f1 F1Distribution) Undelegate() (undelegatedAmount uint64) {
 
+	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
+	if !found {
+		return 0
+	}
+
 	// Fetch metadata
 	delegationData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
 
 	// Init default data-set, if this is the first delegator
 	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "No delegationData although somebody is delegating")
-	}
-
-	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
-	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "Not a delegator")
+		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "No delegationData although somebody is delegating")
 	}
 
 	_, indexF := f1.updateEntries(delegationData.LatestIndexK, delegationData.CurrentRewards,
@@ -169,37 +168,33 @@ func (f1 F1Distribution) Undelegate() (undelegatedAmount uint64) {
 // F1Withdraw updates the states for F1-Algorithm and returns the amount of coins the user has earned.
 // The Method does NOT transfer the money.
 func (f1 F1Distribution) Withdraw() (reward uint64) {
-	// Fetch metadata
-	delegationPoolData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
-
-	// Init default data-set, if this is the first delegator
-	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "No delegationData although somebody is delegating")
-	}
 
 	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
 	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "Not a delegator")
+		return 0
 	}
 
-	entryFBalance, indexF := f1.updateEntries(delegationPoolData.LatestIndexK, delegationPoolData.CurrentRewards,
-		delegationPoolData.TotalDelegation, delegationPoolData.LatestIndexWasUndelegation)
+	// Fetch metadata
+	delegationData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
+	if !found {
+		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "No delegationData although somebody is delegating")
+	}
 
-	delegationPoolData.LatestIndexWasUndelegation = false
+	entryFBalance, indexF := f1.updateEntries(delegationData.LatestIndexK, delegationData.CurrentRewards,
+		delegationData.TotalDelegation, delegationData.LatestIndexWasUndelegation)
+
+	delegationData.LatestIndexWasUndelegation = false
 
 	// Reset Values according to F1Paper, i.e T=0
-	delegationPoolData.CurrentRewards = 0
-	delegationPoolData.LatestIndexK = indexF
+	delegationData.CurrentRewards = 0
+	delegationData.LatestIndexK = indexF
 
-	f1.k.SetDelegationData(f1.ctx, delegationPoolData)
+	f1.k.SetDelegationData(f1.ctx, delegationData)
 
 	//Calculate Reward
 	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
 	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "Delegator does not have entry")
+		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "Delegator does not have entry")
 	}
 
 	//Remove Old entry
@@ -219,15 +214,13 @@ func (f1 F1Distribution) getCurrentReward() (reward uint64) {
 
 	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
 	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "Not a delegator")
+		return 0
 	}
 
 	// Fetch metadata
 	delegationPoolData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
 	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "No delegationData although somebody is delegating")
+		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "No delegationData although somebody is delegating")
 	}
 
 	// get last but one entry for F1Distribution, init with zero if it is the first delegator
@@ -252,8 +245,7 @@ func (f1 F1Distribution) getCurrentReward() (reward uint64) {
 	//Calculate Reward
 	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
 	if !found {
-		// TODO
-		//f1.k.PanicHalt(f1.ctx, "Delegator does not have entry")
+		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "Delegator does not have an entry")
 	}
 
 	f1kBalance, _ := sdk.NewDecFromStr(f1K.Balance)

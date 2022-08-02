@@ -15,11 +15,10 @@ func (k msgServer) VoteProposal(
 ) (*types.MsgVoteProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// TODO check min stake+delegation
 	if err := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
 		return nil, err
 	}
-
-	// TODO check min stake
 
 	if err := k.stakerKeeper.AssertAuthorized(ctx, "", msg.Creator, msg.PoolId); err != nil {
 		return nil, err

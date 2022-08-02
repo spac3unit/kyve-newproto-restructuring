@@ -1,13 +1,12 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/delegation/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// ####################
-// ==== DELEGATION ====
-// ####################
+// TODO Implement slashing of delegators
 
 // StartUnbondingDelegator ...
 func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegatorAddress string, amount uint64) (error error) {
@@ -55,12 +54,16 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 			removed = true
 		} else if undelegationEntry.CreationTime+k.UnbondingDelegationTime(ctx) < uint64(ctx.BlockTime().Unix()) {
 
-			//// Transfer the money
-			//err := k.TransferToAddress(ctx, unbondingDelegationEntry.Delegator, unbondingDelegationEntry.Amount)
-			//if err != nil {
-			//	k.PanicHalt(ctx, "Not enough money in module: "+err.Error())
-			//}
-			// TODO transfer money
+			// Transfer the money
+			if err := util.TransferToAddress(
+				k.bankKeeper,
+				ctx,
+				types.ModuleName,
+				undelegationEntry.Delegator,
+				undelegationEntry.Amount,
+			); err != nil {
+				return
+			}
 
 			k.RemoveUndelegationQueueEntry(ctx, &undelegationEntry)
 

@@ -12,25 +12,31 @@ func (k Keeper) GetDelegationAmount(ctx sdk.Context, staker string) uint64 {
 	return delegationData.TotalDelegation
 }
 
-func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64) {
-	delegationData, found := k.GetDelegationData(ctx, staker)
-	// TODO handle found
-	_ = found
-	// TODO transfer tokens from pools module to delegation module
-	delegationData.CurrentRewards += amount
-	// TODO move set method to getter
-	k.SetDelegationData(ctx, delegationData)
+func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, payerModuleName string) (success bool) {
+	// Assert there are delegators
+	if k.DoesDelegationDataExist(ctx, staker) {
+
+		// Add amount to the rewards pool
+		k.AddAmountToDelegationRewards(ctx, staker, amount)
+
+		// Transfer tokens to the delegation module
+		err := util.TransferInterModule(k.bankKeeper, ctx, payerModuleName, types.ModuleName, amount)
+		if err != nil {
+			util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
+			return false
+		}
+		return true
+	}
+	return false
+}
+
+func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, amount uint64) {
+	// TODO stub
 }
 
 // Delegate performs a safe delegation with all necessary checks
 // Warning: does not transfer the amount (only the rewards)
 func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
-
-	// Check if the sender is delegating to themselves.
-	if delegatorAddress == stakerAddress {
-		// TODO should we allow it again?
-		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrSelfDelegation.Error())
-	}
 
 	// Create a new F1Distribution struct for interacting with delegations.
 	f1Distribution := F1Distribution{
