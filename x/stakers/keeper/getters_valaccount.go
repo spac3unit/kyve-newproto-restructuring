@@ -29,6 +29,21 @@ func (k Keeper) setValaccount(ctx sdk.Context, staker types.Valaccount) {
 	), []byte{})
 }
 
+// removeValaccount removes a Valaccount from the store
+func (k Keeper) removeValaccount(ctx sdk.Context, staker types.Valaccount) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
+	store.Delete(types.ValaccountKey(
+		staker.PoolId,
+		staker.Staker,
+	))
+
+	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
+	storeIndex2.Delete(types.ValaccountKeyIndex2(
+		staker.Staker,
+		staker.PoolId,
+	))
+}
+
 // GetValaccount returns a Valaccount from its index
 func (k Keeper) GetValaccount(
 	ctx sdk.Context,
@@ -85,7 +100,7 @@ func (k Keeper) getAllValaccountsOfPool(
 }
 
 // getValaccountsFromStaker returns all pools the staker has valaccounts in
-func (k Keeper) getValaccountsFromStaker(
+func (k Keeper) GetValaccountsFromStaker(
 	ctx sdk.Context,
 	stakerAddress string,
 ) (val []types.Valaccount) {
@@ -96,7 +111,7 @@ func (k Keeper) getValaccountsFromStaker(
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		poolId := binary.BigEndian.Uint64(iterator.Key()[44 : 44+8])
+		poolId := binary.BigEndian.Uint64(iterator.Key()[44+2 : 44+8+2]) // TODO: remove +2
 		valaccount, valaccountFound := k.GetValaccount(ctx, poolId, stakerAddress)
 
 		if valaccountFound {
@@ -105,19 +120,4 @@ func (k Keeper) getValaccountsFromStaker(
 	}
 
 	return val
-}
-
-// removeValaccount removes a Valaccount from the store
-func (k Keeper) removeValaccount(ctx sdk.Context, staker types.Valaccount) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
-	store.Delete(types.ValaccountKey(
-		staker.PoolId,
-		staker.Staker,
-	))
-
-	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
-	storeIndex2.Delete(types.ValaccountKeyIndex2(
-		staker.Staker,
-		staker.PoolId,
-	))
 }

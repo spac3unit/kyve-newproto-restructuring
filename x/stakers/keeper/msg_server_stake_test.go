@@ -1,53 +1,86 @@
 package keeper_test
 
 import (
-	"fmt"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+
 	i "github.com/KYVENetwork/chain/testutil/integration"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
-	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
-	"github.com/stretchr/testify/require"
-	"testing"
 )
 
-func createPool(suite *i.KeeperTestSuite, t *testing.T) {
-	suite.RunTxPoolSuccess(t, &pooltypes.MsgCreatePool{
-		Creator: i.ALICE,
-		Name:    "Moontest",
-	})
+var _ = Describe("Staking", func() {
+  It("Can create pool", func() {
+    s := i.NewCleanChain()
 
-	pool, found := suite.App().PoolKeeper.GetPool(suite.Ctx(), 0)
-	require.True(t, found)
-	require.Equal(t, "Moontest", pool.Name)
+		s.RunTxPool(&pooltypes.MsgCreatePool{
+			Creator: i.ALICE,
+			Name:    "Moontest",
+		})
 
-	suite.CommitAfterSeconds(10)
-}
+		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
-func TestBasicStaking(t *testing.T) {
+		Expect(found).To(BeTrue())
+		Expect(pool.Name).To(Equal("Moontest"))
+  })
+})
 
-	s := i.NewCleanChain()
-	createPool(&s, t)
+// func createPool(suite *i.KeeperTestSuite, t *testing.T) {
+// 	suite.RunTxPoolSuccess(t, &pooltypes.MsgCreatePool{
+// 		Creator: i.ALICE,
+// 		Name:    "Moontest",
+// 	})
 
-	s.RunTxStakersSuccess(t, &stakerstypes.MsgStake{
-		Creator: i.ALICE,
-		Amount:  100 * i.KYVE,
-	})
+// 	pool, found := suite.App().PoolKeeper.GetPool(suite.Ctx(), 0)
+// 	require.True(t, found)
+// 	require.Equal(t, "Moontest", pool.Name)
 
-	staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
-	require.True(t, found)
-	fmt.Printf("%v\n", staker)
+// 	suite.CommitAfterSeconds(10)
+// }
 
-	count := s.App().StakersKeeper.GetStakerCountOfPool(s.Ctx(), 0)
-	require.Equal(t, uint64(0), count)
+// func TestBasicStaking(t *testing.T) {
 
-	// Enter pool
-	s.RunTxStakersSuccess(t, &stakerstypes.MsgJoinPool{
-		Creator: i.ALICE,
-		PoolId:  0,
-	})
+// 	s := i.NewCleanChain()
+// 	createPool(&s, t)
 
-	count = s.App().StakersKeeper.GetStakerCountOfPool(s.Ctx(), 0)
-	require.Equal(t, uint64(1), count)
+// 	// create staker
+// 	s.RunTxStakersSuccess(t, &stakerstypes.MsgStake{
+// 		Creator: i.ALICE,
+// 		Amount:  100 * i.KYVE,
+// 	})
 
-	totalPoolStake := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
-	require.Equal(t, 100*i.KYVE, totalPoolStake)
-}
+// 	staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+// 	require.True(t, found)
+// 	require.Equal(t, 100 * i.KYVE, staker.Amount)
+// 	fmt.Printf("%v\n", staker)
+
+// 	count := s.App().StakersKeeper.GetStakerCountOfPool(s.Ctx(), 0)
+// 	require.Equal(t, uint64(0), count)
+
+// 	// join pool
+// 	s.RunTxStakersSuccess(t, &stakerstypes.MsgJoinPool{
+// 		Creator: i.ALICE,
+// 		PoolId:  0,
+// 	})
+
+// 	count = s.App().StakersKeeper.GetStakerCountOfPool(s.Ctx(), 0)
+// 	require.Equal(t, uint64(1), count)
+
+// 	totalPoolStake := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
+// 	require.Equal(t, 100*i.KYVE, totalPoolStake)
+
+// 	valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+// 	require.Len(t, valaccounts, 1)
+
+// 	// add additional stake
+// 	s.RunTxStakersSuccess(t, &stakerstypes.MsgStake{
+// 		Creator: i.ALICE,
+// 		Amount:  50 * i.KYVE,
+// 	})
+
+// 	staker, found = s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+// 	require.True(t, found)
+// 	require.Equal(t, 150 * i.KYVE, staker.Amount)
+
+// 	totalPoolStake = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
+// 	require.Equal(t, 150*i.KYVE, totalPoolStake)
+// }

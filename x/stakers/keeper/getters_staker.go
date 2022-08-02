@@ -51,9 +51,12 @@ func (k Keeper) AddValaccountToPool(ctx sdk.Context, poolId uint64, stakerAddres
 // RemoveValaccountFromPool removes a valaccount from a given pool and updates
 // all aggregated variables. If the valaccount is not in the pool nothing happens.
 func (k Keeper) RemoveValaccountFromPool(ctx sdk.Context, poolId uint64, stakerAddress string) {
+	// get valaccount
 	valaccount, valaccountFound := k.GetValaccount(ctx, poolId, stakerAddress)
 
+	// if valaccount was found on pool continue
 	if valaccountFound {
+		// remove valaccount from pool
 		k.removeValaccount(ctx, valaccount)
 		k.subtractOneFromCount(ctx, poolId)
 		staker, _ := k.GetStaker(ctx, stakerAddress)
@@ -68,7 +71,7 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, stakerAddress string, amount 
 	if found {
 		staker.Amount += amount
 
-		for _, valaccount := range k.getValaccountsFromStaker(ctx, stakerAddress) {
+		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
 			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount-amount, stakerAddress)
 			k.addToTotalStake(ctx, valaccount.PoolId, amount)
 			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
@@ -90,7 +93,7 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 			staker.UnbondingAmount -= amount
 		}
 
-		for _, valaccount := range k.getValaccountsFromStaker(ctx, stakerAddress) {
+		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
 			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount+amount, stakerAddress)
 			k.subtractFromTotalStake(ctx, valaccount.PoolId, amount)
 			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
