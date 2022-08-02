@@ -33,9 +33,9 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 		return poolErr
 	}
 
-	// Error if the pool has no funds.
-	if len(pool.Funders) == 0 {
-		return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrFundsTooLow.Error())
+	// Error if the pool is upgrading.
+	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
+		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolCurrentlyUpgrading.Error())
 	}
 
 	// Error if the pool is paused.
@@ -43,10 +43,13 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolPaused.Error())
 	}
 
-	// Error if the pool is upgrading.
-	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
-		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolCurrentlyUpgrading.Error())
+	// Error if the pool has no funds.
+	if len(pool.Funders) == 0 {
+		return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrFundsTooLow.Error())
 	}
+
+	// Error if the pool does not reach minimum stake.
+	// TODO: implement
 
 	return nil
 }

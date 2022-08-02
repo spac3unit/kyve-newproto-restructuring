@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -20,109 +21,18 @@ func (k msgServer) SubmitBundleProposal(
 		return nil, poolErr
 	}
 
-	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.Staker, msg.Creator, msg.PoolId); err != nil {
+	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
 		return nil, err
 	}
 
 	// TODO BEGIN BUNDLE LOGIC
 
-	// Validate bundle id.
-	if msg.StorageId == "" {
-		return nil, types.ErrInvalidArgs
+	// Validate submit bundle args.
+	err := k.validateSubmitBundleArgs(ctx, msg)
+	if err != nil {
+		return nil, err
 	}
 
-	// Get current height from where the bundle proposal should resume
-	// TODO where to handle current Height? pool module or bundle
-
-	current_height := uint64(0)
-	_ = current_height
-
-	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
-
-	// TODO outsource checks as they all just check for errors
-
-	if bundleProposal.ToHeight != 0 {
-		current_height = bundleProposal.ToHeight
-	}
-
-	// Validate from height
-	if msg.FromHeight != current_height {
-		return nil, types.ErrFromHeight
-	}
-
-	// Validate to height
-	if msg.ToHeight < current_height {
-		return nil, types.ErrToHeight
-	}
-
-	// TODO GET max bundle size from pool settings ?
-	//if msg.ToHeight-current_height > pool.MaxBundleSize {
-	//	return nil, types.ErrMaxBundleSize
-	//}
-
-	// TODO fetch current key from bundle module? I don't think this belongs to pool module
-	//current_key := pool.CurrentKey
-	current_key := ""
-
-	// TODO also outsource checks
-
-	if bundleProposal.ToKey != "" {
-		current_key = bundleProposal.ToKey
-	}
-
-	// Validate from key
-	if msg.FromKey != current_key {
-		return nil, types.ErrFromKey
-	}
-
-	// Check if the sender is the designated uploader.
-	if bundleProposal.NextUploader != msg.Creator {
-		return nil, types.ErrNotDesignatedUploader
-	}
-
-	// Check if upload_interval has been surpassed
-	//if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval) {
-	if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + 0 /* TODO fetch upload interval */) {
-		return nil, types.ErrUploadInterval
-	}
-
-	// TODO the entire process of evaluating the round could probably also be outsourced to a different file
-	// TODO and then be reused by the endblock logic as well.
-
-	//
-	//	// EVALUATE PREVIOUS ROUND
-	//
-	//	// Check args of bundle types
-	//	if strings.HasPrefix(msg.StorageId, types.KYVE_NO_DATA_BUNDLE) {
-	//		// Validate bundle args
-	//		if msg.ToHeight != current_height || msg.ByteSize != 0 {
-	//			return nil, types.ErrInvalidArgs
-	//		}
-	//
-	//		// Validate key values
-	//		if msg.ToKey != "" || msg.ToValue != "" {
-	//			return nil, types.ErrInvalidArgs
-	//		}
-	//
-	//		// Validate bundle hash
-	//		if msg.BundleHash != "" {
-	//			return nil, types.ErrInvalidArgs
-	//		}
-	//	} else {
-	//		if msg.ToHeight <= current_height || msg.ByteSize == 0 {
-	//			return nil, types.ErrInvalidArgs
-	//		}
-	//
-	//		// Validate key values
-	//		if msg.ToKey == "" || msg.ToValue == "" {
-	//			return nil, types.ErrInvalidArgs
-	//		}
-	//
-	//		// Validate bundle hash
-	//		if msg.BundleHash == "" {
-	//			return nil, types.ErrInvalidArgs
-	//		}
-	//	}
 	//
 	//	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.
 	//	if pool.BundleProposal.StorageId == "" || strings.HasPrefix(pool.BundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {

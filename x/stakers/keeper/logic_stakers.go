@@ -97,12 +97,16 @@ func (k Keeper) GetAuthorizedStaker(ctx sdk.Context, stakerAddress string, authA
 	// TODO
 }
 
-func (k Keeper) AssertAuthorized(ctx sdk.Context, stakerAddress string, authAddress string, poolId uint64) error {
-	// // Check if the sender is a protocol node (aka has staked into this pool).
-	//	staker, isStaker := k.GetStaker(ctx, msg.Creator, msg.Id)
-	//	if !isStaker {
-	//		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrNoStaker.Error())
-	//	}
-	// TODO
+func (k Keeper) AssertAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error {
+	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
+
+	if !found {
+		return sdkErrors.ErrNotFound
+	}
+
+	if valaccount.Valaddress != valaddress {
+		return sdkErrors.ErrUnauthorized
+	}
+
 	return nil
 }

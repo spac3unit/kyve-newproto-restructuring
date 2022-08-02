@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 
@@ -9,7 +10,7 @@ import (
 )
 
 // ClaimUploaderRole handles the logic of an SDK message that allows protocol nodes to claim the uploader role.
-// Note that this function can only be called while the specified pool is in "genesis state".
+// Note that this function can only be called when the next uploader is not chosen yet.
 // This function obeys "first come, first serve" mentality.
 func (k msgServer) ClaimUploaderRole(
 	goCtx context.Context, msg *types.MsgClaimUploaderRole,
@@ -21,18 +22,18 @@ func (k msgServer) ClaimUploaderRole(
 		return nil, poolErr
 	}
 
-	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.Staker, msg.Creator, msg.PoolId); err != nil {
+	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
 		return nil, err
 	}
 
 	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
 
-	// Error if the pool isn't in "genesis state".
+	// Error if the next uploader is already set.
 	if bundleProposal.NextUploader != "" {
 		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrUploaderAlreadyClaimed.Error())
 	}
 
-	bundleProposal.NextUploader = msg.Staker
+	bundleProposal.NextUploader = msg.Creator
 	bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 
 	k.SetBundleProposal(ctx, bundleProposal)

@@ -14,6 +14,7 @@ var (
 	ErrToHeight               = sdkerrors.Register(ModuleName, 1123, "invalid to height")
 	ErrNotDesignatedUploader  = sdkerrors.Register(ModuleName, 1113, "not designated uploader")
 	ErrUploadInterval         = sdkerrors.Register(ModuleName, 1108, "upload interval not surpassed")
+	ErrMaxBundleSize         = sdkerrors.Register(ModuleName, 1109, "max bundle size was surpassed")
 	ErrFromKey                = sdkerrors.Register(ModuleName, 1124, "invalid from key")
 	ErrVoterIsUploader        = sdkerrors.Register(ModuleName, 1112, "voter is uploader")
 	ErrInvalidVote            = sdkerrors.Register(ModuleName, 1119, "invalid vote %v")

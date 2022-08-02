@@ -1,11 +1,14 @@
 package keeper
 
 import (
-	"github.com/KYVENetwork/chain/x/bundles/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"math"
 	"math/rand"
 	"sort"
+	"strings"
+
+	"github.com/KYVENetwork/chain/x/bundles/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func containsElement(array []string, element string) bool {
@@ -15,6 +18,87 @@ func containsElement(array []string, element string) bool {
 		}
 	}
 	return false
+}
+
+func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, msg *types.MsgSubmitBundleProposal) (error) {
+	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
+	bundleProposal, bundleProposalFound := k.GetBundleProposal(ctx, msg.PoolId)
+
+	current_height := bundleProposal.ToHeight
+	current_key := bundleProposal.ToKey
+
+	if !bundleProposalFound {
+		return sdkErrors.ErrNotFound
+	}
+
+	// Validate storage id
+	if msg.StorageId == "" {
+		return types.ErrInvalidArgs
+	}
+
+	// Check if the sender is the designated uploader.
+	if bundleProposal.NextUploader != msg.Creator {
+		return types.ErrNotDesignatedUploader
+	}
+
+	// Validate upload interval has been surpassed
+	if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval) {
+		return types.ErrUploadInterval
+	}
+
+	// Validate if bundle is not too big
+	if msg.ToHeight-current_height > pool.MaxBundleSize {
+		return types.ErrMaxBundleSize
+	}
+
+	// Validate from height
+	if msg.FromHeight != current_height {
+		return types.ErrFromHeight
+	}
+
+	// Validate to height
+	if msg.ToHeight < current_height {
+		return types.ErrToHeight
+	}
+
+	// Validate from key
+	if msg.FromKey != current_key {
+		return types.ErrFromKey
+	}
+
+	// check if bundle is of type no data bundle
+	if strings.HasPrefix(msg.StorageId, types.KYVE_NO_DATA_BUNDLE) {
+		// Validate bundle args
+		if msg.ToHeight != current_height || msg.ByteSize != 0 {
+			return types.ErrInvalidArgs
+		}
+
+		// Validate key values
+		if msg.ToKey != "" || msg.ToValue != "" {
+			return types.ErrInvalidArgs
+		}
+
+		// Validate bundle hash
+		if msg.BundleHash != "" {
+			return types.ErrInvalidArgs
+		}
+	} else {
+		if msg.ToHeight <= current_height || msg.ByteSize == 0 {
+			return types.ErrInvalidArgs
+		}
+
+		// Validate key values
+		if msg.ToKey == "" || msg.ToValue == "" {
+			return types.ErrInvalidArgs
+		}
+
+		// Validate bundle hash
+		if msg.BundleHash == "" {
+			return types.ErrInvalidArgs
+		}
+	}
+
+	return nil
 }
 
 // updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
