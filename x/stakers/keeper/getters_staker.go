@@ -71,7 +71,7 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, stakerAddress string, amount 
 	if found {
 		staker.Amount += amount
 
-		for _, valaccount := range k.getValaccountsFromStaker(ctx, stakerAddress) {
+		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
 			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount-amount, stakerAddress)
 			k.addToTotalStake(ctx, valaccount.PoolId, amount)
 			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
@@ -93,7 +93,7 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 			staker.UnbondingAmount -= amount
 		}
 
-		for _, valaccount := range k.getValaccountsFromStaker(ctx, stakerAddress) {
+		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
 			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount+amount, stakerAddress)
 			k.subtractFromTotalStake(ctx, valaccount.PoolId, amount)
 			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
