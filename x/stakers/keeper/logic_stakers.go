@@ -56,13 +56,17 @@ func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, address string) {
 }
 
 func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {
-
+	// check if slots are still available
 	if k.GetStakerCountOfPool(ctx, poolId) >= types.MaxStakers {
+		// if not - get lowest staker
 		lowestStaker, _ := k.GetLowestStaker(ctx, poolId)
 
+		// if new pool joiner has more stake than lowest staker kick him out
 		if stakeAmount > lowestStaker.Amount {
+			// remove lowest staker from pool
 			k.RemoveValaccountFromPool(ctx, poolId, lowestStaker.Address)
 
+			// emit event
 			if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventLeavePool{
 				PoolId: poolId,
 				Staker: lowestStaker.Address,
