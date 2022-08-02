@@ -33,14 +33,18 @@ func (k Keeper) UpdateStakerCommission(ctx sdk.Context, address string, commissi
 // AddValaccountToPool adds a valaccount to a pool.
 // If valaccount already belongs to pool, nothing happens.
 func (k Keeper) AddValaccountToPool(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) {
-	_, found := k.GetStaker(ctx, stakerAddress)
+	staker, found := k.GetStaker(ctx, stakerAddress)
 
 	if found {
-		k.setValaccount(ctx, types.Valaccount{
-			PoolId: poolId,
-			Staker: stakerAddress,
-			Valaddress: valaddress,
-		})
+		if !k.DoesValaccountExist(ctx, poolId, stakerAddress) {
+			k.setValaccount(ctx, types.Valaccount{
+				PoolId:     poolId,
+				Staker:     stakerAddress,
+				Valaddress: valaddress,
+			})
+			k.addToTotalStake(ctx, poolId, staker.Amount)
+			k.addOneToCount(ctx, poolId)
+		}
 	}
 }
 
@@ -51,6 +55,9 @@ func (k Keeper) RemoveValaccountFromPool(ctx sdk.Context, poolId uint64, stakerA
 
 	if valaccountFound {
 		k.removeValaccount(ctx, valaccount)
+		k.subtractOneFromCount(ctx, poolId)
+		staker, _ := k.GetStaker(ctx, stakerAddress)
+		k.subtractFromTotalStake(ctx, poolId, staker.Amount)
 	}
 }
 
