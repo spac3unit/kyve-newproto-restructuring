@@ -14,7 +14,7 @@ var _ = Describe("Staking", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeAll(func() {
-		s.RunTxPool(&pooltypes.MsgCreatePool{
+		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
 		})
@@ -24,12 +24,12 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(found).To(BeTrue())
 	})
 
-  It("Create new staker with 100 KYVE", func() {
-    s.RunTxStakers(&stakerstypes.MsgStake{
+	It("Create new staker with 100 KYVE", func() {
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})
-	
+
 		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 
 		Expect(found).To(BeTrue())
@@ -42,7 +42,7 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(staker.Moniker).To(BeEmpty())
 		Expect(staker.Logo).To(BeEmpty())
 		Expect(staker.Website).To(BeEmpty())
-  })
+	})
 })
 
 // func createPool(suite *i.KeeperTestSuite, t *testing.T) {

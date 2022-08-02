@@ -1,12 +1,12 @@
 package integration
 
 import (
+	. "github.com/onsi/gomega"
+
 	"github.com/KYVENetwork/chain/x/delegation"
 	"github.com/KYVENetwork/chain/x/pool"
 	"github.com/KYVENetwork/chain/x/stakers"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func (suite *KeeperTestSuite) RunTxPool(msg sdk.Msg) (*sdk.Result, error) {
@@ -39,17 +39,17 @@ func (suite *KeeperTestSuite) RunTxDelegator(msg sdk.Msg) (*sdk.Result, error) {
 	return nil, err
 }
 
-func (suite *KeeperTestSuite) RunTxPoolSuccess(t *testing.T, msg sdk.Msg) {
+func (suite *KeeperTestSuite) RunTxPoolSuccess(msg sdk.Msg) {
 	_, err := suite.RunTxPool(msg)
-	require.NoError(t, err)
+	Expect(err).To(BeNil())
 }
 
-func (suite *KeeperTestSuite) RunTxStakersSuccess(t *testing.T, msg sdk.Msg) {
+func (suite *KeeperTestSuite) RunTxStakersSuccess(msg sdk.Msg) {
 	_, err := suite.RunTxStakers(msg)
-	require.NoError(t, err)
+	Expect(err).To(BeNil())
 }
 
-func (suite *KeeperTestSuite) RunTxDelegatorSuccess(t *testing.T, msg sdk.Msg) {
+func (suite *KeeperTestSuite) RunTxDelegatorSuccess(msg sdk.Msg) {
 	_, err := suite.RunTxDelegator(msg)
-	require.NoError(t, err)
+	Expect(err).To(BeNil())
 }
