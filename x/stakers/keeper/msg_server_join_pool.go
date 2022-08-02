@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -21,16 +22,22 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNoStaker.Error())
 	}
 
+	_, valaccountFound := k.GetValaccount(ctx, msg.PoolId, msg.Creator)
+	if valaccountFound {
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrInvalidRequest, types.ErrAlreadyJoinedPool.Error())
+	}
+
 	errFreeSlot := k.ensureFreeSlot(ctx, msg.PoolId, staker.Amount)
 	if errFreeSlot != nil {
 		return nil, errFreeSlot
 	}
 
-	k.AddStakerToPool(ctx, msg.PoolId, msg.Creator)
+	k.AddValaccountToPool(ctx, msg.PoolId, msg.Creator, msg.Valaddress)
 
 	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventJoinPool{
 		PoolId:  msg.PoolId,
-		Address: msg.Creator,
+		Staker: msg.Creator,
+		Valaddress: msg.Valaddress,
 	}); errEmit != nil {
 		return nil, errEmit
 	}

@@ -11,7 +11,7 @@ import (
 func CmdUpdateCommission() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-commission [commission]",
-		Short: "Broadcast message join-pool",
+		Short: "Broadcast message update-commission",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

@@ -1,14 +1,10 @@
 syntax = "proto3";
 package kyve.stakers.v1beta1;
 
-// this line is used by starport scaffolding # proto/tx/import
-
 option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
-
   // StakePool ...
   rpc Stake(MsgStake) returns (MsgStakeResponse);
   // UnstakePool ...
@@ -21,7 +17,6 @@ service Msg {
   rpc JoinPool(MsgJoinPool) returns (MsgJoinPoolResponse);
   // LeavePool ...
   rpc LeavePool(MsgLeavePool) returns (MsgLeavePoolResponse);
-
 }
 
 // MsgStakePool defines a SDK message for staking in a pool.
@@ -61,7 +56,7 @@ message MsgUpdateMetadata {
 // MsgUpdateMetadataResponse defines the Msg/MsgUpdateMetadata response type.
 message MsgUpdateMetadataResponse {}
 
-// ...
+// MsgUpdateCommission ...
 message MsgUpdateCommission {
   // creator ...
   string creator = 1;
@@ -69,15 +64,17 @@ message MsgUpdateCommission {
   string commission = 2;
 }
 
-// ...
+// MsgUpdateCommissionResponse ...
 message MsgUpdateCommissionResponse {}
 
 // MsgJoinPool ...
 message MsgJoinPool {
   // creator ...
   string creator = 1;
-  // amount ...
+  // pool_id ...
   uint64 pool_id = 2;
+  // valaddress
+  string valaddress = 3;
 }
 
 // MsgJoinPoolResponse ...

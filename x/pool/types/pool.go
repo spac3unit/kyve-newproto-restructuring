@@ -6,7 +6,7 @@ import (
 
 func (m *Pool) UpdateFunder(funder Funder) {
 	for _, v := range m.Funders {
-		if v.Account == funder.Account {
+		if v.Address == funder.Address {
 			m.TotalFunds -= v.Amount
 			m.TotalFunds += funder.Amount
 			v.Amount = funder.Amount
@@ -29,12 +29,12 @@ func (m *Pool) InsertFunder(funder Funder) {
 func (m *Pool) RemoveFunder(funder Funder) {
 	index := sort.Search(len(m.Funders), func(i int) bool {
 		if m.Funders[i].Amount == funder.Amount {
-			return m.Funders[i].Account >= funder.Account
+			return m.Funders[i].Address >= funder.Address
 		}
 		return m.Funders[i].Amount >= funder.Amount
 	})
 	if index < len(m.Funders) {
-		if m.Funders[index].Account == funder.Account {
+		if m.Funders[index].Address == funder.Address {
 			m.Funders = append(m.Funders[0:index], m.Funders[index+1:len(m.Funders)]...)
 			m.TotalFunds -= funder.Amount
 		}
@@ -43,7 +43,7 @@ func (m *Pool) RemoveFunder(funder Funder) {
 
 func (m *Pool) GetFunder(address string) (Funder, bool) {
 	for _, v := range m.Funders {
-		if v.Account == address {
+		if v.Address == address {
 			return *v, true
 		}
 	}
