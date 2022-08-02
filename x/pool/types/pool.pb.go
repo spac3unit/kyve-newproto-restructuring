@@ -307,9 +307,6 @@ type Pool struct {
 	MinStake     uint64 `protobuf:"varint,16,opt,name=min_stake,json=minStake,proto3" json:"min_stake,omitempty"`
 	// status ...
 	Status PoolStatus `protobuf:"varint,17,opt,name=status,proto3,enum=kyve.pool.v1beta1.PoolStatus" json:"status,omitempty"`
-	// TODO maybe refactor funders to use sorted list, KV-binary tree, or go heap, for better performance
-	// TODO maybe dont update all funders after payout, but store amount to subtract and only update,
-	// TODO when funders list changes (e.g funding, defunding, lowest funder getting kicked out)
 	// funders ...
 	Funders []*Funder `protobuf:"bytes,18,rep,name=funders,proto3" json:"funders,omitempty"`
 	// total_funds ...

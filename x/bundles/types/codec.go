@@ -10,9 +10,9 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgSubmitBundleProposal{}, "registry/SubmitBundleProposal", nil)
-	cdc.RegisterConcrete(&MsgVoteProposal{}, "registry/VoteProposal", nil)
-	cdc.RegisterConcrete(&MsgClaimUploaderRole{}, "registry/ClaimUploaderRole", nil)
+	cdc.RegisterConcrete(&MsgSubmitBundleProposal{}, "bundles/SubmitBundleProposal", nil)
+	cdc.RegisterConcrete(&MsgVoteProposal{}, "bundles/VoteProposal", nil)
+	cdc.RegisterConcrete(&MsgClaimUploaderRole{}, "bundles/ClaimUploaderRole", nil)
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {

@@ -30,8 +30,17 @@ var (
 	// DelegationEntriesKeyPrefix is the prefix to retrieve all DelegationEntries
 	DelegationEntriesKeyPrefix = []byte{2, 0}
 
-	// DelegationPoolDataKeyPrefix is the prefix to retrieve all DelegationPoolData
+	// DelegationDataKeyPrefix ...
 	DelegationDataKeyPrefix = []byte{3, 0}
+
+	// QueueKey ...
+	QueueKey = []byte{4, 0}
+
+	// UndelegationQueueKeyPrefix ...
+	UndelegationQueueKeyPrefix = []byte{4, 1}
+
+	// UndelegationQueueKeyPrefixIndex2 ...
+	UndelegationQueueKeyPrefixIndex2 = []byte{4, 2}
 )
 
 // DelegatorKey returns the store Key to retrieve a Delegator from the index fields
@@ -52,4 +61,14 @@ func DelegationEntriesKey(stakerAddress string, kIndex uint64) []byte {
 // DelegationDataKey returns the store Key to retrieve a DelegationPoolData from the index fields
 func DelegationDataKey(stakerAddress string) []byte {
 	return util.GetByteKey(stakerAddress)
+}
+
+// UndelegationQueueKey ...
+func UndelegationQueueKey(kIndex uint64) []byte {
+	return util.GetByteKey(kIndex)
+}
+
+// UndelegationQueueKeyIndex2 ...
+func UndelegationQueueKeyIndex2(stakerAddress string, kIndex uint64) []byte {
+	return util.GetByteKey(stakerAddress, kIndex)
 }

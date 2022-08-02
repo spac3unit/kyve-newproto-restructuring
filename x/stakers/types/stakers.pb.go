@@ -78,6 +78,7 @@ type Staker struct {
 	// logo
 	Logo string `protobuf:"bytes,8,opt,name=logo,proto3" json:"logo,omitempty"`
 	// points // TODO should points be in bundles or make method to increase points ?
+	// TODO to array
 	Points uint64 `protobuf:"varint,9,opt,name=points,proto3" json:"points,omitempty"`
 }
 
