@@ -6,6 +6,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// AddAmountToRewards ...
+func (k Keeper) AddAmountToDelegationRewards(ctx sdk.Context, stakerAddress string, amount uint64) {
+	delegationData, found := k.GetDelegationData(ctx, stakerAddress)
+	if found {
+		delegationData.CurrentRewards += amount
+		k.SetDelegationData(ctx, delegationData)
+	}
+}
+
 // SetDelegationData set a specific delegationPoolData in the store from its index
 func (k Keeper) SetDelegationData(ctx sdk.Context, delegationData types.DelegationData) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationDataKeyPrefix)
@@ -26,6 +35,12 @@ func (k Keeper) GetDelegationData(ctx sdk.Context, stakerAddress string) (val ty
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// DoesDelegationDataExist ...
+func (k Keeper) DoesDelegationDataExist(ctx sdk.Context, stakerAddress string) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationDataKeyPrefix)
+	return store.Has(types.DelegationDataKey(stakerAddress))
 }
 
 // RemoveDelegationData removes a delegationPoolData from the store

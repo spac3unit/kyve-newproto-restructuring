@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/bundles/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"math"
 	"math/rand"
@@ -18,7 +18,7 @@ func containsElement(array []string, element string) bool {
 }
 
 // updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
-func (k Keeper) handleNonVoters(ctx sdk.Context, pool *types.Pool) {
+func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 	//nonVoters := make([]string, 0)
 	//
 	//for _, staker := range pool.Stakers {
@@ -177,55 +177,57 @@ func getDelegationWeight(delegation uint64) uint64 {
 	return (x - A) * 1_000_000_000
 }
 
-// getNextUploaderByRandom is an internal function that randomly selects the next uploader for a given pool.
-func (k Keeper) getNextUploaderByRandom(ctx sdk.Context, pool *types.Pool, candidates []string) (nextUploader string) {
+func (k Keeper) getNextUploaderFromAddresses(ctx sdk.Context, poolId uint64, addresses []string) (nextUploader string) {
 	var _candidates []RandomChoiceCandidate
 
-	if len(candidates) == 0 {
+	if len(addresses) == 0 {
 		return ""
 	}
 
-	//for _, s := range candidates {
-	//activeStake := k.stakerKeeper.GetActiveStake(ctx, pool.Id, s)
-	//delegation, foundDelegation := k.stakerKeeper.GetDelegationPoolData(ctx, pool.Id, s)
-	//
-	//if foundDelegation {
-	//	_candidates = append(_candidates, RandomChoiceCandidate{
-	//		Account: s,
-	//		Amount:  activeStake + getDelegationWeight(delegation.TotalDelegation),
-	//	})
-	//} else {
-	//	_candidates = append(_candidates, RandomChoiceCandidate{
-	//		Account: s,
-	//		Amount:  activeStake,
-	//	})
-	//}
-	//}
+	for _, s := range addresses {
+		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, s)
+		delegation := k.delegationKeeper.GetDelegationAmount(ctx, s)
+
+		_candidates = append(_candidates, RandomChoiceCandidate{
+			Account: s,
+			Amount:  stake + delegation,
+		})
+	}
 
 	return k.getWeightedRandomChoice(_candidates, uint64(ctx.BlockHeight()+ctx.BlockTime().Unix()))
 }
 
+func (k Keeper) getNextUploader(ctx sdk.Context, poolId uint64) (nextUploader string) {
+	stakers := k.stakerKeeper.GetStakerAddressesOfPool(ctx, poolId)
+	return k.getNextUploaderFromAddresses(ctx, poolId, stakers)
+}
+
 // getVoteDistribution is an internal function evaulates the quorum status of a bundle proposal.
-func (k Keeper) getVoteDistribution(ctx sdk.Context, pool *types.Pool) (valid uint64, invalid uint64, abstain uint64, total uint64) {
+func (k Keeper) getVoteDistribution(ctx sdk.Context, poolId uint64) (valid uint64, invalid uint64, abstain uint64, total uint64) {
+	bundleProposal, found := k.GetBundleProposal(ctx, poolId)
+	if !found {
+		return
+	}
+
 	// get $KYVE voted for valid
-	for _, voter := range pool.BundleProposal.VotersValid {
-		// TODO get Voting power
-		//valid += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
-		_ = voter
+	for _, voter := range bundleProposal.VotersValid {
+		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
+		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
+		valid += stake + delegation
 	}
 
 	// get $KYVE voted for invalid
-	for _, voter := range pool.BundleProposal.VotersInvalid {
-		// TODO get voting power
-		//invalid += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
-		_ = voter
+	for _, voter := range bundleProposal.VotersInvalid {
+		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
+		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
+		invalid += stake + delegation
 	}
 
 	// get $KYVE voted for abstain
-	for _, voter := range pool.BundleProposal.VotersAbstain {
-		// TODO get voting power
-		//abstain += k.stakerKeeper.GetActiveStake(ctx, pool.Id, voter)
-		_ = voter
+	for _, voter := range bundleProposal.VotersAbstain {
+		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
+		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
+		abstain += stake + delegation
 	}
 
 	// subtract uploader stake because he can not vote
