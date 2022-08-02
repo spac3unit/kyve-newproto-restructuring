@@ -6,21 +6,42 @@ import (
 
 	i "github.com/KYVENetwork/chain/testutil/integration"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
+	"github.com/KYVENetwork/chain/x/stakers/types"
+	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Staking", func() {
-  It("Can create pool", func() {
-    s := i.NewCleanChain()
+var _ = Describe("Staking", Ordered, func() {
+	s := i.NewCleanChain()
 
+	BeforeAll(func() {
 		s.RunTxPool(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
 		})
 
-		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		_, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
 		Expect(found).To(BeTrue())
-		Expect(pool.Name).To(Equal("Moontest"))
+	})
+
+  It("Create new staker with 100 KYVE", func() {
+    s.RunTxStakers(&stakerstypes.MsgStake{
+			Creator: i.ALICE,
+			Amount:  100 * i.KYVE,
+		})
+	
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+
+		Expect(found).To(BeTrue())
+
+		Expect(staker.Address).To(Equal(i.ALICE))
+		Expect(staker.Amount).To(Equal(100 * i.KYVE))
+		Expect(staker.UnbondingAmount).To(BeZero())
+		Expect(staker.Commission).To(Equal(types.DefaultCommission))
+
+		Expect(staker.Moniker).To(BeEmpty())
+		Expect(staker.Logo).To(BeEmpty())
+		Expect(staker.Website).To(BeEmpty())
   })
 })
 
