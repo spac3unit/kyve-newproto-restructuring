@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"github.com/KYVENetwork/chain/x/delegation"
 	"github.com/KYVENetwork/chain/x/pool"
 	"github.com/KYVENetwork/chain/x/stakers"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,6 +29,16 @@ func (suite *KeeperTestSuite) RunTxStakers(msg sdk.Msg) (*sdk.Result, error) {
 	return nil, err
 }
 
+func (suite *KeeperTestSuite) RunTxDelegator(msg sdk.Msg) (*sdk.Result, error) {
+	cachedCtx, commit := suite.ctx.CacheContext()
+	resp, err := delegation.NewHandler(suite.app.DelegationKeeper)(cachedCtx, msg)
+	if err == nil {
+		commit()
+		return resp, nil
+	}
+	return nil, err
+}
+
 func (suite *KeeperTestSuite) RunTxPoolSuccess(t *testing.T, msg sdk.Msg) {
 	_, err := suite.RunTxPool(msg)
 	require.NoError(t, err)
@@ -35,5 +46,10 @@ func (suite *KeeperTestSuite) RunTxPoolSuccess(t *testing.T, msg sdk.Msg) {
 
 func (suite *KeeperTestSuite) RunTxStakersSuccess(t *testing.T, msg sdk.Msg) {
 	_, err := suite.RunTxStakers(msg)
+	require.NoError(t, err)
+}
+
+func (suite *KeeperTestSuite) RunTxDelegatorSuccess(t *testing.T, msg sdk.Msg) {
+	_, err := suite.RunTxDelegator(msg)
 	require.NoError(t, err)
 }

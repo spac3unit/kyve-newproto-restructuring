@@ -5,6 +5,20 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+/*
+This file is responsible for implementing the F1-Fee distribution as described in
+https://drops.dagstuhl.de/opus/volltexte/2020/11974/pdf/OASIcs-Tokenomics-2019-10.pdf
+
+We recommend reading the paper first before reading the code.
+This file covers all relevant methods to fully implement the algorithm.
+It also takes fully care of the entire state. The only interaction needed
+is covered by the available methods.
+
+The methods starting lowerCase are only used internally
+The methods starting upperCase can be freely accessed inside the keeper.
+*/
+
+// F1Distribution contains all necessary objects to operate the fee-distribution algorithm
 type F1Distribution struct {
 	k                Keeper
 	ctx              sdk.Context
@@ -57,6 +71,7 @@ func (f1 F1Distribution) updateEntries(
 	return entryFBalance, indexF
 }
 
+// Delegate performs a F1-delegation on the distribution struct.
 func (f1 F1Distribution) Delegate(amount uint64) {
 
 	if amount == 0 {

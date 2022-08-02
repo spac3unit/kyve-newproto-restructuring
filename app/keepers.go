@@ -129,7 +129,6 @@ func (app *App) initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
-	paramsKeeper.Subspace(registrytypes.ModuleName)
 	paramsKeeper.Subspace(pooltypes.ModuleName)
 	paramsKeeper.Subspace(delegationtypes.ModuleName)
 	paramsKeeper.Subspace(stakerstypes.ModuleName)

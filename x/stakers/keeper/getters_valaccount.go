@@ -49,6 +49,16 @@ func (k Keeper) GetValaccount(
 	return val, true
 }
 
+// GetValaccount returns a Valaccount from its index
+func (k Keeper) DoesValaccountExist(
+	ctx sdk.Context,
+	poolId uint64,
+	staker string,
+) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
+	return store.Has(types.ValaccountKey(poolId, staker))
+}
+
 // getAllValaccountsOfPool returns a Valaccount from its index
 func (k Keeper) getAllValaccountsOfPool(
 	ctx sdk.Context,
@@ -60,18 +70,18 @@ func (k Keeper) getAllValaccountsOfPool(
 
 	defer iterator.Close()
 
-	for; iterator.Valid(); iterator.Next() {
+	for ; iterator.Valid(); iterator.Next() {
 
 		valaccount := types.Valaccount{}
 
 		iterator.Key()
-		
+
 		k.cdc.MustUnmarshal(iterator.Value(), &valaccount)
 
 		val = append(val, valaccount)
 	}
 
-	return 
+	return
 }
 
 // getValaccountsFromStaker returns all pools the staker has valaccounts in
@@ -85,8 +95,8 @@ func (k Keeper) getValaccountsFromStaker(
 
 	defer iterator.Close()
 
-	for; iterator.Valid(); iterator.Next() {
-		poolId := binary.BigEndian.Uint64(iterator.Key()[44:44+8])
+	for ; iterator.Valid(); iterator.Next() {
+		poolId := binary.BigEndian.Uint64(iterator.Key()[44 : 44+8])
 		valaccount, valaccountFound := k.GetValaccount(ctx, poolId, stakerAddress)
 
 		if valaccountFound {
