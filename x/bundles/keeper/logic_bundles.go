@@ -6,6 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
+
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -103,66 +105,29 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, msg *types.MsgSubmitBu
 
 // updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
 func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
-	//nonVoters := make([]string, 0)
-	//
-	//for _, staker := range pool.Stakers {
-	//	if staker == pool.BundleProposal.Uploader {
-	//		continue
-	//	}
-	//
-	//	// TODO improve runtime
-	//	valid := containsElement(pool.BundleProposal.VotersValid, staker)
-	//	invalid := containsElement(pool.BundleProposal.VotersInvalid, staker)
-	//	abstain := containsElement(pool.BundleProposal.VotersAbstain, staker)
-	//
-	//	if !valid && !invalid && !abstain {
-	//		nonVoters = append(nonVoters, staker)
-	//	}
-	//}
-	//
-	//for _, voter := range nonVoters {
-	//	staker, foundStaker := k.GetStaker(ctx, voter, pool.Id)
-	//
-	//	// skip timeout slash if staker is not found
-	//	if foundStaker {
-	//
-	//		// TODO think about if slash should happen in staker module or in
-	//		if staker.Points < k.MaxPoints(ctx) {
-	//			// Increase points
-	//			staker.Points += 1
-	//			k.SetStaker(ctx, staker)
-	//		} else {
-	//			// slash nonVoter for not voting in time
-	//			slashAmount := k.slashStaker(ctx, pool, staker.Account, k.TimeoutSlash(ctx))
-	//
-	//			// emit slashing event
-	//			ctx.EventManager().EmitTypedEvent(&types.EventSlash{
-	//				PoolId:    pool.Id,
-	//				Address:   staker.Account,
-	//				Amount:    slashAmount,
-	//				SlashType: types.SLASH_TYPE_TIMEOUT,
-	//			})
-	//
-	//			// Check if staker is still in stakers list and remove staker.
-	//			staker, foundStaker = k.GetStaker(ctx, voter, pool.Id)
-	//
-	//			// check if next uploader is still there or already removed
-	//			if foundStaker {
-	//				deactivateStaker(pool, &staker)
-	//				k.SetStaker(ctx, staker)
-	//
-	//				ctx.EventManager().EmitTypedEvent(&types.EventStakerStatusChanged{
-	//					PoolId:  pool.Id,
-	//					Address: staker.Account,
-	//					Status:  types.STAKER_STATUS_INACTIVE,
-	//				})
-	//			}
-	//
-	//			// Update current lowest staker
-	//			k.updateLowestStaker(ctx, pool)
-	//		}
-	//	}
-	//}
+	voters := map[string]bool{}
+	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
+	for _, address := range bundleProposal.VotersValid {
+		voters[address] = true
+	}
+	for _, address := range bundleProposal.VotersInvalid {
+		voters[address] = true
+	}
+	for _, address := range bundleProposal.VotersValid {
+		voters[address] = true
+	}
+
+	for _, staker := range k.stakerKeeper.GetStakerAddressesOfPool(ctx, poolId) {
+		if !voters[staker] {
+			if k.stakerKeeper.GetPoints(ctx, poolId, staker) < 5 /* TODO max points */ {
+				k.stakerKeeper.AddPoint(ctx, poolId, staker)
+			} else {
+				k.stakerKeeper.Slash(ctx, poolId, staker, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
+				k.stakerKeeper.ResetPoints(ctx, poolId, staker)
+			}
+		}
+		// TODO add proposer of bundle immediately to yes vote
+	}
 }
 
 // RandomChoiceCandidate ...
@@ -204,61 +169,6 @@ func (k Keeper) getWeightedRandomChoice(candidates []RandomChoiceCandidate, seed
 	}
 
 	return ""
-}
-
-func (k Keeper) GetUploadProbability(ctx sdk.Context, stakerAddress string, poolId uint64) sdk.Dec {
-
-	//pool, poolFound := k.GetPool(ctx, poolId)
-	//if !poolFound {
-	//	return sdk.NewDec(0)
-	//}
-	//
-	//totalWeight := uint64(0)
-	//userWeight := uint64(0)
-	//
-	//for _, s := range pool.Stakers {
-	//	staker, _ := k.GetStaker(ctx, s, pool.Id)
-	//	delegation, _ := k.GetDelegationPoolData(ctx, pool.Id, s)
-	//
-	//	totalWeight += staker.Amount + getDelegationWeight(delegation.TotalDelegation)
-	//	if staker.Account == stakerAddress {
-	//		userWeight = staker.Amount + getDelegationWeight(delegation.TotalDelegation)
-	//	}
-	//}
-	//
-	//return sdk.NewDec(int64(userWeight)).Quo(sdk.NewDec(int64(totalWeight)))
-	return sdk.Dec{}
-}
-
-// Calculate Delegation weight to influnce the upload probability
-// formula:
-// A = 10000, dec = 10**9
-// weight = dec * (sqrt(A * (A + x/dec)) - A)
-func getDelegationWeight(delegation uint64) uint64 {
-
-	const A uint64 = 10000
-
-	number := A * (A + (delegation / 1_000_000_000))
-
-	// Deterministic sqrt using only int
-	// Uses the babylon recursive formula:
-	// https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
-	var x uint64 = 14142 // expected value for 10000 $KYVE as input
-	var xn uint64
-	var epsilon uint64 = 100
-	for epsilon > 2 {
-
-		xn = (x + number/x) / 2
-
-		if xn > x {
-			epsilon = xn - x
-		} else {
-			epsilon = x - xn
-		}
-		x = xn
-	}
-
-	return (x - A) * 1_000_000_000
 }
 
 func (k Keeper) getNextUploaderFromAddresses(ctx sdk.Context, poolId uint64, addresses []string) (nextUploader string) {
