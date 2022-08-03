@@ -26,9 +26,14 @@ import (
 	"time"
 )
 
+//const (
+//	ALICE = "cosmos1jq304cthpx0lwhpqzrdjrcza559ukyy347ju8f"
+//	BOB   = "cosmos1hvg7zsnrj6h29q9ss577mhrxa04rn94hfvl2ry"
+//)
+
 const (
-	ALICE = "cosmos1jq304cthpx0lwhpqzrdjrcza559ukyy347ju8f"
-	BOB   = "cosmos1hvg7zsnrj6h29q9ss577mhrxa04rn94hfvl2ry"
+	ALICE = "kyve1jq304cthpx0lwhpqzrdjrcza559ukyy3zsl2vd"
+	BOB   = "kyve1hvg7zsnrj6h29q9ss577mhrxa04rn94h7zjugq"
 )
 
 var (
@@ -56,7 +61,7 @@ func (suite *KeeperTestSuite) initDummyAccounts() {
 		for k := 0; k < 20; k++ {
 			byteAddr[k] = byte(mrand.Int())
 		}
-		dummy, _ := sdk.Bech32ifyAddressBytes("cosmos", byteAddr)
+		dummy, _ := sdk.Bech32ifyAddressBytes("kyve", byteAddr)
 		DUMMY[i] = dummy
 		suite.Mint(dummy, 1000*KYVE)
 	}
@@ -111,7 +116,6 @@ func (suite *KeeperTestSuite) Ctx() sdk.Context {
 }
 
 func (suite *KeeperTestSuite) SetupTest() {
-	suite.app = app.Setup()
 	suite.SetupApp()
 }
 

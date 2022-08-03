@@ -41,6 +41,9 @@ var (
 
 	// UndelegationQueueKeyPrefixIndex2 ...
 	UndelegationQueueKeyPrefixIndex2 = []byte{4, 2}
+
+	// RedelegationCooldownPrefix ...
+	RedelegationCooldownPrefix = []byte{14}
 )
 
 // DelegatorKey returns the store Key to retrieve a Delegator from the index fields
@@ -71,4 +74,8 @@ func UndelegationQueueKey(kIndex uint64) []byte {
 // UndelegationQueueKeyIndex2 ...
 func UndelegationQueueKeyIndex2(stakerAddress string, kIndex uint64) []byte {
 	return util.GetByteKey(stakerAddress, kIndex)
+}
+
+func RedelegationCooldownKey(delegator string, block uint64) []byte {
+	return util.GetByteKey(delegator, block)
 }

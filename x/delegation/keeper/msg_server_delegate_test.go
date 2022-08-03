@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -19,6 +18,8 @@ var _ = Describe("Delegation", Ordered, func() {
 			Creator: i.ALICE,
 			Name:    "Moontest",
 		})
+
+		s.CommitAfterSeconds(7)
 
 		_, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		Expect(poolFound).To(BeTrue())
@@ -42,6 +43,8 @@ var _ = Describe("Delegation", Ordered, func() {
 			Id:      0,
 			Amount:  50,
 		})
+
+		s.CommitAfterSeconds(7)
 	})
 
 	It("Delegate 10 KYVE to ALICE", func() {
@@ -63,6 +66,26 @@ var _ = Describe("Delegation", Ordered, func() {
 		Expect(aliceDelegation).To(Equal(10 * i.KYVE))
 	})
 
+	It("Delegate more than available", func() {
+
+		bobBalance := s.GetBalanceFromAddress(i.BOB)
+		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+
+		_, delegateErr := s.RunTxDelegator(&types.MsgDelegate{
+			Creator: i.BOB,
+			Staker:  i.ALICE,
+			Amount:  2000 * i.KYVE,
+		})
+
+		Expect(delegateErr).ToNot(BeNil())
+
+		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		Expect(aliceDelegationBefore).To(Equal(aliceDelegationAfter))
+
+		bobBalanceAfter := s.GetBalanceFromAddress(i.BOB)
+		Expect(bobBalanceAfter).To(Equal(bobBalance))
+	})
+
 	It("Payout delegators", func() {
 
 		s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 1*i.KYVE, pooltypes.ModuleName)
@@ -74,7 +97,7 @@ var _ = Describe("Delegation", Ordered, func() {
 		})
 		bobBalanceAfter := s.GetBalanceFromAddress(i.BOB)
 
-		Expect(bobBalanceAfter).
+		Expect(bobBalanceAfter).To(Equal(bobBalanceBefore + 1*i.KYVE))
 
 	})
 })
