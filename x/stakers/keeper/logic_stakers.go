@@ -36,14 +36,11 @@ func (k Keeper) Slash(
 
 		// Compute how much we're going to slash the staker.
 		slash = uint64(sdk.NewDec(int64(staker.Amount)).Mul(slashAmountRatio).RoundInt64())
+		
+		// remove amount - staker gets removed slash is greater equal than stake
+		k.RemoveAmountFromStaker(ctx, staker.Address, slash, false)
 
-		if staker.Amount == slash {
-			// If we are slashing the entire staking amount, remove the staker.
-			k.removeStaker(ctx, staker)
-		} else {
-			// Subtract slashing amount from staking amount, and update the pool's total stake.
-			k.RemoveAmountFromStaker(ctx, staker.Address, slash, false)
-		}
+		// TODO: Transfer money to treasury
 
 		// emit slashing event
 		ctx.EventManager().EmitTypedEvent(&types.EventSlash{
@@ -52,8 +49,6 @@ func (k Keeper) Slash(
 			Amount:    slash,
 			SlashType: slashType,
 		})
-
-		// TODO Transfer money to treasury
 	}
 
 	return slash

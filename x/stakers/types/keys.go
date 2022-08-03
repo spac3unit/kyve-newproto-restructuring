@@ -28,8 +28,6 @@ var (
 	ValaccountPrefix = []byte{2,0}
 	ValaccountPrefixIndex2 = []byte{2,1}
 
-	StakerByPoolAndAmountKeyPrefix = []byte{3}
-
 	// UnbondingStakingQueueEntryKeyPrefix ...
 	UnbondingStakingEntryKeyPrefix = []byte{9}
 	// UnbondingStakingQueueEntryKeyPrefixIndex2 ...
@@ -80,10 +78,6 @@ func ValaccountKey(poolId uint64, staker string) []byte {
 
 func ValaccountKeyIndex2(staker string, poolId uint64) []byte {
 	return util.GetByteKey(staker, poolId)
-}
-
-func StakerByPoolAndAmountIndex(poolId uint64, amount uint64, staker string) []byte {
-	return util.GetByteKey(poolId, amount, staker)
 }
 
 func CommissionChangeEntryKey(index uint64) []byte {

@@ -65,16 +65,13 @@ func (k Keeper) ProcessStakerUnbondingQueue(ctx sdk.Context) {
 			if foundStaker {
 
 				// Check if stake decreased during unbonding time
-				var unstakeAmount uint64 = 0
-				if queueEntry.Amount >= staker.Amount {
-					// Remove user
+				var unstakeAmount uint64 = queueEntry.Amount
+
+				if unstakeAmount > staker.Amount {
 					unstakeAmount = staker.Amount
-					k.removeStaker(ctx, staker)
-				} else {
-					// Reduce stake of user
-					unstakeAmount = queueEntry.Amount
-					k.RemoveAmountFromStaker(ctx, staker.Address, unstakeAmount, true)
 				}
+
+				k.RemoveAmountFromStaker(ctx, staker.Address, unstakeAmount, true)
 
 				// Transfer tokens from sender to this module.
 				err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, staker.Address, unstakeAmount)

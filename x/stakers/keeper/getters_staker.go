@@ -72,35 +72,40 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, stakerAddress string, amount 
 		staker.Amount += amount
 
 		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
-			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount-amount, stakerAddress)
 			k.addToTotalStake(ctx, valaccount.PoolId, amount)
-			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
 		}
 
 		k.setStaker(ctx, staker)
 	}
 }
 
-// RemoveAmountFromStaker ...
-// Ensure that amount <= staker.Amount -> otherwise overflow
-// TODO maybe cap it to prevent an overflow. Or maybe do nothing if that happens?
 func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, amount uint64, isUnstake bool) {
-	// TODO: if amount is smaller equal zero remove staker
 	staker, found := k.GetStaker(ctx, stakerAddress)
 	if found {
-		staker.Amount -= amount
+		// if amount is smaller equal zero remove staker
+		if amount >= staker.Amount {
+			k.removeStaker(ctx, staker)
 
-		if isUnstake {
-			staker.UnbondingAmount -= amount
+			// remove all valaccounts from pools and subtract stake
+			for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
+				k.removeValaccount(ctx, valaccount)
+				k.subtractFromTotalStake(ctx, valaccount.PoolId, staker.Amount)
+			}
+		} else {
+			staker.Amount -= amount
+	
+			// TODO: verify isUnstake
+			if isUnstake {
+				staker.UnbondingAmount -= amount
+			}
+
+			// subtract stake of pools
+			for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
+				k.subtractFromTotalStake(ctx, valaccount.PoolId, amount)
+			}
+	
+			k.setStaker(ctx, staker)
 		}
-
-		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
-			k.removeStakerIndex(ctx, valaccount.PoolId, staker.Amount+amount, stakerAddress)
-			k.subtractFromTotalStake(ctx, valaccount.PoolId, amount)
-			k.setStakerIndex(ctx, valaccount.PoolId, staker.Amount, stakerAddress)
-		}
-
-		k.setStaker(ctx, staker)
 	}
 }
 
@@ -126,16 +131,6 @@ func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
 // #  Raw KV-Store operations  #
 // #############################
 
-func (k Keeper) setStakerIndex(ctx sdk.Context, poolId uint64, amount uint64, address string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerByPoolAndAmountKeyPrefix)
-	store.Set(types.StakerByPoolAndAmountIndex(poolId, amount, address), []byte{})
-}
-
-func (k Keeper) removeStakerIndex(ctx sdk.Context, poolId uint64, amount uint64, address string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerByPoolAndAmountKeyPrefix)
-	store.Delete(types.StakerByPoolAndAmountIndex(poolId, amount, address))
-}
-
 func (k Keeper) getLowestStakerIndex(ctx sdk.Context, poolId uint64) (staker types.Staker, found bool) {
 	// TODO implement
 	return types.Staker{}, false
@@ -154,16 +149,12 @@ func (k Keeper) getAllStakersOfPool(ctx sdk.Context, poolId uint64) []types.Stak
 	return stakers
 }
 
-// RemoveStaker removes a staker from the store
-// TODO only called very rarely,
+// removeStaker removes a staker from the store
 func (k Keeper) removeStaker(ctx sdk.Context, staker types.Staker) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
 	store.Delete(types.StakerKey(
 		staker.Address,
 	))
-
-	// TODO remove stake from all pools
-	// TODO What about delegation ?
 }
 
 // SetStaker set a specific staker in the store from its index
