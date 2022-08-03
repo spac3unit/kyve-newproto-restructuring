@@ -22,11 +22,8 @@ func containsElement(array []string, element string) bool {
 func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) (error) {
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 	
-
 	current_height := bundleProposal.ToHeight
 	current_key := bundleProposal.ToKey
-
-	
 
 	// Validate storage id
 	if msg.StorageId == "" {
@@ -98,7 +95,7 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 	return nil
 }
 
-func (k Keeper) registerBundleProposal(ctx sdk.Context, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) {
+func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) {
 	bundleProposal = types.BundleProposal{
 		PoolId:       msg.PoolId,
 		Uploader:     msg.Staker,
@@ -114,6 +111,8 @@ func (k Keeper) registerBundleProposal(ctx sdk.Context, bundleProposal types.Bun
 	}
 
 	k.SetBundleProposal(ctx, bundleProposal)
+
+	// TODO: emit event
 }
 
 // updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
@@ -124,9 +123,11 @@ func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 	for _, address := range bundleProposal.VotersValid {
 		voters[address] = true
 	}
+
 	for _, address := range bundleProposal.VotersInvalid {
 		voters[address] = true
 	}
+
 	for _, address := range bundleProposal.VotersAbstain {
 		voters[address] = true
 	}
@@ -136,6 +137,46 @@ func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 			k.stakerKeeper.AddPoint(ctx, poolId, staker)
 		}
 	}
+}
+
+func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward uint64, treasuryPayout uint64, uploaderPayout uint64, delegationPayout uint64) {
+	pool, _ := k.poolKeeper.GetPool(ctx, poolId)
+	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
+
+	bundleReward = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
+
+	// load and parse network fee
+	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
+	if err != nil {
+		// TODO: panic halt?
+		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
+	}
+
+	staker, stakerFound := k.stakerKeeper.GetStaker(ctx, bundleProposal.Uploader)
+
+	if !stakerFound {
+		treasuryPayout = bundleReward
+		uploaderPayout = 0
+		delegationPayout = 0
+
+		return
+	}
+
+	// TODO: check if staker has delegations
+
+	treasuryPayout = uint64(sdk.NewDec(int64(bundleReward)).Mul(networkFee).RoundInt64())
+	totalNodeReward := bundleReward - treasuryPayout
+
+	uploaderCommission, err := sdk.NewDecFromStr(staker.Commission)
+	if err != nil {
+		// TODO: panic halt?
+		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
+	}
+
+	uploaderPayout = uint64(sdk.NewDec(int64(totalNodeReward)).Mul(uploaderCommission).RoundInt64())
+	delegationPayout = totalNodeReward - uploaderPayout
+
+	return
 }
 
 // RandomChoiceCandidate ...
@@ -179,7 +220,7 @@ func (k Keeper) getWeightedRandomChoice(candidates []RandomChoiceCandidate, seed
 	return ""
 }
 
-func (k Keeper) getNextUploaderFromAddresses(ctx sdk.Context, poolId uint64, addresses []string) (nextUploader string) {
+func (k Keeper) chooseNextUploaderFromSelectedStakers(ctx sdk.Context, poolId uint64, addresses []string) (nextUploader string) {
 	var _candidates []RandomChoiceCandidate
 
 	if len(addresses) == 0 {
@@ -201,7 +242,7 @@ func (k Keeper) getNextUploaderFromAddresses(ctx sdk.Context, poolId uint64, add
 
 func (k Keeper) chooseNextUploaderFromAllStakers(ctx sdk.Context, poolId uint64) (nextUploader string) {
 	stakers := k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, poolId)
-	return k.getNextUploaderFromAddresses(ctx, poolId, stakers)
+	return k.chooseNextUploaderFromSelectedStakers(ctx, poolId, stakers)
 }
 
 // getVoteDistribution is an internal function evaulates the quorum status of a bundle proposal.
@@ -235,6 +276,9 @@ func (k Keeper) getVoteDistribution(ctx sdk.Context, poolId uint64) (valid uint6
 	// subtract uploader stake because he can not vote
 	// TODO get voting power
 	//total = k.stakerKeeper.GetTotalStake(ctx, pool.Id) - k.stakerKeeper.GetActiveStake(ctx, pool.Id, pool.BundleProposal.Uploader)
+
+	// TODO: get total delegation of pool
+	total = k.stakerKeeper.GetTotalStake(ctx, poolId) + 0
 
 	return
 }

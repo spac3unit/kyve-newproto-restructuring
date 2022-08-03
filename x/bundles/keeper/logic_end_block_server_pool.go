@@ -46,7 +46,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 				nextUploader := ""
 
 				if len(voters) > 0 {
-					nextUploader = k.getNextUploaderFromAddresses(ctx, poolId, voters)
+					nextUploader = k.chooseNextUploaderFromSelectedStakers(ctx, poolId, voters)
 				} else {
 					nextUploader = k.chooseNextUploaderFromAllStakers(ctx, poolId)
 				}

@@ -43,7 +43,7 @@ func (k msgServer) SubmitBundleProposal(
 	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.
 	if bundleProposal.StorageId == "" || strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 		nextUploader := k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
-		k.registerBundleProposal(ctx, bundleProposal, msg, nextUploader)
+		k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader)
 
 		return &types.MsgSubmitBundleProposalResponse{}, nil
 	}
@@ -51,54 +51,51 @@ func (k msgServer) SubmitBundleProposal(
 	// handle stakers who did not vote at all
 	k.handleNonVoters(ctx, msg.PoolId)
 	
-	//	// Get next uploader
-	//	voters := append(pool.BundleProposal.VotersValid, pool.BundleProposal.VotersInvalid...)
-	//	nextUploader := ""
-	//
-	//	if len(voters) > 0 {
-	//		nextUploader = k.getNextUploaderByRandom(ctx, &pool, voters)
-	//	} else {
-	//		nextUploader = k.getNextUploaderByRandom(ctx, &pool, pool.Stakers)
-	//	}
-	//
-	//	// check if the quorum was actually reached
-	//	valid, invalid, abstain, total := k.getVoteDistribution(ctx, &pool)
-	//	quorum := k.getQuorumStatus(valid, invalid, abstain, total)
-	//
-	//	// handle valid proposal
-	//	if quorum == types.BUNDLE_STATUS_VALID {
-	//		// Calculate the total reward for the bundle, and individual payouts.
-	//		bundleReward := pool.OperatingCost + (pool.BundleProposal.ByteSize * k.StorageCost(ctx))
-	//
-	//		// load and parse network fee
-	//		networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
-	//		if err != nil {
-	//			k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
-	//		}
-	//
-	//		treasuryPayout := uint64(sdk.NewDec(int64(bundleReward)).Mul(networkFee).RoundInt64())
-	//		uploaderPayout := bundleReward - treasuryPayout
-	//
-	//		// Calculate the delegation rewards for the uploader.
-	//		uploader, foundUploader := k.GetStaker(ctx, pool.BundleProposal.Uploader, pool.Id)
-	//		uploaderDelegation, foundUploaderDelegation := k.GetDelegationPoolData(ctx, pool.Id, pool.BundleProposal.Uploader)
-	//
-	//		if foundUploader && foundUploaderDelegation {
-	//			// If the uploader has no delegators, it keeps the delegation reward.
-	//
-	//			if uploaderDelegation.DelegatorCount > 0 {
-	//				// Calculate the reward, factoring in the node commission, and subtract from the uploader payout.
-	//				commission, _ := sdk.NewDecFromStr(uploader.Commission)
-	//				delegationReward := uint64(
-	//					sdk.NewDec(int64(uploaderPayout)).Mul(sdk.NewDec(1).Sub(commission)).RoundInt64(),
-	//				)
-	//
-	//				uploaderPayout -= delegationReward
-	//				uploaderDelegation.CurrentRewards += delegationReward
-	//
-	//				k.SetDelegationPoolData(ctx, uploaderDelegation)
-	//			}
-	//		}
+	// Get next uploader
+	voters := append(bundleProposal.VotersValid, bundleProposal.VotersInvalid...)
+	nextUploader := ""
+
+	if len(voters) > 0 {
+		nextUploader = k.chooseNextUploaderFromSelectedStakers(ctx, msg.PoolId, voters)
+	} else {
+		nextUploader = k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
+	}
+
+	// check if the quorum was actually reached
+	valid, invalid, abstain, total := k.getVoteDistribution(ctx, msg.PoolId)
+	quorum := k.getQuorumStatus(valid, invalid, abstain, total)
+	
+	// handle valid proposal
+	if quorum == types.BUNDLE_STATUS_VALID {
+		// Calculate the total reward for the bundle, and individual payouts.
+		bundleReward, treasuryPayout, uploaderPayout, delegationPayout := k.calculatePayouts(ctx, msg.PoolId)
+
+		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward); err != nil {
+			return nil, err
+		}
+
+		pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
+		bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
+
+		if len(pool.Funders) == 0 {
+			// drop bundle because pool ran out of funds
+			bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
+			k.SetBundleProposal(ctx, bundleProposal)
+			// TODO: emit event
+
+			return &types.MsgSubmitBundleProposalResponse{}, nil
+		}
+
+		// TODO: payout treasury
+		// TODO: payout uploader
+		// TODO: payout delegators
+
+		// slash stakers who voted incorrectly
+		// for _, voter := range bundleProposal.VotersInvalid {
+
+		// }
+
+	}
 	//
 	//		// Calculate the individual cost for each pool funder.
 	//		// NOTE: Because of integer division, it is possible that there is a small remainder.
@@ -265,6 +262,8 @@ func (k msgServer) SubmitBundleProposal(
 	//			return nil, errTransfer
 	//		}
 	//
+
+
 	//		// save valid bundle
 	//		k.SetProposal(ctx, types.Proposal{
 	//			StorageId:   pool.BundleProposal.StorageId,

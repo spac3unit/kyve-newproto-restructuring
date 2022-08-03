@@ -1,10 +1,7 @@
 package keeper
 
 import (
-	"github.com/KYVENetwork/chain/util"
-	"github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // PayoutAmount equally splits the amount between all funders and removes
@@ -12,9 +9,9 @@ import (
 // All funders who can't afford the amount, are kicked out.
 // Their remaining amount is transferred to the Treasury
 // Function throws an error if pool ran out of funds.
-func (k Keeper) PayoutAmount(ctx sdk.Context, fromPoolId uint64, toAddress string, amount uint64) error {
+func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64) error {
 
-	pool, poolErr := k.GetPoolWithError(ctx, fromPoolId)
+	pool, poolErr := k.GetPoolWithError(ctx, poolId)
 	if poolErr != nil {
 		return poolErr
 	}
@@ -22,26 +19,29 @@ func (k Keeper) PayoutAmount(ctx sdk.Context, fromPoolId uint64, toAddress strin
 	var amountPerFunder uint64
 	var amountRemainder uint64
 
-	// Ensure lowest funder can pay
-	for true {
-		if len(pool.Funders) == 0 {
-			return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrFundsTooLow.Error())
-		}
+	var slashedFunds uint64
 
-		// len(pool.Funders) > 0
+	// Remove all funders who can't afford amountPerFunder
+	for len(pool.Funders) > 0 {
 		amountPerFunder = amount / uint64(len(pool.Funders))
 		amountRemainder = amount - amountPerFunder*uint64(len(pool.Funders))
 
 		lowestFunder := pool.GetLowestFunder()
 
 		if amountRemainder+amountPerFunder > lowestFunder.Amount {
+			// TODO: check if funder gets properly removed from pool
 			pool.RemoveFunder(*lowestFunder)
-
-			//transfer to treasury
-			// TODO transfer to treasury
+			// TODO: emit defund event
+			slashedFunds += lowestFunder.Amount
 		} else {
 			break
 		}
+	}
+
+	if slashedFunds > 0 {
+		// transfer to treasury
+		// TODO: transfer to treasury, (summarize all slashes and transfer in one call)
+		
 	}
 
 	// Remove amount from funders
@@ -53,11 +53,6 @@ func (k Keeper) PayoutAmount(ctx sdk.Context, fromPoolId uint64, toAddress strin
 	lowestFunder := pool.GetLowestFunder()
 	lowestFunder.Amount -= amountRemainder
 	pool.UpdateFunder(*lowestFunder)
-
-	err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, toAddress, amount)
-	if err != nil {
-		return err
-	}
 
 	return nil
 }
