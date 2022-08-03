@@ -101,12 +101,13 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 func (k Keeper) registerBundleProposal(ctx sdk.Context, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) {
 	bundleProposal = types.BundleProposal{
 		PoolId:       msg.PoolId,
-		Uploader:     msg.Creator,
+		Uploader:     msg.Staker,
 		NextUploader: nextUploader,
 		StorageId:    msg.StorageId,
 		ByteSize:     msg.ByteSize,
 		ToHeight:     msg.ToHeight,
 		CreatedAt:    uint64(ctx.BlockTime().Unix()),
+		VotersValid:  append(make([]string, 0), msg.Staker),
 		ToKey:        msg.ToKey,
 		ToValue:      msg.ToValue,
 		BundleHash:   msg.BundleHash,

@@ -34,8 +34,6 @@ func (k msgServer) SubmitBundleProposal(
 		return nil, sdkErrors.ErrNotFound
 	}
 
-	// TODO: add proposer of bundle immediately to yes vote
-
 	// Validate submit bundle args.
 	err := k.validateSubmitBundleArgs(ctx, &bundleProposal, msg)
 	if err != nil {
