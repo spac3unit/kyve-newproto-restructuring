@@ -27,8 +27,8 @@ enum BundleStatus {
 message EventBundleVote {
   // pool_id is the unique ID of the pool.
   uint64 pool_id = 1;
-  // address is the account address of the protocol node.
-  string address = 2;
+  // staker is the account staker of the protocol node.
+  string staker = 2;
   // storage_id is the unique ID of the bundle.
   string storage_id = 3;
   // vote is the vote type of the protocol node.

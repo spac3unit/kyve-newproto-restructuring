@@ -22,7 +22,7 @@ func (k msgServer) ClaimUploaderRole(
 		return nil, poolErr
 	}
 
-	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
+	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
 		return nil, err
 	}
 
@@ -33,7 +33,7 @@ func (k msgServer) ClaimUploaderRole(
 		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrUploaderAlreadyClaimed.Error())
 	}
 
-	bundleProposal.NextUploader = msg.Creator
+	bundleProposal.NextUploader = msg.Staker
 	bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 
 	k.SetBundleProposal(ctx, bundleProposal)

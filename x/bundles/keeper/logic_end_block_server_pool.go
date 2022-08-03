@@ -2,10 +2,11 @@ package keeper
 
 import (
 	"context"
+	"strings"
+
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"strings"
 )
 
 // HandleUploadTimeout is an end block hook that triggers an upload timeout for every pool (if applicable).
@@ -47,7 +48,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 				if len(voters) > 0 {
 					nextUploader = k.getNextUploaderFromAddresses(ctx, poolId, voters)
 				} else {
-					nextUploader = k.getNextUploader(ctx, poolId)
+					nextUploader = k.chooseNextUploaderFromAllStakers(ctx, poolId)
 				}
 
 				// If consensus wasn't reached, we drop the bundle and emit an event.
@@ -91,7 +92,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		k.stakerKeeper.Slash(ctx, poolId, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
 
 		// Update bundle proposal
-		bundleProposal.NextUploader = k.getNextUploader(ctx, poolId)
+		bundleProposal.NextUploader = k.chooseNextUploaderFromAllStakers(ctx, poolId)
 		bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 
 		k.SetBundleProposal(ctx, bundleProposal)

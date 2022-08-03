@@ -14,33 +14,33 @@ import (
 // #############################
 
 // setValaccount set a specific Valaccount in the store from its index
-func (k Keeper) setValaccount(ctx sdk.Context, staker types.Valaccount) {
+func (k Keeper) setValaccount(ctx sdk.Context, valaccount types.Valaccount) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
-	b := k.cdc.MustMarshal(&staker)
+	b := k.cdc.MustMarshal(&valaccount)
 	store.Set(types.ValaccountKey(
-		staker.PoolId,
-		staker.Staker,
+		valaccount.PoolId,
+		valaccount.Staker,
 	), b)
 
 	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
 	storeIndex2.Set(types.ValaccountKeyIndex2(
-		staker.Staker,
-		staker.PoolId,
+		valaccount.Staker,
+		valaccount.PoolId,
 	), []byte{})
 }
 
 // removeValaccount removes a Valaccount from the store
-func (k Keeper) removeValaccount(ctx sdk.Context, staker types.Valaccount) {
+func (k Keeper) removeValaccount(ctx sdk.Context, valaccount types.Valaccount) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
 	store.Delete(types.ValaccountKey(
-		staker.PoolId,
-		staker.Staker,
+		valaccount.PoolId,
+		valaccount.Staker,
 	))
 
 	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
 	storeIndex2.Delete(types.ValaccountKeyIndex2(
-		staker.Staker,
-		staker.PoolId,
+		valaccount.Staker,
+		valaccount.PoolId,
 	))
 }
 
@@ -48,13 +48,13 @@ func (k Keeper) removeValaccount(ctx sdk.Context, staker types.Valaccount) {
 func (k Keeper) GetValaccount(
 	ctx sdk.Context,
 	poolId uint64,
-	staker string,
+	stakerAddress string,
 ) (val types.Valaccount, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
 
 	b := store.Get(types.ValaccountKey(
 		poolId,
-		staker,
+		stakerAddress,
 	))
 	if b == nil {
 		return val, false
@@ -68,10 +68,10 @@ func (k Keeper) GetValaccount(
 func (k Keeper) DoesValaccountExist(
 	ctx sdk.Context,
 	poolId uint64,
-	staker string,
+	stakerAddress string,
 ) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
-	return store.Has(types.ValaccountKey(poolId, staker))
+	return store.Has(types.ValaccountKey(poolId, stakerAddress))
 }
 
 // GetAllValaccountsOfPool returns a Valaccount from its index
@@ -120,4 +120,39 @@ func (k Keeper) GetValaccountsFromStaker(
 	}
 
 	return val
+}
+
+func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string) {
+	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
+
+	if found {
+		valaccount.Points = valaccount.Points + 1
+
+		// TODO: move max_points to params
+		if valaccount.Points >= 5 {
+			k.Slash(ctx, poolId, stakerAddress, types.SLASH_TYPE_TIMEOUT)
+			k.ResetPoints(ctx, poolId, stakerAddress)
+		} else {
+			k.setValaccount(ctx, valaccount)
+		}
+	}
+}
+
+func (k Keeper) GetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) uint64 {
+	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
+
+	if found {
+		return valaccount.Points
+	}
+
+	return 0
+}
+
+func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) {
+	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
+
+	if found {
+		valaccount.Points = 0
+		k.setValaccount(ctx, valaccount)
+	}
 }

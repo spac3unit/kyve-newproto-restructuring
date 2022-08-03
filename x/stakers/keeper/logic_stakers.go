@@ -6,8 +6,13 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k Keeper) GetStakerAddressesOfPool(ctx sdk.Context, poolId uint64) []string {
-	return []string{}
+func (k Keeper) GetAllStakerAddressesOfPool(ctx sdk.Context, poolId uint64) (stakers []string) {
+	// get all valaccounts and map to stakers
+	for _, valaccount := range k.GetAllValaccountsOfPool(ctx, poolId) {
+		stakers = append(stakers, valaccount.Staker)
+	}
+
+	return
 }
 
 func (k Keeper) GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress string) uint64 {
@@ -58,19 +63,6 @@ func (k Keeper) GetTotalStake(ctx sdk.Context, poolId uint64) uint64 {
 	return k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE)
 }
 
-// AddPoint adds a point to the user and deactivates (+ Slashes ?? ) the staker
-func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, address string) {
-
-}
-
-func (k Keeper) GetPoints(ctx sdk.Context, poolId uint64, address string) uint64 {
-	return 0 // TODO
-}
-
-func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, address string) {
-
-}
-
 func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {
 	// check if slots are still available
 	if k.GetStakerCountOfPool(ctx, poolId) >= types.MaxStakers {
@@ -101,7 +93,7 @@ func (k Keeper) GetAuthorizedStaker(ctx sdk.Context, stakerAddress string, authA
 	// TODO
 }
 
-func (k Keeper) AssertAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error {
+func (k Keeper) AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error {
 	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
 
 	if !found {

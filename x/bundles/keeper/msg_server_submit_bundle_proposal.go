@@ -2,9 +2,11 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // SubmitBundleProposal handles the logic of an SDK message that allows protocol nodes to submit a new bundle proposal.
@@ -21,42 +23,36 @@ func (k msgServer) SubmitBundleProposal(
 		return nil, poolErr
 	}
 
-	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
+	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
 		return nil, err
 	}
 
 	// TODO BEGIN BUNDLE LOGIC
+	bundleProposal, found := k.GetBundleProposal(ctx, msg.PoolId)
+
+	if !found {
+		return nil, sdkErrors.ErrNotFound
+	}
+
+	// TODO: add proposer of bundle immediately to yes vote
 
 	// Validate submit bundle args.
-	err := k.validateSubmitBundleArgs(ctx, msg)
+	err := k.validateSubmitBundleArgs(ctx, &bundleProposal, msg)
 	if err != nil {
 		return nil, err
 	}
 
-	//
-	//	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.
-	//	if pool.BundleProposal.StorageId == "" || strings.HasPrefix(pool.BundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
-	//		pool.BundleProposal = &types.BundleProposal{
-	//			Uploader:     msg.Creator,
-	//			NextUploader: k.getNextUploaderByRandom(ctx, &pool, pool.Stakers),
-	//			StorageId:    msg.StorageId,
-	//			ByteSize:     msg.ByteSize,
-	//			ToHeight:     msg.ToHeight,
-	//			CreatedAt:    uint64(ctx.BlockTime().Unix()),
-	//			ToKey:        msg.ToKey,
-	//			ToValue:      msg.ToValue,
-	//			BundleHash:   msg.BundleHash,
-	//		}
-	//
-	//		// TODO replace with bundle (set bundle) maybe not event set it here
-	//		k.SetPool(ctx, pool)
-	//
-	//		return &types.MsgSubmitBundleProposalResponse{}, nil
-	//	}
-	//
-	//	// handle stakers who did not vote at all
-	//	k.handleNonVoters(ctx, &pool)
-	//
+	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.
+	if bundleProposal.StorageId == "" || strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
+		nextUploader := k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
+		k.registerBundleProposal(ctx, bundleProposal, msg, nextUploader)
+
+		return &types.MsgSubmitBundleProposalResponse{}, nil
+	}
+	
+	// handle stakers who did not vote at all
+	k.handleNonVoters(ctx, msg.PoolId)
+	
 	//	// Get next uploader
 	//	voters := append(pool.BundleProposal.VotersValid, pool.BundleProposal.VotersInvalid...)
 	//	nextUploader := ""

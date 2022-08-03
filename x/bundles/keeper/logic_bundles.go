@@ -6,11 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
-
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func containsElement(array []string, element string) bool {
@@ -22,16 +19,14 @@ func containsElement(array []string, element string) bool {
 	return false
 }
 
-func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, msg *types.MsgSubmitBundleProposal) (error) {
+func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) (error) {
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
-	bundleProposal, bundleProposalFound := k.GetBundleProposal(ctx, msg.PoolId)
+	
 
 	current_height := bundleProposal.ToHeight
 	current_key := bundleProposal.ToKey
 
-	if !bundleProposalFound {
-		return sdkErrors.ErrNotFound
-	}
+	
 
 	// Validate storage id
 	if msg.StorageId == "" {
@@ -103,30 +98,42 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, msg *types.MsgSubmitBu
 	return nil
 }
 
+func (k Keeper) registerBundleProposal(ctx sdk.Context, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) {
+	bundleProposal = types.BundleProposal{
+		PoolId:       msg.PoolId,
+		Uploader:     msg.Creator,
+		NextUploader: nextUploader,
+		StorageId:    msg.StorageId,
+		ByteSize:     msg.ByteSize,
+		ToHeight:     msg.ToHeight,
+		CreatedAt:    uint64(ctx.BlockTime().Unix()),
+		ToKey:        msg.ToKey,
+		ToValue:      msg.ToValue,
+		BundleHash:   msg.BundleHash,
+	}
+
+	k.SetBundleProposal(ctx, bundleProposal)
+}
+
 // updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
 func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 	voters := map[string]bool{}
 	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
+
 	for _, address := range bundleProposal.VotersValid {
 		voters[address] = true
 	}
 	for _, address := range bundleProposal.VotersInvalid {
 		voters[address] = true
 	}
-	for _, address := range bundleProposal.VotersValid {
+	for _, address := range bundleProposal.VotersAbstain {
 		voters[address] = true
 	}
 
-	for _, staker := range k.stakerKeeper.GetStakerAddressesOfPool(ctx, poolId) {
+	for _, staker := range k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, poolId) {
 		if !voters[staker] {
-			if k.stakerKeeper.GetPoints(ctx, poolId, staker) < 5 /* TODO max points */ {
-				k.stakerKeeper.AddPoint(ctx, poolId, staker)
-			} else {
-				k.stakerKeeper.Slash(ctx, poolId, staker, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
-				k.stakerKeeper.ResetPoints(ctx, poolId, staker)
-			}
+			k.stakerKeeper.AddPoint(ctx, poolId, staker)
 		}
-		// TODO add proposer of bundle immediately to yes vote
 	}
 }
 
@@ -191,8 +198,8 @@ func (k Keeper) getNextUploaderFromAddresses(ctx sdk.Context, poolId uint64, add
 	return k.getWeightedRandomChoice(_candidates, uint64(ctx.BlockHeight()+ctx.BlockTime().Unix()))
 }
 
-func (k Keeper) getNextUploader(ctx sdk.Context, poolId uint64) (nextUploader string) {
-	stakers := k.stakerKeeper.GetStakerAddressesOfPool(ctx, poolId)
+func (k Keeper) chooseNextUploaderFromAllStakers(ctx sdk.Context, poolId uint64) (nextUploader string) {
+	stakers := k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, poolId)
 	return k.getNextUploaderFromAddresses(ctx, poolId, stakers)
 }
 

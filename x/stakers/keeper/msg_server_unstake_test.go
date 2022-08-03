@@ -40,7 +40,6 @@ var _ = Describe("Unstaking", Ordered, func() {
 		})
 
 		unstakingEntries := s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
-
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
@@ -67,12 +66,19 @@ var _ = Describe("Unstaking", Ordered, func() {
 		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
 		s.CommitAfterSeconds(1)
 
-		// FAILS
-		// Expect(unstakingEntries).To(BeEmpty())
+		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
+		balanceAfter = s.GetBalanceFromAddress(i.ALICE)
 
-		// Expect(initialBalanceAlice - balanceAfter).To(Equal(50 * i.KYVE))
+		staker, found = s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		valaccounts = s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
 
-		// Expect(staker.Amount).To(Equal(50 * i.KYVE))
-		// Expect(staker.UnbondingAmount).To(BeZero())
+		Expect(unstakingEntries).To(BeEmpty())
+
+		Expect(initialBalanceAlice - balanceAfter).To(Equal(50 * i.KYVE))
+
+		Expect(staker.Amount).To(Equal(50 * i.KYVE))
+		Expect(staker.UnbondingAmount).To(BeZero())
 	})
+
+	// TODO: test unstaking everything and with pool
 })

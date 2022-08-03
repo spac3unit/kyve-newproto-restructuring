@@ -2,11 +2,12 @@ package keeper
 
 import (
 	"context"
+	"strings"
+
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"strings"
 )
 
 // VoteProposal handles the logic of an SDK message that allows protocol nodes to vote on a pool's bundle proposal.
@@ -20,14 +21,14 @@ func (k msgServer) VoteProposal(
 		return nil, err
 	}
 
-	if err := k.stakerKeeper.AssertAuthorized(ctx, "", msg.Creator, msg.PoolId); err != nil {
+	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator, ); err != nil {
 		return nil, err
 	}
 
 	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
 
 	// Check if the sender is also the bundle's uploader.
-	if bundleProposal.Uploader == msg.Creator {
+	if bundleProposal.Uploader == msg.Staker {
 		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrVoterIsUploader.Error())
 	}
 
@@ -69,11 +70,11 @@ func (k msgServer) VoteProposal(
 
 	// Update and return.
 	if msg.Vote == types.VOTE_TYPE_YES {
-		bundleProposal.VotersValid = append(bundleProposal.VotersValid, msg.Creator)
+		bundleProposal.VotersValid = append(bundleProposal.VotersValid, msg.Staker)
 	} else if msg.Vote == types.VOTE_TYPE_NO {
-		bundleProposal.VotersInvalid = append(bundleProposal.VotersInvalid, msg.Creator)
+		bundleProposal.VotersInvalid = append(bundleProposal.VotersInvalid, msg.Staker)
 	} else if msg.Vote == types.VOTE_TYPE_ABSTAIN {
-		bundleProposal.VotersAbstain = append(bundleProposal.VotersAbstain, msg.Creator)
+		bundleProposal.VotersAbstain = append(bundleProposal.VotersAbstain, msg.Staker)
 	} else {
 		return nil, sdkErrors.Wrapf(
 			sdkErrors.ErrUnauthorized, types.ErrInvalidVote.Error(), msg.Vote,
@@ -88,7 +89,7 @@ func (k msgServer) VoteProposal(
 	// Emit a vote event.
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventBundleVote{
 		PoolId:    msg.PoolId,
-		Address:   msg.Creator,
+		Staker:   msg.Staker,
 		StorageId: msg.StorageId,
 		Vote:      msg.Vote,
 	}); err != nil {
