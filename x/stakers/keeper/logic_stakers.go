@@ -63,6 +63,10 @@ func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, address string) {
 
 }
 
+func (k Keeper) GetPoints(ctx sdk.Context, poolId uint64, address string) uint64 {
+	return 0 // TODO
+}
+
 func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, address string) {
 
 }
