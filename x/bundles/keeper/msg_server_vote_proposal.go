@@ -20,7 +20,7 @@ func (k msgServer) VoteProposal(
 		return nil, err
 	}
 
-	if err := k.stakerKeeper.AssertAuthorized(ctx, "", msg.Creator, msg.PoolId); err != nil {
+	if err := k.stakerKeeper.AssertAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
 		return nil, err
 	}
 
