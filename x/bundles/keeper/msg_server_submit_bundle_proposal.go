@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -19,9 +20,8 @@ func (k msgServer) SubmitBundleProposal(
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO check min stake+delegation
-	poolErr := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId)
-	if poolErr != nil {
-		return nil, poolErr
+	if err := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
+		return nil, err
 	}
 
 	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
@@ -36,15 +36,17 @@ func (k msgServer) SubmitBundleProposal(
 	}
 
 	// Validate submit bundle args.
-	err := k.validateSubmitBundleArgs(ctx, &bundleProposal, msg)
-	if err != nil {
+	if err := k.validateSubmitBundleArgs(ctx, &bundleProposal, msg); err != nil {
 		return nil, err
 	}
 
 	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.
 	if bundleProposal.StorageId == "" || strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 		nextUploader := k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
-		k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader)
+
+		if err := k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader); err != nil {
+			return nil, err
+		}
 
 		return &types.MsgSubmitBundleProposalResponse{}, nil
 	}
@@ -87,43 +89,31 @@ func (k msgServer) SubmitBundleProposal(
 			return &types.MsgSubmitBundleProposalResponse{}, nil
 		}
 
-		// TODO: payout treasury
-		// TODO: payout uploader
-		// TODO: payout delegators
+		// send network fee to treasury
+		if err := util.TransferFromModuleToTreasury(k.bankKeeper, ctx, types.ModuleName, treasuryPayout); err != nil {
+			return nil, err
+		}
+
+		// send commission to uploader
+		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, bundleProposal.Uploader, uploaderPayout); err != nil {
+			return nil, err
+		}
+
+		// send delegation rewards to delegators
+		k.delegationKeeper.AddAmountToDelegationRewards(ctx, bundleProposal.Uploader, delegationPayout)
 
 		// slash stakers who voted incorrectly
 		for _, voter := range bundleProposal.VotersInvalid {
 			k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_VOTE)
 		}
 
-		// save finalized bundle
-		k.SetFinalizedBundle(ctx, types.FinalizedBundle{
-			StorageId:   bundleProposal.StorageId,
-			PoolId:      pool.Id,
-			Id:          pool.TotalBundles,
-			Uploader:    bundleProposal.Uploader,
-			FromHeight:  pool.CurrentHeight,
-			ToHeight:    bundleProposal.ToHeight,
-			FinalizedAt: uint64(ctx.BlockHeight()),
-			Key:         bundleProposal.ToKey,
-			Value:       bundleProposal.ToValue,
-			BundleHash:  bundleProposal.BundleHash,
-		})
+		if err := k.finalizeCurrentBundleProposal(ctx, pool, bundleProposal); err != nil {
+			return nil, err
+		}
 
-		// Finalize the proposal, saving useful information.
-		// eventFromHeight := pool.CurrentHeight
-		pool.CurrentHeight = bundleProposal.ToHeight
-		pool.TotalBytes = pool.TotalBytes + bundleProposal.ByteSize
-		pool.TotalBundles = pool.TotalBundles + 1
-		pool.TotalBundleRewards = pool.TotalBundleRewards + bundleReward
-		pool.CurrentKey = bundleProposal.ToKey
-		pool.CurrentValue = bundleProposal.ToValue
-
-		// TODO: emit event
-
-		k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader)
-
-		k.poolKeeper.SetPool(ctx, pool)
+		if err := k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader); err != nil {
+			return nil, err
+		}
 
 		return &types.MsgSubmitBundleProposalResponse{}, nil
 	} else if quorum == types.BUNDLE_STATUS_INVALID {
@@ -136,14 +126,9 @@ func (k msgServer) SubmitBundleProposal(
 			}
 		}
 
-		bundleProposal = types.BundleProposal{
-			NextUploader: bundleProposal.NextUploader,
-			CreatedAt:    uint64(ctx.BlockTime().Unix()),
+		if err := k.dropCurrentBundleProposal(ctx, bundleProposal.NextUploader); err != nil {
+			return nil, err
 		}
-
-		// TODO: emit event
-
-		k.SetBundleProposal(ctx, bundleProposal)
 
 		return &types.MsgSubmitBundleProposalResponse{}, nil
 	} else {
@@ -449,7 +434,5 @@ func (k msgServer) SubmitBundleProposal(
 	//	} else {
 	//		return nil, types.ErrQuorumNotReached
 	//	}
-
-	return nil, nil
 
 }

@@ -74,7 +74,7 @@ func (k Keeper) ProcessStakerUnbondingQueue(ctx sdk.Context) {
 				k.RemoveAmountFromStaker(ctx, staker.Address, unstakeAmount, true)
 
 				// Transfer tokens from sender to this module.
-				err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, staker.Address, unstakeAmount)
+				err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, staker.Address, unstakeAmount)
 				if err != nil {
 					// TODO handle error ?
 				}

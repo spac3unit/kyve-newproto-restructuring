@@ -81,28 +81,26 @@ message Pool {
   uint64 total_bytes = 10;
   // total_bundles ...
   uint64 total_bundles = 11;
-  // total_bundle_rewards ...
-  uint64 total_bundle_rewards = 12;
 
   // upload_interval ...
-  uint64 upload_interval = 13;
+  uint64 upload_interval = 12;
   // operating_cost ...
-  uint64 operating_cost = 14;
+  uint64 operating_cost = 13;
   // min_stake ...
-  uint64 min_stake = 15;
+  uint64 min_stake = 14;
   // max_bundle_size ...
-  uint64 max_bundle_size = 16;
+  uint64 max_bundle_size = 15;
 
   // paused ...
-  bool paused = 17;
+  bool paused = 16;
 
   // funders ...
-  repeated Funder funders = 18;
+  repeated Funder funders = 17;
   // total_funds ...
-  uint64 total_funds = 19;
+  uint64 total_funds = 18;
 
   // protocol ...
-  Protocol protocol = 20;
+  Protocol protocol = 19;
   // upgrade_plan ...
-  UpgradePlan upgrade_plan = 21;
+  UpgradePlan upgrade_plan = 20;
 }

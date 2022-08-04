@@ -28,7 +28,7 @@ func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.Msg
 	}
 
 	// Transfer tokens from sender to this module.
-	err := util.TransferToModule(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount)
+	err := util.TransferFromAddressToModule(k.bankKeeper, ctx, msg.Creator, types.ModuleName, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

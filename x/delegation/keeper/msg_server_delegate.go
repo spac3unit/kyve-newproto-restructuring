@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/KYVENetwork/chain/util"
 
 	"github.com/KYVENetwork/chain/x/delegation/types"
@@ -20,7 +21,7 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 	}
 
 	// Transfer tokens from sender to this module.
-	if transferErr := util.TransferToModule(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount); transferErr != nil {
+	if transferErr := util.TransferFromAddressToModule(k.bankKeeper, ctx, msg.Creator, types.ModuleName, msg.Amount); transferErr != nil {
 		return nil, err
 	}
 

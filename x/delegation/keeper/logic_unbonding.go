@@ -55,7 +55,7 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 		} else if undelegationEntry.CreationTime+k.UnbondingDelegationTime(ctx) < uint64(ctx.BlockTime().Unix()) {
 
 			// Transfer the money
-			if err := util.TransferToAddress(
+			if err := util.TransferFromModuleToAddress(
 				k.bankKeeper,
 				ctx,
 				types.ModuleName,

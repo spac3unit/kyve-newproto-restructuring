@@ -37,7 +37,7 @@ func (k msgServer) FundPool(goCtx context.Context, msg *types.MsgFundPool) (*typ
 			if msg.Amount > lowestFunder.Amount {
 				// Unstake lowest Funder
 
-				err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, lowestFunder.Address, lowestFunder.Amount)
+				err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, lowestFunder.Address, lowestFunder.Amount)
 				if err != nil {
 					return nil, err
 				}
@@ -64,7 +64,7 @@ func (k msgServer) FundPool(goCtx context.Context, msg *types.MsgFundPool) (*typ
 		})
 	}
 
-	err := util.TransferToModule(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount)
+	err := util.TransferFromAddressToModule(k.bankKeeper, ctx, msg.Creator, types.ModuleName, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (k msgServer) DefundPool(goCtx context.Context, msg *types.MsgDefundPool) (
 	}
 
 	// Transfer tokens from this module to sender.
-	err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount)
+	err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

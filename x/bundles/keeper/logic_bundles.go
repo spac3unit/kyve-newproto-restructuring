@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/KYVENetwork/chain/x/bundles/types"
+	poolmoduletypes "github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -95,7 +96,7 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 	return nil
 }
 
-func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) {
+func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) error {
 	bundleProposal = types.BundleProposal{
 		PoolId:       msg.PoolId,
 		Uploader:     msg.Staker,
@@ -113,6 +114,8 @@ func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, bundlePropos
 	k.SetBundleProposal(ctx, bundleProposal)
 
 	// TODO: emit event
+
+	return nil
 }
 
 // updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
@@ -177,6 +180,50 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward u
 	delegationPayout = totalNodeReward - uploaderPayout
 
 	return
+}
+
+func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal) error {
+	// save finalized bundle
+	k.SetFinalizedBundle(ctx, types.FinalizedBundle{
+		StorageId:   bundleProposal.StorageId,
+		PoolId:      pool.Id,
+		Id:          pool.TotalBundles,
+		Uploader:    bundleProposal.Uploader,
+		FromHeight:  pool.CurrentHeight,
+		ToHeight:    bundleProposal.ToHeight,
+		FinalizedAt: uint64(ctx.BlockHeight()),
+		Key:         bundleProposal.ToKey,
+		Value:       bundleProposal.ToValue,
+		BundleHash:  bundleProposal.BundleHash,
+	})
+
+	// Finalize the proposal, saving useful information.
+	// eventFromHeight := pool.CurrentHeight
+	pool.CurrentHeight = bundleProposal.ToHeight
+	pool.TotalBytes = pool.TotalBytes + bundleProposal.ByteSize
+	pool.TotalBundles = pool.TotalBundles + 1
+	pool.CurrentKey = bundleProposal.ToKey
+	pool.CurrentValue = bundleProposal.ToValue
+
+	k.poolKeeper.SetPool(ctx, pool)
+
+	// TODO: emit event
+
+	return nil
+}
+
+func (k Keeper) dropCurrentBundleProposal(ctx sdk.Context, nextUploader string) error {
+	// drop bundle
+	bundleProposal := types.BundleProposal{
+		NextUploader: nextUploader,
+		CreatedAt:    uint64(ctx.BlockTime().Unix()),
+	}
+
+	k.SetBundleProposal(ctx, bundleProposal)
+	
+	// TODO: emit event
+
+	return nil
 }
 
 // RandomChoiceCandidate ...

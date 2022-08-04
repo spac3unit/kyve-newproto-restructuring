@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+
 	"github.com/KYVENetwork/chain/util"
 
 	"github.com/KYVENetwork/chain/x/delegation/types"
@@ -32,7 +33,7 @@ func (k msgServer) WithdrawRewards(goCtx context.Context, msg *types.MsgWithdraw
 	reward := f1Distribution.Withdraw()
 
 	// Transfer tokens from this module to sender.
-	err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, msg.Creator, reward)
+	err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, msg.Creator, reward)
 	if err != nil {
 		return nil, err
 	}

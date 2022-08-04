@@ -20,7 +20,7 @@ func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, pay
 		k.AddAmountToDelegationRewards(ctx, staker, amount)
 
 		// Transfer tokens to the delegation module
-		err := util.TransferInterModule(k.bankKeeper, ctx, payerModuleName, types.ModuleName, amount)
+		err := util.TransferFromModuleToModule(k.bankKeeper, ctx, payerModuleName, types.ModuleName, amount)
 		if err != nil {
 			util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
 			return false
@@ -52,7 +52,7 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 	if delegatorExists {
 		// If the sender is already a delegator, first perform an undelegation, before then delegating.
 		reward := f1Distribution.Withdraw()
-		err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
+		err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
 		if err != nil {
 			return err
 		}
@@ -99,7 +99,7 @@ func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, deleg
 	reward := f1Distribution.Withdraw()
 
 	// Transfer tokens from this module to sender.
-	err := util.TransferToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
+	err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
 	if err != nil {
 		return err
 	}
