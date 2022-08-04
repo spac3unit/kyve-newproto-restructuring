@@ -79,5 +79,6 @@ var _ = Describe("Unstaking", Ordered, func() {
 		Expect(staker.UnbondingAmount).To(BeZero())
 	})
 
+	// TODO: test unstaking more than staked
 	// TODO: test unstaking everything and with pool
 })

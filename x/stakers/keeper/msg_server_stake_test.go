@@ -80,6 +80,7 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(valaccounts).To(HaveLen(0))
 	})
 
+	// TODO: test staking more than balance
 	// TODO: test updating moniker, logo and website
 	// TODO: test kicking out lowest staker
 })
