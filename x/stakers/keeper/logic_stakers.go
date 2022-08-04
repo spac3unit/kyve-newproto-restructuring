@@ -42,7 +42,7 @@ func (k Keeper) Slash(
 
 		// TODO: Transfer money to treasury
 
-		// emit slashing event
+		// emit slashing event TODO: return error
 		ctx.EventManager().EmitTypedEvent(&types.EventSlash{
 			PoolId:    poolId,
 			Address:   staker.Address,

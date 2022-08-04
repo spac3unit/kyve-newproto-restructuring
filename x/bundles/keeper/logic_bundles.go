@@ -96,7 +96,7 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 	return nil
 }
 
-func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) error {
+func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) error {
 	bundleProposal = types.BundleProposal{
 		PoolId:       msg.PoolId,
 		Uploader:     msg.Staker,
@@ -113,9 +113,22 @@ func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, bundlePropos
 
 	k.SetBundleProposal(ctx, bundleProposal)
 
-	// TODO: emit event
+	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleProposed{
+		PoolId:    bundleProposal.PoolId,
+		Id: pool.TotalBundles,
+		StorageId: bundleProposal.StorageId,
+		Uploader: bundleProposal.Uploader,
+		ByteSize: bundleProposal.ByteSize,
+		FromHeight: pool.CurrentHeight,
+		ToHeight: bundleProposal.ToHeight,
+		FromKey: pool.CurrentKey,
+		ToKey: bundleProposal.ToKey,
+		Value: bundleProposal.ToValue,
+		BundleHash: bundleProposal.BundleHash,
+		CreatedAt: bundleProposal.CreatedAt,
+	})
 
-	return nil
+	return err
 }
 
 // updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
@@ -142,11 +155,11 @@ func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 	}
 }
 
-func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward uint64, treasuryPayout uint64, uploaderPayout uint64, delegationPayout uint64) {
+func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward types.BundleReward) {
 	pool, _ := k.poolKeeper.GetPool(ctx, poolId)
 	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
 
-	bundleReward = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
+	bundleReward.Total = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
 
 	// load and parse network fee
 	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
@@ -158,17 +171,15 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward u
 	staker, stakerFound := k.stakerKeeper.GetStaker(ctx, bundleProposal.Uploader)
 
 	if !stakerFound {
-		treasuryPayout = bundleReward
-		uploaderPayout = 0
-		delegationPayout = 0
+		bundleReward.Treasury = bundleReward.Total
 
 		return
 	}
 
 	// TODO: check if staker has delegations
 
-	treasuryPayout = uint64(sdk.NewDec(int64(bundleReward)).Mul(networkFee).RoundInt64())
-	totalNodeReward := bundleReward - treasuryPayout
+	bundleReward.Treasury = uint64(sdk.NewDec(int64(bundleReward.Total)).Mul(networkFee).RoundInt64())
+	totalNodeReward := bundleReward.Total - bundleReward.Treasury
 
 	uploaderCommission, err := sdk.NewDecFromStr(staker.Commission)
 	if err != nil {
@@ -176,15 +187,15 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward u
 		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
 	}
 
-	uploaderPayout = uint64(sdk.NewDec(int64(totalNodeReward)).Mul(uploaderCommission).RoundInt64())
-	delegationPayout = totalNodeReward - uploaderPayout
+	bundleReward.Uploader = uint64(sdk.NewDec(int64(totalNodeReward)).Mul(uploaderCommission).RoundInt64())
+	bundleReward.Delegation = totalNodeReward - bundleReward.Uploader
 
 	return
 }
 
-func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal) error {
+func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal, voteDistribution types.VoteDistribution, bundleReward types.BundleReward) error {
 	// save finalized bundle
-	k.SetFinalizedBundle(ctx, types.FinalizedBundle{
+	finalizedBundle := types.FinalizedBundle{
 		StorageId:   bundleProposal.StorageId,
 		PoolId:      pool.Id,
 		Id:          pool.TotalBundles,
@@ -195,7 +206,27 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 		Key:         bundleProposal.ToKey,
 		Value:       bundleProposal.ToValue,
 		BundleHash:  bundleProposal.BundleHash,
+	}
+
+	k.SetFinalizedBundle(ctx, finalizedBundle)
+
+	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
+		PoolId: finalizedBundle.PoolId,
+		Id: finalizedBundle.Id,
+		Valid: voteDistribution.Valid,
+		Invalid: voteDistribution.Invalid,
+		Abstain: voteDistribution.Abstain,
+		Total: voteDistribution.Total,
+		Status: voteDistribution.Status,
+		RewardTreasury: bundleReward.Treasury,
+		RewardUploader: bundleReward.Uploader,
+		RewardDelegation: bundleReward.Delegation,
+		RewardTotal: bundleReward.Total,
 	})
+
+	if err != nil {
+		return err
+	}
 
 	// Finalize the proposal, saving useful information.
 	// eventFromHeight := pool.CurrentHeight
@@ -207,23 +238,31 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 
 	k.poolKeeper.SetPool(ctx, pool)
 
-	// TODO: emit event
-
 	return nil
 }
 
-func (k Keeper) dropCurrentBundleProposal(ctx sdk.Context, nextUploader string) error {
+func (k Keeper) dropCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal, voteDistribution types.VoteDistribution) error {
+	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
+		PoolId: pool.Id,
+		Id: pool.TotalBundles,
+		Valid: voteDistribution.Valid,
+		Invalid: voteDistribution.Invalid,
+		Abstain: voteDistribution.Abstain,
+		Total: voteDistribution.Total,
+		Status: voteDistribution.Status,
+	})
+
 	// drop bundle
-	bundleProposal := types.BundleProposal{
-		NextUploader: nextUploader,
+	bundleProposal = types.BundleProposal{
+		NextUploader: bundleProposal.NextUploader,
 		CreatedAt:    uint64(ctx.BlockTime().Unix()),
 	}
 
 	k.SetBundleProposal(ctx, bundleProposal)
 	
-	// TODO: emit event
+	
 
-	return nil
+	return err
 }
 
 // RandomChoiceCandidate ...
@@ -293,7 +332,7 @@ func (k Keeper) chooseNextUploaderFromAllStakers(ctx sdk.Context, poolId uint64)
 }
 
 // getVoteDistribution is an internal function evaulates the quorum status of a bundle proposal.
-func (k Keeper) getVoteDistribution(ctx sdk.Context, poolId uint64) (valid uint64, invalid uint64, abstain uint64, total uint64) {
+func (k Keeper) getVoteDistribution(ctx sdk.Context, poolId uint64) (voteDistribution types.VoteDistribution) {
 	bundleProposal, found := k.GetBundleProposal(ctx, poolId)
 	if !found {
 		return
@@ -303,42 +342,33 @@ func (k Keeper) getVoteDistribution(ctx sdk.Context, poolId uint64) (valid uint6
 	for _, voter := range bundleProposal.VotersValid {
 		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
 		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
-		valid += stake + delegation
+		voteDistribution.Valid += stake + delegation
 	}
 
 	// get $KYVE voted for invalid
 	for _, voter := range bundleProposal.VotersInvalid {
 		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
 		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
-		invalid += stake + delegation
+		voteDistribution.Invalid += stake + delegation
 	}
 
 	// get $KYVE voted for abstain
 	for _, voter := range bundleProposal.VotersAbstain {
 		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
 		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
-		abstain += stake + delegation
+		voteDistribution.Abstain += stake + delegation
 	}
-
-	// subtract uploader stake because he can not vote
-	// TODO get voting power
-	//total = k.stakerKeeper.GetTotalStake(ctx, pool.Id) - k.stakerKeeper.GetActiveStake(ctx, pool.Id, pool.BundleProposal.Uploader)
 
 	// TODO: get total delegation of pool
-	total = k.stakerKeeper.GetTotalStake(ctx, poolId) + 0
+	voteDistribution.Total = k.stakerKeeper.GetTotalStake(ctx, poolId) + 0
+
+	if voteDistribution.Valid*2 > voteDistribution.Total {
+		voteDistribution.Status = types.BUNDLE_STATUS_VALID
+	} else if voteDistribution.Invalid*2 >= voteDistribution.Total {
+		voteDistribution.Status = types.BUNDLE_STATUS_INVALID
+	} else {
+		voteDistribution.Status = types.BUNDLE_STATUS_NO_QUORUM
+	}
 
 	return
-}
-
-// getQuorumStatus is an internal function evaulates if quorum was reached on a bundle proposal.
-func (k Keeper) getQuorumStatus(valid uint64, invalid uint64, abstain uint64, total uint64) (quorum types.BundleStatus) {
-	if valid*2 > total {
-		return types.BUNDLE_STATUS_VALID
-	}
-
-	if invalid*2 >= total {
-		return types.BUNDLE_STATUS_INVALID
-	}
-
-	return types.BUNDLE_STATUS_NO_QUORUM
 }

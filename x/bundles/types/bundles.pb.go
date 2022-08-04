@@ -23,41 +23,236 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// BundleStatus ...
+type BundleStatus int32
+
+const (
+	// BUNDLE_STATUS_UNSPECIFIED ...
+	BUNDLE_STATUS_UNSPECIFIED BundleStatus = 0
+	// BUNDLE_STATUS_VALID ...
+	BUNDLE_STATUS_VALID BundleStatus = 1
+	// BUNDLE_STATUS_INVALID ...
+	BUNDLE_STATUS_INVALID BundleStatus = 2
+	// BUNDLE_STATUS_NO_FUNDS ...
+	BUNDLE_STATUS_NO_FUNDS BundleStatus = 3
+	// BUNDLE_STATUS_NO_QUORUM ...
+	BUNDLE_STATUS_NO_QUORUM BundleStatus = 4
+)
+
+var BundleStatus_name = map[int32]string{
+	0: "BUNDLE_STATUS_UNSPECIFIED",
+	1: "BUNDLE_STATUS_VALID",
+	2: "BUNDLE_STATUS_INVALID",
+	3: "BUNDLE_STATUS_NO_FUNDS",
+	4: "BUNDLE_STATUS_NO_QUORUM",
+}
+
+var BundleStatus_value = map[string]int32{
+	"BUNDLE_STATUS_UNSPECIFIED": 0,
+	"BUNDLE_STATUS_VALID":       1,
+	"BUNDLE_STATUS_INVALID":     2,
+	"BUNDLE_STATUS_NO_FUNDS":    3,
+	"BUNDLE_STATUS_NO_QUORUM":   4,
+}
+
+func (x BundleStatus) String() string {
+	return proto.EnumName(BundleStatus_name, int32(x))
+}
+
+func (BundleStatus) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_889cf76d77a4de2b, []int{0}
+}
+
+// VoteDistribution ...
+type VoteDistribution struct {
+	// valid ...
+	Valid uint64 `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
+	// invalid ...
+	Invalid uint64 `protobuf:"varint,2,opt,name=invalid,proto3" json:"invalid,omitempty"`
+	// abstain ...
+	Abstain uint64 `protobuf:"varint,3,opt,name=abstain,proto3" json:"abstain,omitempty"`
+	// total ...
+	Total uint64 `protobuf:"varint,4,opt,name=total,proto3" json:"total,omitempty"`
+	// status ...
+	Status BundleStatus `protobuf:"varint,5,opt,name=status,proto3,enum=kyve.bundles.v1beta1.BundleStatus" json:"status,omitempty"`
+}
+
+func (m *VoteDistribution) Reset()         { *m = VoteDistribution{} }
+func (m *VoteDistribution) String() string { return proto.CompactTextString(m) }
+func (*VoteDistribution) ProtoMessage()    {}
+func (*VoteDistribution) Descriptor() ([]byte, []int) {
+	return fileDescriptor_889cf76d77a4de2b, []int{0}
+}
+func (m *VoteDistribution) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *VoteDistribution) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_VoteDistribution.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *VoteDistribution) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VoteDistribution.Merge(m, src)
+}
+func (m *VoteDistribution) XXX_Size() int {
+	return m.Size()
+}
+func (m *VoteDistribution) XXX_DiscardUnknown() {
+	xxx_messageInfo_VoteDistribution.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VoteDistribution proto.InternalMessageInfo
+
+func (m *VoteDistribution) GetValid() uint64 {
+	if m != nil {
+		return m.Valid
+	}
+	return 0
+}
+
+func (m *VoteDistribution) GetInvalid() uint64 {
+	if m != nil {
+		return m.Invalid
+	}
+	return 0
+}
+
+func (m *VoteDistribution) GetAbstain() uint64 {
+	if m != nil {
+		return m.Abstain
+	}
+	return 0
+}
+
+func (m *VoteDistribution) GetTotal() uint64 {
+	if m != nil {
+		return m.Total
+	}
+	return 0
+}
+
+func (m *VoteDistribution) GetStatus() BundleStatus {
+	if m != nil {
+		return m.Status
+	}
+	return BUNDLE_STATUS_UNSPECIFIED
+}
+
+// BundleReward ...
+type BundleReward struct {
+	// treasury ...
+	Treasury uint64 `protobuf:"varint,1,opt,name=treasury,proto3" json:"treasury,omitempty"`
+	// uploader ...
+	Uploader uint64 `protobuf:"varint,2,opt,name=uploader,proto3" json:"uploader,omitempty"`
+	// delegation ...
+	Delegation uint64 `protobuf:"varint,3,opt,name=delegation,proto3" json:"delegation,omitempty"`
+	// total ...
+	Total uint64 `protobuf:"varint,4,opt,name=total,proto3" json:"total,omitempty"`
+}
+
+func (m *BundleReward) Reset()         { *m = BundleReward{} }
+func (m *BundleReward) String() string { return proto.CompactTextString(m) }
+func (*BundleReward) ProtoMessage()    {}
+func (*BundleReward) Descriptor() ([]byte, []int) {
+	return fileDescriptor_889cf76d77a4de2b, []int{1}
+}
+func (m *BundleReward) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *BundleReward) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_BundleReward.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *BundleReward) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_BundleReward.Merge(m, src)
+}
+func (m *BundleReward) XXX_Size() int {
+	return m.Size()
+}
+func (m *BundleReward) XXX_DiscardUnknown() {
+	xxx_messageInfo_BundleReward.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_BundleReward proto.InternalMessageInfo
+
+func (m *BundleReward) GetTreasury() uint64 {
+	if m != nil {
+		return m.Treasury
+	}
+	return 0
+}
+
+func (m *BundleReward) GetUploader() uint64 {
+	if m != nil {
+		return m.Uploader
+	}
+	return 0
+}
+
+func (m *BundleReward) GetDelegation() uint64 {
+	if m != nil {
+		return m.Delegation
+	}
+	return 0
+}
+
+func (m *BundleReward) GetTotal() uint64 {
+	if m != nil {
+		return m.Total
+	}
+	return 0
+}
+
 // BundleProposal ...
 type BundleProposal struct {
 	// pool_id ...
 	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	// uploader ...
-	Uploader string `protobuf:"bytes,2,opt,name=uploader,proto3" json:"uploader,omitempty"`
-	// next_uploader ...
-	NextUploader string `protobuf:"bytes,3,opt,name=next_uploader,json=nextUploader,proto3" json:"next_uploader,omitempty"`
 	// storage_id ...
-	StorageId string `protobuf:"bytes,4,opt,name=storage_id,json=storageId,proto3" json:"storage_id,omitempty"`
+	StorageId string `protobuf:"bytes,2,opt,name=storage_id,json=storageId,proto3" json:"storage_id,omitempty"`
+	// uploader ...
+	Uploader string `protobuf:"bytes,3,opt,name=uploader,proto3" json:"uploader,omitempty"`
+	// next_uploader ...
+	NextUploader string `protobuf:"bytes,4,opt,name=next_uploader,json=nextUploader,proto3" json:"next_uploader,omitempty"`
 	// byte_size ...
 	ByteSize uint64 `protobuf:"varint,5,opt,name=byte_size,json=byteSize,proto3" json:"byte_size,omitempty"`
 	// to_height ...
 	ToHeight uint64 `protobuf:"varint,6,opt,name=to_height,json=toHeight,proto3" json:"to_height,omitempty"`
-	// created_at ...
-	CreatedAt uint64 `protobuf:"varint,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	// voters_valid ...
-	VotersValid []string `protobuf:"bytes,8,rep,name=voters_valid,json=votersValid,proto3" json:"voters_valid,omitempty"`
-	// voters_invalid ...
-	VotersInvalid []string `protobuf:"bytes,9,rep,name=voters_invalid,json=votersInvalid,proto3" json:"voters_invalid,omitempty"`
-	// voters_abstain ...
-	VotersAbstain []string `protobuf:"bytes,10,rep,name=voters_abstain,json=votersAbstain,proto3" json:"voters_abstain,omitempty"`
 	// to_key ...
-	ToKey string `protobuf:"bytes,11,opt,name=to_key,json=toKey,proto3" json:"to_key,omitempty"`
+	ToKey string `protobuf:"bytes,7,opt,name=to_key,json=toKey,proto3" json:"to_key,omitempty"`
 	// to_value ...
-	ToValue string `protobuf:"bytes,12,opt,name=to_value,json=toValue,proto3" json:"to_value,omitempty"`
+	ToValue string `protobuf:"bytes,8,opt,name=to_value,json=toValue,proto3" json:"to_value,omitempty"`
 	// bundle_hash ...
-	BundleHash string `protobuf:"bytes,13,opt,name=bundle_hash,json=bundleHash,proto3" json:"bundle_hash,omitempty"`
+	BundleHash string `protobuf:"bytes,9,opt,name=bundle_hash,json=bundleHash,proto3" json:"bundle_hash,omitempty"`
+	// created_at ...
+	CreatedAt uint64 `protobuf:"varint,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	// voters_valid ...
+	VotersValid []string `protobuf:"bytes,11,rep,name=voters_valid,json=votersValid,proto3" json:"voters_valid,omitempty"`
+	// voters_invalid ...
+	VotersInvalid []string `protobuf:"bytes,12,rep,name=voters_invalid,json=votersInvalid,proto3" json:"voters_invalid,omitempty"`
+	// voters_abstain ...
+	VotersAbstain []string `protobuf:"bytes,13,rep,name=voters_abstain,json=votersAbstain,proto3" json:"voters_abstain,omitempty"`
 }
 
 func (m *BundleProposal) Reset()         { *m = BundleProposal{} }
 func (m *BundleProposal) String() string { return proto.CompactTextString(m) }
 func (*BundleProposal) ProtoMessage()    {}
 func (*BundleProposal) Descriptor() ([]byte, []int) {
-	return fileDescriptor_889cf76d77a4de2b, []int{0}
+	return fileDescriptor_889cf76d77a4de2b, []int{2}
 }
 func (m *BundleProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -93,6 +288,13 @@ func (m *BundleProposal) GetPoolId() uint64 {
 	return 0
 }
 
+func (m *BundleProposal) GetStorageId() string {
+	if m != nil {
+		return m.StorageId
+	}
+	return ""
+}
+
 func (m *BundleProposal) GetUploader() string {
 	if m != nil {
 		return m.Uploader
@@ -103,13 +305,6 @@ func (m *BundleProposal) GetUploader() string {
 func (m *BundleProposal) GetNextUploader() string {
 	if m != nil {
 		return m.NextUploader
-	}
-	return ""
-}
-
-func (m *BundleProposal) GetStorageId() string {
-	if m != nil {
-		return m.StorageId
 	}
 	return ""
 }
@@ -126,6 +321,27 @@ func (m *BundleProposal) GetToHeight() uint64 {
 		return m.ToHeight
 	}
 	return 0
+}
+
+func (m *BundleProposal) GetToKey() string {
+	if m != nil {
+		return m.ToKey
+	}
+	return ""
+}
+
+func (m *BundleProposal) GetToValue() string {
+	if m != nil {
+		return m.ToValue
+	}
+	return ""
+}
+
+func (m *BundleProposal) GetBundleHash() string {
+	if m != nil {
+		return m.BundleHash
+	}
+	return ""
 }
 
 func (m *BundleProposal) GetCreatedAt() uint64 {
@@ -156,27 +372,6 @@ func (m *BundleProposal) GetVotersAbstain() []string {
 	return nil
 }
 
-func (m *BundleProposal) GetToKey() string {
-	if m != nil {
-		return m.ToKey
-	}
-	return ""
-}
-
-func (m *BundleProposal) GetToValue() string {
-	if m != nil {
-		return m.ToValue
-	}
-	return ""
-}
-
-func (m *BundleProposal) GetBundleHash() string {
-	if m != nil {
-		return m.BundleHash
-	}
-	return ""
-}
-
 // Proposal ...
 type FinalizedBundle struct {
 	// pool_id ...
@@ -191,21 +386,21 @@ type FinalizedBundle struct {
 	FromHeight uint64 `protobuf:"varint,5,opt,name=from_height,json=fromHeight,proto3" json:"from_height,omitempty"`
 	// to_height ...
 	ToHeight uint64 `protobuf:"varint,6,opt,name=to_height,json=toHeight,proto3" json:"to_height,omitempty"`
-	// finalized_at ...
-	FinalizedAt uint64 `protobuf:"varint,7,opt,name=finalized_at,json=finalizedAt,proto3" json:"finalized_at,omitempty"`
 	// key ...
-	Key string `protobuf:"bytes,8,opt,name=key,proto3" json:"key,omitempty"`
+	Key string `protobuf:"bytes,7,opt,name=key,proto3" json:"key,omitempty"`
 	// value ...
-	Value string `protobuf:"bytes,9,opt,name=value,proto3" json:"value,omitempty"`
+	Value string `protobuf:"bytes,8,opt,name=value,proto3" json:"value,omitempty"`
 	// bundle_hash ...
-	BundleHash string `protobuf:"bytes,10,opt,name=bundle_hash,json=bundleHash,proto3" json:"bundle_hash,omitempty"`
+	BundleHash string `protobuf:"bytes,9,opt,name=bundle_hash,json=bundleHash,proto3" json:"bundle_hash,omitempty"`
+	// finalized_at ...
+	FinalizedAt uint64 `protobuf:"varint,10,opt,name=finalized_at,json=finalizedAt,proto3" json:"finalized_at,omitempty"`
 }
 
 func (m *FinalizedBundle) Reset()         { *m = FinalizedBundle{} }
 func (m *FinalizedBundle) String() string { return proto.CompactTextString(m) }
 func (*FinalizedBundle) ProtoMessage()    {}
 func (*FinalizedBundle) Descriptor() ([]byte, []int) {
-	return fileDescriptor_889cf76d77a4de2b, []int{1}
+	return fileDescriptor_889cf76d77a4de2b, []int{3}
 }
 func (m *FinalizedBundle) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -276,13 +471,6 @@ func (m *FinalizedBundle) GetToHeight() uint64 {
 	return 0
 }
 
-func (m *FinalizedBundle) GetFinalizedAt() uint64 {
-	if m != nil {
-		return m.FinalizedAt
-	}
-	return 0
-}
-
 func (m *FinalizedBundle) GetKey() string {
 	if m != nil {
 		return m.Key
@@ -304,7 +492,17 @@ func (m *FinalizedBundle) GetBundleHash() string {
 	return ""
 }
 
+func (m *FinalizedBundle) GetFinalizedAt() uint64 {
+	if m != nil {
+		return m.FinalizedAt
+	}
+	return 0
+}
+
 func init() {
+	proto.RegisterEnum("kyve.bundles.v1beta1.BundleStatus", BundleStatus_name, BundleStatus_value)
+	proto.RegisterType((*VoteDistribution)(nil), "kyve.bundles.v1beta1.VoteDistribution")
+	proto.RegisterType((*BundleReward)(nil), "kyve.bundles.v1beta1.BundleReward")
 	proto.RegisterType((*BundleProposal)(nil), "kyve.bundles.v1beta1.BundleProposal")
 	proto.RegisterType((*FinalizedBundle)(nil), "kyve.bundles.v1beta1.FinalizedBundle")
 }
@@ -314,39 +512,142 @@ func init() {
 }
 
 var fileDescriptor_889cf76d77a4de2b = []byte{
-	// 501 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x93, 0xdd, 0x8a, 0xd3, 0x40,
-	0x14, 0xc7, 0x37, 0xfd, 0xce, 0xe9, 0x87, 0x32, 0x54, 0x8c, 0x2b, 0x66, 0xbb, 0x15, 0xa1, 0x17,
-	0xd2, 0xb0, 0xf8, 0x04, 0x5d, 0x70, 0xd9, 0xb2, 0x20, 0x52, 0xb1, 0xa0, 0x37, 0x61, 0xd2, 0xcc,
-	0x36, 0x43, 0xb3, 0x39, 0x25, 0x39, 0xad, 0xdb, 0x3e, 0x85, 0x6f, 0xe0, 0x9d, 0xcf, 0xe2, 0xe5,
-	0x5e, 0x7a, 0x29, 0xed, 0x8b, 0xc8, 0xcc, 0x34, 0xb5, 0x14, 0xf5, 0x2e, 0xe7, 0x77, 0x7e, 0x24,
-	0x93, 0xff, 0x9f, 0x81, 0xee, 0x6c, 0xb5, 0x14, 0x5e, 0xb0, 0x48, 0xc2, 0x58, 0x64, 0xde, 0xf2,
-	0x22, 0x10, 0xc4, 0x2f, 0xf2, 0xb9, 0x3f, 0x4f, 0x91, 0x90, 0xb5, 0x95, 0xd3, 0xcf, 0xd9, 0xce,
-	0x39, 0x6d, 0x4f, 0x71, 0x8a, 0x5a, 0xf0, 0xd4, 0x93, 0x71, 0xbb, 0xdf, 0x8b, 0xd0, 0xba, 0xd4,
-	0xe6, 0xfb, 0x14, 0xe7, 0x98, 0xf1, 0x98, 0x3d, 0x85, 0xea, 0x1c, 0x31, 0xf6, 0x65, 0xe8, 0x58,
-	0x1d, 0xab, 0x57, 0x1a, 0x55, 0xd4, 0x38, 0x0c, 0xd9, 0x29, 0xd4, 0x16, 0xf3, 0x18, 0x79, 0x28,
-	0x52, 0xa7, 0xd0, 0xb1, 0x7a, 0xf6, 0x68, 0x3f, 0xb3, 0x97, 0xd0, 0x4c, 0xc4, 0x3d, 0xf9, 0x7b,
-	0xa1, 0xa8, 0x85, 0x86, 0x82, 0x1f, 0x73, 0xe9, 0x05, 0x40, 0x46, 0x98, 0xf2, 0xa9, 0x50, 0x2f,
-	0x2f, 0x69, 0xc3, 0xde, 0x91, 0x61, 0xc8, 0x9e, 0x83, 0x1d, 0xac, 0x48, 0xf8, 0x99, 0x5c, 0x0b,
-	0xa7, 0xac, 0x3f, 0x5d, 0x53, 0xe0, 0x83, 0x5c, 0x0b, 0xb5, 0x24, 0xf4, 0x23, 0x21, 0xa7, 0x11,
-	0x39, 0x15, 0xb3, 0x24, 0xbc, 0xd6, 0xb3, 0x7a, 0xf1, 0x24, 0x15, 0x9c, 0x44, 0xe8, 0x73, 0x72,
-	0xaa, 0x7a, 0x6b, 0xef, 0xc8, 0x80, 0xd8, 0x39, 0x34, 0x96, 0x48, 0x22, 0xcd, 0xfc, 0x25, 0x8f,
-	0x65, 0xe8, 0xd4, 0x3a, 0xc5, 0x9e, 0x3d, 0xaa, 0x1b, 0x36, 0x56, 0x88, 0xbd, 0x82, 0xd6, 0x4e,
-	0x91, 0x89, 0x91, 0x6c, 0x2d, 0x35, 0x0d, 0x1d, 0x1a, 0x78, 0xa0, 0xf1, 0x20, 0x23, 0x2e, 0x13,
-	0x07, 0x0e, 0xb5, 0x81, 0x81, 0xec, 0x09, 0x54, 0x08, 0xfd, 0x99, 0x58, 0x39, 0x75, 0xfd, 0x93,
-	0x65, 0xc2, 0x1b, 0xb1, 0x62, 0xcf, 0xa0, 0x46, 0xa8, 0xce, 0xb0, 0x10, 0x4e, 0x43, 0x2f, 0xaa,
-	0x84, 0x63, 0x35, 0xb2, 0x33, 0xa8, 0x9b, 0xc2, 0xfc, 0x88, 0x67, 0x91, 0xd3, 0xd4, 0x5b, 0x30,
-	0xe8, 0x9a, 0x67, 0x51, 0xf7, 0x5b, 0x01, 0x1e, 0x5d, 0xc9, 0x84, 0xc7, 0x72, 0x2d, 0x42, 0xd3,
-	0xd8, 0xbf, 0x9b, 0x6a, 0x41, 0x41, 0x86, 0xba, 0xa3, 0xd2, 0xa8, 0x20, 0xc3, 0xa3, 0xe0, 0x8b,
-	0xc7, 0xc1, 0x1f, 0x16, 0x5b, 0x3a, 0x2a, 0xf6, 0x0c, 0xea, 0xb7, 0x29, 0xde, 0xe5, 0xc9, 0x9b,
-	0x5a, 0x40, 0xa1, 0x5d, 0xf6, 0xff, 0x2d, 0xe6, 0x1c, 0x1a, 0xb7, 0xf9, 0xa1, 0xff, 0x54, 0x53,
-	0xdf, 0xb3, 0x01, 0xb1, 0xc7, 0x50, 0x54, 0x41, 0xd5, 0xf4, 0x77, 0xd5, 0x23, 0x6b, 0x43, 0xd9,
-	0x64, 0x64, 0x9b, 0xf0, 0x96, 0x7f, 0x4b, 0x08, 0x8e, 0x13, 0xba, 0xbc, 0xfa, 0xb1, 0x71, 0xad,
-	0x87, 0x8d, 0x6b, 0xfd, 0xda, 0xb8, 0xd6, 0xd7, 0xad, 0x7b, 0xf2, 0xb0, 0x75, 0x4f, 0x7e, 0x6e,
-	0xdd, 0x93, 0xcf, 0xaf, 0xa7, 0x92, 0xa2, 0x45, 0xd0, 0x9f, 0xe0, 0x9d, 0x77, 0xf3, 0x69, 0xfc,
-	0xf6, 0x9d, 0xa0, 0x2f, 0x98, 0xce, 0xbc, 0x49, 0xc4, 0x65, 0xe2, 0xdd, 0xef, 0xaf, 0x13, 0xad,
-	0xe6, 0x22, 0x0b, 0x2a, 0xfa, 0x66, 0xbc, 0xf9, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x3d, 0x13, 0xd7,
-	0xf2, 0x6b, 0x03, 0x00, 0x00,
+	// 704 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0x4f, 0x4f, 0x1a, 0x4d,
+	0x18, 0x67, 0x01, 0xf9, 0xf3, 0x80, 0xbc, 0x64, 0x5e, 0x7d, 0x5d, 0x31, 0xae, 0xca, 0x9b, 0x26,
+	0xa6, 0x69, 0x20, 0xb6, 0xb7, 0xde, 0xb0, 0x40, 0x24, 0x5a, 0xb4, 0x20, 0x24, 0xed, 0x65, 0x33,
+	0xb8, 0x23, 0x6c, 0x5c, 0x19, 0xb2, 0xfb, 0x80, 0x62, 0xfa, 0x01, 0x7a, 0xec, 0x37, 0x68, 0x93,
+	0x26, 0x3d, 0xf6, 0x73, 0xf4, 0xe8, 0xb1, 0xc7, 0x46, 0xbf, 0x48, 0xb3, 0x33, 0xb3, 0x8b, 0x58,
+	0x6b, 0x6f, 0xfb, 0xfb, 0xb3, 0x33, 0xcf, 0x3c, 0xbf, 0x67, 0x06, 0x8a, 0x67, 0xd3, 0x09, 0x2b,
+	0xf7, 0xc6, 0x43, 0xcb, 0x61, 0x5e, 0x79, 0xb2, 0xd3, 0x63, 0x48, 0x77, 0x02, 0x5c, 0x1a, 0xb9,
+	0x1c, 0x39, 0x59, 0xf2, 0x3d, 0xa5, 0x80, 0x53, 0x9e, 0xc2, 0x52, 0x9f, 0xf7, 0xb9, 0x30, 0x94,
+	0xfd, 0x2f, 0xe9, 0x2d, 0x7e, 0xd3, 0x20, 0xdf, 0xe5, 0xc8, 0xaa, 0xb6, 0x87, 0xae, 0xdd, 0x1b,
+	0xa3, 0xcd, 0x87, 0x64, 0x09, 0x16, 0x26, 0xd4, 0xb1, 0x2d, 0x5d, 0xdb, 0xd4, 0xb6, 0xe3, 0x2d,
+	0x09, 0x88, 0x0e, 0x49, 0x7b, 0x28, 0xf9, 0xa8, 0xe0, 0x03, 0xe8, 0x2b, 0xb4, 0xe7, 0x21, 0xb5,
+	0x87, 0x7a, 0x4c, 0x2a, 0x0a, 0xfa, 0x2b, 0x21, 0x47, 0xea, 0xe8, 0x71, 0xb9, 0x92, 0x00, 0xe4,
+	0x25, 0x24, 0x3c, 0xa4, 0x38, 0xf6, 0xf4, 0x85, 0x4d, 0x6d, 0x3b, 0xf7, 0xbc, 0x58, 0x7a, 0xa8,
+	0xe2, 0xd2, 0xae, 0xc0, 0x6d, 0xe1, 0x6c, 0xa9, 0x3f, 0x8a, 0xef, 0x21, 0x2b, 0xf9, 0x16, 0xbb,
+	0xa0, 0xae, 0x45, 0x0a, 0x90, 0x42, 0x97, 0x51, 0x6f, 0xec, 0x4e, 0x55, 0xb9, 0x21, 0xf6, 0xb5,
+	0xf1, 0xc8, 0xe1, 0xd4, 0x62, 0xae, 0x2a, 0x39, 0xc4, 0xc4, 0x00, 0xb0, 0x98, 0xc3, 0xfa, 0xd4,
+	0x3f, 0xb1, 0x2a, 0xfb, 0x0e, 0xf3, 0x70, 0xe5, 0xc5, 0xaf, 0x31, 0xc8, 0xc9, 0xed, 0x8f, 0x5c,
+	0x3e, 0xe2, 0x1e, 0x75, 0xc8, 0x0a, 0x24, 0x47, 0x9c, 0x3b, 0x66, 0xd8, 0xae, 0x84, 0x0f, 0x1b,
+	0x16, 0x59, 0x07, 0xf0, 0x90, 0xbb, 0xb4, 0xcf, 0x4c, 0xd5, 0xb2, 0x74, 0x2b, 0xad, 0x98, 0x86,
+	0x35, 0x57, 0x5c, 0x4c, 0x88, 0xb3, 0xe2, 0xfe, 0x87, 0xc5, 0x21, 0xbb, 0x44, 0x33, 0x34, 0xc4,
+	0x85, 0x21, 0xeb, 0x93, 0x9d, 0xc0, 0xb4, 0x06, 0xe9, 0xde, 0x14, 0x99, 0xe9, 0xd9, 0x57, 0x4c,
+	0x34, 0x32, 0xde, 0x4a, 0xf9, 0x44, 0xdb, 0xbe, 0x62, 0xbe, 0x88, 0xdc, 0x1c, 0x30, 0xbb, 0x3f,
+	0x40, 0x3d, 0xa1, 0xfa, 0xc2, 0xf7, 0x04, 0x26, 0xcb, 0x90, 0x40, 0x6e, 0x9e, 0xb1, 0xa9, 0x9e,
+	0x14, 0xeb, 0x2e, 0x20, 0xdf, 0x67, 0x53, 0xb2, 0x0a, 0x29, 0xe4, 0xe6, 0x84, 0x3a, 0x63, 0xa6,
+	0xa7, 0x84, 0x90, 0x44, 0xde, 0xf5, 0x21, 0xd9, 0x80, 0x8c, 0x4c, 0xc7, 0x1c, 0x50, 0x6f, 0xa0,
+	0xa7, 0x85, 0x0a, 0x92, 0xda, 0xa3, 0xde, 0xc0, 0x3f, 0xec, 0x89, 0xcb, 0x28, 0x32, 0xcb, 0xa4,
+	0xa8, 0x83, 0xd8, 0x30, 0xad, 0x98, 0x0a, 0x92, 0x2d, 0xc8, 0x4e, 0x38, 0x32, 0xd7, 0x33, 0xe5,
+	0x00, 0x65, 0x36, 0x63, 0xdb, 0xe9, 0x56, 0x46, 0x72, 0x5d, 0x31, 0x44, 0x4f, 0x20, 0xa7, 0x2c,
+	0xc1, 0x94, 0x65, 0x85, 0x69, 0x51, 0xb2, 0x0d, 0x35, 0x6b, 0x33, 0x5b, 0x30, 0x72, 0x8b, 0x77,
+	0x6d, 0x15, 0x49, 0x16, 0x3f, 0x45, 0xe1, 0x9f, 0xba, 0x3d, 0xa4, 0x8e, 0x7d, 0xc5, 0x2c, 0x99,
+	0xd8, 0x9f, 0x93, 0xca, 0x41, 0x34, 0x1c, 0xea, 0xa8, 0x7d, 0x3f, 0xb9, 0xd8, 0x63, 0xc9, 0xc5,
+	0xef, 0x25, 0xb7, 0x01, 0x99, 0x53, 0x97, 0x9f, 0x07, 0x9d, 0x97, 0xb1, 0x80, 0x4f, 0xa9, 0xde,
+	0x3f, 0x1a, 0x4c, 0x1e, 0x62, 0xb3, 0x54, 0xfc, 0x4f, 0x75, 0x15, 0xc3, 0x40, 0x24, 0xf8, 0x7b,
+	0x1c, 0x5b, 0x90, 0x3d, 0x0d, 0x4e, 0x3f, 0x0b, 0x24, 0x13, 0x72, 0x15, 0x7c, 0xfa, 0x59, 0x0b,
+	0x6e, 0x92, 0xbc, 0x61, 0x64, 0x1d, 0x56, 0x77, 0x3b, 0xcd, 0xea, 0x41, 0xcd, 0x6c, 0x1f, 0x57,
+	0x8e, 0x3b, 0x6d, 0xb3, 0xd3, 0x6c, 0x1f, 0xd5, 0x5e, 0x35, 0xea, 0x8d, 0x5a, 0x35, 0x1f, 0x21,
+	0x2b, 0xf0, 0xef, 0xbc, 0xdc, 0xad, 0x1c, 0x34, 0xaa, 0x79, 0x8d, 0xac, 0xc2, 0xf2, 0xbc, 0xd0,
+	0x68, 0x4a, 0x29, 0x4a, 0x0a, 0xf0, 0xdf, 0xbc, 0xd4, 0x3c, 0x34, 0xeb, 0x9d, 0x66, 0xb5, 0x9d,
+	0x8f, 0x91, 0x35, 0x58, 0xf9, 0x4d, 0x7b, 0xd3, 0x39, 0x6c, 0x75, 0x5e, 0xe7, 0xe3, 0x85, 0xf8,
+	0x87, 0x2f, 0x46, 0x64, 0xb7, 0xfe, 0xfd, 0xc6, 0xd0, 0xae, 0x6f, 0x0c, 0xed, 0xe7, 0x8d, 0xa1,
+	0x7d, 0xbc, 0x35, 0x22, 0xd7, 0xb7, 0x46, 0xe4, 0xc7, 0xad, 0x11, 0x79, 0xf7, 0xac, 0x6f, 0xe3,
+	0x60, 0xdc, 0x2b, 0x9d, 0xf0, 0xf3, 0xf2, 0xfe, 0xdb, 0x6e, 0xad, 0xc9, 0xf0, 0x82, 0xbb, 0x67,
+	0xe5, 0x93, 0x01, 0xb5, 0x87, 0xe5, 0xcb, 0xf0, 0x81, 0xc4, 0xe9, 0x88, 0x79, 0xbd, 0x84, 0x78,
+	0xeb, 0x5e, 0xfc, 0x0a, 0x00, 0x00, 0xff, 0xff, 0xbc, 0x8d, 0x73, 0xdf, 0x3d, 0x05, 0x00, 0x00,
+}
+
+func (m *VoteDistribution) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *VoteDistribution) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *VoteDistribution) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Status != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Total != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Total))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Abstain != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Abstain))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Invalid != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Invalid))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Valid != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Valid))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *BundleReward) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *BundleReward) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *BundleReward) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Total != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Total))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Delegation != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Delegation))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Uploader != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Uploader))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.Treasury != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Treasury))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *BundleProposal) Marshal() (dAtA []byte, err error) {
@@ -369,34 +670,13 @@ func (m *BundleProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.BundleHash) > 0 {
-		i -= len(m.BundleHash)
-		copy(dAtA[i:], m.BundleHash)
-		i = encodeVarintBundles(dAtA, i, uint64(len(m.BundleHash)))
-		i--
-		dAtA[i] = 0x6a
-	}
-	if len(m.ToValue) > 0 {
-		i -= len(m.ToValue)
-		copy(dAtA[i:], m.ToValue)
-		i = encodeVarintBundles(dAtA, i, uint64(len(m.ToValue)))
-		i--
-		dAtA[i] = 0x62
-	}
-	if len(m.ToKey) > 0 {
-		i -= len(m.ToKey)
-		copy(dAtA[i:], m.ToKey)
-		i = encodeVarintBundles(dAtA, i, uint64(len(m.ToKey)))
-		i--
-		dAtA[i] = 0x5a
-	}
 	if len(m.VotersAbstain) > 0 {
 		for iNdEx := len(m.VotersAbstain) - 1; iNdEx >= 0; iNdEx-- {
 			i -= len(m.VotersAbstain[iNdEx])
 			copy(dAtA[i:], m.VotersAbstain[iNdEx])
 			i = encodeVarintBundles(dAtA, i, uint64(len(m.VotersAbstain[iNdEx])))
 			i--
-			dAtA[i] = 0x52
+			dAtA[i] = 0x6a
 		}
 	}
 	if len(m.VotersInvalid) > 0 {
@@ -405,7 +685,7 @@ func (m *BundleProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.VotersInvalid[iNdEx])
 			i = encodeVarintBundles(dAtA, i, uint64(len(m.VotersInvalid[iNdEx])))
 			i--
-			dAtA[i] = 0x4a
+			dAtA[i] = 0x62
 		}
 	}
 	if len(m.VotersValid) > 0 {
@@ -414,13 +694,34 @@ func (m *BundleProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.VotersValid[iNdEx])
 			i = encodeVarintBundles(dAtA, i, uint64(len(m.VotersValid[iNdEx])))
 			i--
-			dAtA[i] = 0x42
+			dAtA[i] = 0x5a
 		}
 	}
 	if m.CreatedAt != 0 {
 		i = encodeVarintBundles(dAtA, i, uint64(m.CreatedAt))
 		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x50
+	}
+	if len(m.BundleHash) > 0 {
+		i -= len(m.BundleHash)
+		copy(dAtA[i:], m.BundleHash)
+		i = encodeVarintBundles(dAtA, i, uint64(len(m.BundleHash)))
+		i--
+		dAtA[i] = 0x4a
+	}
+	if len(m.ToValue) > 0 {
+		i -= len(m.ToValue)
+		copy(dAtA[i:], m.ToValue)
+		i = encodeVarintBundles(dAtA, i, uint64(len(m.ToValue)))
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.ToKey) > 0 {
+		i -= len(m.ToKey)
+		copy(dAtA[i:], m.ToKey)
+		i = encodeVarintBundles(dAtA, i, uint64(len(m.ToKey)))
+		i--
+		dAtA[i] = 0x3a
 	}
 	if m.ToHeight != 0 {
 		i = encodeVarintBundles(dAtA, i, uint64(m.ToHeight))
@@ -432,24 +733,24 @@ func (m *BundleProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x28
 	}
-	if len(m.StorageId) > 0 {
-		i -= len(m.StorageId)
-		copy(dAtA[i:], m.StorageId)
-		i = encodeVarintBundles(dAtA, i, uint64(len(m.StorageId)))
-		i--
-		dAtA[i] = 0x22
-	}
 	if len(m.NextUploader) > 0 {
 		i -= len(m.NextUploader)
 		copy(dAtA[i:], m.NextUploader)
 		i = encodeVarintBundles(dAtA, i, uint64(len(m.NextUploader)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if len(m.Uploader) > 0 {
 		i -= len(m.Uploader)
 		copy(dAtA[i:], m.Uploader)
 		i = encodeVarintBundles(dAtA, i, uint64(len(m.Uploader)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.StorageId) > 0 {
+		i -= len(m.StorageId)
+		copy(dAtA[i:], m.StorageId)
+		i = encodeVarintBundles(dAtA, i, uint64(len(m.StorageId)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -481,31 +782,31 @@ func (m *FinalizedBundle) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.FinalizedAt != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.FinalizedAt))
+		i--
+		dAtA[i] = 0x50
+	}
 	if len(m.BundleHash) > 0 {
 		i -= len(m.BundleHash)
 		copy(dAtA[i:], m.BundleHash)
 		i = encodeVarintBundles(dAtA, i, uint64(len(m.BundleHash)))
 		i--
-		dAtA[i] = 0x52
+		dAtA[i] = 0x4a
 	}
 	if len(m.Value) > 0 {
 		i -= len(m.Value)
 		copy(dAtA[i:], m.Value)
 		i = encodeVarintBundles(dAtA, i, uint64(len(m.Value)))
 		i--
-		dAtA[i] = 0x4a
+		dAtA[i] = 0x42
 	}
 	if len(m.Key) > 0 {
 		i -= len(m.Key)
 		copy(dAtA[i:], m.Key)
 		i = encodeVarintBundles(dAtA, i, uint64(len(m.Key)))
 		i--
-		dAtA[i] = 0x42
-	}
-	if m.FinalizedAt != 0 {
-		i = encodeVarintBundles(dAtA, i, uint64(m.FinalizedAt))
-		i--
-		dAtA[i] = 0x38
+		dAtA[i] = 0x3a
 	}
 	if m.ToHeight != 0 {
 		i = encodeVarintBundles(dAtA, i, uint64(m.ToHeight))
@@ -555,6 +856,51 @@ func encodeVarintBundles(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *VoteDistribution) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Valid != 0 {
+		n += 1 + sovBundles(uint64(m.Valid))
+	}
+	if m.Invalid != 0 {
+		n += 1 + sovBundles(uint64(m.Invalid))
+	}
+	if m.Abstain != 0 {
+		n += 1 + sovBundles(uint64(m.Abstain))
+	}
+	if m.Total != 0 {
+		n += 1 + sovBundles(uint64(m.Total))
+	}
+	if m.Status != 0 {
+		n += 1 + sovBundles(uint64(m.Status))
+	}
+	return n
+}
+
+func (m *BundleReward) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Treasury != 0 {
+		n += 1 + sovBundles(uint64(m.Treasury))
+	}
+	if m.Uploader != 0 {
+		n += 1 + sovBundles(uint64(m.Uploader))
+	}
+	if m.Delegation != 0 {
+		n += 1 + sovBundles(uint64(m.Delegation))
+	}
+	if m.Total != 0 {
+		n += 1 + sovBundles(uint64(m.Total))
+	}
+	return n
+}
+
 func (m *BundleProposal) Size() (n int) {
 	if m == nil {
 		return 0
@@ -564,6 +910,10 @@ func (m *BundleProposal) Size() (n int) {
 	if m.PoolId != 0 {
 		n += 1 + sovBundles(uint64(m.PoolId))
 	}
+	l = len(m.StorageId)
+	if l > 0 {
+		n += 1 + l + sovBundles(uint64(l))
+	}
 	l = len(m.Uploader)
 	if l > 0 {
 		n += 1 + l + sovBundles(uint64(l))
@@ -572,15 +922,23 @@ func (m *BundleProposal) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovBundles(uint64(l))
 	}
-	l = len(m.StorageId)
-	if l > 0 {
-		n += 1 + l + sovBundles(uint64(l))
-	}
 	if m.ByteSize != 0 {
 		n += 1 + sovBundles(uint64(m.ByteSize))
 	}
 	if m.ToHeight != 0 {
 		n += 1 + sovBundles(uint64(m.ToHeight))
+	}
+	l = len(m.ToKey)
+	if l > 0 {
+		n += 1 + l + sovBundles(uint64(l))
+	}
+	l = len(m.ToValue)
+	if l > 0 {
+		n += 1 + l + sovBundles(uint64(l))
+	}
+	l = len(m.BundleHash)
+	if l > 0 {
+		n += 1 + l + sovBundles(uint64(l))
 	}
 	if m.CreatedAt != 0 {
 		n += 1 + sovBundles(uint64(m.CreatedAt))
@@ -602,18 +960,6 @@ func (m *BundleProposal) Size() (n int) {
 			l = len(s)
 			n += 1 + l + sovBundles(uint64(l))
 		}
-	}
-	l = len(m.ToKey)
-	if l > 0 {
-		n += 1 + l + sovBundles(uint64(l))
-	}
-	l = len(m.ToValue)
-	if l > 0 {
-		n += 1 + l + sovBundles(uint64(l))
-	}
-	l = len(m.BundleHash)
-	if l > 0 {
-		n += 1 + l + sovBundles(uint64(l))
 	}
 	return n
 }
@@ -644,9 +990,6 @@ func (m *FinalizedBundle) Size() (n int) {
 	if m.ToHeight != 0 {
 		n += 1 + sovBundles(uint64(m.ToHeight))
 	}
-	if m.FinalizedAt != 0 {
-		n += 1 + sovBundles(uint64(m.FinalizedAt))
-	}
 	l = len(m.Key)
 	if l > 0 {
 		n += 1 + l + sovBundles(uint64(l))
@@ -659,6 +1002,9 @@ func (m *FinalizedBundle) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovBundles(uint64(l))
 	}
+	if m.FinalizedAt != 0 {
+		n += 1 + sovBundles(uint64(m.FinalizedAt))
+	}
 	return n
 }
 
@@ -667,6 +1013,277 @@ func sovBundles(x uint64) (n int) {
 }
 func sozBundles(x uint64) (n int) {
 	return sovBundles(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *VoteDistribution) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: VoteDistribution: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: VoteDistribution: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Valid", wireType)
+			}
+			m.Valid = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Valid |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Invalid", wireType)
+			}
+			m.Invalid = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Invalid |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Abstain", wireType)
+			}
+			m.Abstain = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Abstain |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Total", wireType)
+			}
+			m.Total = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Total |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= BundleStatus(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *BundleReward) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: BundleReward: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: BundleReward: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Treasury", wireType)
+			}
+			m.Treasury = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Treasury |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Uploader", wireType)
+			}
+			m.Uploader = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Uploader |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Delegation", wireType)
+			}
+			m.Delegation = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Delegation |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Total", wireType)
+			}
+			m.Total = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Total |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -718,6 +1335,38 @@ func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 			}
 		case 2:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StorageId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StorageId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Uploader", wireType)
 			}
 			var stringLen uint64
@@ -748,7 +1397,7 @@ func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 			}
 			m.Uploader = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field NextUploader", wireType)
 			}
@@ -779,38 +1428,6 @@ func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.NextUploader = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field StorageId", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthBundles
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthBundles
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.StorageId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
 			if wireType != 0 {
@@ -851,121 +1468,6 @@ func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
-			}
-			m.CreatedAt = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.CreatedAt |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VotersValid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthBundles
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthBundles
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.VotersValid = append(m.VotersValid, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 9:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VotersInvalid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthBundles
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthBundles
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.VotersInvalid = append(m.VotersInvalid, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 10:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field VotersAbstain", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthBundles
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthBundles
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.VotersAbstain = append(m.VotersAbstain, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ToKey", wireType)
 			}
@@ -997,7 +1499,7 @@ func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 			}
 			m.ToKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 12:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ToValue", wireType)
 			}
@@ -1029,7 +1531,7 @@ func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 			}
 			m.ToValue = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 13:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BundleHash", wireType)
 			}
@@ -1060,6 +1562,121 @@ func (m *BundleProposal) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.BundleHash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			m.CreatedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAt |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VotersValid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VotersValid = append(m.VotersValid, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VotersInvalid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VotersInvalid = append(m.VotersInvalid, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VotersAbstain", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.VotersAbstain = append(m.VotersAbstain, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1252,25 +1869,6 @@ func (m *FinalizedBundle) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field FinalizedAt", wireType)
-			}
-			m.FinalizedAt = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.FinalizedAt |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
 			}
@@ -1302,7 +1900,7 @@ func (m *FinalizedBundle) Unmarshal(dAtA []byte) error {
 			}
 			m.Key = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 9:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
 			}
@@ -1334,7 +1932,7 @@ func (m *FinalizedBundle) Unmarshal(dAtA []byte) error {
 			}
 			m.Value = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 10:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BundleHash", wireType)
 			}
@@ -1366,6 +1964,25 @@ func (m *FinalizedBundle) Unmarshal(dAtA []byte) error {
 			}
 			m.BundleHash = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FinalizedAt", wireType)
+			}
+			m.FinalizedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.FinalizedAt |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipBundles(dAtA[iNdEx:])

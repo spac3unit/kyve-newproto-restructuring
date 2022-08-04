@@ -23,46 +23,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// BundleStatus ...
-type BundleStatus int32
-
-const (
-	// BUNDLE_STATUS_UNSPECIFIED ...
-	BUNDLE_STATUS_UNSPECIFIED BundleStatus = 0
-	// BUNDLE_STATUS_VALID ...
-	BUNDLE_STATUS_VALID BundleStatus = 1
-	// BUNDLE_STATUS_INVALID ...
-	BUNDLE_STATUS_INVALID BundleStatus = 2
-	// BUNDLE_STATUS_NO_FUNDS ...
-	BUNDLE_STATUS_NO_FUNDS BundleStatus = 3
-	// BUNDLE_STATUS_NO_QUORUM ...
-	BUNDLE_STATUS_NO_QUORUM BundleStatus = 4
-)
-
-var BundleStatus_name = map[int32]string{
-	0: "BUNDLE_STATUS_UNSPECIFIED",
-	1: "BUNDLE_STATUS_VALID",
-	2: "BUNDLE_STATUS_INVALID",
-	3: "BUNDLE_STATUS_NO_FUNDS",
-	4: "BUNDLE_STATUS_NO_QUORUM",
-}
-
-var BundleStatus_value = map[string]int32{
-	"BUNDLE_STATUS_UNSPECIFIED": 0,
-	"BUNDLE_STATUS_VALID":       1,
-	"BUNDLE_STATUS_INVALID":     2,
-	"BUNDLE_STATUS_NO_FUNDS":    3,
-	"BUNDLE_STATUS_NO_QUORUM":   4,
-}
-
-func (x BundleStatus) String() string {
-	return proto.EnumName(BundleStatus_name, int32(x))
-}
-
-func (BundleStatus) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_a02f505e55d81e92, []int{0}
-}
-
 // EventBundleVote is an event emitted when a protocol node votes on a bundle.
 type EventBundleVote struct {
 	// pool_id is the unique ID of the pool.
@@ -136,56 +96,45 @@ func (m *EventBundleVote) GetVote() VoteType {
 	return VOTE_TYPE_UNSPECIFIED
 }
 
-// EventBundleFinalised is an event emitted when a bundle is finalised.
-type EventBundleFinalised struct {
-	// pool_id is the unique ID of the pool.
+type EventBundleProposed struct {
+	// pool_id ...
 	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	// id ...
+	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
 	// storage_id ...
-	StorageId string `protobuf:"bytes,2,opt,name=storage_id,json=storageId,proto3" json:"storage_id,omitempty"`
-	// byte_size ...
-	ByteSize uint64 `protobuf:"varint,3,opt,name=byte_size,json=byteSize,proto3" json:"byte_size,omitempty"`
+	StorageId string `protobuf:"bytes,3,opt,name=storage_id,json=storageId,proto3" json:"storage_id,omitempty"`
 	// uploader ...
 	Uploader string `protobuf:"bytes,4,opt,name=uploader,proto3" json:"uploader,omitempty"`
-	// next_uploader ...
-	NextUploader string `protobuf:"bytes,5,opt,name=next_uploader,json=nextUploader,proto3" json:"next_uploader,omitempty"`
-	// reward ...
-	Reward uint64 `protobuf:"varint,6,opt,name=reward,proto3" json:"reward,omitempty"`
-	// valid ...
-	Valid uint64 `protobuf:"varint,7,opt,name=valid,proto3" json:"valid,omitempty"`
-	// invalid ...
-	Invalid uint64 `protobuf:"varint,8,opt,name=invalid,proto3" json:"invalid,omitempty"`
+	// byte_size ...
+	ByteSize uint64 `protobuf:"varint,5,opt,name=byte_size,json=byteSize,proto3" json:"byte_size,omitempty"`
 	// from_height ...
-	FromHeight uint64 `protobuf:"varint,9,opt,name=from_height,json=fromHeight,proto3" json:"from_height,omitempty"`
+	FromHeight uint64 `protobuf:"varint,6,opt,name=from_height,json=fromHeight,proto3" json:"from_height,omitempty"`
 	// to_height ...
-	ToHeight uint64 `protobuf:"varint,10,opt,name=to_height,json=toHeight,proto3" json:"to_height,omitempty"`
-	// status ...
-	Status BundleStatus `protobuf:"varint,11,opt,name=status,proto3,enum=kyve.bundles.v1beta1.BundleStatus" json:"status,omitempty"`
+	ToHeight uint64 `protobuf:"varint,7,opt,name=to_height,json=toHeight,proto3" json:"to_height,omitempty"`
+	// from_key ...
+	FromKey string `protobuf:"bytes,8,opt,name=from_key,json=fromKey,proto3" json:"from_key,omitempty"`
 	// to_key ...
-	ToKey string `protobuf:"bytes,12,opt,name=to_key,json=toKey,proto3" json:"to_key,omitempty"`
-	// to_value ...
-	ToValue string `protobuf:"bytes,13,opt,name=to_value,json=toValue,proto3" json:"to_value,omitempty"`
-	// id ...
-	Id uint64 `protobuf:"varint,14,opt,name=id,proto3" json:"id,omitempty"`
+	ToKey string `protobuf:"bytes,9,opt,name=to_key,json=toKey,proto3" json:"to_key,omitempty"`
+	// value ...
+	Value string `protobuf:"bytes,10,opt,name=value,proto3" json:"value,omitempty"`
 	// bundle_hash ...
-	BundleHash string `protobuf:"bytes,15,opt,name=bundle_hash,json=bundleHash,proto3" json:"bundle_hash,omitempty"`
-	// abstain ...
-	Abstain uint64 `protobuf:"varint,16,opt,name=abstain,proto3" json:"abstain,omitempty"`
-	// total ...
-	Total uint64 `protobuf:"varint,17,opt,name=total,proto3" json:"total,omitempty"`
+	BundleHash string `protobuf:"bytes,11,opt,name=bundle_hash,json=bundleHash,proto3" json:"bundle_hash,omitempty"`
+	// created_at ...
+	CreatedAt uint64 `protobuf:"varint,12,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 }
 
-func (m *EventBundleFinalised) Reset()         { *m = EventBundleFinalised{} }
-func (m *EventBundleFinalised) String() string { return proto.CompactTextString(m) }
-func (*EventBundleFinalised) ProtoMessage()    {}
-func (*EventBundleFinalised) Descriptor() ([]byte, []int) {
+func (m *EventBundleProposed) Reset()         { *m = EventBundleProposed{} }
+func (m *EventBundleProposed) String() string { return proto.CompactTextString(m) }
+func (*EventBundleProposed) ProtoMessage()    {}
+func (*EventBundleProposed) Descriptor() ([]byte, []int) {
 	return fileDescriptor_a02f505e55d81e92, []int{1}
 }
-func (m *EventBundleFinalised) XXX_Unmarshal(b []byte) error {
+func (m *EventBundleProposed) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EventBundleFinalised) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *EventBundleProposed) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EventBundleFinalised.Marshal(b, m, deterministic)
+		return xxx_messageInfo_EventBundleProposed.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -195,186 +144,285 @@ func (m *EventBundleFinalised) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *EventBundleFinalised) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EventBundleFinalised.Merge(m, src)
+func (m *EventBundleProposed) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventBundleProposed.Merge(m, src)
 }
-func (m *EventBundleFinalised) XXX_Size() int {
+func (m *EventBundleProposed) XXX_Size() int {
 	return m.Size()
 }
-func (m *EventBundleFinalised) XXX_DiscardUnknown() {
-	xxx_messageInfo_EventBundleFinalised.DiscardUnknown(m)
+func (m *EventBundleProposed) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventBundleProposed.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EventBundleFinalised proto.InternalMessageInfo
+var xxx_messageInfo_EventBundleProposed proto.InternalMessageInfo
 
-func (m *EventBundleFinalised) GetPoolId() uint64 {
+func (m *EventBundleProposed) GetPoolId() uint64 {
 	if m != nil {
 		return m.PoolId
 	}
 	return 0
 }
 
-func (m *EventBundleFinalised) GetStorageId() string {
-	if m != nil {
-		return m.StorageId
-	}
-	return ""
-}
-
-func (m *EventBundleFinalised) GetByteSize() uint64 {
-	if m != nil {
-		return m.ByteSize
-	}
-	return 0
-}
-
-func (m *EventBundleFinalised) GetUploader() string {
-	if m != nil {
-		return m.Uploader
-	}
-	return ""
-}
-
-func (m *EventBundleFinalised) GetNextUploader() string {
-	if m != nil {
-		return m.NextUploader
-	}
-	return ""
-}
-
-func (m *EventBundleFinalised) GetReward() uint64 {
-	if m != nil {
-		return m.Reward
-	}
-	return 0
-}
-
-func (m *EventBundleFinalised) GetValid() uint64 {
-	if m != nil {
-		return m.Valid
-	}
-	return 0
-}
-
-func (m *EventBundleFinalised) GetInvalid() uint64 {
-	if m != nil {
-		return m.Invalid
-	}
-	return 0
-}
-
-func (m *EventBundleFinalised) GetFromHeight() uint64 {
-	if m != nil {
-		return m.FromHeight
-	}
-	return 0
-}
-
-func (m *EventBundleFinalised) GetToHeight() uint64 {
-	if m != nil {
-		return m.ToHeight
-	}
-	return 0
-}
-
-func (m *EventBundleFinalised) GetStatus() BundleStatus {
-	if m != nil {
-		return m.Status
-	}
-	return BUNDLE_STATUS_UNSPECIFIED
-}
-
-func (m *EventBundleFinalised) GetToKey() string {
-	if m != nil {
-		return m.ToKey
-	}
-	return ""
-}
-
-func (m *EventBundleFinalised) GetToValue() string {
-	if m != nil {
-		return m.ToValue
-	}
-	return ""
-}
-
-func (m *EventBundleFinalised) GetId() uint64 {
+func (m *EventBundleProposed) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *EventBundleFinalised) GetBundleHash() string {
+func (m *EventBundleProposed) GetStorageId() string {
+	if m != nil {
+		return m.StorageId
+	}
+	return ""
+}
+
+func (m *EventBundleProposed) GetUploader() string {
+	if m != nil {
+		return m.Uploader
+	}
+	return ""
+}
+
+func (m *EventBundleProposed) GetByteSize() uint64 {
+	if m != nil {
+		return m.ByteSize
+	}
+	return 0
+}
+
+func (m *EventBundleProposed) GetFromHeight() uint64 {
+	if m != nil {
+		return m.FromHeight
+	}
+	return 0
+}
+
+func (m *EventBundleProposed) GetToHeight() uint64 {
+	if m != nil {
+		return m.ToHeight
+	}
+	return 0
+}
+
+func (m *EventBundleProposed) GetFromKey() string {
+	if m != nil {
+		return m.FromKey
+	}
+	return ""
+}
+
+func (m *EventBundleProposed) GetToKey() string {
+	if m != nil {
+		return m.ToKey
+	}
+	return ""
+}
+
+func (m *EventBundleProposed) GetValue() string {
+	if m != nil {
+		return m.Value
+	}
+	return ""
+}
+
+func (m *EventBundleProposed) GetBundleHash() string {
 	if m != nil {
 		return m.BundleHash
 	}
 	return ""
 }
 
-func (m *EventBundleFinalised) GetAbstain() uint64 {
+func (m *EventBundleProposed) GetCreatedAt() uint64 {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return 0
+}
+
+// EventBundleFinalized is an event emitted when a bundle is finalised.
+type EventBundleFinalized struct {
+	// pool_id ...
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	// id ...
+	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	// valid ...
+	Valid uint64 `protobuf:"varint,3,opt,name=valid,proto3" json:"valid,omitempty"`
+	// invalid ...
+	Invalid uint64 `protobuf:"varint,4,opt,name=invalid,proto3" json:"invalid,omitempty"`
+	// abstain ...
+	Abstain uint64 `protobuf:"varint,5,opt,name=abstain,proto3" json:"abstain,omitempty"`
+	// total ...
+	Total uint64 `protobuf:"varint,6,opt,name=total,proto3" json:"total,omitempty"`
+	// status ...
+	Status BundleStatus `protobuf:"varint,7,opt,name=status,proto3,enum=kyve.bundles.v1beta1.BundleStatus" json:"status,omitempty"`
+	// rewardTreasury ...
+	RewardTreasury uint64 `protobuf:"varint,8,opt,name=rewardTreasury,proto3" json:"rewardTreasury,omitempty"`
+	// rewardUploader ...
+	RewardUploader uint64 `protobuf:"varint,9,opt,name=rewardUploader,proto3" json:"rewardUploader,omitempty"`
+	// rewardDelegation ...
+	RewardDelegation uint64 `protobuf:"varint,10,opt,name=rewardDelegation,proto3" json:"rewardDelegation,omitempty"`
+	// rewardTotal ...
+	RewardTotal uint64 `protobuf:"varint,11,opt,name=rewardTotal,proto3" json:"rewardTotal,omitempty"`
+}
+
+func (m *EventBundleFinalized) Reset()         { *m = EventBundleFinalized{} }
+func (m *EventBundleFinalized) String() string { return proto.CompactTextString(m) }
+func (*EventBundleFinalized) ProtoMessage()    {}
+func (*EventBundleFinalized) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a02f505e55d81e92, []int{2}
+}
+func (m *EventBundleFinalized) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventBundleFinalized) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventBundleFinalized.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventBundleFinalized) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventBundleFinalized.Merge(m, src)
+}
+func (m *EventBundleFinalized) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventBundleFinalized) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventBundleFinalized.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventBundleFinalized proto.InternalMessageInfo
+
+func (m *EventBundleFinalized) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *EventBundleFinalized) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *EventBundleFinalized) GetValid() uint64 {
+	if m != nil {
+		return m.Valid
+	}
+	return 0
+}
+
+func (m *EventBundleFinalized) GetInvalid() uint64 {
+	if m != nil {
+		return m.Invalid
+	}
+	return 0
+}
+
+func (m *EventBundleFinalized) GetAbstain() uint64 {
 	if m != nil {
 		return m.Abstain
 	}
 	return 0
 }
 
-func (m *EventBundleFinalised) GetTotal() uint64 {
+func (m *EventBundleFinalized) GetTotal() uint64 {
 	if m != nil {
 		return m.Total
 	}
 	return 0
 }
 
+func (m *EventBundleFinalized) GetStatus() BundleStatus {
+	if m != nil {
+		return m.Status
+	}
+	return BUNDLE_STATUS_UNSPECIFIED
+}
+
+func (m *EventBundleFinalized) GetRewardTreasury() uint64 {
+	if m != nil {
+		return m.RewardTreasury
+	}
+	return 0
+}
+
+func (m *EventBundleFinalized) GetRewardUploader() uint64 {
+	if m != nil {
+		return m.RewardUploader
+	}
+	return 0
+}
+
+func (m *EventBundleFinalized) GetRewardDelegation() uint64 {
+	if m != nil {
+		return m.RewardDelegation
+	}
+	return 0
+}
+
+func (m *EventBundleFinalized) GetRewardTotal() uint64 {
+	if m != nil {
+		return m.RewardTotal
+	}
+	return 0
+}
+
 func init() {
-	proto.RegisterEnum("kyve.bundles.v1beta1.BundleStatus", BundleStatus_name, BundleStatus_value)
 	proto.RegisterType((*EventBundleVote)(nil), "kyve.bundles.v1beta1.EventBundleVote")
-	proto.RegisterType((*EventBundleFinalised)(nil), "kyve.bundles.v1beta1.EventBundleFinalised")
+	proto.RegisterType((*EventBundleProposed)(nil), "kyve.bundles.v1beta1.EventBundleProposed")
+	proto.RegisterType((*EventBundleFinalized)(nil), "kyve.bundles.v1beta1.EventBundleFinalized")
 }
 
 func init() { proto.RegisterFile("kyve/bundles/v1beta1/events.proto", fileDescriptor_a02f505e55d81e92) }
 
 var fileDescriptor_a02f505e55d81e92 = []byte{
-	// 609 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x93, 0x4d, 0x4f, 0xdb, 0x4c,
-	0x14, 0x85, 0xe3, 0x60, 0xf2, 0x71, 0xf9, 0xca, 0x3b, 0x6f, 0x80, 0x21, 0x08, 0x97, 0xd2, 0x0d,
-	0xaa, 0xaa, 0x58, 0xd0, 0x5d, 0x77, 0xd0, 0x24, 0x22, 0x82, 0x86, 0xd6, 0xc1, 0x91, 0xda, 0x8d,
-	0x35, 0xc1, 0xd3, 0x78, 0x14, 0xe3, 0x89, 0xec, 0x49, 0xc0, 0xec, 0xba, 0xeb, 0xb2, 0x9b, 0xee,
-	0x2b, 0xf5, 0xcf, 0x74, 0xc9, 0xb2, 0xcb, 0x0a, 0xfe, 0x48, 0x35, 0x33, 0x06, 0x91, 0x36, 0xdd,
-	0xe5, 0x9c, 0xf3, 0x78, 0xe6, 0xdc, 0x1b, 0x0d, 0x3c, 0x1d, 0xa6, 0x13, 0x6a, 0xf7, 0xc7, 0x91,
-	0x1f, 0xd2, 0xc4, 0x9e, 0xec, 0xf5, 0xa9, 0x20, 0x7b, 0x36, 0x9d, 0xd0, 0x48, 0x24, 0xf5, 0x51,
-	0xcc, 0x05, 0x47, 0x55, 0x89, 0xd4, 0x33, 0xa4, 0x9e, 0x21, 0xb5, 0xea, 0x80, 0x0f, 0xb8, 0x02,
-	0x6c, 0xf9, 0x4b, 0xb3, 0xb5, 0xad, 0x99, 0xc7, 0x89, 0x2b, 0x1d, 0xef, 0x7c, 0x35, 0x60, 0xa5,
-	0x29, 0xcf, 0x3e, 0x54, 0x44, 0x8f, 0x0b, 0x8a, 0xd6, 0xa1, 0x38, 0xe2, 0x3c, 0xf4, 0x98, 0x8f,
-	0x8d, 0x6d, 0x63, 0xd7, 0x74, 0x0a, 0x52, 0xb6, 0x7d, 0xb4, 0x06, 0x85, 0x44, 0x90, 0x21, 0x8d,
-	0x71, 0x7e, 0xdb, 0xd8, 0x2d, 0x3b, 0x99, 0x42, 0x5b, 0x00, 0x89, 0xe0, 0x31, 0x19, 0x50, 0xf9,
-	0xcd, 0x9c, 0xca, 0xca, 0x99, 0xd3, 0xf6, 0xd1, 0x3e, 0x98, 0x13, 0x2e, 0x28, 0x36, 0xb7, 0x8d,
-	0xdd, 0xe5, 0x7d, 0xab, 0x3e, 0xab, 0x7d, 0x5d, 0xde, 0x7c, 0x96, 0x8e, 0xa8, 0xa3, 0xd8, 0x9d,
-	0x4f, 0x26, 0x54, 0x1f, 0xf5, 0x6a, 0xb1, 0x88, 0x84, 0x2c, 0xa1, 0xfe, 0xbf, 0xcb, 0x4d, 0x97,
-	0xc8, 0xff, 0x59, 0x62, 0x13, 0xca, 0xfd, 0x54, 0x50, 0x2f, 0x61, 0xd7, 0x54, 0x55, 0x34, 0x9d,
-	0x92, 0x34, 0xba, 0xec, 0x9a, 0xa2, 0x1a, 0x94, 0xc6, 0xa3, 0x90, 0x13, 0x9f, 0xc6, 0xaa, 0x65,
-	0xd9, 0x79, 0xd0, 0xe8, 0x19, 0x2c, 0x45, 0xf4, 0x4a, 0x78, 0x0f, 0xc0, 0xbc, 0x02, 0x16, 0xa5,
-	0xe9, 0xde, 0x43, 0x6b, 0x50, 0x88, 0xe9, 0x25, 0x89, 0x7d, 0x5c, 0xd0, 0xa5, 0xb4, 0x42, 0x55,
-	0x98, 0x9f, 0x90, 0x90, 0xf9, 0xb8, 0xa8, 0x6c, 0x2d, 0x10, 0x86, 0x22, 0x8b, 0xb4, 0x5f, 0x52,
-	0xfe, 0xbd, 0x44, 0x4f, 0x60, 0xe1, 0x63, 0xcc, 0x2f, 0xbc, 0x80, 0xb2, 0x41, 0x20, 0x70, 0x59,
-	0xa5, 0x20, 0xad, 0x23, 0xe5, 0xc8, 0x31, 0x04, 0xbf, 0x8f, 0x41, 0x8f, 0x21, 0x78, 0x16, 0xbe,
-	0x52, 0xff, 0x8f, 0x18, 0x27, 0x78, 0x41, 0xad, 0x7a, 0x67, 0xf6, 0xaa, 0xf5, 0x4a, 0xbb, 0x8a,
-	0x74, 0xb2, 0x2f, 0xd0, 0x2a, 0x14, 0x04, 0xf7, 0x86, 0x34, 0xc5, 0x8b, 0x6a, 0xbe, 0x79, 0xc1,
-	0x8f, 0x69, 0x8a, 0x36, 0xa0, 0x24, 0xb8, 0x37, 0x21, 0xe1, 0x98, 0xe2, 0x25, 0x15, 0x14, 0x05,
-	0xef, 0x49, 0x89, 0x96, 0x21, 0xcf, 0x7c, 0xbc, 0xac, 0x3a, 0xe4, 0x75, 0x77, 0x7d, 0x93, 0x17,
-	0x90, 0x24, 0xc0, 0x2b, 0x8a, 0x06, 0x6d, 0x1d, 0x91, 0x24, 0x90, 0x63, 0x93, 0x7e, 0x22, 0x08,
-	0x8b, 0x70, 0x45, 0x8f, 0x9d, 0x49, 0xb9, 0x26, 0xc1, 0x05, 0x09, 0xf1, 0x7f, 0x7a, 0x4d, 0x4a,
-	0x3c, 0xff, 0x66, 0xc0, 0xe2, 0xe3, 0xae, 0x68, 0x0b, 0x36, 0x0e, 0xdd, 0x4e, 0xe3, 0xa4, 0xe9,
-	0x75, 0xcf, 0x0e, 0xce, 0xdc, 0xae, 0xe7, 0x76, 0xba, 0x6f, 0x9b, 0xaf, 0xdb, 0xad, 0x76, 0xb3,
-	0x51, 0xc9, 0xa1, 0x75, 0xf8, 0x7f, 0x3a, 0xee, 0x1d, 0x9c, 0xb4, 0x1b, 0x15, 0x03, 0x6d, 0xc0,
-	0xea, 0x74, 0xd0, 0xee, 0xe8, 0x28, 0x8f, 0x6a, 0xb0, 0x36, 0x1d, 0x75, 0x4e, 0xbd, 0x96, 0xdb,
-	0x69, 0x74, 0x2b, 0x73, 0x68, 0x13, 0xd6, 0xff, 0xca, 0xde, 0xb9, 0xa7, 0x8e, 0xfb, 0xa6, 0x62,
-	0xd6, 0xcc, 0xcf, 0xdf, 0xad, 0xdc, 0x61, 0xeb, 0xc7, 0xad, 0x65, 0xdc, 0xdc, 0x5a, 0xc6, 0xaf,
-	0x5b, 0xcb, 0xf8, 0x72, 0x67, 0xe5, 0x6e, 0xee, 0xac, 0xdc, 0xcf, 0x3b, 0x2b, 0xf7, 0xe1, 0xc5,
-	0x80, 0x89, 0x60, 0xdc, 0xaf, 0x9f, 0xf3, 0x0b, 0xfb, 0xf8, 0x7d, 0xaf, 0xd9, 0xa1, 0xe2, 0x92,
-	0xc7, 0x43, 0xfb, 0x3c, 0x20, 0x2c, 0xb2, 0xaf, 0x1e, 0x5e, 0xa4, 0x48, 0x47, 0x34, 0xe9, 0x17,
-	0xd4, 0x6b, 0x7c, 0xf9, 0x3b, 0x00, 0x00, 0xff, 0xff, 0x71, 0xe3, 0x87, 0x46, 0xfd, 0x03, 0x00,
-	0x00,
+	// 578 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0xcd, 0x6e, 0xd3, 0x4c,
+	0x14, 0xad, 0xf3, 0xb9, 0x49, 0x3c, 0xf9, 0x14, 0xd0, 0x10, 0xc0, 0x14, 0xd5, 0x84, 0x2c, 0x50,
+	0x85, 0x50, 0xac, 0x96, 0x1d, 0x3b, 0x2a, 0x5a, 0xb5, 0xaa, 0x84, 0x90, 0x5b, 0x2a, 0xc1, 0x26,
+	0x9a, 0xd4, 0x97, 0x78, 0x14, 0xd7, 0x13, 0xcd, 0xdc, 0xa4, 0x4d, 0x9f, 0x82, 0x0d, 0xef, 0xc4,
+	0xb2, 0x4b, 0x16, 0x2c, 0x50, 0xfb, 0x14, 0xec, 0xd0, 0xdc, 0xb1, 0x4b, 0x04, 0x41, 0x88, 0x5d,
+	0xce, 0xcf, 0x9d, 0x7b, 0xe6, 0x64, 0xcc, 0x1e, 0x8f, 0xe7, 0x33, 0x88, 0x87, 0xd3, 0x22, 0xcd,
+	0xc1, 0xc4, 0xb3, 0xcd, 0x21, 0xa0, 0xd8, 0x8c, 0x61, 0x06, 0x05, 0x9a, 0xfe, 0x44, 0x2b, 0x54,
+	0xbc, 0x63, 0x2d, 0xfd, 0xd2, 0xd2, 0x2f, 0x2d, 0x6b, 0x9d, 0x91, 0x1a, 0x29, 0x32, 0xc4, 0xf6,
+	0x97, 0xf3, 0xae, 0xf5, 0x96, 0x1e, 0x57, 0xcd, 0x3a, 0xcf, 0xfa, 0x52, 0x0f, 0x9e, 0x3b, 0xb9,
+	0xf7, 0xc9, 0x63, 0xb7, 0x76, 0xec, 0xfe, 0x6d, 0x72, 0x1c, 0x2b, 0x04, 0x7e, 0x9f, 0x35, 0x26,
+	0x4a, 0xe5, 0x03, 0x99, 0x86, 0x5e, 0xd7, 0xdb, 0xf0, 0x93, 0xba, 0x85, 0xfb, 0x29, 0xbf, 0xc7,
+	0xea, 0x06, 0xc5, 0x18, 0x74, 0x58, 0xeb, 0x7a, 0x1b, 0x41, 0x52, 0x22, 0xbe, 0xce, 0x98, 0x41,
+	0xa5, 0xc5, 0x08, 0xec, 0xcc, 0x7f, 0xa4, 0x05, 0x25, 0xb3, 0x9f, 0xf2, 0x2d, 0xe6, 0xcf, 0x14,
+	0x42, 0xe8, 0x77, 0xbd, 0x8d, 0xf6, 0x56, 0xd4, 0x5f, 0x76, 0xc3, 0xbe, 0xdd, 0x7c, 0x34, 0x9f,
+	0x40, 0x42, 0xde, 0xde, 0xd7, 0x1a, 0xbb, 0xb3, 0x90, 0xeb, 0x8d, 0x56, 0x13, 0x65, 0x20, 0xfd,
+	0x73, 0xb6, 0x36, 0xab, 0xc9, 0x94, 0x72, 0xf9, 0x49, 0x4d, 0xa6, 0x7f, 0xcb, 0xb4, 0xc6, 0x9a,
+	0xd3, 0x49, 0xae, 0x44, 0x0a, 0x9a, 0x72, 0x05, 0xc9, 0x0d, 0xe6, 0x0f, 0x59, 0x30, 0x9c, 0x23,
+	0x0c, 0x8c, 0xbc, 0x80, 0x70, 0x95, 0x4e, 0x6c, 0x5a, 0xe2, 0x50, 0x5e, 0x00, 0x7f, 0xc4, 0x5a,
+	0x1f, 0xb4, 0x3a, 0x1d, 0x64, 0x20, 0x47, 0x19, 0x86, 0x75, 0x92, 0x99, 0xa5, 0xf6, 0x88, 0xb1,
+	0xd3, 0xa8, 0x2a, 0xb9, 0xe1, 0xa6, 0x51, 0x95, 0xe2, 0x03, 0xd6, 0xa4, 0xe9, 0x31, 0xcc, 0xc3,
+	0x26, 0xad, 0x6d, 0x58, 0x7c, 0x00, 0x73, 0x7e, 0x97, 0xd5, 0x51, 0x91, 0x10, 0x90, 0xb0, 0x8a,
+	0xca, 0xd2, 0x1d, 0xb6, 0x3a, 0x13, 0xf9, 0x14, 0x42, 0xe6, 0x58, 0x02, 0x36, 0x85, 0x2b, 0x70,
+	0x90, 0x09, 0x93, 0x85, 0x2d, 0xd2, 0x98, 0xa3, 0xf6, 0x84, 0xc9, 0xec, 0xf5, 0x4f, 0x34, 0x08,
+	0x84, 0x74, 0x20, 0x30, 0xfc, 0x9f, 0x62, 0x04, 0x25, 0xf3, 0x12, 0x7b, 0xdf, 0x6b, 0xac, 0xb3,
+	0x50, 0xef, 0xae, 0x2c, 0x44, 0x2e, 0x2f, 0xfe, 0xa5, 0x5f, 0x97, 0xab, 0xac, 0xd6, 0x4f, 0x1c,
+	0xe0, 0x21, 0x6b, 0xc8, 0xc2, 0xf1, 0x3e, 0xf1, 0x15, 0xb4, 0x8a, 0x18, 0x1a, 0x14, 0xb2, 0x28,
+	0x2b, 0xad, 0xa0, 0x3d, 0x09, 0x15, 0x8a, 0xbc, 0xec, 0xd2, 0x01, 0xfe, 0x82, 0xde, 0x1a, 0x4e,
+	0x0d, 0x75, 0xd8, 0xde, 0xea, 0x2d, 0x7f, 0x36, 0x2e, 0xff, 0x21, 0x39, 0x93, 0x72, 0x82, 0x3f,
+	0x61, 0x6d, 0x0d, 0x67, 0x42, 0xa7, 0x47, 0x1a, 0x84, 0x99, 0x6a, 0xd7, 0xb5, 0x9f, 0xfc, 0xc2,
+	0xfe, 0xf4, 0xbd, 0xad, 0x9e, 0x42, 0xb0, 0xe8, 0xab, 0x58, 0xfe, 0x94, 0xdd, 0x76, 0xcc, 0x2b,
+	0xc8, 0x61, 0x24, 0x50, 0xaa, 0x82, 0xfe, 0x0e, 0x3f, 0xf9, 0x8d, 0xe7, 0x5d, 0xd6, 0x2a, 0xb7,
+	0xd0, 0x9d, 0x5a, 0x64, 0x5b, 0xa4, 0xb6, 0x77, 0x3f, 0x5f, 0x45, 0xde, 0xe5, 0x55, 0xe4, 0x7d,
+	0xbb, 0x8a, 0xbc, 0x8f, 0xd7, 0xd1, 0xca, 0xe5, 0x75, 0xb4, 0xf2, 0xe5, 0x3a, 0x5a, 0x79, 0xff,
+	0x6c, 0x24, 0x31, 0x9b, 0x0e, 0xfb, 0x27, 0xea, 0x34, 0x3e, 0x78, 0x77, 0xbc, 0xf3, 0x1a, 0xf0,
+	0x4c, 0xe9, 0x71, 0x7c, 0x92, 0x09, 0x59, 0xc4, 0xe7, 0x37, 0x5f, 0x31, 0xce, 0x27, 0x60, 0x86,
+	0x75, 0xfa, 0x82, 0x9f, 0xff, 0x08, 0x00, 0x00, 0xff, 0xff, 0x79, 0x62, 0x97, 0x19, 0x55, 0x04,
+	0x00, 0x00,
 }
 
 func (m *EventBundleVote) Marshal() (dAtA []byte, err error) {
@@ -424,7 +472,7 @@ func (m *EventBundleVote) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *EventBundleFinalised) Marshal() (dAtA []byte, err error) {
+func (m *EventBundleProposed) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -434,92 +482,63 @@ func (m *EventBundleFinalised) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EventBundleFinalised) MarshalTo(dAtA []byte) (int, error) {
+func (m *EventBundleProposed) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EventBundleFinalised) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *EventBundleProposed) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Total != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Total))
+	if m.CreatedAt != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.CreatedAt))
 		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0x88
-	}
-	if m.Abstain != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Abstain))
-		i--
-		dAtA[i] = 0x1
-		i--
-		dAtA[i] = 0x80
+		dAtA[i] = 0x60
 	}
 	if len(m.BundleHash) > 0 {
 		i -= len(m.BundleHash)
 		copy(dAtA[i:], m.BundleHash)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.BundleHash)))
 		i--
-		dAtA[i] = 0x7a
+		dAtA[i] = 0x5a
 	}
-	if m.Id != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Id))
+	if len(m.Value) > 0 {
+		i -= len(m.Value)
+		copy(dAtA[i:], m.Value)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Value)))
 		i--
-		dAtA[i] = 0x70
-	}
-	if len(m.ToValue) > 0 {
-		i -= len(m.ToValue)
-		copy(dAtA[i:], m.ToValue)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.ToValue)))
-		i--
-		dAtA[i] = 0x6a
+		dAtA[i] = 0x52
 	}
 	if len(m.ToKey) > 0 {
 		i -= len(m.ToKey)
 		copy(dAtA[i:], m.ToKey)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.ToKey)))
 		i--
-		dAtA[i] = 0x62
+		dAtA[i] = 0x4a
 	}
-	if m.Status != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Status))
+	if len(m.FromKey) > 0 {
+		i -= len(m.FromKey)
+		copy(dAtA[i:], m.FromKey)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.FromKey)))
 		i--
-		dAtA[i] = 0x58
+		dAtA[i] = 0x42
 	}
 	if m.ToHeight != 0 {
 		i = encodeVarintEvents(dAtA, i, uint64(m.ToHeight))
 		i--
-		dAtA[i] = 0x50
+		dAtA[i] = 0x38
 	}
 	if m.FromHeight != 0 {
 		i = encodeVarintEvents(dAtA, i, uint64(m.FromHeight))
 		i--
-		dAtA[i] = 0x48
-	}
-	if m.Invalid != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Invalid))
-		i--
-		dAtA[i] = 0x40
-	}
-	if m.Valid != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Valid))
-		i--
-		dAtA[i] = 0x38
-	}
-	if m.Reward != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.Reward))
-		i--
 		dAtA[i] = 0x30
 	}
-	if len(m.NextUploader) > 0 {
-		i -= len(m.NextUploader)
-		copy(dAtA[i:], m.NextUploader)
-		i = encodeVarintEvents(dAtA, i, uint64(len(m.NextUploader)))
+	if m.ByteSize != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.ByteSize))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x28
 	}
 	if len(m.Uploader) > 0 {
 		i -= len(m.Uploader)
@@ -528,17 +547,95 @@ func (m *EventBundleFinalised) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if m.ByteSize != 0 {
-		i = encodeVarintEvents(dAtA, i, uint64(m.ByteSize))
-		i--
-		dAtA[i] = 0x18
-	}
 	if len(m.StorageId) > 0 {
 		i -= len(m.StorageId)
 		copy(dAtA[i:], m.StorageId)
 		i = encodeVarintEvents(dAtA, i, uint64(len(m.StorageId)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x1a
+	}
+	if m.Id != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *EventBundleFinalized) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventBundleFinalized) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventBundleFinalized) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.RewardTotal != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.RewardTotal))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.RewardDelegation != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.RewardDelegation))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.RewardUploader != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.RewardUploader))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.RewardTreasury != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.RewardTreasury))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.Status != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Status))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.Total != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Total))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.Abstain != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Abstain))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.Invalid != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Invalid))
+		i--
+		dAtA[i] = 0x20
+	}
+	if m.Valid != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Valid))
+		i--
+		dAtA[i] = 0x18
+	}
+	if m.Id != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
 	}
 	if m.PoolId != 0 {
 		i = encodeVarintEvents(dAtA, i, uint64(m.PoolId))
@@ -582,7 +679,7 @@ func (m *EventBundleVote) Size() (n int) {
 	return n
 }
 
-func (m *EventBundleFinalised) Size() (n int) {
+func (m *EventBundleProposed) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -591,29 +688,19 @@ func (m *EventBundleFinalised) Size() (n int) {
 	if m.PoolId != 0 {
 		n += 1 + sovEvents(uint64(m.PoolId))
 	}
+	if m.Id != 0 {
+		n += 1 + sovEvents(uint64(m.Id))
+	}
 	l = len(m.StorageId)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
-	}
-	if m.ByteSize != 0 {
-		n += 1 + sovEvents(uint64(m.ByteSize))
 	}
 	l = len(m.Uploader)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	l = len(m.NextUploader)
-	if l > 0 {
-		n += 1 + l + sovEvents(uint64(l))
-	}
-	if m.Reward != 0 {
-		n += 1 + sovEvents(uint64(m.Reward))
-	}
-	if m.Valid != 0 {
-		n += 1 + sovEvents(uint64(m.Valid))
-	}
-	if m.Invalid != 0 {
-		n += 1 + sovEvents(uint64(m.Invalid))
+	if m.ByteSize != 0 {
+		n += 1 + sovEvents(uint64(m.ByteSize))
 	}
 	if m.FromHeight != 0 {
 		n += 1 + sovEvents(uint64(m.FromHeight))
@@ -621,29 +708,66 @@ func (m *EventBundleFinalised) Size() (n int) {
 	if m.ToHeight != 0 {
 		n += 1 + sovEvents(uint64(m.ToHeight))
 	}
-	if m.Status != 0 {
-		n += 1 + sovEvents(uint64(m.Status))
+	l = len(m.FromKey)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
 	}
 	l = len(m.ToKey)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
-	l = len(m.ToValue)
+	l = len(m.Value)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
-	}
-	if m.Id != 0 {
-		n += 1 + sovEvents(uint64(m.Id))
 	}
 	l = len(m.BundleHash)
 	if l > 0 {
 		n += 1 + l + sovEvents(uint64(l))
 	}
+	if m.CreatedAt != 0 {
+		n += 1 + sovEvents(uint64(m.CreatedAt))
+	}
+	return n
+}
+
+func (m *EventBundleFinalized) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovEvents(uint64(m.PoolId))
+	}
+	if m.Id != 0 {
+		n += 1 + sovEvents(uint64(m.Id))
+	}
+	if m.Valid != 0 {
+		n += 1 + sovEvents(uint64(m.Valid))
+	}
+	if m.Invalid != 0 {
+		n += 1 + sovEvents(uint64(m.Invalid))
+	}
 	if m.Abstain != 0 {
-		n += 2 + sovEvents(uint64(m.Abstain))
+		n += 1 + sovEvents(uint64(m.Abstain))
 	}
 	if m.Total != 0 {
-		n += 2 + sovEvents(uint64(m.Total))
+		n += 1 + sovEvents(uint64(m.Total))
+	}
+	if m.Status != 0 {
+		n += 1 + sovEvents(uint64(m.Status))
+	}
+	if m.RewardTreasury != 0 {
+		n += 1 + sovEvents(uint64(m.RewardTreasury))
+	}
+	if m.RewardUploader != 0 {
+		n += 1 + sovEvents(uint64(m.RewardUploader))
+	}
+	if m.RewardDelegation != 0 {
+		n += 1 + sovEvents(uint64(m.RewardDelegation))
+	}
+	if m.RewardTotal != 0 {
+		n += 1 + sovEvents(uint64(m.RewardTotal))
 	}
 	return n
 }
@@ -806,7 +930,7 @@ func (m *EventBundleVote) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
+func (m *EventBundleProposed) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -829,10 +953,10 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EventBundleFinalised: wiretype end group for non-group")
+			return fmt.Errorf("proto: EventBundleProposed: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EventBundleFinalised: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EventBundleProposed: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -855,6 +979,25 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 				}
 			}
 		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field StorageId", wireType)
 			}
@@ -886,25 +1029,6 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 			}
 			m.StorageId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ByteSize", wireType)
-			}
-			m.ByteSize = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ByteSize |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Uploader", wireType)
@@ -938,8 +1062,65 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 			m.Uploader = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ByteSize", wireType)
+			}
+			m.ByteSize = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ByteSize |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromHeight", wireType)
+			}
+			m.FromHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.FromHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToHeight", wireType)
+			}
+			m.ToHeight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ToHeight |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field NextUploader", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field FromKey", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -967,123 +1148,9 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.NextUploader = string(dAtA[iNdEx:postIndex])
+			m.FromKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Reward", wireType)
-			}
-			m.Reward = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Reward |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 7:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Valid", wireType)
-			}
-			m.Valid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Valid |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Invalid", wireType)
-			}
-			m.Invalid = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Invalid |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		case 9:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field FromHeight", wireType)
-			}
-			m.FromHeight = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.FromHeight |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 10:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ToHeight", wireType)
-			}
-			m.ToHeight = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ToHeight |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 11:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
-			}
-			m.Status = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Status |= BundleStatus(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 12:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ToKey", wireType)
 			}
@@ -1115,9 +1182,9 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 			}
 			m.ToKey = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 13:
+		case 10:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ToValue", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1145,28 +1212,9 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ToValue = string(dAtA[iNdEx:postIndex])
+			m.Value = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 14:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowEvents
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 15:
+		case 11:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BundleHash", wireType)
 			}
@@ -1198,7 +1246,152 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 			}
 			m.BundleHash = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 16:
+		case 12:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			m.CreatedAt = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CreatedAt |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EventBundleFinalized) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventBundleFinalized: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventBundleFinalized: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Valid", wireType)
+			}
+			m.Valid = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Valid |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Invalid", wireType)
+			}
+			m.Invalid = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Invalid |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Abstain", wireType)
 			}
@@ -1217,7 +1410,7 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 17:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Total", wireType)
 			}
@@ -1232,6 +1425,101 @@ func (m *EventBundleFinalised) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.Total |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
+			}
+			m.Status = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Status |= BundleStatus(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardTreasury", wireType)
+			}
+			m.RewardTreasury = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RewardTreasury |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardUploader", wireType)
+			}
+			m.RewardUploader = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RewardUploader |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardDelegation", wireType)
+			}
+			m.RewardDelegation = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RewardDelegation |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RewardTotal", wireType)
+			}
+			m.RewardTotal = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RewardTotal |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

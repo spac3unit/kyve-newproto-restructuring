@@ -29,6 +29,7 @@ func (k msgServer) SubmitBundleProposal(
 	}
 
 	// TODO BEGIN BUNDLE LOGIC
+	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 	bundleProposal, found := k.GetBundleProposal(ctx, msg.PoolId)
 
 	if !found {
@@ -44,7 +45,7 @@ func (k msgServer) SubmitBundleProposal(
 	if bundleProposal.StorageId == "" || strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 		nextUploader := k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
 
-		if err := k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader); err != nil {
+		if err := k.registerBundleProposalFromUploader(ctx, pool, bundleProposal, msg, nextUploader); err != nil {
 			return nil, err
 		}
 
@@ -65,15 +66,14 @@ func (k msgServer) SubmitBundleProposal(
 	}
 
 	// check if the quorum was actually reached
-	valid, invalid, abstain, total := k.getVoteDistribution(ctx, msg.PoolId)
-	quorum := k.getQuorumStatus(valid, invalid, abstain, total)
+	voteDistribution := k.getVoteDistribution(ctx, msg.PoolId)
 	
 	// handle valid proposal
-	if quorum == types.BUNDLE_STATUS_VALID {
+	if voteDistribution.Status == types.BUNDLE_STATUS_VALID {
 		// Calculate the total reward for the bundle, and individual payouts.
-		bundleReward, treasuryPayout, uploaderPayout, delegationPayout := k.calculatePayouts(ctx, msg.PoolId)
+		bundleReward := k.calculatePayouts(ctx, msg.PoolId)
 
-		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward); err != nil {
+		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward.Total); err != nil {
 			return nil, err
 		}
 
@@ -90,34 +90,34 @@ func (k msgServer) SubmitBundleProposal(
 		}
 
 		// send network fee to treasury
-		if err := util.TransferFromModuleToTreasury(k.bankKeeper, ctx, types.ModuleName, treasuryPayout); err != nil {
+		if err := util.TransferFromModuleToTreasury(k.bankKeeper, ctx, types.ModuleName, bundleReward.Treasury); err != nil {
 			return nil, err
 		}
 
 		// send commission to uploader
-		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, bundleProposal.Uploader, uploaderPayout); err != nil {
+		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, bundleProposal.Uploader, bundleReward.Uploader); err != nil {
 			return nil, err
 		}
 
 		// send delegation rewards to delegators
-		k.delegationKeeper.AddAmountToDelegationRewards(ctx, bundleProposal.Uploader, delegationPayout)
+		k.delegationKeeper.AddAmountToDelegationRewards(ctx, bundleProposal.Uploader, bundleReward.Delegation)
 
 		// slash stakers who voted incorrectly
 		for _, voter := range bundleProposal.VotersInvalid {
 			k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_VOTE)
 		}
 
-		if err := k.finalizeCurrentBundleProposal(ctx, pool, bundleProposal); err != nil {
+		if err := k.finalizeCurrentBundleProposal(ctx, pool, bundleProposal, voteDistribution, bundleReward); err != nil {
 			return nil, err
 		}
 
-		if err := k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader); err != nil {
+		if err := k.registerBundleProposalFromUploader(ctx, pool, bundleProposal, msg, nextUploader); err != nil {
 			return nil, err
 		}
 
 		return &types.MsgSubmitBundleProposalResponse{}, nil
-	} else if quorum == types.BUNDLE_STATUS_INVALID {
-		// slash stakers who voted incorrectly - uploader received upload slash
+	} else if voteDistribution.Status == types.BUNDLE_STATUS_INVALID {
+		// slash stakers who voted incorrectly - uploader receives upload slash
 		for _, voter := range bundleProposal.VotersValid {
 			if voter == bundleProposal.Uploader {
 				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_UPLOAD)
@@ -126,7 +126,7 @@ func (k msgServer) SubmitBundleProposal(
 			}
 		}
 
-		if err := k.dropCurrentBundleProposal(ctx, bundleProposal.NextUploader); err != nil {
+		if err := k.dropCurrentBundleProposal(ctx, pool, bundleProposal, voteDistribution); err != nil {
 			return nil, err
 		}
 
