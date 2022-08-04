@@ -26,9 +26,16 @@ const (
 var (
 	// BundleKeyPrefix ...
 	BundleKeyPrefix = []byte{1}
+	// FinalizedBundlePrefix ...
+	FinalizedBundlePrefix = []byte{2}
 )
 
 // BundleProposalKey ...
 func BundleProposalKey(poolId uint64) []byte {
 	return util.GetByteKey(poolId)
+}
+
+// FinalizedBundleKey ...
+func FinalizedBundleKey(poolId uint64, id uint64) []byte {
+	return util.GetByteKey(poolId, id)
 }

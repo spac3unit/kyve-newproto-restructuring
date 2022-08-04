@@ -30,3 +30,30 @@ func (k Keeper) GetBundleProposal(
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
 }
+
+// SetFinalizedBundle set a specific staker in the store from its index
+func (k Keeper) SetFinalizedBundle(ctx sdk.Context, finalizedBundle types.FinalizedBundle) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FinalizedBundlePrefix)
+	b := k.cdc.MustMarshal(&finalizedBundle)
+	store.Set(types.FinalizedBundleKey(
+		finalizedBundle.PoolId,
+		finalizedBundle.Id,
+	), b)
+}
+
+// GetFinalizedBundle returns a staker from its index
+func (k Keeper) GetFinalizedBundle(
+	ctx sdk.Context,
+	poolId uint64,
+	id uint64,
+) (val types.FinalizedBundle, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FinalizedBundlePrefix)
+
+	b := store.Get(types.FinalizedBundleKey(poolId, id))
+	if b == nil {
+		return val, false
+	}
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}

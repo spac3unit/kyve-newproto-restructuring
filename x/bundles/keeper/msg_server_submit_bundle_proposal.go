@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/KYVENetwork/chain/x/bundles/types"
+	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -91,10 +92,62 @@ func (k msgServer) SubmitBundleProposal(
 		// TODO: payout delegators
 
 		// slash stakers who voted incorrectly
-		// for _, voter := range bundleProposal.VotersInvalid {
+		for _, voter := range bundleProposal.VotersInvalid {
+			k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_VOTE)
+		}
 
-		// }
+		// save finalized bundle
+		k.SetFinalizedBundle(ctx, types.FinalizedBundle{
+			StorageId:   bundleProposal.StorageId,
+			PoolId:      pool.Id,
+			Id:          pool.TotalBundles,
+			Uploader:    bundleProposal.Uploader,
+			FromHeight:  pool.CurrentHeight,
+			ToHeight:    bundleProposal.ToHeight,
+			FinalizedAt: uint64(ctx.BlockHeight()),
+			Key:         bundleProposal.ToKey,
+			Value:       bundleProposal.ToValue,
+			BundleHash:  bundleProposal.BundleHash,
+		})
 
+		// Finalize the proposal, saving useful information.
+		// eventFromHeight := pool.CurrentHeight
+		pool.CurrentHeight = bundleProposal.ToHeight
+		pool.TotalBytes = pool.TotalBytes + bundleProposal.ByteSize
+		pool.TotalBundles = pool.TotalBundles + 1
+		pool.TotalBundleRewards = pool.TotalBundleRewards + bundleReward
+		pool.CurrentKey = bundleProposal.ToKey
+		pool.CurrentValue = bundleProposal.ToValue
+
+		// TODO: emit event
+
+		k.registerBundleProposalFromUploader(ctx, bundleProposal, msg, nextUploader)
+
+		k.poolKeeper.SetPool(ctx, pool)
+
+		return &types.MsgSubmitBundleProposalResponse{}, nil
+	} else if quorum == types.BUNDLE_STATUS_INVALID {
+		// slash stakers who voted incorrectly - uploader received upload slash
+		for _, voter := range bundleProposal.VotersValid {
+			if voter == bundleProposal.Uploader {
+				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_UPLOAD)
+			} else {
+				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_VOTE)
+			}
+		}
+
+		bundleProposal = types.BundleProposal{
+			NextUploader: bundleProposal.NextUploader,
+			CreatedAt:    uint64(ctx.BlockTime().Unix()),
+		}
+
+		// TODO: emit event
+
+		k.SetBundleProposal(ctx, bundleProposal)
+
+		return &types.MsgSubmitBundleProposalResponse{}, nil
+	} else {
+		return nil, types.ErrQuorumNotReached
 	}
 	//
 	//		// Calculate the individual cost for each pool funder.
