@@ -19,6 +19,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 
 		err := k.poolKeeper.AssertPoolCanRun(ctx, poolId)
 
+		pool, _ := k.poolKeeper.GetPool(ctx, poolId)
 		bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
 
 		// Remove next uploader if pool is not active
@@ -27,17 +28,16 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		}
 
 		// Skip if we haven't reached the upload interval.
-		if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + 0 /* TODO upload interval */) {
+		if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval) {
 			continue
 		}
 
 		// Check if bundle needs to be dropped
 		if bundleProposal.StorageId != "" && !strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 			// check if the quorum was actually reached
-			valid, invalid, abstain, total := k.getVoteDistribution(ctx, poolId)
-			quorum := k.getQuorumStatus(valid, invalid, abstain, total)
+			voteDistribution := k.getVoteDistribution(ctx, poolId)
 
-			if quorum == types.BUNDLE_STATUS_NO_QUORUM {
+			if voteDistribution.Status == types.BUNDLE_STATUS_NO_QUORUM {
 				// handle stakers who did not vote at all
 				k.handleNonVoters(ctx, poolId)
 
@@ -52,23 +52,14 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 				}
 
 				// If consensus wasn't reached, we drop the bundle and emit an event.
-				ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalised{
-					PoolId:       poolId,
-					StorageId:    bundleProposal.StorageId,
-					ByteSize:     bundleProposal.ByteSize,
-					Uploader:     bundleProposal.Uploader,
-					NextUploader: bundleProposal.NextUploader,
-					Reward:       0,
-					Valid:        valid,
-					Invalid:      invalid,
-					//FromHeight:   bundleProposal.FromHeight, // TODO whats up with fromHeight?
-					ToHeight: bundleProposal.ToHeight,
-					Status:   types.BUNDLE_STATUS_NO_QUORUM,
-					ToKey:    bundleProposal.ToKey,
-					ToValue:  bundleProposal.ToValue,
-					Id:       0,
-					Abstain:  abstain,
-					Total:    total,
+				ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
+					PoolId:       pool.Id,
+					Id: pool.TotalBundles,
+					Valid: voteDistribution.Valid,
+					Invalid: voteDistribution.Invalid,
+					Abstain: voteDistribution.Abstain,
+					Total: voteDistribution.Total,
+					Status: voteDistribution.Status,
 				})
 
 				bundleProposal = types.BundleProposal{
@@ -82,7 +73,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		}
 
 		// Skip if we haven't reached the upload timeout.
-		if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + 0 /* TODO pool.UploadInterval */ + k.UploadTimeout(ctx)) {
+		if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval + k.UploadTimeout(ctx)) {
 			continue
 		}
 
@@ -90,6 +81,9 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		// Now we slash and remove the current next_uploader and select a new one.
 
 		k.stakerKeeper.Slash(ctx, poolId, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
+
+		k.stakerKeeper.RemoveValaccountFromPool(ctx, poolId, bundleProposal.NextUploader)
+
 
 		// Update bundle proposal
 		bundleProposal.NextUploader = k.chooseNextUploaderFromAllStakers(ctx, poolId)

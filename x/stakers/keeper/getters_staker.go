@@ -89,6 +89,7 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 			// remove all valaccounts from pools and subtract stake
 			for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
 				k.removeValaccount(ctx, valaccount)
+				k.subtractOneFromCount(ctx, valaccount.PoolId)
 				k.subtractFromTotalStake(ctx, valaccount.PoolId, staker.Amount)
 			}
 		} else {

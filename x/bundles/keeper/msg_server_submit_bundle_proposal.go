@@ -41,6 +41,9 @@ func (k msgServer) SubmitBundleProposal(
 		return nil, err
 	}
 
+	// reset points of uploader
+	k.stakerKeeper.ResetPoints(ctx, msg.PoolId, msg.Staker)
+
 	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.
 	if bundleProposal.StorageId == "" || strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 		nextUploader := k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
@@ -52,7 +55,7 @@ func (k msgServer) SubmitBundleProposal(
 		return &types.MsgSubmitBundleProposalResponse{}, nil
 	}
 	
-	// handle stakers who did not vote at all
+	// increase points of stakers who did not vote at all
 	k.handleNonVoters(ctx, msg.PoolId)
 	
 	// Get next uploader

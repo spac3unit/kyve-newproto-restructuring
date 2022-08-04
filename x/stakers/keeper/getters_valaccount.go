@@ -9,61 +9,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// #############################
-// #  Raw KV-Store operations  #
-// #############################
-
-// setValaccount set a specific Valaccount in the store from its index
-func (k Keeper) setValaccount(ctx sdk.Context, valaccount types.Valaccount) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
-	b := k.cdc.MustMarshal(&valaccount)
-	store.Set(types.ValaccountKey(
-		valaccount.PoolId,
-		valaccount.Staker,
-	), b)
-
-	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
-	storeIndex2.Set(types.ValaccountKeyIndex2(
-		valaccount.Staker,
-		valaccount.PoolId,
-	), []byte{})
-}
-
-// removeValaccount removes a Valaccount from the store
-func (k Keeper) removeValaccount(ctx sdk.Context, valaccount types.Valaccount) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
-	store.Delete(types.ValaccountKey(
-		valaccount.PoolId,
-		valaccount.Staker,
-	))
-
-	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
-	storeIndex2.Delete(types.ValaccountKeyIndex2(
-		valaccount.Staker,
-		valaccount.PoolId,
-	))
-}
-
-// GetValaccount returns a Valaccount from its index
-func (k Keeper) GetValaccount(
-	ctx sdk.Context,
-	poolId uint64,
-	stakerAddress string,
-) (val types.Valaccount, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
-
-	b := store.Get(types.ValaccountKey(
-		poolId,
-		stakerAddress,
-	))
-	if b == nil {
-		return val, false
-	}
-
-	k.cdc.MustUnmarshal(b, &val)
-	return val, true
-}
-
 // DoesValaccountExist returns a Valaccount from its index
 func (k Keeper) DoesValaccountExist(
 	ctx sdk.Context,
@@ -155,4 +100,59 @@ func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string
 		valaccount.Points = 0
 		k.setValaccount(ctx, valaccount)
 	}
+}
+
+// #############################
+// #  Raw KV-Store operations  #
+// #############################
+
+// setValaccount set a specific Valaccount in the store from its index
+func (k Keeper) setValaccount(ctx sdk.Context, valaccount types.Valaccount) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
+	b := k.cdc.MustMarshal(&valaccount)
+	store.Set(types.ValaccountKey(
+		valaccount.PoolId,
+		valaccount.Staker,
+	), b)
+
+	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
+	storeIndex2.Set(types.ValaccountKeyIndex2(
+		valaccount.Staker,
+		valaccount.PoolId,
+	), []byte{})
+}
+
+// removeValaccount removes a Valaccount from the store
+func (k Keeper) removeValaccount(ctx sdk.Context, valaccount types.Valaccount) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
+	store.Delete(types.ValaccountKey(
+		valaccount.PoolId,
+		valaccount.Staker,
+	))
+
+	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
+	storeIndex2.Delete(types.ValaccountKeyIndex2(
+		valaccount.Staker,
+		valaccount.PoolId,
+	))
+}
+
+// GetValaccount returns a Valaccount from its index
+func (k Keeper) GetValaccount(
+	ctx sdk.Context,
+	poolId uint64,
+	stakerAddress string,
+) (val types.Valaccount, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
+
+	b := store.Get(types.ValaccountKey(
+		poolId,
+		stakerAddress,
+	))
+	if b == nil {
+		return val, false
+	}
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
 }
