@@ -3,6 +3,7 @@ package app
 import (
 	"github.com/KYVENetwork/chain/x/bundles"
 	bundlestypes "github.com/KYVENetwork/chain/x/bundles/types"
+	"github.com/KYVENetwork/chain/x/delegation"
 	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/KYVENetwork/chain/x/pool"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
@@ -94,6 +95,7 @@ var appModuleBasics = []module.AppModuleBasic{
 	registry.AppModuleBasic{},
 	pool.AppModuleBasic{},
 	stakers.AppModuleBasic{},
+	delegation.AppModuleBasic{},
 	bundles.AppModuleBasic{},
 	// this line is used by starport scaffolding # stargate/app/moduleBasic
 }

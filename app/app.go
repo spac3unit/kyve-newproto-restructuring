@@ -227,6 +227,8 @@ func NewApp(
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
+	println("Account Prefix: ", sdk.GetConfig().GetBech32AccountAddrPrefix())
+
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -432,8 +434,8 @@ func NewApp(
 		transferModule,
 		registryModule,
 		poolmodule.NewAppModule(appCodec, app.PoolKeeper, app.AccountKeeper, app.BankKeeper),
-		delegationmodule.NewAppModule(appCodec, app.DelegationKeeper, app.AccountKeeper, app.BankKeeper),
 		stakersmodule.NewAppModule(appCodec, app.StakersKeeper, app.AccountKeeper, app.BankKeeper),
+		delegationmodule.NewAppModule(appCodec, app.DelegationKeeper, app.AccountKeeper, app.BankKeeper),
 		bundlesmodule.NewAppModule(appCodec, app.BundlesKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
@@ -462,8 +464,8 @@ func NewApp(
 		paramstypes.ModuleName,
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
-		delegationmoduletypes.ModuleName,
 		stakersmoduletypes.ModuleName,
+		delegationmoduletypes.ModuleName,
 		bundlesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
@@ -519,8 +521,8 @@ func NewApp(
 		feegrant.ModuleName,
 		registrymoduletypes.ModuleName,
 		poolmoduletypes.ModuleName,
-		delegationmoduletypes.ModuleName,
 		stakersmoduletypes.ModuleName,
+		delegationmoduletypes.ModuleName,
 		bundlesmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)

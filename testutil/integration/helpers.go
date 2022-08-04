@@ -4,7 +4,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (suite *KeeperTestSuite) GetBalanceFromAddress(address string) (uint64) {
+var DEBUG_PREFIX_ADD_LEN = 0
+
+func (suite *KeeperTestSuite) GetBalanceFromAddress(address string) uint64 {
 	accAddress, err := sdk.AccAddressFromBech32(address)
 	if err != nil {
 		return 0

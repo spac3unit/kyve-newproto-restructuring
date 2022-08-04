@@ -69,8 +69,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
 		balanceAfter = s.GetBalanceFromAddress(i.ALICE)
 
-		staker, found = s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
-		valaccounts = s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		staker, _ = s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 
 		Expect(unstakingEntries).To(BeEmpty())
 

@@ -44,6 +44,7 @@ func DelegationKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 	//
 	//	nil,
 	//	nil,
+	//	nil,
 	//)
 	_ = paramsSubspace
 	var k *keeper.Keeper

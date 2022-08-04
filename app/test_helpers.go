@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/simapp"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ignite-hq/cli/ignite/pkg/cosmoscmd"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -37,6 +38,8 @@ func Setup() *App {
 
 	config := cosmoscmd.MakeEncodingConfig(ModuleBasics)
 
+	setPrefixes("kyve")
+
 	app := NewApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, 5, config, simapp.EmptyAppOptions{})
 	// init chain must be called to stop deliverState from being nil
 	genesisState := ModuleBasics.DefaultGenesis(config.Marshaler)
@@ -57,4 +60,19 @@ func Setup() *App {
 	)
 
 	return app
+}
+
+func setPrefixes(accountAddressPrefix string) {
+	// Set prefixes
+	accountPubKeyPrefix := accountAddressPrefix + "pub"
+	validatorAddressPrefix := accountAddressPrefix + "valoper"
+	validatorPubKeyPrefix := accountAddressPrefix + "valoperpub"
+	consNodeAddressPrefix := accountAddressPrefix + "valcons"
+	consNodePubKeyPrefix := accountAddressPrefix + "valconspub"
+
+	// Set and seal config
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(accountAddressPrefix, accountPubKeyPrefix)
+	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
+	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
 }
