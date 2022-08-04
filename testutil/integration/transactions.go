@@ -44,12 +44,27 @@ func (suite *KeeperTestSuite) RunTxPoolSuccess(msg sdk.Msg) {
 	Expect(err).To(BeNil())
 }
 
+func (suite *KeeperTestSuite) RunTxPoolError(msg sdk.Msg) {
+	_, err := suite.RunTxPool(msg)
+	Expect(err).NotTo(BeNil())
+}
+
 func (suite *KeeperTestSuite) RunTxStakersSuccess(msg sdk.Msg) {
 	_, err := suite.RunTxStakers(msg)
 	Expect(err).To(BeNil())
 }
 
+func (suite *KeeperTestSuite) RunTxStakersError(msg sdk.Msg) {
+	_, err := suite.RunTxStakers(msg)
+	Expect(err).NotTo(BeNil())
+}
+
 func (suite *KeeperTestSuite) RunTxDelegatorSuccess(msg sdk.Msg) {
 	_, err := suite.RunTxDelegator(msg)
 	Expect(err).To(BeNil())
+}
+
+func (suite *KeeperTestSuite) RunTxDelegatorError(msg sdk.Msg) {
+	_, err := suite.RunTxDelegator(msg)
+	Expect(err).NotTo(BeNil())
 }

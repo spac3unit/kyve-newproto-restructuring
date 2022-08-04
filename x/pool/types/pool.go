@@ -50,9 +50,9 @@ func (m *Pool) GetFunder(address string) (Funder, bool) {
 	return Funder{}, false
 }
 
-func (m *Pool) GetLowestFunder() *Funder {
+func (m *Pool) GetLowestFunder() Funder {
 	if len(m.Funders) == 0 {
-		return nil
+		return Funder{}
 	}
-	return m.Funders[0]
+	return *m.Funders[0]
 }

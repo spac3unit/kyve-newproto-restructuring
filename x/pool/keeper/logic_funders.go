@@ -30,7 +30,7 @@ func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint6
 
 		if amountRemainder+amountPerFunder > lowestFunder.Amount {
 			// TODO: check if funder gets properly removed from pool
-			pool.RemoveFunder(*lowestFunder)
+			pool.RemoveFunder(lowestFunder)
 			// TODO: emit defund event
 			slashedFunds += lowestFunder.Amount
 		} else {
@@ -52,7 +52,7 @@ func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint6
 
 	lowestFunder := pool.GetLowestFunder()
 	lowestFunder.Amount -= amountRemainder
-	pool.UpdateFunder(*lowestFunder)
+	pool.UpdateFunder(lowestFunder)
 
 	return nil
 }
