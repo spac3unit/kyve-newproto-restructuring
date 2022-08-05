@@ -17,14 +17,23 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 		return nil, poolErr
 	}
 
+	// thow error if staker was not found
 	staker, stakerFound := k.GetStaker(ctx, msg.Creator)
 	if !stakerFound {
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNoStaker.Error())
 	}
 
+	// throw error if staker joins the pool twice
 	_, valaccountFound := k.GetValaccount(ctx, msg.PoolId, msg.Creator)
 	if valaccountFound {
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrInvalidRequest, types.ErrAlreadyJoinedPool.Error())
+	}
+
+	// throw error if staker has joined another pool with the provided valaddress already
+	for _, valaccount := range k.GetValaccountsFromStaker(ctx, msg.Creator) {
+		if valaccount.Valaddress == msg.Valaddress {
+			return nil, sdkErrors.Wrapf(sdkErrors.ErrInvalidRequest, types.ValaddressAlreadyUsed.Error())
+		}
 	}
 
 	errFreeSlot := k.ensureFreeSlot(ctx, msg.PoolId, staker.Amount)

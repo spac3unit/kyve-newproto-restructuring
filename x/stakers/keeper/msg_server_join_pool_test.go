@@ -110,7 +110,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 		Expect(totalStakeOfPool).To(Equal(staker.Amount))
 	})
 
-	It("Try to join a pool again", func() {
+	It("Try to join the same pool with same valaddress again", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
 			Creator: i.ALICE,
@@ -131,7 +131,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 	})
 
-	It("Try to join a pool again with different valaddress", func() {
+	It("Try to join the same pool with a different valaddress again", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
 			Creator: i.ALICE,
@@ -152,7 +152,32 @@ var _ = Describe("Join Pool", Ordered, func() {
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 	})
 
-	It("Try to join into multiple pools", func() {
+	It("Try to join another pool with same valaddress", func() {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator: i.ALICE,
+			PoolId: 0,
+			Valaddress: i.BOB,
+		})
+
+		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
+			Creator: i.ALICE,
+			Name:    "Moontest2",
+		})
+		
+		// ACT
+		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
+			Creator: i.ALICE,
+			PoolId: 1,
+			Valaddress: i.BOB,
+		})
+
+		// ASSERT
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		Expect(valaccountsOfStaker).To(HaveLen(1))
+	})
+
+	It("Try to join another pool with another valaddress", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
 			Creator: i.ALICE,
@@ -169,7 +194,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
 			Creator: i.ALICE,
 			PoolId: 1,
-			Valaddress: i.BOB,
+			Valaddress: i.CHARLIE,
 		})
 
 		// ASSERT
