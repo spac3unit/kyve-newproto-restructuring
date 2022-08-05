@@ -3,6 +3,9 @@ package integration
 import (
 	"crypto/ecdsa"
 	"crypto/rand"
+	mrand "math/rand"
+	"time"
+
 	"github.com/KYVENetwork/chain/app"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
@@ -22,8 +25,6 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmversion "github.com/tendermint/tendermint/proto/tendermint/version"
 	"github.com/tendermint/tendermint/version"
-	mrand "math/rand"
-	"time"
 )
 
 //const (
@@ -34,6 +35,7 @@ import (
 const (
 	ALICE = "kyve1jq304cthpx0lwhpqzrdjrcza559ukyy3zsl2vd"
 	BOB   = "kyve1hvg7zsnrj6h29q9ss577mhrxa04rn94h7zjugq"
+	CHARLIE	= "kyve1ay22rr3kz659fupu0tcswlagq4ql6rwm4nuv0s"
 )
 
 var (
@@ -53,6 +55,7 @@ func (suite *KeeperTestSuite) initDummyAccounts() {
 
 	suite.Mint(ALICE, 1000*KYVE)
 	suite.Mint(BOB, 1000*KYVE)
+	suite.Mint(CHARLIE, 1000*KYVE)
 
 	DUMMY = make([]string, 50)
 	mrand.Seed(1)

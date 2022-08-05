@@ -104,9 +104,34 @@ var _ = Describe("Defund Pool", Ordered, func() {
 		Expect(pool.GetLowestFunder()).To(Equal(funder))
 	})
 
-	// TODO: test kicking out lowest funder
-	// TODO: fund with more than balance
-	// TODO: test for two funders with same amount
-	// TODO: test modifying current funds
-	// TODO: test funder payout
+	It("Defund as highest funder to lowest funder", func() {
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id: 0,
+			Amount: 150*i.KYVE,
+		})
+
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		funderAlice, _ := pool.GetFunder(i.ALICE)
+		Expect(pool.GetLowestFunder()).To(Equal(funderAlice))
+
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.BOB,
+			Id: 0,
+			Amount: 100*i.KYVE,
+		})
+
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		funderBob, _ := pool.GetFunder(i.BOB)
+		Expect(pool.GetLowestFunder()).To(Equal(funderBob))
+
+		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
+			Creator: i.ALICE,
+			Id: 0,
+			Amount: 100*i.KYVE,
+		})
+
+		funderAlice, _ = pool.GetFunder(i.ALICE)
+		Expect(pool.GetLowestFunder()).To(Equal(funderBob))
+	})
 })
