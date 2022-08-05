@@ -80,7 +80,35 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(valaccounts).To(HaveLen(0))
 	})
 
-	// TODO: test staking more than balance
+	It("Stake with more than available balance", func() {
+		currentBalance := s.GetBalanceFromAddress(i.ALICE)
+
+		s.RunTxStakersError(&stakerstypes.MsgStake{
+			Creator: i.ALICE,
+			Amount:  currentBalance + 1,
+		})
+
+		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
+
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+
+		Expect(found).To(BeTrue())
+
+		Expect(initialBalanceAlice - balanceAfter).To(Equal(150 * i.KYVE))
+
+		Expect(staker.Address).To(Equal(i.ALICE))
+		Expect(staker.Amount).To(Equal(150 * i.KYVE))
+		Expect(staker.UnbondingAmount).To(BeZero())
+		Expect(staker.Commission).To(Equal(types.DefaultCommission))
+
+		Expect(staker.Moniker).To(BeEmpty())
+		Expect(staker.Logo).To(BeEmpty())
+		Expect(staker.Website).To(BeEmpty())
+
+		Expect(valaccounts).To(HaveLen(0))
+	})
+
 	// TODO: test updating moniker, logo and website
 	// TODO: test kicking out lowest staker
 })
