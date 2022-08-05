@@ -8,27 +8,14 @@ import (
 )
 
 func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
-
+	// TODO: look into object creation belonging to pools like (delegation, valaccount etc.)
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	// TODO: fill other pool configs
 	k.AppendPool(ctx, types.Pool{
 		Name:    msg.Name,
-		// TODO fill rest
-		Runtime:        "",
-		Logo:           "",
-		Config:         "",
-		UploadInterval: 0,
-		OperatingCost:  0,
-		Paused:         false,
-		MaxBundleSize:  0,
-		Protocol:       nil,
-		UpgradePlan:    nil,
-		StartKey:       "",
-		CurrentKey:     "",
-		CurrentValue:   "",
-		MinStake:       0,
-		Funders:        nil,
-		TotalFunds:     0,
+		Protocol:       &types.Protocol{},
+		UpgradePlan:    &types.UpgradePlan{},
 	})
 
 	// TODO emit event ?

@@ -9,7 +9,7 @@ import (
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Join Pool", Ordered, func() {
+var _ = Describe("Leave Pool", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -87,7 +87,6 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(BeEmpty())
 
-		staker, _ = s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		totalStakeOfPool = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(BeZero())
@@ -118,5 +117,67 @@ var _ = Describe("Join Pool", Ordered, func() {
 		Expect(valaccountsOfStaker).To(BeEmpty())
 	})
 
-	// TODO: test with multiple pools
+	It("Try to leave multiple pools", func() {
+		// ARRANGE
+		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
+			Creator: i.ALICE,
+			Name:    "Moontest2",
+		})
+
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator: i.ALICE,
+			PoolId: 1,
+			Valaddress: i.CHARLIE,
+		})
+
+		// ACT
+		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
+			Creator: i.ALICE,
+			PoolId: 1,
+		})
+
+		// ASSERT
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+
+		Expect(valaccountsOfStaker).To(HaveLen(2))
+
+		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 1, i.ALICE)
+
+		Expect(found).To(BeTrue())
+
+		Expect(valaccount.Staker).To(Equal(i.ALICE))
+		Expect(valaccount.PoolId).To(Equal(uint64(1)))
+		Expect(valaccount.Valaddress).To(Equal(i.CHARLIE))
+		Expect(valaccount.Points).To(BeZero())
+
+		valaccountsOfPool := s.App().StakersKeeper.GetAllValaccountsOfPool(s.Ctx(), 1)
+
+		Expect(valaccountsOfPool).To(HaveLen(1))
+
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 1)
+
+		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
+		Expect(totalStakeOfPool).To(Equal(staker.Amount))
+
+		// wait for leave pool
+		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
+		s.CommitAfterSeconds(1)
+
+		valaccountsOfStaker = s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+
+		Expect(valaccountsOfStaker).To(HaveLen(1))
+
+		_, found = s.App().StakersKeeper.GetValaccount(s.Ctx(), 1, i.ALICE)
+
+		Expect(found).To(BeFalse())
+
+		valaccountsOfPool = s.App().StakersKeeper.GetAllValaccountsOfPool(s.Ctx(), 1)
+
+		Expect(valaccountsOfPool).To(BeEmpty())
+
+		totalStakeOfPool = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 1)
+
+		Expect(totalStakeOfPool).To(BeZero())
+	})
 })

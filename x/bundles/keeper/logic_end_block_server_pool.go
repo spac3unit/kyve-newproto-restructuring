@@ -14,7 +14,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Iterate over all pool Ids.
-	for _, poolId := range []uint64{1, 2} /*TODO fetch pool ids*/ {
+	for _, poolId := range []uint64{10} /*TODO fetch pool ids and */ {
 		// Set pool status
 
 		err := k.poolKeeper.AssertPoolCanRun(ctx, poolId)
