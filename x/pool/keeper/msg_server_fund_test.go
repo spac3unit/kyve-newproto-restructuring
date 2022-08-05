@@ -13,25 +13,26 @@ var _ = Describe("Fund Pool", Ordered, func() {
 
 	initialBalance := s.GetBalanceFromAddress(i.ALICE)
 
-	BeforeAll(func() {
+	BeforeEach(func() {
+		// init new clean chain
+		s = i.NewCleanChain()
+
+		// create clean pool for every test case
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
 		})
-
-		pool, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		Expect(poolFound).To(BeTrue())
-
-		Expect(pool.GetLowestFunder()).To(Equal(pooltypes.Funder{}))
 	})
 
 	It("Fund Pool with 100 $KYVE", func() {
+		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
 			Id: 0,
 			Amount: 100*i.KYVE,
 		})
 
+		// ASSERT
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
@@ -52,12 +53,21 @@ var _ = Describe("Fund Pool", Ordered, func() {
 	})
 
 	It("Fund additional 50 $KYVE", func() {
+		// ARRANGE
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id: 0,
+			Amount: 100*i.KYVE,
+		})
+
+		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
 			Id: 0,
 			Amount: 50*i.KYVE,
 		})
 
+		// ASSERT
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
@@ -78,6 +88,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 	})
 
 	It("Fund more than available balance", func() {
+		// ACT
 		currentBalance := s.GetBalanceFromAddress(i.ALICE)
 
 		s.RunTxPoolError(&pooltypes.MsgFundPool{
@@ -86,101 +97,103 @@ var _ = Describe("Fund Pool", Ordered, func() {
 			Amount: currentBalance + 1,
 		})
 
+		// ASSERT
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
-		Expect(initialBalance - balanceAfter).To(Equal(150*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(BeZero())
 
-		Expect(pool.Funders).To(HaveLen(1))
-		Expect(pool.TotalFunds).To(Equal(150*i.KYVE))
+		Expect(pool.Funders).To(BeEmpty())
+		Expect(pool.TotalFunds).To(BeZero())
 
-		funder, funderFound := pool.GetFunder(i.ALICE)
+		_, funderFound := pool.GetFunder(i.ALICE)
 
-		Expect(funderFound).To(BeTrue())
-		Expect(funder).To(Equal(pooltypes.Funder{
-			Address: i.ALICE,
-			Amount: 150*i.KYVE,
-		}))
-		Expect(pool.GetLowestFunder()).To(Equal(funder))
+		Expect(funderFound).To(BeFalse())
+		Expect(pool.GetLowestFunder()).To(Equal(pooltypes.Funder{}))
 	})
 
 	It("Fund with new funder less than existing one", func() {
+		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
-			Creator: i.BOB,
+			Creator: i.ALICE,
 			Id: 0,
 			Amount: 100*i.KYVE,
 		})
 
+		// ACT
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.BOB,
+			Id: 0,
+			Amount: 50*i.KYVE,
+		})
+
+		// ASSERT
 		balanceAfter := s.GetBalanceFromAddress(i.BOB)
 
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
-		Expect(initialBalance - balanceAfter).To(Equal(100*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(50*i.KYVE))
 
 		Expect(pool.Funders).To(HaveLen(2))
-		Expect(pool.TotalFunds).To(Equal(250*i.KYVE))
+		Expect(pool.TotalFunds).To(Equal(150*i.KYVE))
 
 		funder, funderFound := pool.GetFunder(i.BOB)
 
 		Expect(funderFound).To(BeTrue())
 		Expect(funder).To(Equal(pooltypes.Funder{
 			Address: i.BOB,
-			Amount: 100*i.KYVE,
+			Amount: 50*i.KYVE,
 		}))
 		Expect(pool.GetLowestFunder()).To(Equal(funder))
 	})
 
 	It("Fund new funder more than existing one", func() {
-		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
-			Creator: i.CHARLIE,
-			Id: 0,
-			Amount: 300*i.KYVE,
-		})
-
-		balanceAfter := s.GetBalanceFromAddress(i.CHARLIE)
-
-		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-
-		Expect(initialBalance - balanceAfter).To(Equal(300*i.KYVE))
-
-		Expect(pool.Funders).To(HaveLen(3))
-		Expect(pool.TotalFunds).To(Equal(550*i.KYVE))
-
-		funder, funderFound := pool.GetFunder(i.CHARLIE)
-		funderBob, _ := pool.GetFunder(i.BOB)
-
-		Expect(funderFound).To(BeTrue())
-		Expect(funder).To(Equal(pooltypes.Funder{
-			Address: i.CHARLIE,
-			Amount: 300*i.KYVE,
-		}))
-		Expect(pool.GetLowestFunder()).To(Equal(funderBob))
-	})
-
-	It("Try to fund less than the lowest funder with full slots", func () {
-		// clean chain again
-		s = i.NewCleanChain()
-
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest",
-		})
-
-		pool, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		Expect(poolFound).To(BeTrue())
-
-		Expect(pool.GetLowestFunder()).To(Equal(pooltypes.Funder{}))
-
-		// begin actual test
+		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
 			Id: 0,
 			Amount: 100*i.KYVE,
 		})
 
-		// fill remaining slots
+		// ACT
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.BOB,
+			Id: 0,
+			Amount: 200*i.KYVE,
+		})
+
+		// ASSERT
+		balanceAfter := s.GetBalanceFromAddress(i.BOB)
+
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		Expect(initialBalance - balanceAfter).To(Equal(200*i.KYVE))
+
+		Expect(pool.Funders).To(HaveLen(2))
+		Expect(pool.TotalFunds).To(Equal(300*i.KYVE))
+
+		funderBob, funderFound := pool.GetFunder(i.BOB)
+		funderAlice, _ := pool.GetFunder(i.ALICE)
+
+		Expect(funderFound).To(BeTrue())
+		Expect(funderBob).To(Equal(pooltypes.Funder{
+			Address: i.BOB,
+			Amount: 200*i.KYVE,
+		}))
+		Expect(pool.GetLowestFunder()).To(Equal(funderAlice))
+	})
+
+	It("Try to fund less than the lowest funder with full slots", func () {
+		// ARRANGE
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id: 0,
+			Amount: 100*i.KYVE,
+		})
+
 		for a := 0; a < 49; a++ {
+			// fill remaining funding slots
 			s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 				Creator: i.DUMMY[a],
 				Id: 0,
@@ -188,7 +201,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 			})
 		}
 
-		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
 		Expect(pool.Funders).To(HaveLen(50))
 		Expect(pool.TotalFunds).To(Equal(49_100*i.KYVE))
@@ -200,12 +213,14 @@ var _ = Describe("Fund Pool", Ordered, func() {
 
 		Expect(initialBalance - balanceAfter).To(Equal(100*i.KYVE))
 
+		// ACT
 		s.RunTxPoolError(&pooltypes.MsgFundPool{
 			Creator: i.DUMMY[49],
 			Id: 0,
 			Amount: 50*i.KYVE,
 		})
 
+		// ASSERT
 		Expect(pool.Funders).To(HaveLen(50))
 		Expect(pool.TotalFunds).To(Equal(49_100*i.KYVE))
 
@@ -214,12 +229,30 @@ var _ = Describe("Fund Pool", Ordered, func() {
 	})
 
 	It("Try to fund more than the lowest funder with full slots", func () {
+		// ARRANGE
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id: 0,
+			Amount: 100*i.KYVE,
+		})
+
+		for a := 0; a < 49; a++ {
+			// fill remaining funding slots
+			s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+				Creator: i.DUMMY[a],
+				Id: 0,
+				Amount: 1000*i.KYVE,
+			})
+		}
+
+		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.DUMMY[49],
 			Id: 0,
 			Amount: 200*i.KYVE,
 		})
 
+		// ASSERT
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
 		Expect(pool.Funders).To(HaveLen(50))

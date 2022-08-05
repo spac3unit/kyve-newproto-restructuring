@@ -11,17 +11,19 @@ import (
 var _ = Describe("Defund Pool", Ordered, func() {
 	s := i.NewCleanChain()
 
-	initialBalanceAlice := s.GetBalanceFromAddress(i.ALICE)
+	initialBalance := s.GetBalanceFromAddress(i.ALICE)
 
-	BeforeAll(func() {
+	BeforeEach(func() {
+		// init new clean chain
+		s = i.NewCleanChain()
+
+		// create clean pool for every test case
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
 		})
 
-		_, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		Expect(poolFound).To(BeTrue())
-
+		// fund pool
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
 			Id: 0,
@@ -30,17 +32,19 @@ var _ = Describe("Defund Pool", Ordered, func() {
 	})
 
 	It("Defund more than funded", func() {
+		// ACT
 		s.RunTxPoolError(&pooltypes.MsgDefundPool{
 			Creator: i.ALICE,
 			Id: 0,
 			Amount: 101*i.KYVE,
 		})
 
+		// ASSERT
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
-		Expect(initialBalanceAlice - balanceAfter).To(Equal(100*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(100*i.KYVE))
 
 		Expect(pool.Funders).To(HaveLen(1))
 		Expect(pool.TotalFunds).To(Equal(100*i.KYVE))
@@ -56,17 +60,19 @@ var _ = Describe("Defund Pool", Ordered, func() {
 	})
 
 	It("Defund Pool with 50 $KYVE", func() {
+		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
 			Creator: i.ALICE,
 			Id: 0,
 			Amount: 50*i.KYVE,
 		})
 
+		// ASSERT
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
-		Expect(initialBalanceAlice - balanceAfter).To(Equal(50*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(50*i.KYVE))
 
 		Expect(pool.Funders).To(HaveLen(1))
 		Expect(pool.TotalFunds).To(Equal(50*i.KYVE))
@@ -82,17 +88,19 @@ var _ = Describe("Defund Pool", Ordered, func() {
 	})
 
 	It("Defund everything", func() {
+		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
 			Creator: i.ALICE,
 			Id: 0,
-			Amount: 50*i.KYVE,
+			Amount: 100*i.KYVE,
 		})
 
+		// ASSERT
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
-		Expect(initialBalanceAlice - balanceAfter).To(BeZero())
+		Expect(initialBalance - balanceAfter).To(BeZero())
 
 		Expect(pool.Funders).To(BeEmpty())
 		Expect(pool.TotalFunds).To(BeZero())
@@ -105,33 +113,27 @@ var _ = Describe("Defund Pool", Ordered, func() {
 	})
 
 	It("Defund as highest funder to lowest funder", func() {
-		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
-			Creator: i.ALICE,
-			Id: 0,
-			Amount: 150*i.KYVE,
-		})
-
-		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		funderAlice, _ := pool.GetFunder(i.ALICE)
-		Expect(pool.GetLowestFunder()).To(Equal(funderAlice))
-
+		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.BOB,
 			Id: 0,
-			Amount: 100*i.KYVE,
+			Amount: 50*i.KYVE,
 		})
 
-		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		funderBob, _ := pool.GetFunder(i.BOB)
 		Expect(pool.GetLowestFunder()).To(Equal(funderBob))
 
+		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
 			Creator: i.ALICE,
 			Id: 0,
-			Amount: 100*i.KYVE,
+			Amount: 75*i.KYVE,
 		})
 
-		funderAlice, _ = pool.GetFunder(i.ALICE)
-		Expect(pool.GetLowestFunder()).To(Equal(funderBob))
+		// ASSERT
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		funderAlice, _ := pool.GetFunder(i.ALICE)
+		Expect(pool.GetLowestFunder()).To(Equal(funderAlice))
 	})
 })
