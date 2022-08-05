@@ -1,26 +1,51 @@
 syntax = "proto3";
 package kyve.pool.v1beta1;
-// this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/KYVENetwork/chain/x/pool/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc#
-
-  // DefundPool ...
+  // CreatePool ...
   rpc CreatePool(MsgCreatePool) returns (MsgCreatePoolResponse);
-  // UpdatePool ...
-  // TODO update pool
-//  rpc UpdatePool(MsgUpdatePool) returns (MsgUpdatePoolResponse);
 
   // FundPool ...
   rpc FundPool(MsgFundPool) returns (MsgFundPoolResponse);
   // DefundPool ...
   rpc DefundPool(MsgDefundPool) returns (MsgDefundPoolResponse);
 
-  // TODO protocol node upgrade plans
+  // TODO: protocol node upgrade plans
 }
+
+// MsgCreatePool defines a SDK message for creating a pool.
+message MsgCreatePool {
+  // creator ...
+  string creator = 1;
+  // name ...
+  string name = 2;
+  // runtime ...
+  string runtime = 3;
+  // logo ...
+  string logo = 4;
+  // config ...
+  string config = 5;
+  // start_key ...
+  string start_key = 6;
+  // upload_interval ...
+  uint64 upload_interval = 7;
+  // operating_cost ...
+  uint64 operating_cost = 8;
+  // min_stake ...
+  uint64 min_stake = 9;
+  // max_bundle_size ...
+  uint64 max_bundle_size = 10;
+  // version ...
+  string version = 11;
+  // binaries ...
+  string binaries = 12;
+}
+
+// MsgCreatePoolResponse defines the Msg/CreatePool response type.
+message MsgCreatePoolResponse {}
 
 // MsgFundPool defines a SDK message for funding a pool.
 message MsgFundPool {
@@ -32,7 +57,7 @@ message MsgFundPool {
   uint64 amount = 3;
 }
 
-// MsgFundPoolResponse defines the Msg/FundPool response type.
+// MsgFundPoolResponse defines the Msg/DefundPool response type.
 message MsgFundPoolResponse {}
 
 // MsgDefundPool defines a SDK message for defunding a pool.
@@ -47,31 +72,3 @@ message MsgDefundPool {
 
 // MsgDefundPoolResponse defines the Msg/DefundPool response type.
 message MsgDefundPoolResponse {}
-
-// MsgDefundPool defines a SDK message for defunding a pool.
-message MsgCreatePool {
-  // creator ...
-  string creator = 1;
-  // amount ...
-  string name = 2;
-
-  // TODO add remaining params
-}
-
-// MsgDefundPoolResponse defines the Msg/DefundPool response type.
-message MsgCreatePoolResponse {}
-
-//// MsgDefundPool defines a SDK message for defunding a pool.
-//message MsgUpdatePool {
-//  // creator ...
-//  string creator = 1;
-//  // amount ...
-//  string name = 2;
-//
-//  // TODO add remaining params
-//}
-//
-//// MsgDefundPoolResponse defines the Msg/DefundPool response type.
-//message MsgUpdatePoolResponse {}
-
-// this line is used by starport scaffolding # proto/tx/message

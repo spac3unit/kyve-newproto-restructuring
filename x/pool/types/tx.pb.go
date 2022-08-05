@@ -27,6 +27,188 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgCreatePool defines a SDK message for creating a pool.
+type MsgCreatePool struct {
+	// creator ...
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// name ...
+	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	// runtime ...
+	Runtime string `protobuf:"bytes,3,opt,name=runtime,proto3" json:"runtime,omitempty"`
+	// logo ...
+	Logo string `protobuf:"bytes,4,opt,name=logo,proto3" json:"logo,omitempty"`
+	// config ...
+	Config string `protobuf:"bytes,5,opt,name=config,proto3" json:"config,omitempty"`
+	// start_key ...
+	StartKey string `protobuf:"bytes,6,opt,name=start_key,json=startKey,proto3" json:"start_key,omitempty"`
+	// upload_interval ...
+	UploadInterval uint64 `protobuf:"varint,7,opt,name=upload_interval,json=uploadInterval,proto3" json:"upload_interval,omitempty"`
+	// operating_cost ...
+	OperatingCost uint64 `protobuf:"varint,8,opt,name=operating_cost,json=operatingCost,proto3" json:"operating_cost,omitempty"`
+	// min_stake ...
+	MinStake uint64 `protobuf:"varint,9,opt,name=min_stake,json=minStake,proto3" json:"min_stake,omitempty"`
+	// max_bundle_size ...
+	MaxBundleSize uint64 `protobuf:"varint,10,opt,name=max_bundle_size,json=maxBundleSize,proto3" json:"max_bundle_size,omitempty"`
+	// version ...
+	Version string `protobuf:"bytes,11,opt,name=version,proto3" json:"version,omitempty"`
+	// binaries ...
+	Binaries string `protobuf:"bytes,12,opt,name=binaries,proto3" json:"binaries,omitempty"`
+}
+
+func (m *MsgCreatePool) Reset()         { *m = MsgCreatePool{} }
+func (m *MsgCreatePool) String() string { return proto.CompactTextString(m) }
+func (*MsgCreatePool) ProtoMessage()    {}
+func (*MsgCreatePool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_20ddefdf83388ddc, []int{0}
+}
+func (m *MsgCreatePool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreatePool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreatePool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreatePool.Merge(m, src)
+}
+func (m *MsgCreatePool) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreatePool) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreatePool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreatePool proto.InternalMessageInfo
+
+func (m *MsgCreatePool) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *MsgCreatePool) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *MsgCreatePool) GetRuntime() string {
+	if m != nil {
+		return m.Runtime
+	}
+	return ""
+}
+
+func (m *MsgCreatePool) GetLogo() string {
+	if m != nil {
+		return m.Logo
+	}
+	return ""
+}
+
+func (m *MsgCreatePool) GetConfig() string {
+	if m != nil {
+		return m.Config
+	}
+	return ""
+}
+
+func (m *MsgCreatePool) GetStartKey() string {
+	if m != nil {
+		return m.StartKey
+	}
+	return ""
+}
+
+func (m *MsgCreatePool) GetUploadInterval() uint64 {
+	if m != nil {
+		return m.UploadInterval
+	}
+	return 0
+}
+
+func (m *MsgCreatePool) GetOperatingCost() uint64 {
+	if m != nil {
+		return m.OperatingCost
+	}
+	return 0
+}
+
+func (m *MsgCreatePool) GetMinStake() uint64 {
+	if m != nil {
+		return m.MinStake
+	}
+	return 0
+}
+
+func (m *MsgCreatePool) GetMaxBundleSize() uint64 {
+	if m != nil {
+		return m.MaxBundleSize
+	}
+	return 0
+}
+
+func (m *MsgCreatePool) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *MsgCreatePool) GetBinaries() string {
+	if m != nil {
+		return m.Binaries
+	}
+	return ""
+}
+
+// MsgCreatePoolResponse defines the Msg/CreatePool response type.
+type MsgCreatePoolResponse struct {
+}
+
+func (m *MsgCreatePoolResponse) Reset()         { *m = MsgCreatePoolResponse{} }
+func (m *MsgCreatePoolResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgCreatePoolResponse) ProtoMessage()    {}
+func (*MsgCreatePoolResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_20ddefdf83388ddc, []int{1}
+}
+func (m *MsgCreatePoolResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgCreatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgCreatePoolResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgCreatePoolResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgCreatePoolResponse.Merge(m, src)
+}
+func (m *MsgCreatePoolResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgCreatePoolResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgCreatePoolResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgCreatePoolResponse proto.InternalMessageInfo
+
 // MsgFundPool defines a SDK message for funding a pool.
 type MsgFundPool struct {
 	// creator ...
@@ -41,7 +223,7 @@ func (m *MsgFundPool) Reset()         { *m = MsgFundPool{} }
 func (m *MsgFundPool) String() string { return proto.CompactTextString(m) }
 func (*MsgFundPool) ProtoMessage()    {}
 func (*MsgFundPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_20ddefdf83388ddc, []int{0}
+	return fileDescriptor_20ddefdf83388ddc, []int{2}
 }
 func (m *MsgFundPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -91,7 +273,7 @@ func (m *MsgFundPool) GetAmount() uint64 {
 	return 0
 }
 
-// MsgFundPoolResponse defines the Msg/FundPool response type.
+// MsgFundPoolResponse defines the Msg/DefundPool response type.
 type MsgFundPoolResponse struct {
 }
 
@@ -99,7 +281,7 @@ func (m *MsgFundPoolResponse) Reset()         { *m = MsgFundPoolResponse{} }
 func (m *MsgFundPoolResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgFundPoolResponse) ProtoMessage()    {}
 func (*MsgFundPoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_20ddefdf83388ddc, []int{1}
+	return fileDescriptor_20ddefdf83388ddc, []int{3}
 }
 func (m *MsgFundPoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -142,7 +324,7 @@ func (m *MsgDefundPool) Reset()         { *m = MsgDefundPool{} }
 func (m *MsgDefundPool) String() string { return proto.CompactTextString(m) }
 func (*MsgDefundPool) ProtoMessage()    {}
 func (*MsgDefundPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_20ddefdf83388ddc, []int{2}
+	return fileDescriptor_20ddefdf83388ddc, []int{4}
 }
 func (m *MsgDefundPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -200,7 +382,7 @@ func (m *MsgDefundPoolResponse) Reset()         { *m = MsgDefundPoolResponse{} }
 func (m *MsgDefundPoolResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgDefundPoolResponse) ProtoMessage()    {}
 func (*MsgDefundPoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_20ddefdf83388ddc, []int{3}
+	return fileDescriptor_20ddefdf83388ddc, []int{5}
 }
 func (m *MsgDefundPoolResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -229,132 +411,51 @@ func (m *MsgDefundPoolResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDefundPoolResponse proto.InternalMessageInfo
 
-// MsgDefundPool defines a SDK message for defunding a pool.
-type MsgCreatePool struct {
-	// creator ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	// amount ...
-	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-}
-
-func (m *MsgCreatePool) Reset()         { *m = MsgCreatePool{} }
-func (m *MsgCreatePool) String() string { return proto.CompactTextString(m) }
-func (*MsgCreatePool) ProtoMessage()    {}
-func (*MsgCreatePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_20ddefdf83388ddc, []int{4}
-}
-func (m *MsgCreatePool) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgCreatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgCreatePool.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgCreatePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreatePool.Merge(m, src)
-}
-func (m *MsgCreatePool) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgCreatePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreatePool.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgCreatePool proto.InternalMessageInfo
-
-func (m *MsgCreatePool) GetCreator() string {
-	if m != nil {
-		return m.Creator
-	}
-	return ""
-}
-
-func (m *MsgCreatePool) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-// MsgDefundPoolResponse defines the Msg/DefundPool response type.
-type MsgCreatePoolResponse struct {
-}
-
-func (m *MsgCreatePoolResponse) Reset()         { *m = MsgCreatePoolResponse{} }
-func (m *MsgCreatePoolResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgCreatePoolResponse) ProtoMessage()    {}
-func (*MsgCreatePoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_20ddefdf83388ddc, []int{5}
-}
-func (m *MsgCreatePoolResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgCreatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgCreatePoolResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgCreatePoolResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgCreatePoolResponse.Merge(m, src)
-}
-func (m *MsgCreatePoolResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgCreatePoolResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgCreatePoolResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgCreatePoolResponse proto.InternalMessageInfo
-
 func init() {
+	proto.RegisterType((*MsgCreatePool)(nil), "kyve.pool.v1beta1.MsgCreatePool")
+	proto.RegisterType((*MsgCreatePoolResponse)(nil), "kyve.pool.v1beta1.MsgCreatePoolResponse")
 	proto.RegisterType((*MsgFundPool)(nil), "kyve.pool.v1beta1.MsgFundPool")
 	proto.RegisterType((*MsgFundPoolResponse)(nil), "kyve.pool.v1beta1.MsgFundPoolResponse")
 	proto.RegisterType((*MsgDefundPool)(nil), "kyve.pool.v1beta1.MsgDefundPool")
 	proto.RegisterType((*MsgDefundPoolResponse)(nil), "kyve.pool.v1beta1.MsgDefundPoolResponse")
-	proto.RegisterType((*MsgCreatePool)(nil), "kyve.pool.v1beta1.MsgCreatePool")
-	proto.RegisterType((*MsgCreatePoolResponse)(nil), "kyve.pool.v1beta1.MsgCreatePoolResponse")
 }
 
 func init() { proto.RegisterFile("kyve/pool/v1beta1/tx.proto", fileDescriptor_20ddefdf83388ddc) }
 
 var fileDescriptor_20ddefdf83388ddc = []byte{
-	// 325 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xca, 0xae, 0x2c, 0x4b,
-	0xd5, 0x2f, 0xc8, 0xcf, 0xcf, 0xd1, 0x2f, 0x33, 0x4c, 0x4a, 0x2d, 0x49, 0x34, 0xd4, 0x2f, 0xa9,
-	0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x04, 0xc9, 0xe9, 0x81, 0xe4, 0xf4, 0xa0, 0x72,
-	0x4a, 0xfe, 0x5c, 0xdc, 0xbe, 0xc5, 0xe9, 0x6e, 0xa5, 0x79, 0x29, 0x01, 0xf9, 0xf9, 0x39, 0x42,
-	0x12, 0x5c, 0xec, 0xc9, 0x45, 0xa9, 0x89, 0x25, 0xf9, 0x45, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c,
-	0x41, 0x30, 0xae, 0x10, 0x1f, 0x17, 0x53, 0x66, 0x8a, 0x04, 0x93, 0x02, 0xa3, 0x06, 0x4b, 0x10,
-	0x53, 0x66, 0x8a, 0x90, 0x18, 0x17, 0x5b, 0x62, 0x6e, 0x7e, 0x69, 0x5e, 0x89, 0x04, 0x33, 0x58,
-	0x0c, 0xca, 0x53, 0x12, 0xe5, 0x12, 0x46, 0x32, 0x30, 0x28, 0xb5, 0xb8, 0x20, 0x3f, 0xaf, 0x38,
-	0x55, 0x29, 0x90, 0x8b, 0xd7, 0xb7, 0x38, 0xdd, 0x25, 0x35, 0x8d, 0x7a, 0x36, 0x89, 0x73, 0x89,
-	0xa2, 0x18, 0x09, 0xb7, 0xcb, 0x16, 0x6c, 0x97, 0x33, 0xc8, 0xb8, 0x54, 0x02, 0x76, 0x09, 0x71,
-	0xb1, 0xe4, 0x25, 0xe6, 0xa6, 0x82, 0x6d, 0xe3, 0x0c, 0x02, 0xb3, 0xa1, 0xe6, 0x22, 0xb4, 0xc3,
-	0xcc, 0x35, 0xea, 0x65, 0xe2, 0x62, 0xf6, 0x2d, 0x4e, 0x17, 0x8a, 0xe0, 0xe2, 0x42, 0x32, 0x5c,
-	0x41, 0x0f, 0x23, 0x54, 0xf5, 0x50, 0xf4, 0x4b, 0x69, 0x10, 0x52, 0x01, 0xb3, 0x41, 0x28, 0x88,
-	0x8b, 0x03, 0x1e, 0x15, 0x72, 0xd8, 0x75, 0xc1, 0xe4, 0xa5, 0xd4, 0xf0, 0xcb, 0xc3, 0xcd, 0x8c,
-	0xe0, 0xe2, 0x42, 0x0a, 0x76, 0x1c, 0xae, 0x45, 0xa8, 0xc0, 0xe5, 0x5a, 0xcc, 0x70, 0x76, 0x72,
-	0x3e, 0xf1, 0x48, 0x8e, 0xf1, 0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96,
-	0x63, 0xb8, 0xf0, 0x58, 0x8e, 0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xcd, 0xf4, 0xcc, 0x92, 0x8c,
-	0xd2, 0x24, 0xbd, 0xe4, 0xfc, 0x5c, 0x7d, 0xef, 0xc8, 0x30, 0x57, 0xbf, 0xd4, 0x92, 0xf2, 0xfc,
-	0xa2, 0x6c, 0xfd, 0xe4, 0x8c, 0xc4, 0xcc, 0x3c, 0xfd, 0x0a, 0x48, 0xf2, 0x2c, 0xa9, 0x2c, 0x48,
-	0x2d, 0x4e, 0x62, 0x03, 0x27, 0x4d, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x53, 0xc5, 0x84,
-	0x4b, 0xb8, 0x02, 0x00, 0x00,
+	// 502 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0x8e, 0xd3, 0x90, 0x26, 0x53, 0x9a, 0x8a, 0x45, 0x85, 0x55, 0x90, 0xac, 0x28, 0x12, 0x25,
+	0x5c, 0x6c, 0x15, 0xde, 0xa0, 0x01, 0x24, 0x54, 0x85, 0x1f, 0x57, 0x42, 0x85, 0x8b, 0xb5, 0x49,
+	0xa6, 0xee, 0x2a, 0xf6, 0xae, 0xb5, 0xbb, 0x0e, 0x49, 0xdf, 0x01, 0x89, 0xc7, 0xe2, 0xd8, 0x23,
+	0x47, 0x94, 0x1c, 0x79, 0x09, 0xe4, 0xb5, 0x93, 0xa6, 0x2a, 0xa5, 0x17, 0x6e, 0xfe, 0x7e, 0x3c,
+	0xb3, 0xf3, 0xcd, 0x2e, 0xb4, 0x27, 0xf3, 0x29, 0xfa, 0xa9, 0x94, 0xb1, 0x3f, 0x3d, 0x1c, 0xa2,
+	0x61, 0x87, 0xbe, 0x99, 0x79, 0xa9, 0x92, 0x46, 0x92, 0x07, 0xb9, 0xe6, 0xe5, 0x9a, 0x57, 0x6a,
+	0xdd, 0xdf, 0x55, 0xd8, 0x1d, 0xe8, 0xa8, 0xaf, 0x90, 0x19, 0xfc, 0x20, 0x65, 0x4c, 0x28, 0x6c,
+	0x8f, 0x72, 0x24, 0x15, 0x75, 0x3a, 0x4e, 0xaf, 0x19, 0xac, 0x20, 0x21, 0x50, 0x13, 0x2c, 0x41,
+	0x5a, 0xb5, 0xb4, 0xfd, 0xce, 0xdd, 0x2a, 0x13, 0x86, 0x27, 0x48, 0xb7, 0x0a, 0x77, 0x09, 0x73,
+	0x77, 0x2c, 0x23, 0x49, 0x6b, 0x85, 0x3b, 0xff, 0x26, 0x8f, 0xa0, 0x3e, 0x92, 0xe2, 0x8c, 0x47,
+	0xf4, 0x9e, 0x65, 0x4b, 0x44, 0x9e, 0x40, 0x53, 0x1b, 0xa6, 0x4c, 0x38, 0xc1, 0x39, 0xad, 0x5b,
+	0xa9, 0x61, 0x89, 0x63, 0x9c, 0x93, 0x67, 0xb0, 0x97, 0xa5, 0xb1, 0x64, 0xe3, 0x90, 0x0b, 0x83,
+	0x6a, 0xca, 0x62, 0xba, 0xdd, 0x71, 0x7a, 0xb5, 0xa0, 0x55, 0xd0, 0x6f, 0x4b, 0x96, 0x3c, 0x85,
+	0x96, 0x4c, 0x51, 0x31, 0xc3, 0x45, 0x14, 0x8e, 0xa4, 0x36, 0xb4, 0x61, 0x7d, 0xbb, 0x6b, 0xb6,
+	0x2f, 0xb5, 0xc9, 0x9b, 0x25, 0x5c, 0x84, 0xda, 0xb0, 0x09, 0xd2, 0xa6, 0x75, 0x34, 0x12, 0x2e,
+	0x4e, 0x72, 0x4c, 0x0e, 0x60, 0x2f, 0x61, 0xb3, 0x70, 0x98, 0x89, 0x71, 0x8c, 0xa1, 0xe6, 0x17,
+	0x48, 0xa1, 0x28, 0x92, 0xb0, 0xd9, 0x91, 0x65, 0x4f, 0xf8, 0x85, 0x9d, 0x7b, 0x8a, 0x4a, 0x73,
+	0x29, 0xe8, 0x4e, 0x31, 0x77, 0x09, 0x49, 0x1b, 0x1a, 0x43, 0x2e, 0x98, 0xe2, 0xa8, 0xe9, 0xfd,
+	0x62, 0x94, 0x15, 0xee, 0x3e, 0x86, 0xfd, 0x6b, 0x61, 0x07, 0xa8, 0x53, 0x29, 0x34, 0x76, 0xdf,
+	0xc3, 0xce, 0x40, 0x47, 0x6f, 0x32, 0x31, 0xbe, 0x63, 0x07, 0x2d, 0xa8, 0xf2, 0xb1, 0xdd, 0x40,
+	0x2d, 0xa8, 0xf2, 0x71, 0x9e, 0x28, 0x4b, 0x64, 0x26, 0x8c, 0x8d, 0xbf, 0x16, 0x94, 0xa8, 0xbb,
+	0x0f, 0x0f, 0x37, 0x0a, 0xae, 0xfb, 0x7c, 0xb4, 0xdb, 0x7e, 0x85, 0x67, 0xff, 0xaf, 0x53, 0x31,
+	0xd3, 0x55, 0xc9, 0x55, 0xaf, 0x17, 0xdf, 0xaa, 0xb0, 0x35, 0xd0, 0x11, 0x39, 0x05, 0xd8, 0xb8,
+	0x5e, 0x1d, 0xef, 0xc6, 0x25, 0xf4, 0xae, 0x65, 0xd2, 0xee, 0xdd, 0xe5, 0x58, 0x75, 0x20, 0x01,
+	0x34, 0xd6, 0x91, 0xb9, 0x7f, 0xff, 0x6b, 0xa5, 0xb7, 0x0f, 0xfe, 0xad, 0xaf, 0x6b, 0x9e, 0x02,
+	0x6c, 0xc4, 0x73, 0xcb, 0x69, 0xaf, 0x1c, 0xb7, 0x9d, 0xf6, 0x66, 0x1e, 0x47, 0xfd, 0x1f, 0x0b,
+	0xd7, 0xb9, 0x5c, 0xb8, 0xce, 0xaf, 0x85, 0xeb, 0x7c, 0x5f, 0xba, 0x95, 0xcb, 0xa5, 0x5b, 0xf9,
+	0xb9, 0x74, 0x2b, 0x5f, 0x9e, 0x47, 0xdc, 0x9c, 0x67, 0x43, 0x6f, 0x24, 0x13, 0xff, 0xf8, 0xf3,
+	0xa7, 0xd7, 0xef, 0xd0, 0x7c, 0x95, 0x6a, 0xe2, 0x8f, 0xce, 0x19, 0x17, 0xfe, 0xac, 0x78, 0xcd,
+	0x66, 0x9e, 0xa2, 0x1e, 0xd6, 0xed, 0x4b, 0x7e, 0xf9, 0x27, 0x00, 0x00, 0xff, 0xff, 0x41, 0xe0,
+	0x3f, 0x51, 0xe7, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -369,7 +470,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// DefundPool ...
+	// CreatePool ...
 	CreatePool(ctx context.Context, in *MsgCreatePool, opts ...grpc.CallOption) (*MsgCreatePoolResponse, error)
 	// FundPool ...
 	FundPool(ctx context.Context, in *MsgFundPool, opts ...grpc.CallOption) (*MsgFundPoolResponse, error)
@@ -414,7 +515,7 @@ func (c *msgClient) DefundPool(ctx context.Context, in *MsgDefundPool, opts ...g
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// DefundPool ...
+	// CreatePool ...
 	CreatePool(context.Context, *MsgCreatePool) (*MsgCreatePoolResponse, error)
 	// FundPool ...
 	FundPool(context.Context, *MsgFundPool) (*MsgFundPoolResponse, error)
@@ -513,6 +614,128 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "kyve/pool/v1beta1/tx.proto",
+}
+
+func (m *MsgCreatePool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreatePool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Binaries) > 0 {
+		i -= len(m.Binaries)
+		copy(dAtA[i:], m.Binaries)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Binaries)))
+		i--
+		dAtA[i] = 0x62
+	}
+	if len(m.Version) > 0 {
+		i -= len(m.Version)
+		copy(dAtA[i:], m.Version)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Version)))
+		i--
+		dAtA[i] = 0x5a
+	}
+	if m.MaxBundleSize != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.MaxBundleSize))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.MinStake != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.MinStake))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.OperatingCost != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.OperatingCost))
+		i--
+		dAtA[i] = 0x40
+	}
+	if m.UploadInterval != 0 {
+		i = encodeVarintTx(dAtA, i, uint64(m.UploadInterval))
+		i--
+		dAtA[i] = 0x38
+	}
+	if len(m.StartKey) > 0 {
+		i -= len(m.StartKey)
+		copy(dAtA[i:], m.StartKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.StartKey)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Config) > 0 {
+		i -= len(m.Config)
+		copy(dAtA[i:], m.Config)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Config)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Logo) > 0 {
+		i -= len(m.Logo)
+		copy(dAtA[i:], m.Logo)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Logo)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Runtime) > 0 {
+		i -= len(m.Runtime)
+		copy(dAtA[i:], m.Runtime)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Runtime)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgCreatePoolResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgCreatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgCreatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
 }
 
 func (m *MsgFundPool) Marshal() (dAtA []byte, err error) {
@@ -641,66 +864,6 @@ func (m *MsgDefundPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgCreatePool) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgCreatePool) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgCreatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Name) > 0 {
-		i -= len(m.Name)
-		copy(dAtA[i:], m.Name)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Name)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Creator)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgCreatePoolResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgCreatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgCreatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -712,6 +875,68 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *MsgCreatePool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Runtime)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Logo)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Config)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.StartKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if m.UploadInterval != 0 {
+		n += 1 + sovTx(uint64(m.UploadInterval))
+	}
+	if m.OperatingCost != 0 {
+		n += 1 + sovTx(uint64(m.OperatingCost))
+	}
+	if m.MinStake != 0 {
+		n += 1 + sovTx(uint64(m.MinStake))
+	}
+	if m.MaxBundleSize != 0 {
+		n += 1 + sovTx(uint64(m.MaxBundleSize))
+	}
+	l = len(m.Version)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Binaries)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgCreatePoolResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
 func (m *MsgFundPool) Size() (n int) {
 	if m == nil {
 		return 0
@@ -768,37 +993,443 @@ func (m *MsgDefundPoolResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgCreatePool) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Creator)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Name)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgCreatePoolResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func sovTx(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *MsgCreatePool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreatePool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Runtime", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Runtime = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Logo", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Logo = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Config", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Config = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StartKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UploadInterval", wireType)
+			}
+			m.UploadInterval = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.UploadInterval |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OperatingCost", wireType)
+			}
+			m.OperatingCost = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.OperatingCost |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinStake", wireType)
+			}
+			m.MinStake = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MinStake |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxBundleSize", wireType)
+			}
+			m.MaxBundleSize = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaxBundleSize |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Version = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Binaries", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Binaries = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgCreatePoolResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgCreatePoolResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgCreatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *MsgFundPool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -1117,170 +1748,6 @@ func (m *MsgDefundPoolResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: MsgDefundPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgCreatePool) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreatePool: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreatePool: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Name = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgCreatePoolResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgCreatePoolResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgCreatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

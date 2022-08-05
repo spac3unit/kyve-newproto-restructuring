@@ -23,6 +23,159 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+type EventCreatePool struct {
+	// creator ...
+	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	// id ...
+	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	// name ...
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	// runtime ...
+	Runtime string `protobuf:"bytes,4,opt,name=runtime,proto3" json:"runtime,omitempty"`
+	// logo ...
+	Logo string `protobuf:"bytes,5,opt,name=logo,proto3" json:"logo,omitempty"`
+	// config ...
+	Config string `protobuf:"bytes,6,opt,name=config,proto3" json:"config,omitempty"`
+	// start_key ...
+	StartKey string `protobuf:"bytes,7,opt,name=start_key,json=startKey,proto3" json:"start_key,omitempty"`
+	// upload_interval ...
+	UploadInterval uint64 `protobuf:"varint,8,opt,name=upload_interval,json=uploadInterval,proto3" json:"upload_interval,omitempty"`
+	// operating_cost ...
+	OperatingCost uint64 `protobuf:"varint,9,opt,name=operating_cost,json=operatingCost,proto3" json:"operating_cost,omitempty"`
+	// min_stake ...
+	MinStake uint64 `protobuf:"varint,10,opt,name=min_stake,json=minStake,proto3" json:"min_stake,omitempty"`
+	// max_bundle_size ...
+	MaxBundleSize uint64 `protobuf:"varint,11,opt,name=max_bundle_size,json=maxBundleSize,proto3" json:"max_bundle_size,omitempty"`
+	// version ...
+	Version string `protobuf:"bytes,12,opt,name=version,proto3" json:"version,omitempty"`
+	// binaries ...
+	Binaries string `protobuf:"bytes,13,opt,name=binaries,proto3" json:"binaries,omitempty"`
+}
+
+func (m *EventCreatePool) Reset()         { *m = EventCreatePool{} }
+func (m *EventCreatePool) String() string { return proto.CompactTextString(m) }
+func (*EventCreatePool) ProtoMessage()    {}
+func (*EventCreatePool) Descriptor() ([]byte, []int) {
+	return fileDescriptor_c1828a100d789238, []int{0}
+}
+func (m *EventCreatePool) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *EventCreatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_EventCreatePool.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *EventCreatePool) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EventCreatePool.Merge(m, src)
+}
+func (m *EventCreatePool) XXX_Size() int {
+	return m.Size()
+}
+func (m *EventCreatePool) XXX_DiscardUnknown() {
+	xxx_messageInfo_EventCreatePool.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EventCreatePool proto.InternalMessageInfo
+
+func (m *EventCreatePool) GetCreator() string {
+	if m != nil {
+		return m.Creator
+	}
+	return ""
+}
+
+func (m *EventCreatePool) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *EventCreatePool) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *EventCreatePool) GetRuntime() string {
+	if m != nil {
+		return m.Runtime
+	}
+	return ""
+}
+
+func (m *EventCreatePool) GetLogo() string {
+	if m != nil {
+		return m.Logo
+	}
+	return ""
+}
+
+func (m *EventCreatePool) GetConfig() string {
+	if m != nil {
+		return m.Config
+	}
+	return ""
+}
+
+func (m *EventCreatePool) GetStartKey() string {
+	if m != nil {
+		return m.StartKey
+	}
+	return ""
+}
+
+func (m *EventCreatePool) GetUploadInterval() uint64 {
+	if m != nil {
+		return m.UploadInterval
+	}
+	return 0
+}
+
+func (m *EventCreatePool) GetOperatingCost() uint64 {
+	if m != nil {
+		return m.OperatingCost
+	}
+	return 0
+}
+
+func (m *EventCreatePool) GetMinStake() uint64 {
+	if m != nil {
+		return m.MinStake
+	}
+	return 0
+}
+
+func (m *EventCreatePool) GetMaxBundleSize() uint64 {
+	if m != nil {
+		return m.MaxBundleSize
+	}
+	return 0
+}
+
+func (m *EventCreatePool) GetVersion() string {
+	if m != nil {
+		return m.Version
+	}
+	return ""
+}
+
+func (m *EventCreatePool) GetBinaries() string {
+	if m != nil {
+		return m.Binaries
+	}
+	return ""
+}
+
 // EventFundPool is an event emitted when a pool is funded.
 type EventFundPool struct {
 	// pool_id is the unique ID of the pool.
@@ -37,7 +190,7 @@ func (m *EventFundPool) Reset()         { *m = EventFundPool{} }
 func (m *EventFundPool) String() string { return proto.CompactTextString(m) }
 func (*EventFundPool) ProtoMessage()    {}
 func (*EventFundPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c1828a100d789238, []int{0}
+	return fileDescriptor_c1828a100d789238, []int{1}
 }
 func (m *EventFundPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -101,7 +254,7 @@ func (m *EventDefundPool) Reset()         { *m = EventDefundPool{} }
 func (m *EventDefundPool) String() string { return proto.CompactTextString(m) }
 func (*EventDefundPool) ProtoMessage()    {}
 func (*EventDefundPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_c1828a100d789238, []int{1}
+	return fileDescriptor_c1828a100d789238, []int{2}
 }
 func (m *EventDefundPool) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -152,6 +305,7 @@ func (m *EventDefundPool) GetAmount() uint64 {
 }
 
 func init() {
+	proto.RegisterType((*EventCreatePool)(nil), "kyve.pool.v1beta1.EventCreatePool")
 	proto.RegisterType((*EventFundPool)(nil), "kyve.pool.v1beta1.EventFundPool")
 	proto.RegisterType((*EventDefundPool)(nil), "kyve.pool.v1beta1.EventDefundPool")
 }
@@ -159,22 +313,140 @@ func init() {
 func init() { proto.RegisterFile("kyve/pool/v1beta1/events.proto", fileDescriptor_c1828a100d789238) }
 
 var fileDescriptor_c1828a100d789238 = []byte{
-	// 234 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcb, 0xae, 0x2c, 0x4b,
-	0xd5, 0x2f, 0xc8, 0xcf, 0xcf, 0xd1, 0x2f, 0x33, 0x4c, 0x4a, 0x2d, 0x49, 0x34, 0xd4, 0x4f, 0x2d,
-	0x4b, 0xcd, 0x2b, 0x29, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x04, 0xc9, 0xeb, 0x81,
-	0xe4, 0xf5, 0xa0, 0xf2, 0x52, 0x22, 0xe9, 0xf9, 0xe9, 0xf9, 0x60, 0x59, 0x7d, 0x10, 0x0b, 0xa2,
-	0x50, 0x29, 0x8a, 0x8b, 0xd7, 0x15, 0xa4, 0xd1, 0xad, 0x34, 0x2f, 0x25, 0x20, 0x3f, 0x3f, 0x47,
-	0x48, 0x9c, 0x8b, 0x1d, 0xa4, 0x2d, 0x3e, 0x33, 0x45, 0x82, 0x51, 0x81, 0x51, 0x83, 0x25, 0x88,
-	0x0d, 0xc4, 0xf5, 0x4c, 0x11, 0x92, 0xe0, 0x62, 0x4f, 0x4c, 0x49, 0x29, 0x4a, 0x2d, 0x2e, 0x96,
-	0x60, 0x52, 0x60, 0xd4, 0xe0, 0x0c, 0x82, 0x71, 0x85, 0xc4, 0xb8, 0xd8, 0x12, 0x73, 0xf3, 0x4b,
-	0xf3, 0x4a, 0x24, 0x98, 0x21, 0x3a, 0x20, 0x3c, 0xa5, 0x18, 0x2e, 0x7e, 0xb0, 0xd9, 0x2e, 0xa9,
-	0x69, 0xd4, 0x37, 0xdd, 0xc9, 0xf9, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c,
-	0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2,
-	0x34, 0xd3, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0xbd, 0x23, 0xc3, 0x5c,
-	0xfd, 0x52, 0x4b, 0xca, 0xf3, 0x8b, 0xb2, 0xf5, 0x93, 0x33, 0x12, 0x33, 0xf3, 0xf4, 0x2b, 0x20,
-	0xc1, 0x56, 0x52, 0x59, 0x90, 0x5a, 0x9c, 0xc4, 0x06, 0x0e, 0x05, 0x63, 0x40, 0x00, 0x00, 0x00,
-	0xff, 0xff, 0x2b, 0x13, 0x03, 0xa9, 0x50, 0x01, 0x00, 0x00,
+	// 453 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x92, 0xdf, 0x6a, 0xd4, 0x40,
+	0x14, 0xc6, 0x9b, 0x35, 0xee, 0x9f, 0xd1, 0xdd, 0xc5, 0x41, 0x74, 0xa8, 0x10, 0xca, 0x82, 0x5a,
+	0x6f, 0x36, 0x14, 0xdf, 0xa0, 0x6b, 0x85, 0x52, 0x10, 0x49, 0x41, 0xb0, 0x08, 0x61, 0x92, 0x39,
+	0x4d, 0x87, 0x4d, 0xe6, 0x84, 0x99, 0x49, 0xdc, 0xed, 0x53, 0xf8, 0x58, 0x5e, 0xf6, 0xd2, 0x4b,
+	0xd9, 0x7d, 0x0e, 0x41, 0x66, 0x92, 0xf5, 0x09, 0xbc, 0x3b, 0xbf, 0xef, 0x7c, 0xe7, 0x24, 0xe7,
+	0x9c, 0x21, 0xd1, 0x7a, 0xdb, 0x42, 0x5c, 0x23, 0x96, 0x71, 0x7b, 0x96, 0x81, 0xe5, 0x67, 0x31,
+	0xb4, 0xa0, 0xac, 0x59, 0xd6, 0x1a, 0x2d, 0xd2, 0x67, 0x2e, 0xbf, 0x74, 0xf9, 0x65, 0x9f, 0x3f,
+	0x7e, 0x5e, 0x60, 0x81, 0x3e, 0x1b, 0xbb, 0xa8, 0x33, 0x2e, 0xfe, 0x0c, 0xc8, 0xfc, 0xc2, 0x55,
+	0xae, 0x34, 0x70, 0x0b, 0x9f, 0x11, 0x4b, 0xca, 0xc8, 0x28, 0x77, 0x84, 0x9a, 0x05, 0x27, 0xc1,
+	0xe9, 0x24, 0x39, 0x20, 0x9d, 0x91, 0x81, 0x14, 0x6c, 0x70, 0x12, 0x9c, 0x86, 0xc9, 0x40, 0x0a,
+	0x4a, 0x49, 0xa8, 0x78, 0x05, 0xec, 0x91, 0xb7, 0xf9, 0xd8, 0x55, 0xeb, 0x46, 0x59, 0x59, 0x01,
+	0x0b, 0xbb, 0xea, 0x1e, 0x9d, 0xbb, 0xc4, 0x02, 0xd9, 0xe3, 0xce, 0xed, 0x62, 0xfa, 0x82, 0x0c,
+	0x73, 0x54, 0xb7, 0xb2, 0x60, 0x43, 0xaf, 0xf6, 0x44, 0x5f, 0x91, 0x89, 0xb1, 0x5c, 0xdb, 0x74,
+	0x0d, 0x5b, 0x36, 0xf2, 0xa9, 0xb1, 0x17, 0xae, 0x60, 0x4b, 0xdf, 0x92, 0x79, 0x53, 0x97, 0xc8,
+	0x45, 0x2a, 0x95, 0x05, 0xdd, 0xf2, 0x92, 0x8d, 0xfd, 0x3f, 0xcd, 0x3a, 0xf9, 0xb2, 0x57, 0xe9,
+	0x6b, 0x32, 0xc3, 0x1a, 0x34, 0xb7, 0x52, 0x15, 0x69, 0x8e, 0xc6, 0xb2, 0x89, 0xf7, 0x4d, 0xff,
+	0xa9, 0x2b, 0x34, 0xd6, 0x7d, 0xac, 0x92, 0x2a, 0x35, 0x96, 0xaf, 0x81, 0x11, 0xef, 0x18, 0x57,
+	0x52, 0x5d, 0x3b, 0xa6, 0x6f, 0xc8, 0xbc, 0xe2, 0x9b, 0x34, 0x6b, 0x94, 0x28, 0x21, 0x35, 0xf2,
+	0x1e, 0xd8, 0x93, 0xae, 0x49, 0xc5, 0x37, 0xe7, 0x5e, 0xbd, 0x96, 0xf7, 0x7e, 0xee, 0x16, 0xb4,
+	0x91, 0xa8, 0xd8, 0xd3, 0x6e, 0xee, 0x1e, 0xe9, 0x31, 0x19, 0x67, 0x52, 0x71, 0x2d, 0xc1, 0xb0,
+	0x69, 0x37, 0xca, 0x81, 0x17, 0x37, 0x64, 0xea, 0xd7, 0xff, 0xb1, 0x51, 0xc2, 0x2f, 0xff, 0x25,
+	0x19, 0xb9, 0xb3, 0xa5, 0x52, 0xf8, 0xe5, 0x87, 0xc9, 0xd0, 0xe1, 0xa5, 0x70, 0xfd, 0xb9, 0x10,
+	0x1a, 0x8c, 0xf1, 0x07, 0x98, 0x24, 0x07, 0x74, 0x3b, 0xe4, 0x15, 0x36, 0xca, 0xfa, 0x3b, 0x84,
+	0x49, 0x4f, 0x8b, 0x6f, 0xfd, 0x69, 0x3f, 0xc0, 0xed, 0xff, 0xef, 0x7e, 0xbe, 0xfa, 0xb9, 0x8b,
+	0x82, 0x87, 0x5d, 0x14, 0xfc, 0xde, 0x45, 0xc1, 0x8f, 0x7d, 0x74, 0xf4, 0xb0, 0x8f, 0x8e, 0x7e,
+	0xed, 0xa3, 0xa3, 0x9b, 0x77, 0x85, 0xb4, 0x77, 0x4d, 0xb6, 0xcc, 0xb1, 0x8a, 0xaf, 0xbe, 0x7e,
+	0xb9, 0xf8, 0x04, 0xf6, 0x3b, 0xea, 0x75, 0x9c, 0xdf, 0x71, 0xa9, 0xe2, 0x4d, 0xf7, 0x6c, 0xed,
+	0xb6, 0x06, 0x93, 0x0d, 0xfd, 0x2b, 0x7c, 0xff, 0x37, 0x00, 0x00, 0xff, 0xff, 0x2a, 0xe2, 0xdc,
+	0x27, 0xd0, 0x02, 0x00, 0x00,
+}
+
+func (m *EventCreatePool) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EventCreatePool) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *EventCreatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Binaries) > 0 {
+		i -= len(m.Binaries)
+		copy(dAtA[i:], m.Binaries)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Binaries)))
+		i--
+		dAtA[i] = 0x6a
+	}
+	if len(m.Version) > 0 {
+		i -= len(m.Version)
+		copy(dAtA[i:], m.Version)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Version)))
+		i--
+		dAtA[i] = 0x62
+	}
+	if m.MaxBundleSize != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.MaxBundleSize))
+		i--
+		dAtA[i] = 0x58
+	}
+	if m.MinStake != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.MinStake))
+		i--
+		dAtA[i] = 0x50
+	}
+	if m.OperatingCost != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.OperatingCost))
+		i--
+		dAtA[i] = 0x48
+	}
+	if m.UploadInterval != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.UploadInterval))
+		i--
+		dAtA[i] = 0x40
+	}
+	if len(m.StartKey) > 0 {
+		i -= len(m.StartKey)
+		copy(dAtA[i:], m.StartKey)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.StartKey)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.Config) > 0 {
+		i -= len(m.Config)
+		copy(dAtA[i:], m.Config)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Config)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Logo) > 0 {
+		i -= len(m.Logo)
+		copy(dAtA[i:], m.Logo)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Logo)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Runtime) > 0 {
+		i -= len(m.Runtime)
+		copy(dAtA[i:], m.Runtime)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Runtime)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Id != 0 {
+		i = encodeVarintEvents(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Creator) > 0 {
+		i -= len(m.Creator)
+		copy(dAtA[i:], m.Creator)
+		i = encodeVarintEvents(dAtA, i, uint64(len(m.Creator)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
 }
 
 func (m *EventFundPool) Marshal() (dAtA []byte, err error) {
@@ -268,6 +540,62 @@ func encodeVarintEvents(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
+func (m *EventCreatePool) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Creator)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.Id != 0 {
+		n += 1 + sovEvents(uint64(m.Id))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.Runtime)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.Logo)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.Config)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.StartKey)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	if m.UploadInterval != 0 {
+		n += 1 + sovEvents(uint64(m.UploadInterval))
+	}
+	if m.OperatingCost != 0 {
+		n += 1 + sovEvents(uint64(m.OperatingCost))
+	}
+	if m.MinStake != 0 {
+		n += 1 + sovEvents(uint64(m.MinStake))
+	}
+	if m.MaxBundleSize != 0 {
+		n += 1 + sovEvents(uint64(m.MaxBundleSize))
+	}
+	l = len(m.Version)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	l = len(m.Binaries)
+	if l > 0 {
+		n += 1 + l + sovEvents(uint64(l))
+	}
+	return n
+}
+
 func (m *EventFundPool) Size() (n int) {
 	if m == nil {
 		return 0
@@ -311,6 +639,407 @@ func sovEvents(x uint64) (n int) {
 }
 func sozEvents(x uint64) (n int) {
 	return sovEvents(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *EventCreatePool) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowEvents
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EventCreatePool: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EventCreatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Creator = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Runtime", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Runtime = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Logo", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Logo = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Config", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Config = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StartKey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StartKey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UploadInterval", wireType)
+			}
+			m.UploadInterval = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.UploadInterval |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OperatingCost", wireType)
+			}
+			m.OperatingCost = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.OperatingCost |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 10:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MinStake", wireType)
+			}
+			m.MinStake = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MinStake |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 11:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MaxBundleSize", wireType)
+			}
+			m.MaxBundleSize = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.MaxBundleSize |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 12:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Version = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Binaries", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowEvents
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthEvents
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Binaries = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipEvents(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthEvents
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *EventFundPool) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

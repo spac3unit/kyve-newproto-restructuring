@@ -26,7 +26,11 @@ func (k msgServer) ClaimUploaderRole(
 		return nil, err
 	}
 
-	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
+	bundleProposal, found := k.GetBundleProposal(ctx, msg.PoolId)
+
+	if !found {
+		bundleProposal.PoolId = msg.PoolId
+	}
 
 	// Error if the next uploader is already set.
 	if bundleProposal.NextUploader != "" {

@@ -14,17 +14,16 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Iterate over all pool Ids.
-	for _, poolId := range []uint64{10} /*TODO fetch pool ids and */ {
-		// Set pool status
-
-		err := k.poolKeeper.AssertPoolCanRun(ctx, poolId)
-
-		pool, _ := k.poolKeeper.GetPool(ctx, poolId)
-		bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
+	for _, pool := range k.poolKeeper.GetAllPools(ctx) {
+		// TODO: Set pool status
+		
+		err := k.poolKeeper.AssertPoolCanRun(ctx, pool.Id)
+		bundleProposal, _ := k.GetBundleProposal(ctx, pool.Id)
 
 		// Remove next uploader if pool is not active
 		if err != nil {
 			bundleProposal.NextUploader = ""
+			k.SetBundleProposal(ctx, bundleProposal)
 		}
 
 		// Skip if we haven't reached the upload interval.
@@ -35,20 +34,20 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		// Check if bundle needs to be dropped
 		if bundleProposal.StorageId != "" && !strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 			// check if the quorum was actually reached
-			voteDistribution := k.getVoteDistribution(ctx, poolId)
+			voteDistribution := k.getVoteDistribution(ctx, pool.Id)
 
 			if voteDistribution.Status == types.BUNDLE_STATUS_NO_QUORUM {
 				// handle stakers who did not vote at all
-				k.handleNonVoters(ctx, poolId)
+				k.handleNonVoters(ctx, pool.Id)
 
 				// Get next uploader
 				voters := append(bundleProposal.VotersValid, bundleProposal.VotersInvalid...)
 				nextUploader := ""
 
 				if len(voters) > 0 {
-					nextUploader = k.chooseNextUploaderFromSelectedStakers(ctx, poolId, voters)
+					nextUploader = k.chooseNextUploaderFromSelectedStakers(ctx, pool.Id, voters)
 				} else {
-					nextUploader = k.chooseNextUploaderFromAllStakers(ctx, poolId)
+					nextUploader = k.chooseNextUploaderFromAllStakers(ctx, pool.Id)
 				}
 
 				// If consensus wasn't reached, we drop the bundle and emit an event.
@@ -80,13 +79,13 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		// We now know that the pool is active and the upload timeout has been reached.
 		// Now we slash and remove the current next_uploader and select a new one.
 
-		k.stakerKeeper.Slash(ctx, poolId, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
+		k.stakerKeeper.Slash(ctx, pool.Id, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
 
-		k.stakerKeeper.RemoveValaccountFromPool(ctx, poolId, bundleProposal.NextUploader)
+		k.stakerKeeper.RemoveValaccountFromPool(ctx, pool.Id, bundleProposal.NextUploader)
 
 
 		// Update bundle proposal
-		bundleProposal.NextUploader = k.chooseNextUploaderFromAllStakers(ctx, poolId)
+		bundleProposal.NextUploader = k.chooseNextUploaderFromAllStakers(ctx, pool.Id)
 		bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 
 		k.SetBundleProposal(ctx, bundleProposal)
