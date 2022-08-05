@@ -12,39 +12,38 @@ import (
 var _ = Describe("Join Pool", Ordered, func() {
 	s := i.NewCleanChain()
 
-	BeforeAll(func() {
+	BeforeEach(func() {
+		// init new clean chain
+		s = i.NewCleanChain()
+
+		// create pool
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
 		})
 
-		_, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		Expect(poolFound).To(BeTrue())
-
+		// create staker
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
-			Amount:  100 * i.KYVE,
+			Amount:  100*i.KYVE,
 		})
 
-		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
-		Expect(stakerFound).To(BeTrue())
-
+		// join pool
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
 			Creator: i.ALICE,
 			PoolId: 0,
 			Valaddress: i.BOB,
 		})
-
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
-		Expect(valaccountsOfStaker).To(HaveLen(1))
 	})
 
 	It("Leave a pool", func() {
+		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
 			Creator: i.ALICE,
 			PoolId: 0,
 		})
 
+		// ASSERT
 		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
@@ -91,36 +90,29 @@ var _ = Describe("Join Pool", Ordered, func() {
 	})
 
 	It("Try to leave pool again", func() {
-		_, err := s.RunTxStakers(&stakerstypes.MsgLeavePool{
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
 			Creator: i.ALICE,
 			PoolId: 0,
 		})
 
-		Expect(err).ToNot(BeNil())
-	})
-
-	It("Try to leave pool twice", func() {
-		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+		// ACT
+		s.RunTxStakersError(&stakerstypes.MsgLeavePool{
 			Creator: i.ALICE,
 			PoolId: 0,
-			Valaddress: i.BOB,
 		})
 
+		// ASSERT
 		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 
-		_, err := s.RunTxStakers(&stakerstypes.MsgLeavePool{
-			Creator: i.ALICE,
-			PoolId: 0,
-		})
+		// wait for leave pool
+		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
+		s.CommitAfterSeconds(1)
 
-		Expect(err).To(BeNil())
-
-		_, err = s.RunTxStakers(&stakerstypes.MsgLeavePool{
-			Creator: i.ALICE,
-			PoolId: 0,
-		})
-
-		Expect(err).NotTo(BeNil())
+		valaccountsOfStaker = s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		Expect(valaccountsOfStaker).To(BeEmpty())
 	})
+
+	// TODO: test with multiple pools
 })
