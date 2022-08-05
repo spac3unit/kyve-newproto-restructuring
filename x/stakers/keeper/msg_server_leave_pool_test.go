@@ -36,6 +36,10 @@ var _ = Describe("Join Pool", Ordered, func() {
 		})
 	})
 
+	AfterEach(func() {
+		s.VerifyStakersModuleAssetsIntegrity()
+	})
+
 	It("Leave a pool", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{

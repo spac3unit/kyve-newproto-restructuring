@@ -24,6 +24,10 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		})
 	})
 
+	AfterEach(func() {
+		s.VerifyPoolModuleAssetsIntegrity()
+	})
+
 	It("Fund Pool with 100 $KYVE", func() {
 		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{

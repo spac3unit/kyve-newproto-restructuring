@@ -31,6 +31,10 @@ var _ = Describe("Defund Pool", Ordered, func() {
 		})
 	})
 
+	AfterEach(func() {
+		s.VerifyPoolModuleAssetsIntegrity()
+	})
+
 	It("Defund more than funded", func() {
 		// ACT
 		s.RunTxPoolError(&pooltypes.MsgDefundPool{

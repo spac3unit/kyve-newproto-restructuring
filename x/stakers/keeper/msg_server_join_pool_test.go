@@ -29,6 +29,10 @@ var _ = Describe("Join Pool", Ordered, func() {
 		})
 	})
 
+	AfterEach(func() {
+		s.VerifyStakersModuleAssetsIntegrity()
+	})
+
 	It("Staker was just created", func() {
 		// ASSERT
 		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)

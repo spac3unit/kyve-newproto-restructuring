@@ -25,6 +25,10 @@ var _ = Describe("Unstaking", Ordered, func() {
 		})
 	})
 
+	AfterEach(func() {
+		s.VerifyStakersModuleAssetsIntegrity()
+	})
+
 	It("Unstake 50 KYVE", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{

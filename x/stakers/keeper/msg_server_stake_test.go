@@ -19,6 +19,10 @@ var _ = Describe("Staking", Ordered, func() {
 		s = i.NewCleanChain()
 	})
 
+	AfterEach(func() {
+		s.VerifyStakersModuleAssetsIntegrity()
+	})
+
 	It("Create new staker with 100 KYVE", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{

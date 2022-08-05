@@ -5,7 +5,9 @@ import (
 
 	"github.com/KYVENetwork/chain/x/delegation"
 	"github.com/KYVENetwork/chain/x/pool"
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/KYVENetwork/chain/x/stakers"
+	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -67,4 +69,34 @@ func (suite *KeeperTestSuite) RunTxDelegatorSuccess(msg sdk.Msg) {
 func (suite *KeeperTestSuite) RunTxDelegatorError(msg sdk.Msg) {
 	_, err := suite.RunTxDelegator(msg)
 	Expect(err).NotTo(BeNil())
+}
+
+func (suite *KeeperTestSuite) VerifyPoolModuleAssetsIntegrity() {
+	expectedBalance := uint64(0)
+	actualBalance := uint64(0)
+
+	for _, pool := range suite.App().PoolKeeper.GetAllPools(suite.Ctx()) {
+		for _, funder := range pool.Funders {
+			expectedBalance += funder.Amount
+		}
+	}
+
+	moduleAcc := suite.App().AccountKeeper.GetModuleAccount(suite.Ctx(), pooltypes.ModuleName).GetAddress()
+	actualBalance = suite.App().BankKeeper.GetBalance(suite.Ctx(), moduleAcc, "tkyve").Amount.Uint64()
+
+	Expect(actualBalance).To(Equal(expectedBalance))
+}
+
+func (suite *KeeperTestSuite) VerifyStakersModuleAssetsIntegrity() {
+	expectedBalance := uint64(0)
+	actualBalance := uint64(0)
+
+	for _, staker := range suite.App().StakersKeeper.GetAllStakers(suite.Ctx()) {
+		expectedBalance += staker.Amount
+	}
+
+	moduleAcc := suite.App().AccountKeeper.GetModuleAccount(suite.Ctx(), stakerstypes.ModuleName).GetAddress()
+	actualBalance = suite.App().BankKeeper.GetBalance(suite.Ctx(), moduleAcc, "tkyve").Amount.Uint64()
+
+	Expect(actualBalance).To(Equal(expectedBalance))
 }
