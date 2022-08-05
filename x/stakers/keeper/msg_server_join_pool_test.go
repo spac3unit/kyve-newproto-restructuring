@@ -151,4 +151,29 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 	})
+
+	It("Try to join into multiple pools", func() {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator: i.ALICE,
+			PoolId: 0,
+			Valaddress: i.BOB,
+		})
+
+		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
+			Creator: i.ALICE,
+			Name:    "Moontest2",
+		})
+		
+		// ACT
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator: i.ALICE,
+			PoolId: 1,
+			Valaddress: i.BOB,
+		})
+
+		// ASSERT
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		Expect(valaccountsOfStaker).To(HaveLen(2))
+	})
 })

@@ -1,11 +1,12 @@
 package app
 
 import (
-	v0_7_0 "github.com/KYVENetwork/chain/app/upgrades/v0.7.0"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	v0_7_0 "github.com/KYVENetwork/chain/app/upgrades/v0.7.0"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -227,8 +228,6 @@ func NewApp(
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
-	println("Account Prefix: ", sdk.GetConfig().GetBech32AccountAddrPrefix())
-
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
