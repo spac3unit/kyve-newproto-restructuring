@@ -97,6 +97,12 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 }
 
 func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) error {
+	validVoters := make([]string, 0)
+
+	if !strings.HasPrefix(msg.StorageId, types.KYVE_NO_DATA_BUNDLE) {
+		validVoters = append(validVoters, msg.Staker)
+	}
+
 	bundleProposal = types.BundleProposal{
 		PoolId:       msg.PoolId,
 		Uploader:     msg.Staker,
@@ -105,7 +111,7 @@ func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmod
 		ByteSize:     msg.ByteSize,
 		ToHeight:     msg.ToHeight,
 		CreatedAt:    uint64(ctx.BlockTime().Unix()),
-		VotersValid:  append(make([]string, 0), msg.Staker),
+		VotersValid:  validVoters,
 		ToKey:        msg.ToKey,
 		ToValue:      msg.ToValue,
 		BundleHash:   msg.BundleHash,

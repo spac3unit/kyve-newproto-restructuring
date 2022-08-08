@@ -325,6 +325,132 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	// TODO: submit KYVE_NO_DATA_BUNDLES
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE", func () {
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "KYVE_NO_DATA_BUNDLE",
+			ByteSize: 0,
+			FromHeight: 0,
+			ToHeight: 0,
+			FromKey: "0",
+			ToKey: "",
+			ToValue: "",
+			BundleHash: "",
+		})
+
+		// ASSERT
+		bundleProposal, found := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+		Expect(found).To(BeTrue())
+
+		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
+		Expect(bundleProposal.StorageId).To(Equal("KYVE_NO_DATA_BUNDLE"))
+		Expect(bundleProposal.Uploader).To(Equal(i.ALICE))
+		Expect(bundleProposal.NextUploader).To(Equal(i.ALICE))
+		Expect(bundleProposal.ByteSize).To(Equal(uint64(0)))
+		Expect(bundleProposal.ToHeight).To(Equal(uint64(0)))
+		Expect(bundleProposal.ToKey).To(BeEmpty())
+		Expect(bundleProposal.ToValue).To(BeEmpty())
+		Expect(bundleProposal.BundleHash).To(BeEmpty())
+		Expect(bundleProposal.CreatedAt).NotTo(BeZero())
+		Expect(bundleProposal.VotersValid).To(BeEmpty())
+		Expect(bundleProposal.VotersInvalid).To(BeEmpty())
+		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
+	})
+
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid byte size", func () {
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "KYVE_NO_DATA_BUNDLE",
+			ByteSize: 100,
+			FromHeight: 0,
+			ToHeight: 0,
+			FromKey: "0",
+			ToKey: "",
+			ToValue: "",
+			BundleHash: "",
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.StorageId).To(BeEmpty())
+		Expect(bundleProposal.Uploader).To(BeEmpty())
+	})
+
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to height", func () {
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "KYVE_NO_DATA_BUNDLE",
+			ByteSize: 0,
+			FromHeight: 0,
+			ToHeight: 100,
+			FromKey: "0",
+			ToKey: "",
+			ToValue: "",
+			BundleHash: "",
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.StorageId).To(BeEmpty())
+		Expect(bundleProposal.Uploader).To(BeEmpty())
+	})
+
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to value", func () {
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "KYVE_NO_DATA_BUNDLE",
+			ByteSize: 0,
+			FromHeight: 0,
+			ToHeight: 0,
+			FromKey: "0",
+			ToKey: "",
+			ToValue: "test_value",
+			BundleHash: "",
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.StorageId).To(BeEmpty())
+		Expect(bundleProposal.Uploader).To(BeEmpty())
+	})
+
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid bundle hash", func () {
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "KYVE_NO_DATA_BUNDLE",
+			ByteSize: 0,
+			FromHeight: 0,
+			ToHeight: 0,
+			FromKey: "0",
+			ToKey: "",
+			ToValue: "",
+			BundleHash: "test_hash",
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.StorageId).To(BeEmpty())
+		Expect(bundleProposal.Uploader).To(BeEmpty())
+	})
+
 	// TODO: submit bundle proposal without reaching upload interval
 })
