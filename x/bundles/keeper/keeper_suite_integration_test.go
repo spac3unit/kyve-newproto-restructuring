@@ -88,13 +88,35 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 			ToHeight: 200,
 			FromKey: "99",
 			ToKey: "199",
-			ToValue: "test_value",
-			BundleHash: "test_hash",
+			ToValue: "test_value2",
+			BundleHash: "test_hash2",
 		})
 
 		// ASSERT
-		bundleProposal, found := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-		Expect(found).To(BeTrue())
+		pool, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(poolFound).To(BeTrue())
+
+		Expect(pool.CurrentKey).To(Equal("99"))
+		Expect(pool.CurrentValue).To(Equal("test_value"))
+		Expect(pool.CurrentHeight).To(Equal(uint64(100)))
+		Expect(pool.TotalBytes).To(Equal(uint64(100)))
+		Expect(pool.TotalBundles).To(Equal(uint64(1)))
+
+		finalizedBundle, finalizedBundleFound := s.App().BundlesKeeper.GetFinalizedBundle(s.Ctx(), 0, 0)
+		Expect(finalizedBundleFound).To(BeTrue())
+
+		Expect(finalizedBundle.PoolId).To(Equal(uint64(0)))
+		Expect(finalizedBundle.StorageId).To(Equal("y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI"))
+		Expect(finalizedBundle.Uploader).To(Equal(i.ALICE))
+		Expect(finalizedBundle.FromHeight).To(Equal(uint64(0)))
+		Expect(finalizedBundle.ToHeight).To(Equal(uint64(100)))
+		Expect(finalizedBundle.Key).To(Equal("99"))
+		Expect(finalizedBundle.Value).To(Equal("test_value"))
+		Expect(finalizedBundle.BundleHash).To(Equal("test_hash"))
+		Expect(finalizedBundle.FinalizedAt).NotTo(BeZero())
+
+		bundleProposal, bundleProposalFound := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+		Expect(bundleProposalFound).To(BeTrue())
 
 		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
 		Expect(bundleProposal.StorageId).To(Equal("P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg"))
@@ -103,8 +125,8 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(bundleProposal.ByteSize).To(Equal(uint64(100)))
 		Expect(bundleProposal.ToHeight).To(Equal(uint64(200)))
 		Expect(bundleProposal.ToKey).To(Equal("199"))
-		Expect(bundleProposal.ToValue).To(Equal("test_value"))
-		Expect(bundleProposal.BundleHash).To(Equal("test_hash"))
+		Expect(bundleProposal.ToValue).To(Equal("test_value2"))
+		Expect(bundleProposal.BundleHash).To(Equal("test_hash2"))
 		Expect(bundleProposal.CreatedAt).NotTo(BeZero())
 		Expect(bundleProposal.VotersValid).To(ContainElement(i.ALICE))
 		Expect(bundleProposal.VotersInvalid).To(BeEmpty())

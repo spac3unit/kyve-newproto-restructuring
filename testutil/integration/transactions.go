@@ -1,8 +1,6 @@
 package integration
 
 import (
-	"fmt"
-
 	. "github.com/onsi/gomega"
 
 	"github.com/KYVENetwork/chain/x/bundles"
@@ -106,9 +104,6 @@ func (suite *KeeperTestSuite) VerifyPoolModuleAssetsIntegrity() {
 
 	moduleAcc := suite.App().AccountKeeper.GetModuleAccount(suite.Ctx(), pooltypes.ModuleName).GetAddress()
 	actualBalance = suite.App().BankKeeper.GetBalance(suite.Ctx(), moduleAcc, "tkyve").Amount.Uint64()
-
-	fmt.Println("funders: ", expectedBalance)
-	fmt.Println("module: ", actualBalance)
 
 	Expect(actualBalance).To(Equal(expectedBalance))
 }
