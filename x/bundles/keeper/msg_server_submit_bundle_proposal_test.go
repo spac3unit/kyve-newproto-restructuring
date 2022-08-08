@@ -324,4 +324,7 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.StorageId).To(BeEmpty())
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
+
+	// TODO: submit KYVE_NO_DATA_BUNDLES
+	// TODO: submit bundle proposal without reaching upload interval
 })

@@ -23,16 +23,15 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Name:    "Moontest",
 			Config: "{}",
 			Binaries: "{}",
+			MaxBundleSize: 100,
+			StartKey: "0",
 		})
-	})
 
-	AfterEach(func() {
-		s.VerifyPoolModuleAssetsIntegrity()
-		s.VerifyStakersModuleAssetsIntegrity()
-	})
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Amount: 100*i.KYVE,
+		})
 
-	It("Try to vote on proposal where pool is not funded", func () {
-		// ARRANGE
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.ALICE,
 			Amount: 100*i.KYVE,
@@ -44,23 +43,387 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Valaddress: i.BOB,
 		})
 
-		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
 			Staker: i.ALICE,
+			PoolId: 0,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize: 100,
+			FromHeight: 0,
+			ToHeight: 100,
+			FromKey: "0",
+			ToKey: "99",
+			ToValue: "test_value",
+			BundleHash: "test_hash",
+		})
+	})
+
+	AfterEach(func() {
+		s.VerifyPoolModuleAssetsIntegrity()
+		s.VerifyStakersModuleAssetsIntegrity()
+	})
+
+	It("Try to vote valid on proposal", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
 			PoolId: 0,
 			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
 			Vote: bundletypes.VOTE_TYPE_YES,
 		})
 
 		// ASSERT
-		_, found := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-		Expect(found).To(BeFalse()) // TODO: implement
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
 
-		// Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.ALICE))
-		// Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.ALICE))
-		// Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.ALICE))
+		Expect(bundleProposal.VotersValid).To(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
 	})
 
-	// TODO: add test cases where pool is not created
+	It("Try to vote valid on proposal again", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_YES,
+		})
+
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_YES,
+		})
+
+		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_NO,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).To(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
+	})
+
+	It("Try to vote invalid on proposal", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_NO,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).To(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
+	})
+
+	It("Try to vote invalid on proposal again", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_NO,
+		})
+
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_NO,
+		})
+
+		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_YES,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).To(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
+	})
+
+	It("Try to vote abstain on proposal", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_ABSTAIN,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).To(ContainElement(i.BOB))
+	})
+
+	It("Try to vote abstain on proposal again", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_ABSTAIN,
+		})
+
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_ABSTAIN,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).To(ContainElement(i.BOB))
+	})
+
+	It("Try to vote valid on proposal after abstain vote", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_ABSTAIN,
+		})
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_YES,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).To(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
+	})
+
+	It("Try to vote invalid on proposal after abstain vote", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_ABSTAIN,
+		})
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_NO,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).To(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
+	})
+
+	It("Try to vote unspecified on proposal", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_UNSPECIFIED,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
+	})
+
+	It("Try to vote on proposal with invalid storage id", func () {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 100*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "some_invalid_storage_id",
+			Vote: bundletypes.VOTE_TYPE_YES,
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.VotersValid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersInvalid).NotTo(ContainElement(i.BOB))
+		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.BOB))
+	})
+
+	// TODO: try to vote on KYVE_NO_DATA_BUNDLE
 })
