@@ -32,7 +32,7 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 	}
 
 	// Check if the sender is the designated uploader.
-	if bundleProposal.NextUploader != msg.Creator {
+	if bundleProposal.NextUploader != msg.Staker {
 		return types.ErrNotDesignatedUploader
 	}
 
@@ -57,7 +57,7 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 	}
 
 	// Validate from key
-	if msg.FromKey != current_key {
+	if current_key != "" && msg.FromKey != current_key {
 		return types.ErrFromKey
 	}
 
