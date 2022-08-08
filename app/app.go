@@ -341,6 +341,17 @@ func NewApp(
 		app.PoolKeeper,
 	)
 
+	app.DelegationKeeper = *delegationmodulekeeper.NewKeeper(
+		appCodec,
+		keys[delegationmoduletypes.StoreKey],
+		keys[delegationmoduletypes.MemStoreKey],
+		app.GetSubspace(delegationmoduletypes.ModuleName),
+
+		app.BankKeeper,
+		app.PoolKeeper,
+		app.UpgradeKeeper,
+	)
+
 	app.BundlesKeeper = *bundlesmodulekeeper.NewKeeper(
 		appCodec,
 		keys[bundlesmoduletypes.StoreKey],
@@ -351,17 +362,6 @@ func NewApp(
 		app.PoolKeeper,
 		app.StakersKeeper,
 		app.DelegationKeeper,
-	)
-
-	app.DelegationKeeper = *delegationmodulekeeper.NewKeeper(
-		appCodec,
-		keys[delegationmoduletypes.StoreKey],
-		keys[delegationmoduletypes.MemStoreKey],
-		app.GetSubspace(delegationmoduletypes.ModuleName),
-
-		app.BankKeeper,
-		app.PoolKeeper,
-		app.UpgradeKeeper,
 	)
 
 	app.RegistryKeeper = *registrymodulekeeper.NewKeeper(
