@@ -8,8 +8,13 @@ import (
 )
 
 func (k Keeper) GetDelegationAmount(ctx sdk.Context, staker string) uint64 {
-	delegationData, _ := k.GetDelegationData(ctx, staker)
-	return delegationData.TotalDelegation
+	delegationData, found := k.GetDelegationData(ctx, staker)
+
+	if found {
+		return delegationData.TotalDelegation
+	}
+
+	return 0
 }
 
 func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, payerModuleName string) (success bool) {

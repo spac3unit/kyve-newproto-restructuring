@@ -17,6 +17,8 @@ var _ = Describe("Delegation", Ordered, func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
+			Config: "{}",
+			Binaries: "{}",
 		})
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,

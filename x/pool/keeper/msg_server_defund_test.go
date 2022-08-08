@@ -21,6 +21,8 @@ var _ = Describe("Defund Pool", Ordered, func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
+			Config: "{}",
+			Binaries: "{}",
 		})
 
 		// fund pool

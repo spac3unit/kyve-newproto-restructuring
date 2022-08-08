@@ -20,6 +20,8 @@ var _ = Describe("Join Pool", Ordered, func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
+			Config: "{}",
+			Binaries: "{}",
 		})
 
 		// create staker
@@ -167,6 +169,8 @@ var _ = Describe("Join Pool", Ordered, func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest2",
+			Config: "{}",
+			Binaries: "{}",
 		})
 		
 		// ACT
@@ -192,6 +196,8 @@ var _ = Describe("Join Pool", Ordered, func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest2",
+			Config: "{}",
+			Binaries: "{}",
 		})
 		
 		// ACT

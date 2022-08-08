@@ -20,6 +20,8 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest",
+			Config: "{}",
+			Binaries: "{}",
 		})
 
 		// create staker
@@ -122,6 +124,8 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest2",
+			Config: "{}",
+			Binaries: "{}",
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
