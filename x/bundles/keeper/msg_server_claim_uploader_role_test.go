@@ -145,6 +145,12 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 			PoolId: 0,
 		})
 
+		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.BOB,
+			Staker: i.CHARLIE,
+			PoolId: 0,
+		})
+
 		// ASSERT
 		_, found := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
 		Expect(found).To(BeFalse())
