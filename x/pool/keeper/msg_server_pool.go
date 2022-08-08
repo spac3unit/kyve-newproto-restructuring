@@ -2,15 +2,25 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func (k msgServer) CreatePool(goCtx context.Context, msg *types.MsgCreatePool) (*types.MsgCreatePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO: verify that config and binaries are json objects
+	// Validate config json
+	if !json.Valid([]byte(msg.Config)) {
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), msg.Config)
+	}
+
+	// Validate binaries json
+	if !json.Valid([]byte(msg.Binaries)) {
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), msg.Binaries)
+	}
 
 	k.AppendPool(ctx, types.Pool{
 		Name:    msg.Name,

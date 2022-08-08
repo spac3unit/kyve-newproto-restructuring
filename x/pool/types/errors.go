@@ -14,4 +14,5 @@ var (
 	ErrDefundTooHigh          = sdkerrors.Register(ModuleName, 1102, "maximum defunding amount of %vkyve surpassed")
 	ErrPoolPaused             = sdkerrors.Register(ModuleName, 1103, "pool is paused")
 	ErrPoolCurrentlyUpgrading = sdkerrors.Register(ModuleName, 1104, "pool currently upgrading")
+	ErrInvalidJson          = sdkerrors.Register(ModuleName, 1105, "invalid json object: %v")
 )
