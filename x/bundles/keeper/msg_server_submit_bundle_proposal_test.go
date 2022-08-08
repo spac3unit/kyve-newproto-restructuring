@@ -25,6 +25,7 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 			Binaries: "{}",
 			MaxBundleSize: 100,
 			StartKey: "0",
+			UploadInterval: 60,
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
@@ -56,6 +57,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -91,6 +95,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with non existing valaccount", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.CHARLIE,
@@ -129,6 +136,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 
 	It("Try to submit proposal with wrong valaccount", func () {
 		// ARRANGE
+		s.CommitAfterSeconds(60)
+
+		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
 			Creator: i.ALICE,
 			Name:    "Moontest2",
@@ -165,6 +175,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with empty storage id", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -187,7 +200,33 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
+	It("Try to submit proposal within upload interval", func () {
+		// ACT
+		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize: 100,
+			FromHeight: 0,
+			ToHeight: 100,
+			FromKey: "0",
+			ToKey: "99",
+			ToValue: "test_value",
+			BundleHash: "test_hash",
+		})
+
+		// ASSERT
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
+		Expect(bundleProposal.StorageId).To(BeEmpty())
+		Expect(bundleProposal.Uploader).To(BeEmpty())
+	})
+
 	It("Try to submit proposal with empty byte size", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -211,6 +250,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with invalid from height", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -234,6 +276,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with bigger bundle size than allowed", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -257,6 +302,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with empty bundle", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -280,6 +328,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with empty value", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -303,6 +354,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with empty bundle hash", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -326,6 +380,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -361,6 +418,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid byte size", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -384,6 +444,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to height", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -407,6 +470,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to value", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -430,6 +496,9 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid bundle hash", func () {
+		// ARRANGE
+		s.CommitAfterSeconds(60)
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
 			Creator: i.BOB,
@@ -451,6 +520,4 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.StorageId).To(BeEmpty())
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
-
-	// TODO: submit bundle proposal without reaching upload interval
 })
