@@ -6,7 +6,8 @@ import (
 
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/bundles/types"
-	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
+	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -93,21 +94,22 @@ func (k msgServer) SubmitBundleProposal(
 		}
 
 		// send network fee to treasury
-		if err := util.TransferFromModuleToTreasury(k.bankKeeper, ctx, types.ModuleName, bundleReward.Treasury); err != nil {
+		if err := util.TransferFromModuleToTreasury(k.bankKeeper, ctx, pooltypes.ModuleName, bundleReward.Treasury); err != nil {
 			return nil, err
 		}
 
 		// send commission to uploader
-		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, bundleProposal.Uploader, bundleReward.Uploader); err != nil {
+		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, pooltypes.ModuleName, bundleProposal.Uploader, bundleReward.Uploader); err != nil {
 			return nil, err
 		}
 
 		// send delegation rewards to delegators
+		// TODO: double check if delegation module receives assets
 		k.delegationKeeper.AddAmountToDelegationRewards(ctx, bundleProposal.Uploader, bundleReward.Delegation)
 
 		// slash stakers who voted incorrectly
 		for _, voter := range bundleProposal.VotersInvalid {
-			k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_VOTE)
+			k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakertypes.SLASH_TYPE_VOTE)
 		}
 
 		if err := k.finalizeCurrentBundleProposal(ctx, pool, bundleProposal, voteDistribution, bundleReward); err != nil {
@@ -123,9 +125,9 @@ func (k msgServer) SubmitBundleProposal(
 		// slash stakers who voted incorrectly - uploader receives upload slash
 		for _, voter := range bundleProposal.VotersValid {
 			if voter == bundleProposal.Uploader {
-				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_UPLOAD)
+				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakertypes.SLASH_TYPE_UPLOAD)
 			} else {
-				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakersmoduletypes.SLASH_TYPE_VOTE)
+				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakertypes.SLASH_TYPE_VOTE)
 			}
 		}
 

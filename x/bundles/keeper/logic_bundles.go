@@ -167,14 +167,14 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 
 	bundleReward.Total = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
 
-	// load and parse network fee
-	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
+	// load and parse network fee TODO: how to test network fee?
+	networkFee, err := sdk.NewDecFromStr(/*k.NetworkFee(ctx)*/ "0")
 	if err != nil {
 		// TODO: panic halt?
 		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
 	}
 
-	staker, stakerFound := k.stakerKeeper.GetStaker(ctx, bundleProposal.Uploader)
+	_, stakerFound := k.stakerKeeper.GetStaker(ctx, bundleProposal.Uploader)
 
 	if !stakerFound {
 		bundleReward.Treasury = bundleReward.Total
@@ -187,7 +187,8 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 	bundleReward.Treasury = uint64(sdk.NewDec(int64(bundleReward.Total)).Mul(networkFee).RoundInt64())
 	totalNodeReward := bundleReward.Total - bundleReward.Treasury
 
-	uploaderCommission, err := sdk.NewDecFromStr(staker.Commission)
+	// TODO: check if staker has delegations
+	uploaderCommission, err := sdk.NewDecFromStr(/*staker.Commission*/ "1")
 	if err != nil {
 		// TODO: panic halt?
 		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())

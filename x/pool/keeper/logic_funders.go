@@ -54,5 +54,7 @@ func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint6
 	lowestFunder.Amount -= amountRemainder
 	pool.UpdateFunder(lowestFunder)
 
+	k.SetPool(ctx, pool)
+
 	return nil
 }
