@@ -291,4 +291,118 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 		// TODO: test treasury balance
 	})
+
+	It("Produce invalid bundles with two nodes", func () {
+		// ARRANGE
+		// stake a bit more than first node so >50% is reached
+		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+			Creator: i.BOB,
+			Amount: 200*i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
+			Creator: i.BOB,
+			PoolId: 0,
+			Valaddress: i.ALICE,
+		})
+
+		initialBalanceBob = s.GetBalanceFromAddress(i.BOB)
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.BOB,
+			Staker: i.ALICE,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize: 100,
+			FromHeight: 0,
+			ToHeight: 100,
+			FromKey: "0",
+			ToKey: "99",
+			ToValue: "test_value",
+			BundleHash: "test_hash",
+		})
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			Vote: bundletypes.VOTE_TYPE_NO,
+		}) 
+
+		s.CommitAfterSeconds(60)
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator: i.ALICE,
+			Staker: i.BOB,
+			PoolId: 0,
+			StorageId: "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize: 100,
+			FromHeight: 100,
+			ToHeight: 200,
+			FromKey: "99",
+			ToKey: "199",
+			ToValue: "test_value2",
+			BundleHash: "test_hash2",
+		})
+
+		// ASSERT
+		// check if bundle got not finalized on pool
+		pool, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(poolFound).To(BeTrue())
+
+		Expect(pool.CurrentKey).To(Equal(""))
+		Expect(pool.CurrentValue).To(BeEmpty())
+		Expect(pool.CurrentHeight).To(BeZero())
+		Expect(pool.TotalBytes).To(BeZero())
+		Expect(pool.TotalBundles).To(BeZero())
+
+		// check if finalized bundle exists
+		_, finalizedBundleFound := s.App().BundlesKeeper.GetFinalizedBundle(s.Ctx(), 0, 0)
+		Expect(finalizedBundleFound).To(BeFalse())
+
+		// check if bundle proposal got dropped
+		bundleProposal, bundleProposalFound := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+		Expect(bundleProposalFound).To(BeTrue())
+
+		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
+		Expect(bundleProposal.StorageId).To(BeEmpty())
+		Expect(bundleProposal.Uploader).To(BeEmpty())
+		Expect(bundleProposal.NextUploader).To(Equal(i.BOB))
+		Expect(bundleProposal.ByteSize).To(BeZero())
+		Expect(bundleProposal.ToHeight).To(BeZero())
+		Expect(bundleProposal.ToKey).To(BeEmpty())
+		Expect(bundleProposal.ToValue).To(BeEmpty())
+		Expect(bundleProposal.BundleHash).To(BeEmpty())
+		Expect(bundleProposal.CreatedAt).NotTo(BeZero())
+		Expect(bundleProposal.VotersValid).To(BeEmpty())
+		Expect(bundleProposal.VotersInvalid).To(BeEmpty())
+		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
+
+		// check uploader status
+		valaccountUploader, valaccountUploaderFound := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.ALICE)
+		Expect(valaccountUploaderFound).To(BeTrue())
+
+		Expect(valaccountUploader.PoolId).To(Equal(uint64(0)))
+		Expect(valaccountUploader.Valaddress).To(Equal(i.BOB))
+		Expect(valaccountUploader.Staker).To(Equal(i.ALICE))
+		Expect(valaccountUploader.Points).To(BeZero())
+
+		balanceValaddress := s.GetBalanceFromAddress(valaccountUploader.Valaddress)
+		Expect(balanceValaddress).To(Equal(initialBalanceBob))
+
+		balanceStaker := s.GetBalanceFromAddress(valaccountUploader.Staker)
+
+		Expect(balanceStaker).To(Equal(initialBalanceAlice))
+
+		staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
+		Expect(stakerFound).To(BeTrue())
+
+		// 1% slash
+		Expect(staker.Amount).To(Equal(99*i.KYVE))
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(299*i.KYVE))
+
+		// TODO: test treasury balance
+	})
 })
