@@ -168,7 +168,7 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 	bundleReward.Total = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
 
 	// load and parse network fee TODO: how to test network fee?
-	networkFee, err := sdk.NewDecFromStr(/*k.NetworkFee(ctx)*/ "0")
+	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
 	if err != nil {
 		// TODO: panic halt?
 		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())

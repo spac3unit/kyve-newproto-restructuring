@@ -2,6 +2,7 @@ package util
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	distrKeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 )
@@ -53,7 +54,13 @@ func TransferFromAddressToTreasury(distrKeeper distrKeeper.Keeper, ctx sdk.Conte
 }
 
 // transferToTreasury sends tokens from this module to the treasury (community spend pool).
-func TransferFromModuleToTreasury(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module string, amount uint64) error {
-	// TODO: implement
+func TransferFromModuleToTreasury(accountKeeper authkeeper.AccountKeeper, distrKeeper distrKeeper.Keeper, ctx sdk.Context, module string, amount uint64) error {
+	sender := accountKeeper.GetModuleAddress(module)
+	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
+
+	if err := distrKeeper.FundCommunityPool(ctx, coins, sender); err != nil {
+		return err
+	}
+
 	return nil
 }

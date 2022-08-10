@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/stakers/types"
+	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -27,7 +29,7 @@ func (k Keeper) GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress str
 // If a user loses all tokens, the function takes care of removing the user completely
 func (k Keeper) Slash(
 	ctx sdk.Context, poolId uint64, stakerAddress string, slashType types.SlashType,
-) (slash uint64) {
+) (uint64, error) {
 	staker, found := k.GetStaker(ctx, stakerAddress)
 
 	if found {
@@ -35,23 +37,27 @@ func (k Keeper) Slash(
 		slashAmountRatio, _ := sdk.NewDecFromStr("0.01") // TODO use params
 
 		// Compute how much we're going to slash the staker.
-		slash = uint64(sdk.NewDec(int64(staker.Amount)).Mul(slashAmountRatio).RoundInt64())
+		slash := uint64(sdk.NewDec(int64(staker.Amount)).Mul(slashAmountRatio).RoundInt64())
 		
 		// remove amount - staker gets removed slash is greater equal than stake
 		k.RemoveAmountFromStaker(ctx, staker.Address, slash, false)
 
-		// TODO: Transfer money to treasury
+		// send slash to treasury
+		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, stakertypes.ModuleName, slash); err != nil {
+			return 0, err
+		}
 
-		// emit slashing event TODO: return error
 		ctx.EventManager().EmitTypedEvent(&types.EventSlash{
 			PoolId:    poolId,
 			Address:   staker.Address,
 			Amount:    slash,
 			SlashType: slashType,
 		})
+
+		return slash, nil
 	}
 
-	return slash
+	return 0, nil
 }
 
 func (k Keeper) GetTotalStake(ctx sdk.Context, poolId uint64) uint64 {

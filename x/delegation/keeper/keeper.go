@@ -2,8 +2,11 @@ package keeper
 
 import (
 	"fmt"
+
 	poolkeeper "github.com/KYVENetwork/chain/x/pool/keeper"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 
 	"github.com/tendermint/tendermint/libs/log"
@@ -20,7 +23,10 @@ type (
 		storeKey      sdk.StoreKey
 		memKey        sdk.StoreKey
 		paramstore    paramtypes.Subspace
-		bankKeeper    bankkeeper.Keeper
+
+		accountKeeper authkeeper.AccountKeeper
+		bankKeeper bankkeeper.Keeper
+		distrkeeper distrkeeper.Keeper
 		poolKeeper    poolkeeper.Keeper
 		upgradeKeeper upgradekeeper.Keeper
 	}
@@ -32,7 +38,9 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 
+	accountKeeper authkeeper.AccountKeeper,
 	bankKeeper bankkeeper.Keeper,
+	distrkeeper distrkeeper.Keeper,
 	poolKeeper poolkeeper.Keeper,
 	upgradeKeeper upgradekeeper.Keeper,
 ) *Keeper {
@@ -46,7 +54,9 @@ func NewKeeper(
 		storeKey:      storeKey,
 		memKey:        memKey,
 		paramstore:    ps,
+		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
+		distrkeeper: distrkeeper,
 		poolKeeper:    poolKeeper,
 		upgradeKeeper: upgradeKeeper,
 	}

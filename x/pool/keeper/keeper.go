@@ -2,7 +2,10 @@ package keeper
 
 import (
 	"fmt"
+
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
+	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -19,7 +22,9 @@ type (
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
 
+		accountKeeper authkeeper.AccountKeeper
 		bankKeeper bankkeeper.Keeper
+		distrkeeper distrkeeper.Keeper
 	}
 )
 
@@ -29,7 +34,9 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 
+	accountKeeper authkeeper.AccountKeeper,
 	bankKeeper bankkeeper.Keeper,
+	distrkeeper distrkeeper.Keeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -42,7 +49,9 @@ func NewKeeper(
 		storeKey:   storeKey,
 		memKey:     memKey,
 		paramstore: ps,
+		accountKeeper: accountKeeper,
 		bankKeeper: bankKeeper,
+		distrkeeper: distrkeeper,
 	}
 }
 
