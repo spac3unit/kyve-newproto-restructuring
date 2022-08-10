@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/util"
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -39,9 +41,10 @@ func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint6
 	}
 
 	if slashedFunds > 0 {
-		// transfer to treasury
-		// TODO: transfer to treasury, (summarize all slashes and transfer in one call)
-		
+		// send slash to treasury
+		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, pooltypes.ModuleName, slashedFunds); err != nil {
+			// TODO: return 0, err?
+		}
 	}
 
 	// Remove amount from funders
