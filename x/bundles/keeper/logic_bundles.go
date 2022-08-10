@@ -330,7 +330,7 @@ func (k Keeper) chooseNextUploaderFromSelectedStakers(ctx sdk.Context, poolId ui
 		})
 	}
 
-	return k.getWeightedRandomChoice(_candidates, uint64(ctx.BlockHeight()+ctx.BlockTime().Unix()))
+	return k.getWeightedRandomChoice(_candidates, uint64(ctx.BlockHeight()))
 }
 
 func (k Keeper) chooseNextUploaderFromAllStakers(ctx sdk.Context, poolId uint64) (nextUploader string) {
