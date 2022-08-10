@@ -36,12 +36,7 @@ func (k msgServer) DefundPool(goCtx context.Context, msg *types.MsgDefundPool) (
 	}
 
 	// Update state variables (or completely remove if fully defunding).
-	if funder.Amount == msg.Amount {
-		pool.RemoveFunder(funder)
-	} else {
-		funder.Amount -= msg.Amount
-		pool.UpdateFunder(funder)
-	}
+	pool.SubFromFunder(funder.Address, msg.Amount)
 
 	// Transfer tokens from this module to sender.
 	if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, msg.Creator, msg.Amount); err != nil {

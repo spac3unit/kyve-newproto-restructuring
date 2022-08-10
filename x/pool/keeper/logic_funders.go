@@ -49,13 +49,11 @@ func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint6
 
 	// Remove amount from funders
 	for _, funder := range pool.Funders {
-		funder.Amount -= amountPerFunder
-		pool.UpdateFunder(*funder)
+		pool.SubFromFunder(funder.Address, amountPerFunder)
 	}
 
 	lowestFunder := pool.GetLowestFunder()
-	lowestFunder.Amount -= amountRemainder
-	pool.UpdateFunder(lowestFunder)
+	pool.SubFromFunder(lowestFunder.Address, amountRemainder)
 
 	k.SetPool(ctx, pool)
 

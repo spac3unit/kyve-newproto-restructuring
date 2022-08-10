@@ -27,8 +27,7 @@ func (k msgServer) FundPool(goCtx context.Context, msg *types.MsgFundPool) (*typ
 	funder, found := pool.GetFunder(msg.Creator)
 
 	if found {
-		funder.Amount += msg.Amount
-		pool.UpdateFunder(funder)
+		pool.AddToFunder(funder.Address, msg.Amount)
 	} else {
 		// If funder does not exist, check if limit is already exceeded.
 		if len(pool.Funders) >= types.MaxFunders {

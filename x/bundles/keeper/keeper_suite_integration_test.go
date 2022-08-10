@@ -65,6 +65,9 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 	AfterEach(func() {
 		s.VerifyPoolModuleAssetsIntegrity()
 		s.VerifyStakersModuleAssetsIntegrity()
+
+		s.VerifyPoolTotalFunds()
+		s.VerifyPoolTotalStake()
 	})
 
 	It("Produce valid bundles with one node", func () {
@@ -160,6 +163,13 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		uploaderReward := totalReward - treasuryReward
 
 		Expect(balanceStaker).To(Equal(initialBalanceAlice + uploaderReward))
+
+		// check pool funds
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		funder, _ := pool.GetFunder(i.ALICE)
+
+		Expect(pool.Funders).To(HaveLen(1))
+		Expect(funder.Amount).To(Equal(100*i.KYVE - totalReward))
 	})
 
 	It("Produce valid bundles with two nodes", func () {
@@ -280,6 +290,13 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
 		Expect(valaccountVoter.Points).To(BeZero())
+
+		// check pool funds
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		funder, _ := pool.GetFunder(i.ALICE)
+
+		Expect(pool.Funders).To(HaveLen(1))
+		Expect(funder.Amount).To(Equal(100*i.KYVE - totalReward))
 	})
 
 	It("Produce invalid bundles with two nodes", func () {
@@ -391,6 +408,13 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
 		Expect(valaccountVoter.Points).To(BeZero())
+
+		// check pool funds
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		funder, _ := pool.GetFunder(i.ALICE)
+
+		Expect(pool.Funders).To(HaveLen(1))
+		Expect(funder.Amount).To(Equal(100*i.KYVE))
 	})
 
 	It("Produce dropped bundle because nodes do not vote", func () {
@@ -481,6 +505,13 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
 		Expect(valaccountVoter.Points).To(Equal(uint64(1)))
+
+		// check pool funds
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		funder, _ := pool.GetFunder(i.ALICE)
+
+		Expect(pool.Funders).To(HaveLen(1))
+		Expect(funder.Amount).To(Equal(100*i.KYVE))
 	})
 
 	It("Produce dropped bundle because pool has not enough funds", func () {
@@ -605,9 +636,9 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
 		Expect(valaccountVoter.Points).To(BeZero())
 
-		// Check funding status
+		// check pool funds
 		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
 		Expect(pool.Funders).To(BeEmpty())
-		Expect(pool.TotalFunds).To(BeZero())
 	})
 })

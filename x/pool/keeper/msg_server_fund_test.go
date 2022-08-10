@@ -28,6 +28,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 
 	AfterEach(func() {
 		s.VerifyPoolModuleAssetsIntegrity()
+		s.VerifyPoolTotalFunds()
 	})
 
 	It("Fund Pool with 100 $KYVE", func() {

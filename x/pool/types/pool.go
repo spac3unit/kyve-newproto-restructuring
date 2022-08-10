@@ -4,12 +4,30 @@ import (
 	"sort"
 )
 
-func (m *Pool) UpdateFunder(funder Funder) {
+func (m *Pool) AddToFunder(funderAddress string, amount uint64) {
 	for _, v := range m.Funders {
-		if v.Address == funder.Address {
-			m.TotalFunds -= v.Amount
-			m.TotalFunds += funder.Amount
-			v.Amount = funder.Amount
+		if v.Address == funderAddress {
+			m.TotalFunds += amount
+			v.Amount += amount
+		}
+	}
+	sort.SliceStable(m.Funders, func(i, j int) bool {
+		return m.Funders[i].Amount < m.Funders[j].Amount
+	})
+}
+
+func (m *Pool) SubFromFunder(funderAddress string, amount uint64) {
+	for _, v := range m.Funders {
+		if v.Address == funderAddress {
+			if v.Amount > amount {
+				m.TotalFunds -= amount
+				v.Amount -= amount
+			} else if v.Amount == amount {
+				m.TotalFunds -= amount
+				v.Amount -= amount
+
+				m.RemoveFunder(*v)
+			}
 		}
 	}
 	sort.SliceStable(m.Funders, func(i, j int) bool {

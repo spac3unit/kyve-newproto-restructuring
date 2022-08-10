@@ -121,3 +121,33 @@ func (suite *KeeperTestSuite) VerifyStakersModuleAssetsIntegrity() {
 
 	Expect(actualBalance).To(Equal(expectedBalance))
 }
+
+func (suite *KeeperTestSuite) VerifyPoolTotalFunds() {
+	for _, pool := range suite.App().PoolKeeper.GetAllPools(suite.Ctx()) {
+		expectedBalance := uint64(0)
+		actualBalance := pool.TotalFunds
+
+		for _, funder := range pool.Funders {
+			expectedBalance += funder.Amount
+		}
+
+		Expect(actualBalance).To(Equal(expectedBalance))
+	}
+}
+
+func (suite *KeeperTestSuite) VerifyPoolTotalStake() {
+	for _, pool := range suite.App().PoolKeeper.GetAllPools(suite.Ctx()) {
+		expectedBalance := uint64(0)
+		actualBalance := suite.App().StakersKeeper.GetTotalStake(suite.Ctx(), pool.Id)
+
+		for _, stakerAddress := range suite.App().StakersKeeper.GetAllStakerAddressesOfPool(suite.Ctx(), pool.Id) {
+			staker, stakerFound := suite.App().StakersKeeper.GetStaker(suite.Ctx(), stakerAddress)
+
+			if stakerFound {
+				expectedBalance += staker.Amount
+			}
+		}
+
+		Expect(actualBalance).To(Equal(expectedBalance))
+	}
+}
