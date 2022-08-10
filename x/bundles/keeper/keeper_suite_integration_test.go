@@ -8,10 +8,14 @@ import (
 	bundletypes "github.com/KYVENetwork/chain/x/bundles/types"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var _ = Describe("Bundles module integration tests", Ordered, func() {
 	s := i.NewCleanChain()
+
+	initialBalanceAlice := s.GetBalanceFromAddress(i.ALICE)
+	initialBalanceBob := s.GetBalanceFromAddress(i.ALICE)
 
 	BeforeEach(func() {
 		// init new clean chain
@@ -26,6 +30,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 			MaxBundleSize: 100,
 			StartKey: "0",
 			UploadInterval: 60,
+			OperatingCost: 10_000,
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
@@ -50,6 +55,9 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 			Staker: i.ALICE,
 			PoolId: 0,
 		})
+
+		initialBalanceAlice = s.GetBalanceFromAddress(i.ALICE)
+		initialBalanceBob = s.GetBalanceFromAddress(i.BOB)
 
 		s.CommitAfterSeconds(60)
 	})
@@ -93,6 +101,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		})
 
 		// ASSERT
+		// check if bundle got finalized on pool
 		pool, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		Expect(poolFound).To(BeTrue())
 
@@ -102,6 +111,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(pool.TotalBytes).To(Equal(uint64(100)))
 		Expect(pool.TotalBundles).To(Equal(uint64(1)))
 
+		// check if finalized bundle got saved
 		finalizedBundle, finalizedBundleFound := s.App().BundlesKeeper.GetFinalizedBundle(s.Ctx(), 0, 0)
 		Expect(finalizedBundleFound).To(BeTrue())
 
@@ -115,6 +125,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(finalizedBundle.BundleHash).To(Equal("test_hash"))
 		Expect(finalizedBundle.FinalizedAt).NotTo(BeZero())
 
+		// check if next bundle proposal got registered
 		bundleProposal, bundleProposalFound := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
 		Expect(bundleProposalFound).To(BeTrue())
 
@@ -131,5 +142,30 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(bundleProposal.VotersValid).To(ContainElement(i.ALICE))
 		Expect(bundleProposal.VotersInvalid).To(BeEmpty())
 		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
+
+		// check uploader status
+		valaccountUploader, valaccountUploaderFound := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.ALICE)
+		Expect(valaccountUploaderFound).To(BeTrue())
+
+		Expect(valaccountUploader.PoolId).To(Equal(uint64(0)))
+		Expect(valaccountUploader.Valaddress).To(Equal(i.BOB))
+		Expect(valaccountUploader.Staker).To(Equal(i.ALICE))
+		Expect(valaccountUploader.Points).To(BeZero())
+
+		balanceValaddress := s.GetBalanceFromAddress(valaccountUploader.Valaddress)
+		Expect(balanceValaddress).To(Equal(initialBalanceBob))
+
+		balanceStaker := s.GetBalanceFromAddress(valaccountUploader.Staker)
+
+		// calculate uploader reward
+		totalReward := 100 * s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
+		networkFee, _ := sdk.NewDecFromStr(s.App().BundlesKeeper.NetworkFee(s.Ctx()))
+
+		treasuryReward := uint64(sdk.NewDec(int64(totalReward)).Mul(networkFee).RoundInt64())
+		uploaderReward := totalReward - treasuryReward
+
+		Expect(balanceStaker).To(Equal(initialBalanceAlice + uploaderReward))
+
+		// TODO: test treasury balance
 	})
 })
