@@ -642,3 +642,9 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(pool.Funders).To(BeEmpty())
 	})
 })
+
+// TODO: split up integration tests into
+// - funding (test with multiple funders and not enough funders)
+// - dropped bundles (test invalid and no quorum) and produce valid after
+// - no data bundles and produce valid after
+// - valid bundles
