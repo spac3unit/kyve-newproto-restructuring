@@ -21,6 +21,7 @@ var _ = Describe("Staking", Ordered, func() {
 
 	AfterEach(func() {
 		s.VerifyStakersModuleAssetsIntegrity()
+		s.VerifyPoolTotalStake()
 	})
 
 	It("Create new staker with 100 KYVE", func() {
