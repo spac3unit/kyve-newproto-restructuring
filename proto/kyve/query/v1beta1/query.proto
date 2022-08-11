@@ -50,6 +50,16 @@ service Query {
   rpc FinalizedBundle(QueryFinalizedBundleRequest) returns (QueryFinalizedBundleResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/finalized_bundle/{pool_id}/{id}";
   }
+
+  // CanPropose ...
+  rpc CanPropose(QueryCanProposeRequest) returns (QueryCanProposeResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/can_propose/{pool_id}/{staker}/{proposer}/{from_height}";
+  }
+
+  // CanVote checks if voter on pool can still vote for the given bundle
+  rpc CanVote(QueryCanVoteRequest) returns (QueryCanVoteResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/can_vote/{pool_id}/{staker}/{voter}/{storage_id}";
+  }
 }
 
 // QueryPoolsRequest is the request type for the Query/Pools RPC method.
@@ -150,4 +160,44 @@ message QueryFinalizedBundleRequest {
 message QueryFinalizedBundleResponse {
   // finalized_bundle ...
   kyve.bundles.v1beta1.FinalizedBundle finalized_bundle = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryCanProposeRequest is the request type for the Query/CanPropose RPC method.
+message QueryCanProposeRequest {
+  // pool_id defines the unique ID of the pool.
+  uint64 pool_id = 1;
+  // staker ...
+  string staker = 2;
+  // proposer ...
+  string proposer = 3;
+  // from_height ...
+  uint64 from_height = 4;
+}
+
+// QueryCanProposeResponse is the response type for the Query/CanPropose RPC method.
+message QueryCanProposeResponse {
+  // possible ...
+  bool possible = 1;
+  // reason ...
+  string reason = 2;
+}
+
+// QueryCanVoteRequest is the request type for the Query/CanVote RPC method.
+message QueryCanVoteRequest {
+  // pool_id defines the unique ID of the pool.
+  uint64 pool_id = 1;
+  // staker ...
+  string staker = 2;
+  // voter ...
+  string voter = 3;
+  // storage_id ...
+  string storage_id = 4;
+}
+
+// QueryCanVoteResponse is the response type for the Query/CanVote RPC method.
+message QueryCanVoteResponse {
+  // possible ...
+  bool possible = 1;
+  // reason ...
+  string reason = 2;
 }

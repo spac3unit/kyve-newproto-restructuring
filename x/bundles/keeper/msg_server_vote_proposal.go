@@ -27,7 +27,7 @@ func (k msgServer) VoteProposal(
 
 	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
 
-	// Check if the sender is also the bundle's uploader.
+	// Check if the sender is also the bundle's uploader. // TODO: remove?
 	if bundleProposal.Uploader == msg.Staker {
 		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrVoterIsUploader.Error())
 	}
