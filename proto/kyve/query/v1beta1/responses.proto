@@ -28,3 +28,10 @@ message StakerResponse {
   // valaccounts ...
   repeated kyve.stakers.v1beta1.Valaccount valaccounts = 2;
 }
+
+message StakerPoolResponse {
+  // staker ...
+  kyve.stakers.v1beta1.Staker staker = 1;
+  // valaccount ...
+  kyve.stakers.v1beta1.Valaccount valaccount = 2;
+}

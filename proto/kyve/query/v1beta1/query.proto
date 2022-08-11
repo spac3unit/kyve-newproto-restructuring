@@ -34,9 +34,12 @@ service Query {
   rpc Staker(QueryStakerRequest) returns (QueryStakerResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/staker/{address}";
   }
-}
 
-// this line is used by starport scaffolding # 3
+  // Staker queries for all stakers.
+  rpc StakersByPool(QueryStakersByPoolRequest) returns (QueryStakersByPoolResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/stakers_by_pool/{pool_id}";
+  }
+}
 
 // QueryPoolsRequest is the request type for the Query/Pools RPC method.
 message QueryPoolsRequest {
@@ -92,6 +95,18 @@ message QueryStakerRequest {
 
 // QueryStakerResponse is the response type for the Query/Staker RPC method.
 message QueryStakerResponse {
-  // stakers ...
+  // staker ...
   StakerResponse staker = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryStakersByPoolRequest is the request type for the Query/Staker RPC method.
+message QueryStakersByPoolRequest {
+  // pool_id ...
+  uint64 pool_id = 1;
+}
+
+// QueryStakersByPoolResponse is the response type for the Query/Staker RPC method.
+message QueryStakersByPoolResponse {
+  // stakers ...
+  repeated StakerPoolResponse stakers = 1 [(gogoproto.nullable) = false];
 }
