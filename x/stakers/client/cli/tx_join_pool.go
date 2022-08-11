@@ -11,9 +11,9 @@ import (
 
 func CmdJoinPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "join-pool [pool_id]",
+		Use:   "join-pool [pool_id] [valaddress]",
 		Short: "Broadcast message join-pool",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			argPoolId, err := cast.ToUint64E(args[0])
@@ -29,6 +29,7 @@ func CmdJoinPool() *cobra.Command {
 			msg := types.MsgJoinPool{
 				Creator: clientCtx.GetFromAddress().String(),
 				PoolId:  argPoolId,
+				Valaddress: args[1],
 			}
 
 			if err := msg.ValidateBasic(); err != nil {
