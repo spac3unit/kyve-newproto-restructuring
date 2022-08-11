@@ -39,6 +39,17 @@ service Query {
   rpc StakersByPool(QueryStakersByPoolRequest) returns (QueryStakersByPoolResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/stakers_by_pool/{pool_id}";
   }
+
+  // FinalizedBundles ...
+  rpc FinalizedBundles(QueryFinalizedBundlesRequest) returns (QueryFinalizedBundlesResponse) {
+    option deprecated = true;
+    option (google.api.http).get = "/kyve/query/v1beta1/finalized_bundles/{pool_id}";
+  }
+
+  // FinalizedBundle ...
+  rpc FinalizedBundle(QueryFinalizedBundleRequest) returns (QueryFinalizedBundleResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/finalized_bundle/{pool_id}/{id}";
+  }
 }
 
 // QueryPoolsRequest is the request type for the Query/Pools RPC method.
@@ -109,4 +120,34 @@ message QueryStakersByPoolRequest {
 message QueryStakersByPoolResponse {
   // stakers ...
   repeated StakerPoolResponse stakers = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryFinalizedBundlesRequest is the request type for the Query/Staker RPC method.
+message QueryFinalizedBundlesRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  // pool_id ...
+  uint64 pool_id = 2;
+}
+
+// QueryStakersByPoolResponse is the response type for the Query/Staker RPC method.
+message QueryFinalizedBundlesResponse {
+  // finalized_bundles ...
+  repeated kyve.bundles.v1beta1.FinalizedBundle finalized_bundles = 1 [(gogoproto.nullable) = false];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryFinalizedBundleRequest is the request type for the Query/Staker RPC method.
+message QueryFinalizedBundleRequest {
+  // pool_id ...
+  uint64 pool_id = 1;
+  // id ...
+  uint64 id = 2;
+}
+
+// QueryFinalizedBundleResponse is the response type for the Query/Staker RPC method.
+message QueryFinalizedBundleResponse {
+  // finalized_bundle ...
+  kyve.bundles.v1beta1.FinalizedBundle finalized_bundle = 1 [(gogoproto.nullable) = false];
 }

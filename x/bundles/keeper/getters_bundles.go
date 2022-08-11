@@ -4,6 +4,9 @@ import (
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // SetBundleProposal set a specific staker in the store from its index
@@ -57,4 +60,34 @@ func (k Keeper) GetFinalizedBundle(
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+func (k Keeper) GetPaginatedFinalizedBundleQuery(ctx sdk.Context, pagination *query.PageRequest, poolId uint64) ([]types.FinalizedBundle, *query.PageResponse, error) {
+	var data []types.FinalizedBundle
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FinalizedBundlePrefix)
+
+	pageRes, err := query.FilteredPaginate(store, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var finalizedBundle types.FinalizedBundle
+		if err := k.cdc.Unmarshal(value, &finalizedBundle); err != nil {
+			return false, err
+		}
+
+		// filter pool id
+		if poolId != finalizedBundle.PoolId {
+			return false, nil
+		}
+
+		if accumulate {
+			data = append(data, finalizedBundle)
+		}
+
+		return true, nil
+	})
+
+	if err != nil {
+		return nil, nil, status.Error(codes.Internal, err.Error())
+	}
+	
+	return data, pageRes, nil
 }
