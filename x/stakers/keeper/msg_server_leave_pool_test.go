@@ -18,22 +18,22 @@ var _ = Describe("Leave Pool", Ordered, func() {
 
 		// create pool
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest",
+			Config:   "{}",
 			Binaries: "{}",
 		})
 
 		// create staker
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
-			Amount:  100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		// join pool
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 	})
@@ -47,7 +47,7 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
 			Creator: i.ALICE,
-			PoolId: 0,
+			PoolId:  0,
 		})
 
 		// ASSERT
@@ -99,13 +99,13 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
 			Creator: i.ALICE,
-			PoolId: 0,
+			PoolId:  0,
 		})
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgLeavePool{
 			Creator: i.ALICE,
-			PoolId: 0,
+			PoolId:  0,
 		})
 
 		// ASSERT
@@ -123,22 +123,22 @@ var _ = Describe("Leave Pool", Ordered, func() {
 	It("Try to leave multiple pools", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest2",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest2",
+			Config:   "{}",
 			Binaries: "{}",
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 1,
+			Creator:    i.ALICE,
+			PoolId:     1,
 			Valaddress: i.CHARLIE,
 		})
 
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
 			Creator: i.ALICE,
-			PoolId: 1,
+			PoolId:  1,
 		})
 
 		// ASSERT

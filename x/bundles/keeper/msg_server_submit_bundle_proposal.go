@@ -55,10 +55,10 @@ func (k msgServer) SubmitBundleProposal(
 
 		return &types.MsgSubmitBundleProposalResponse{}, nil
 	}
-	
+
 	// increase points of stakers who did not vote at all
 	k.handleNonVoters(ctx, msg.PoolId)
-	
+
 	// Get next uploader
 	voters := append(bundleProposal.VotersValid, bundleProposal.VotersInvalid...)
 	nextUploader := ""
@@ -71,7 +71,7 @@ func (k msgServer) SubmitBundleProposal(
 
 	// check if the quorum was actually reached
 	voteDistribution := k.getVoteDistribution(ctx, msg.PoolId)
-	
+
 	// handle valid proposal
 	if voteDistribution.Status == types.BUNDLE_STATUS_VALID {
 		// Calculate the total reward for the bundle, and individual payouts.
@@ -98,7 +98,7 @@ func (k msgServer) SubmitBundleProposal(
 			return nil, err
 		}
 
-		// send commission to uploader 
+		// send commission to uploader
 		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, pooltypes.ModuleName, bundleProposal.Uploader, bundleReward.Uploader); err != nil {
 			return nil, err
 		}

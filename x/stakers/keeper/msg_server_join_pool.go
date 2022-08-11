@@ -46,8 +46,8 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 	k.AddValaccountToPool(ctx, msg.PoolId, msg.Creator, msg.Valaddress)
 
 	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventJoinPool{
-		PoolId:  msg.PoolId,
-		Staker: msg.Creator,
+		PoolId:     msg.PoolId,
+		Staker:     msg.Creator,
 		Valaddress: msg.Valaddress,
 	}); errEmit != nil {
 		return nil, errEmit

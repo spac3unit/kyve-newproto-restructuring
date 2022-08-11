@@ -7,6 +7,8 @@ import (
 	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/KYVENetwork/chain/x/pool"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
+	"github.com/KYVENetwork/chain/x/query"
+	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	"github.com/KYVENetwork/chain/x/stakers"
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 
@@ -97,6 +99,7 @@ var appModuleBasics = []module.AppModuleBasic{
 	stakers.AppModuleBasic{},
 	delegation.AppModuleBasic{},
 	bundles.AppModuleBasic{},
+	query.AppModuleBasic{},
 	// this line is used by starport scaffolding # stargate/app/moduleBasic
 }
 
@@ -114,6 +117,7 @@ var moduleAccountPermissions = map[string][]string{
 	delegationtypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 	stakerstypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
 	bundlestypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
+	querytypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
 	// this line is used by starport scaffolding # stargate/app/maccPerms
 }
 

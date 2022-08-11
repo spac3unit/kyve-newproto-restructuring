@@ -19,35 +19,35 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 
 		// create clean pool for every test case
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest",
-			Config: "{}",
-			Binaries: "{}",
-			MaxBundleSize: 100,
-			StartKey: "0",
+			Creator:        i.ALICE,
+			Name:           "Moontest",
+			Config:         "{}",
+			Binaries:       "{}",
+			MaxBundleSize:  100,
+			StartKey:       "0",
 			UploadInterval: 60,
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
+			Staker:  i.ALICE,
+			PoolId:  0,
 		})
 	})
 
@@ -56,22 +56,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		s.VerifyStakersModuleAssetsIntegrity()
 	})
 
-	It("Try to submit proposal", func () {
+	It("Try to submit proposal", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -94,36 +94,36 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with non existing valaccount", func () {
+	It("Try to submit proposal with non existing valaccount", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.CHARLIE,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.CHARLIE,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.CHARLIE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.CHARLIE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -134,36 +134,36 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with wrong valaccount", func () {
+	It("Try to submit proposal with wrong valaccount", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest2",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest2",
+			Config:   "{}",
 			Binaries: "{}",
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 1,
+			Creator:    i.ALICE,
+			PoolId:     1,
 			Valaddress: i.CHARLIE,
 		})
-		
+
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.CHARLIE,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.CHARLIE,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -174,22 +174,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with empty storage id", func () {
+	It("Try to submit proposal with empty storage id", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -200,19 +200,19 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal within upload interval", func () {
+	It("Try to submit proposal within upload interval", func() {
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -223,22 +223,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with empty byte size", func () {
+	It("Try to submit proposal with empty byte size", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 0,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   0,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -249,22 +249,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with invalid from height", func () {
+	It("Try to submit proposal with invalid from height", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 1,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -275,22 +275,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with bigger bundle size than allowed", func () {
+	It("Try to submit proposal with bigger bundle size than allowed", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 101,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   101,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -301,22 +301,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with empty bundle", func () {
+	It("Try to submit proposal with empty bundle", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 0,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   0,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -327,22 +327,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with empty value", func () {
+	It("Try to submit proposal with empty value", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "",
 			BundleHash: "test_hash",
 		})
 
@@ -353,22 +353,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with empty bundle hash", func () {
+	It("Try to submit proposal with empty bundle hash", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "",
 		})
 
@@ -379,22 +379,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE", func () {
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "KYVE_NO_DATA_BUNDLE",
-			ByteSize: 0,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "KYVE_NO_DATA_BUNDLE",
+			ByteSize:   0,
 			FromHeight: 0,
-			ToHeight: 0,
-			FromKey: "0",
-			ToKey: "",
-			ToValue: "",
+			ToHeight:   0,
+			FromKey:    "0",
+			ToKey:      "",
+			ToValue:    "",
 			BundleHash: "",
 		})
 
@@ -417,22 +417,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid byte size", func () {
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid byte size", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "KYVE_NO_DATA_BUNDLE",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "KYVE_NO_DATA_BUNDLE",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 0,
-			FromKey: "0",
-			ToKey: "",
-			ToValue: "",
+			ToHeight:   0,
+			FromKey:    "0",
+			ToKey:      "",
+			ToValue:    "",
 			BundleHash: "",
 		})
 
@@ -443,22 +443,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to height", func () {
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to height", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "KYVE_NO_DATA_BUNDLE",
-			ByteSize: 0,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "KYVE_NO_DATA_BUNDLE",
+			ByteSize:   0,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "",
-			ToValue: "",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "",
+			ToValue:    "",
 			BundleHash: "",
 		})
 
@@ -469,22 +469,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to value", func () {
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid to value", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "KYVE_NO_DATA_BUNDLE",
-			ByteSize: 0,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "KYVE_NO_DATA_BUNDLE",
+			ByteSize:   0,
 			FromHeight: 0,
-			ToHeight: 0,
-			FromKey: "0",
-			ToKey: "",
-			ToValue: "test_value",
+			ToHeight:   0,
+			FromKey:    "0",
+			ToKey:      "",
+			ToValue:    "test_value",
 			BundleHash: "",
 		})
 
@@ -495,22 +495,22 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.Uploader).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid bundle hash", func () {
+	It("Try to submit proposal with KYVE_NO_DATA_BUNDLE and invalid bundle hash", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "KYVE_NO_DATA_BUNDLE",
-			ByteSize: 0,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "KYVE_NO_DATA_BUNDLE",
+			ByteSize:   0,
 			FromHeight: 0,
-			ToHeight: 0,
-			FromKey: "0",
-			ToKey: "",
-			ToValue: "",
+			ToHeight:   0,
+			FromKey:    "0",
+			ToKey:      "",
+			ToValue:    "",
 			BundleHash: "test_hash",
 		})
 

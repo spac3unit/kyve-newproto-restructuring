@@ -21,8 +21,8 @@ func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.Msg
 	} else {
 		// Append new staker
 		k.AppendStaker(ctx, types.Staker{
-			Address: msg.Creator,
-			Amount:  msg.Amount,
+			Address:    msg.Creator,
+			Amount:     msg.Amount,
 			Commission: types.DefaultCommission,
 		})
 	}

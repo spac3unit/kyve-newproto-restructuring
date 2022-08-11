@@ -94,7 +94,7 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 			}
 		} else {
 			staker.Amount -= amount
-	
+
 			// TODO: verify isUnstake
 			if isUnstake {
 				staker.UnbondingAmount -= amount
@@ -104,7 +104,7 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 			for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
 				k.subtractFromTotalStake(ctx, valaccount.PoolId, amount)
 			}
-	
+
 			k.setStaker(ctx, staker)
 		}
 	}

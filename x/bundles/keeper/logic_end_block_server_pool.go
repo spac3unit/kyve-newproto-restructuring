@@ -16,7 +16,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 	// Iterate over all pool Ids.
 	for _, pool := range k.poolKeeper.GetAllPools(ctx) {
 		// TODO: Set pool status
-		
+
 		err := k.poolKeeper.AssertPoolCanRun(ctx, pool.Id)
 		bundleProposal, _ := k.GetBundleProposal(ctx, pool.Id)
 
@@ -52,13 +52,13 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 
 				// If consensus wasn't reached, we drop the bundle and emit an event.
 				ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
-					PoolId:       pool.Id,
-					Id: pool.TotalBundles,
-					Valid: voteDistribution.Valid,
+					PoolId:  pool.Id,
+					Id:      pool.TotalBundles,
+					Valid:   voteDistribution.Valid,
 					Invalid: voteDistribution.Invalid,
 					Abstain: voteDistribution.Abstain,
-					Total: voteDistribution.Total,
-					Status: voteDistribution.Status,
+					Total:   voteDistribution.Total,
+					Status:  voteDistribution.Status,
 				})
 
 				bundleProposal = types.BundleProposal{
@@ -82,7 +82,6 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		k.stakerKeeper.Slash(ctx, pool.Id, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
 
 		k.stakerKeeper.RemoveValaccountFromPool(ctx, pool.Id, bundleProposal.NextUploader)
-
 
 		// Update bundle proposal
 		bundleProposal.NextUploader = k.chooseNextUploaderFromAllStakers(ctx, pool.Id)

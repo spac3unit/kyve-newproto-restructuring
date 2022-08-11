@@ -15,9 +15,9 @@ var _ = Describe("Delegation", Ordered, func() {
 
 	BeforeAll(func() {
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest",
+			Config:   "{}",
 			Binaries: "{}",
 		})
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{

@@ -21,7 +21,7 @@ func (k msgServer) VoteProposal(
 		return nil, err
 	}
 
-	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator, ); err != nil {
+	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
 		return nil, err
 	}
 
@@ -89,7 +89,7 @@ func (k msgServer) VoteProposal(
 	// Emit a vote event.
 	if err := ctx.EventManager().EmitTypedEvent(&types.EventBundleVote{
 		PoolId:    msg.PoolId,
-		Staker:   msg.Staker,
+		Staker:    msg.Staker,
 		StorageId: msg.StorageId,
 		Vote:      msg.Vote,
 	}); err != nil {

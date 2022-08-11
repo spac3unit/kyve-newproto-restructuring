@@ -25,9 +25,9 @@ type (
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
 
-		accountKeeper authkeeper.AccountKeeper
-		bankKeeper bankkeeper.Keeper
-		distrkeeper distrkeeper.Keeper
+		accountKeeper    authkeeper.AccountKeeper
+		bankKeeper       bankkeeper.Keeper
+		distrkeeper      distrkeeper.Keeper
 		poolKeeper       poolkeeper.Keeper
 		stakerKeeper     stakerskeeper.Keeper
 		delegationKeeper delegationkeeper.Keeper
@@ -60,9 +60,9 @@ func NewKeeper(
 		memKey:     memKey,
 		paramstore: ps,
 
-		accountKeeper: accountKeeper,
+		accountKeeper:    accountKeeper,
 		bankKeeper:       bankKeeper,
-		distrkeeper: distrkeeper,
+		distrkeeper:      distrkeeper,
 		poolKeeper:       poolKeeper,
 		stakerKeeper:     stakerKeeper,
 		delegationKeeper: delegationKeeper,

@@ -38,7 +38,7 @@ func (k Keeper) Slash(
 
 		// Compute how much we're going to slash the staker.
 		slash := uint64(sdk.NewDec(int64(staker.Amount)).Mul(slashAmountRatio).RoundInt64())
-		
+
 		// remove amount - staker gets removed slash is greater equal than stake
 		k.RemoveAmountFromStaker(ctx, staker.Address, slash, false)
 

@@ -81,6 +81,10 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 
+	// Query
+	querykeeper "github.com/KYVENetwork/chain/x/query/keeper"
+	querytypes "github.com/KYVENetwork/chain/x/query/types"
+
 	// Upgrade
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
@@ -112,6 +116,7 @@ type Keepers struct {
 	DelegationKeeper delegationkeeper.Keeper
 	StakersKeeper    stakerskeeper.Keeper
 	BundlesKeeper    bundleskeeper.Keeper
+	QueryKeeper querykeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 }
 
@@ -133,6 +138,7 @@ func (app *App) initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.
 	paramsKeeper.Subspace(delegationtypes.ModuleName)
 	paramsKeeper.Subspace(stakerstypes.ModuleName)
 	paramsKeeper.Subspace(bundlestypes.ModuleName)
+	paramsKeeper.Subspace(querytypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper
@@ -159,6 +165,7 @@ func KVStoreKeys() []string {
 		delegationtypes.StoreKey,
 		stakerstypes.StoreKey,
 		bundlestypes.StoreKey,
+		querytypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	}
 }

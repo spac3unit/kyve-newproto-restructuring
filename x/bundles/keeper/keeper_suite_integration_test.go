@@ -23,37 +23,37 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 		// create clean pool for every test case
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest",
-			Config: "{}",
-			Binaries: "{}",
-			MaxBundleSize: 100,
-			StartKey: "0",
+			Creator:        i.ALICE,
+			Name:           "Moontest",
+			Config:         "{}",
+			Binaries:       "{}",
+			MaxBundleSize:  100,
+			StartKey:       "0",
 			UploadInterval: 60,
-			OperatingCost: 10_000,
+			OperatingCost:  10_000,
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
-			Id: 0,
-			Amount: 100*i.KYVE,
+			Id:      0,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
+			Staker:  i.ALICE,
+			PoolId:  0,
 		})
 
 		initialBalanceAlice = s.GetBalanceFromAddress(i.ALICE)
@@ -70,19 +70,19 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		s.VerifyPoolTotalStake()
 	})
 
-	It("Produce valid bundles with one node", func () {
+	It("Produce valid bundles with one node", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -90,16 +90,16 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize:   100,
 			FromHeight: 100,
-			ToHeight: 200,
-			FromKey: "99",
-			ToKey: "199",
-			ToValue: "test_value2",
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value2",
 			BundleHash: "test_hash2",
 		})
 
@@ -156,7 +156,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		balanceStaker := s.GetBalanceFromAddress(valaccountUploader.Staker)
 
 		// calculate uploader reward
-		totalReward := 100 * s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
+		totalReward := 100*s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
 		networkFee, _ := sdk.NewDecFromStr(s.App().BundlesKeeper.NetworkFee(s.Ctx()))
 
 		treasuryReward := uint64(sdk.NewDec(int64(totalReward)).Mul(networkFee).RoundInt64())
@@ -172,57 +172,57 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(funder.Amount).To(Equal(100*i.KYVE - totalReward))
 	})
 
-	It("Produce valid bundles with two nodes", func () {
+	It("Produce valid bundles with two nodes", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.BOB,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.BOB,
-			PoolId: 0,
+			Creator:    i.BOB,
+			PoolId:     0,
 			Valaddress: i.ALICE,
 		})
 
 		initialBalanceBob = s.GetBalanceFromAddress(i.BOB)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
-			Creator: i.ALICE,
-			Staker: i.BOB,
-			PoolId: 0,
+			Creator:   i.ALICE,
+			Staker:    i.BOB,
+			PoolId:    0,
 			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			Vote: bundletypes.VOTE_TYPE_YES,
+			Vote:      bundletypes.VOTE_TYPE_YES,
 		})
 
 		s.CommitAfterSeconds(60)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize:   100,
 			FromHeight: 100,
-			ToHeight: 200,
-			FromKey: "99",
-			ToKey: "199",
-			ToValue: "test_value2",
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value2",
 			BundleHash: "test_hash2",
 		})
 
@@ -279,7 +279,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		balanceStaker := s.GetBalanceFromAddress(valaccountUploader.Staker)
 
 		// calculate uploader reward
-		totalReward := 100 * s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
+		totalReward := 100*s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
 		networkFee, _ := sdk.NewDecFromStr(s.App().BundlesKeeper.NetworkFee(s.Ctx()))
 
 		treasuryReward := uint64(sdk.NewDec(int64(totalReward)).Mul(networkFee).RoundInt64())
@@ -299,58 +299,58 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(funder.Amount).To(Equal(100*i.KYVE - totalReward))
 	})
 
-	It("Produce invalid bundles with two nodes", func () {
+	It("Produce invalid bundles with two nodes", func() {
 		// ARRANGE
 		// stake a bit more than first node so >50% is reached
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.BOB,
-			Amount: 200*i.KYVE,
+			Amount:  200 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.BOB,
-			PoolId: 0,
+			Creator:    i.BOB,
+			PoolId:     0,
 			Valaddress: i.ALICE,
 		})
 
 		initialBalanceBob = s.GetBalanceFromAddress(i.BOB)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
-			Creator: i.ALICE,
-			Staker: i.BOB,
-			PoolId: 0,
+			Creator:   i.ALICE,
+			Staker:    i.BOB,
+			PoolId:    0,
 			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			Vote: bundletypes.VOTE_TYPE_NO,
-		}) 
+			Vote:      bundletypes.VOTE_TYPE_NO,
+		})
 
 		s.CommitAfterSeconds(60)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.ALICE,
-			Staker: i.BOB,
-			PoolId: 0,
-			StorageId: "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
-			ByteSize: 100,
+			Creator:    i.ALICE,
+			Staker:     i.BOB,
+			PoolId:     0,
+			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize:   100,
 			FromHeight: 100,
-			ToHeight: 200,
-			FromKey: "99",
-			ToKey: "199",
-			ToValue: "test_value2",
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value2",
 			BundleHash: "test_hash2",
 		})
 
@@ -402,8 +402,8 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(stakerFound).To(BeTrue())
 
 		// 1% slash
-		Expect(staker.Amount).To(Equal(99*i.KYVE))
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(299*i.KYVE))
+		Expect(staker.Amount).To(Equal(99 * i.KYVE))
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(299 * i.KYVE))
 
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
@@ -414,36 +414,36 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		funder, _ := pool.GetFunder(i.ALICE)
 
 		Expect(pool.Funders).To(HaveLen(1))
-		Expect(funder.Amount).To(Equal(100*i.KYVE))
+		Expect(funder.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Produce dropped bundle because nodes do not vote", func () {
+	It("Produce dropped bundle because nodes do not vote", func() {
 		// ARRANGE
 		// stake a bit more than first node so >50% is reached
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.BOB,
-			Amount: 200*i.KYVE,
+			Amount:  200 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.BOB,
-			PoolId: 0,
+			Creator:    i.BOB,
+			PoolId:     0,
 			Valaddress: i.ALICE,
 		})
 
 		initialBalanceBob = s.GetBalanceFromAddress(i.BOB)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
@@ -499,8 +499,8 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
 		Expect(stakerFound).To(BeTrue())
 
-		Expect(staker.Amount).To(Equal(100*i.KYVE))
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300*i.KYVE))
+		Expect(staker.Amount).To(Equal(100 * i.KYVE))
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300 * i.KYVE))
 
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
@@ -511,20 +511,20 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		funder, _ := pool.GetFunder(i.ALICE)
 
 		Expect(pool.Funders).To(HaveLen(1))
-		Expect(funder.Amount).To(Equal(100*i.KYVE))
+		Expect(funder.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Produce dropped bundle because pool has not enough funds", func () {
+	It("Produce dropped bundle because pool has not enough funds", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		// fund amount which definetely not cover bundle reward
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
-			Amount: 1,
+			Amount:  1,
 		})
 
 		initialBalanceAlice := s.GetBalanceFromAddress(i.ALICE)
@@ -532,53 +532,53 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		// stake a bit more than first node so >50% is reached
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.BOB,
-			Amount: 200*i.KYVE,
+			Amount:  200 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.BOB,
-			PoolId: 0,
+			Creator:    i.BOB,
+			PoolId:     0,
 			Valaddress: i.ALICE,
 		})
 
 		initialBalanceBob = s.GetBalanceFromAddress(i.BOB)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
-			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize: 100,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
 			FromHeight: 0,
-			ToHeight: 100,
-			FromKey: "0",
-			ToKey: "99",
-			ToValue: "test_value",
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
 			BundleHash: "test_hash",
 		})
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
-			Creator: i.ALICE,
-			Staker: i.BOB,
-			PoolId: 0,
+			Creator:   i.ALICE,
+			Staker:    i.BOB,
+			PoolId:    0,
 			StorageId: "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			Vote: bundletypes.VOTE_TYPE_YES,
+			Vote:      bundletypes.VOTE_TYPE_YES,
 		})
 
 		s.CommitAfterSeconds(60)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator: i.ALICE,
-			Staker: i.BOB,
-			PoolId: 0,
-			StorageId: "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
-			ByteSize: 100,
+			Creator:    i.ALICE,
+			Staker:     i.BOB,
+			PoolId:     0,
+			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize:   100,
 			FromHeight: 100,
-			ToHeight: 200,
-			FromKey: "99",
-			ToKey: "199",
-			ToValue: "test_value2",
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value2",
 			BundleHash: "test_hash2",
 		})
 
@@ -629,8 +629,8 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
 		Expect(stakerFound).To(BeTrue())
 
-		Expect(staker.Amount).To(Equal(100*i.KYVE))
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300*i.KYVE))
+		Expect(staker.Amount).To(Equal(100 * i.KYVE))
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300 * i.KYVE))
 
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)

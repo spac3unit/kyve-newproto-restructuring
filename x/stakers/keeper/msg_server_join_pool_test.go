@@ -18,16 +18,16 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		// create pool
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest",
+			Config:   "{}",
 			Binaries: "{}",
 		})
 
 		// create staker
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
-			Amount:  100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 	})
 
@@ -45,8 +45,8 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Join a pool", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
@@ -71,25 +71,25 @@ var _ = Describe("Join Pool", Ordered, func() {
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
 
-		Expect(totalStakeOfPool).To(Equal(100*i.KYVE))
+		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
 		Expect(totalStakeOfPool).To(Equal(staker.Amount))
 	})
 
 	It("Stake after joining a pool", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
-		Expect(totalStakeOfPool).To(Equal(100*i.KYVE))
+		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
 
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
-			Amount: 50*i.KYVE,
+			Amount:  50 * i.KYVE,
 		})
 
 		// ASSERT
@@ -113,22 +113,22 @@ var _ = Describe("Join Pool", Ordered, func() {
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		totalStakeOfPool = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
 
-		Expect(totalStakeOfPool).To(Equal(150*i.KYVE))
+		Expect(totalStakeOfPool).To(Equal(150 * i.KYVE))
 		Expect(totalStakeOfPool).To(Equal(staker.Amount))
 	})
 
 	It("Try to join the same pool with same valaddress again", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
@@ -141,15 +141,15 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Try to join the same pool with a different valaddress again", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
-		
+
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.CHARLIE,
 		})
 
@@ -162,22 +162,22 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Try to join another pool with same valaddress", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest2",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest2",
+			Config:   "{}",
 			Binaries: "{}",
 		})
-		
+
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 1,
+			Creator:    i.ALICE,
+			PoolId:     1,
 			Valaddress: i.BOB,
 		})
 
@@ -189,22 +189,22 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Try to join another pool with another valaddress", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest2",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest2",
+			Config:   "{}",
 			Binaries: "{}",
 		})
-		
+
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 1,
+			Creator:    i.ALICE,
+			PoolId:     1,
 			Valaddress: i.CHARLIE,
 		})
 

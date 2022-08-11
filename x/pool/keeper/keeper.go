@@ -23,8 +23,8 @@ type (
 		paramstore paramtypes.Subspace
 
 		accountKeeper authkeeper.AccountKeeper
-		bankKeeper bankkeeper.Keeper
-		distrkeeper distrkeeper.Keeper
+		bankKeeper    bankkeeper.Keeper
+		distrkeeper   distrkeeper.Keeper
 	}
 )
 
@@ -45,13 +45,13 @@ func NewKeeper(
 
 	return &Keeper{
 
-		cdc:        cdc,
-		storeKey:   storeKey,
-		memKey:     memKey,
-		paramstore: ps,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		memKey:        memKey,
+		paramstore:    ps,
 		accountKeeper: accountKeeper,
-		bankKeeper: bankKeeper,
-		distrkeeper: distrkeeper,
+		bankKeeper:    bankKeeper,
+		distrkeeper:   distrkeeper,
 	}
 }
 

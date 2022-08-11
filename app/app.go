@@ -116,6 +116,13 @@ import (
 	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
 	bundlesmodulekeeper "github.com/KYVENetwork/chain/x/bundles/keeper"
 	bundlesmoduletypes "github.com/KYVENetwork/chain/x/bundles/types"
+
+	// this line is used by starport scaffolding # stargate/app/moduleImport
+
+	querymodule "github.com/KYVENetwork/chain/x/query"
+	//poolmoduleclient "github.com/KYVENetwork/chain/x/pool/client"
+	querymodulekeeper "github.com/KYVENetwork/chain/x/query/keeper"
+	querymoduletypes "github.com/KYVENetwork/chain/x/query/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -372,6 +379,21 @@ func NewApp(
 		app.DelegationKeeper,
 	)
 
+	app.QueryKeeper = *querymodulekeeper.NewKeeper(
+		appCodec,
+		keys[querymoduletypes.StoreKey],
+		keys[querymoduletypes.MemStoreKey],
+		app.GetSubspace(querymoduletypes.ModuleName),
+
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.DistrKeeper,
+		app.PoolKeeper,
+		app.StakersKeeper,
+		app.DelegationKeeper,
+		app.BundlesKeeper,
+	)
+
 	app.RegistryKeeper = *registrymodulekeeper.NewKeeper(
 		appCodec,
 		keys[registrymoduletypes.StoreKey],
@@ -444,6 +466,7 @@ func NewApp(
 		stakersmodule.NewAppModule(appCodec, app.StakersKeeper, app.AccountKeeper, app.BankKeeper),
 		delegationmodule.NewAppModule(appCodec, app.DelegationKeeper, app.AccountKeeper, app.BankKeeper),
 		bundlesmodule.NewAppModule(appCodec, app.BundlesKeeper, app.AccountKeeper, app.BankKeeper),
+		querymodule.NewAppModule(appCodec, app.QueryKeeper, app.AccountKeeper, app.BankKeeper),
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -474,6 +497,7 @@ func NewApp(
 		stakersmoduletypes.ModuleName,
 		delegationmoduletypes.ModuleName,
 		bundlesmoduletypes.ModuleName,
+		querymoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -500,6 +524,7 @@ func NewApp(
 		stakersmoduletypes.ModuleName,
 		delegationmoduletypes.ModuleName,
 		bundlesmoduletypes.ModuleName,
+		querymoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -531,6 +556,7 @@ func NewApp(
 		stakersmoduletypes.ModuleName,
 		delegationmoduletypes.ModuleName,
 		bundlesmoduletypes.ModuleName,
+		querymoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 

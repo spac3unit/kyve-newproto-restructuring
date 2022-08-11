@@ -21,7 +21,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// create staker
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
-			Amount:  100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 	})
 
@@ -34,7 +34,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.ALICE,
-			Amount:  50*i.KYVE,
+			Amount:  50 * i.KYVE,
 		})
 
 		// ASSERT
@@ -48,11 +48,11 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		Expect(found).To(BeTrue())
 
-		Expect(initialBalance - balanceAfter).To(Equal(100*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(100 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.ALICE))
-		Expect(staker.Amount).To(Equal(100*i.KYVE))
-		Expect(staker.UnbondingAmount).To(Equal(50*i.KYVE))
+		Expect(staker.Amount).To(Equal(100 * i.KYVE))
+		Expect(staker.UnbondingAmount).To(Equal(50 * i.KYVE))
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
 		Expect(staker.Moniker).To(BeEmpty())
@@ -72,9 +72,9 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		Expect(unstakingEntries).To(BeEmpty())
 
-		Expect(initialBalance - balanceAfter).To(Equal(50*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(50 * i.KYVE))
 
-		Expect(staker.Amount).To(Equal(50*i.KYVE))
+		Expect(staker.Amount).To(Equal(50 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(BeZero())
 	})
 
@@ -82,7 +82,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUnstake{
 			Creator: i.ALICE,
-			Amount:  101*i.KYVE,
+			Amount:  101 * i.KYVE,
 		})
 
 		// ASSERT
@@ -94,7 +94,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.ALICE,
-			Amount:  100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		// ASSERT
@@ -108,11 +108,11 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		Expect(found).To(BeTrue())
 
-		Expect(initialBalance - balanceAfter).To(Equal(100*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(100 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.ALICE))
-		Expect(staker.Amount).To(Equal(100*i.KYVE))
-		Expect(staker.UnbondingAmount).To(Equal(100*i.KYVE))
+		Expect(staker.Amount).To(Equal(100 * i.KYVE))
+		Expect(staker.UnbondingAmount).To(Equal(100 * i.KYVE))
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
 		Expect(staker.Moniker).To(BeEmpty())
@@ -141,7 +141,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.ALICE,
-			Amount:  25*i.KYVE,
+			Amount:  25 * i.KYVE,
 		})
 
 		unstakingEntries := s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
@@ -150,7 +150,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.ALICE,
-			Amount:  25*i.KYVE,
+			Amount:  25 * i.KYVE,
 		})
 
 		// ASSERT
@@ -169,10 +169,10 @@ var _ = Describe("Unstaking", Ordered, func() {
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		Expect(found).To(BeTrue())
-		Expect(initialBalance - balanceAfter).To(Equal(50*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(50 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.ALICE))
-		Expect(staker.Amount).To(Equal(50*i.KYVE))
+		Expect(staker.Amount).To(Equal(50 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
@@ -187,7 +187,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.ALICE,
-			Amount:  25*i.KYVE,
+			Amount:  25 * i.KYVE,
 		})
 
 		unstakingEntries := s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
@@ -196,7 +196,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUnstake{
 			Creator: i.ALICE,
-			Amount:  90*i.KYVE,
+			Amount:  90 * i.KYVE,
 		})
 
 		// ASSERT
@@ -215,10 +215,10 @@ var _ = Describe("Unstaking", Ordered, func() {
 		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
 
 		Expect(found).To(BeTrue())
-		Expect(initialBalance - balanceAfter).To(Equal(75*i.KYVE))
+		Expect(initialBalance - balanceAfter).To(Equal(75 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.ALICE))
-		Expect(staker.Amount).To(Equal(75*i.KYVE))
+		Expect(staker.Amount).To(Equal(75 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 

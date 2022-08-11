@@ -46,7 +46,7 @@ func (k Keeper) ProcessLeavePoolQueue(ctx sdk.Context) {
 			ctx.EventManager().EmitTypedEvent(&types.EventLeavePool{
 				PoolId: queueEntry.PoolId,
 				Staker: queueEntry.Staker,
-			});
+			})
 
 			return true
 		}

@@ -19,9 +19,9 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 
 		// create clean pool for every test case
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest",
+			Config:   "{}",
 			Binaries: "{}",
 		})
 	})
@@ -31,24 +31,24 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		s.VerifyStakersModuleAssetsIntegrity()
 	})
 
-	It("Try to claim uploader role without pool being funded", func () {
+	It("Try to claim uploader role without pool being funded", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
+			Staker:  i.ALICE,
+			PoolId:  0,
 		})
 
 		// ASSERT
@@ -56,18 +56,18 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		Expect(found).To(BeFalse())
 	})
 
-	It("Try to claim uploader role without being a staker", func () {
+	It("Try to claim uploader role without being a staker", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
+			Staker:  i.ALICE,
+			PoolId:  0,
 		})
 
 		// ASSERT
@@ -75,29 +75,29 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		Expect(found).To(BeFalse())
 	})
 
-	It("Try to claim uploader role", func () {
+	It("Try to claim uploader role", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
+			Staker:  i.ALICE,
+			PoolId:  0,
 		})
 
 		// ASSERT
@@ -120,35 +120,35 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
 	})
 
-	It("Try to claim uploader role with non existing valaccount", func () {
+	It("Try to claim uploader role with non existing valaccount", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 0,
+			Creator:    i.ALICE,
+			PoolId:     0,
 			Valaddress: i.BOB,
 		})
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.CHARLIE,
-			Staker: i.ALICE,
-			PoolId: 0,
+			Staker:  i.ALICE,
+			PoolId:  0,
 		})
 
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
-			Staker: i.CHARLIE,
-			PoolId: 0,
+			Staker:  i.CHARLIE,
+			PoolId:  0,
 		})
 
 		// ASSERT
@@ -156,36 +156,36 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		Expect(found).To(BeFalse())
 	})
 
-	It("Try to claim uploader role with wrong valaccount", func () {
+	It("Try to claim uploader role with wrong valaccount", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator: i.ALICE,
-			Name:    "Moontest2",
-			Config: "{}",
+			Creator:  i.ALICE,
+			Name:     "Moontest2",
+			Config:   "{}",
 			Binaries: "{}",
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
 			Creator: i.ALICE,
-			Amount: 100*i.KYVE,
+			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator: i.ALICE,
-			PoolId: 1,
+			Creator:    i.ALICE,
+			PoolId:     1,
 			Valaddress: i.BOB,
 		})
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.BOB,
-			Staker: i.ALICE,
-			PoolId: 0,
+			Staker:  i.ALICE,
+			PoolId:  0,
 		})
 
 		// ASSERT

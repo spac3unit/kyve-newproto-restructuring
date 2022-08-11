@@ -20,9 +20,9 @@ func containsElement(array []string, element string) bool {
 	return false
 }
 
-func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) (error) {
+func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) error {
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
-	
+
 	current_height := bundleProposal.ToHeight
 	current_key := bundleProposal.ToKey
 
@@ -120,18 +120,18 @@ func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmod
 	k.SetBundleProposal(ctx, bundleProposal)
 
 	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleProposed{
-		PoolId:    bundleProposal.PoolId,
-		Id: pool.TotalBundles,
-		StorageId: bundleProposal.StorageId,
-		Uploader: bundleProposal.Uploader,
-		ByteSize: bundleProposal.ByteSize,
+		PoolId:     bundleProposal.PoolId,
+		Id:         pool.TotalBundles,
+		StorageId:  bundleProposal.StorageId,
+		Uploader:   bundleProposal.Uploader,
+		ByteSize:   bundleProposal.ByteSize,
 		FromHeight: pool.CurrentHeight,
-		ToHeight: bundleProposal.ToHeight,
-		FromKey: pool.CurrentKey,
-		ToKey: bundleProposal.ToKey,
-		Value: bundleProposal.ToValue,
+		ToHeight:   bundleProposal.ToHeight,
+		FromKey:    pool.CurrentKey,
+		ToKey:      bundleProposal.ToKey,
+		Value:      bundleProposal.ToValue,
 		BundleHash: bundleProposal.BundleHash,
-		CreatedAt: bundleProposal.CreatedAt,
+		CreatedAt:  bundleProposal.CreatedAt,
 	})
 
 	return err
@@ -188,7 +188,7 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 	totalNodeReward := bundleReward.Total - bundleReward.Treasury
 
 	// TODO: check if staker has delegations
-	uploaderCommission, err := sdk.NewDecFromStr(/*staker.Commission*/ "1")
+	uploaderCommission, err := sdk.NewDecFromStr( /*staker.Commission*/ "1")
 	if err != nil {
 		// TODO: panic halt?
 		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
@@ -218,17 +218,17 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 	k.SetFinalizedBundle(ctx, finalizedBundle)
 
 	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
-		PoolId: finalizedBundle.PoolId,
-		Id: finalizedBundle.Id,
-		Valid: voteDistribution.Valid,
-		Invalid: voteDistribution.Invalid,
-		Abstain: voteDistribution.Abstain,
-		Total: voteDistribution.Total,
-		Status: voteDistribution.Status,
-		RewardTreasury: bundleReward.Treasury,
-		RewardUploader: bundleReward.Uploader,
+		PoolId:           finalizedBundle.PoolId,
+		Id:               finalizedBundle.Id,
+		Valid:            voteDistribution.Valid,
+		Invalid:          voteDistribution.Invalid,
+		Abstain:          voteDistribution.Abstain,
+		Total:            voteDistribution.Total,
+		Status:           voteDistribution.Status,
+		RewardTreasury:   bundleReward.Treasury,
+		RewardUploader:   bundleReward.Uploader,
 		RewardDelegation: bundleReward.Delegation,
-		RewardTotal: bundleReward.Total,
+		RewardTotal:      bundleReward.Total,
 	})
 
 	if err != nil {
@@ -250,13 +250,13 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 
 func (k Keeper) dropCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal, voteDistribution types.VoteDistribution) error {
 	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
-		PoolId: pool.Id,
-		Id: pool.TotalBundles,
-		Valid: voteDistribution.Valid,
+		PoolId:  pool.Id,
+		Id:      pool.TotalBundles,
+		Valid:   voteDistribution.Valid,
 		Invalid: voteDistribution.Invalid,
 		Abstain: voteDistribution.Abstain,
-		Total: voteDistribution.Total,
-		Status: voteDistribution.Status,
+		Total:   voteDistribution.Total,
+		Status:  voteDistribution.Status,
 	})
 
 	// drop bundle
@@ -266,8 +266,6 @@ func (k Keeper) dropCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.
 	}
 
 	k.SetBundleProposal(ctx, bundleProposal)
-	
-	
 
 	return err
 }

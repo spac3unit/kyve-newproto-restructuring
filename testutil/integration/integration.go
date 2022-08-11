@@ -33,9 +33,9 @@ import (
 //)
 
 const (
-	ALICE = "kyve1jq304cthpx0lwhpqzrdjrcza559ukyy3zsl2vd"
-	BOB   = "kyve1hvg7zsnrj6h29q9ss577mhrxa04rn94h7zjugq"
-	CHARLIE	= "kyve1ay22rr3kz659fupu0tcswlagq4ql6rwm4nuv0s"
+	ALICE   = "kyve1jq304cthpx0lwhpqzrdjrcza559ukyy3zsl2vd"
+	BOB     = "kyve1hvg7zsnrj6h29q9ss577mhrxa04rn94h7zjugq"
+	CHARLIE = "kyve1ay22rr3kz659fupu0tcswlagq4ql6rwm4nuv0s"
 )
 
 var (

@@ -24,9 +24,9 @@ type (
 		paramstore paramtypes.Subspace
 
 		accountKeeper authkeeper.AccountKeeper
-		bankKeeper bankkeeper.Keeper
-		distrkeeper distrkeeper.Keeper
-		poolKeeper poolkeeper.Keeper
+		bankKeeper    bankkeeper.Keeper
+		distrkeeper   distrkeeper.Keeper
+		poolKeeper    poolkeeper.Keeper
 	}
 )
 
@@ -54,9 +54,9 @@ func NewKeeper(
 		paramstore: ps,
 
 		accountKeeper: accountKeeper,
-		bankKeeper: bankKeeper,
-		distrkeeper: distrkeeper,
-		poolKeeper: poolKeeper,
+		bankKeeper:    bankKeeper,
+		distrkeeper:   distrkeeper,
+		poolKeeper:    poolKeeper,
 	}
 }
 

@@ -25,8 +25,8 @@ var (
 	// StakerKeyPrefix is the prefix to retrieve all Staker
 	StakerKeyPrefix = []byte{1}
 
-	ValaccountPrefix = []byte{2,0}
-	ValaccountPrefixIndex2 = []byte{2,1}
+	ValaccountPrefix       = []byte{2, 0}
+	ValaccountPrefixIndex2 = []byte{2, 1}
 
 	// UnbondingStakingQueueEntryKeyPrefix ...
 	UnbondingStakingEntryKeyPrefix = []byte{9}
