@@ -1,0 +1,30 @@
+syntax = "proto3";
+package KYVENetwork.chain.query;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "kyve/pool/v1beta1/pool.proto";
+import "kyve/stakers/v1beta1/stakers.proto";
+import "kyve/bundles/v1beta1/bundles.proto";
+
+option go_package = "github.com/KYVENetwork/chain/x/query/types";
+
+message PoolResponse {
+  // id ...
+  uint64 id = 1;
+  // pool ...
+  kyve.pool.v1beta1.Pool pool = 2;
+  // bundle_proposal ...
+  kyve.bundles.v1beta1.BundleProposal bundle_proposal = 3;
+  // valaccounts ...
+  repeated kyve.stakers.v1beta1.Valaccount valaccounts = 4;
+  // total_stake ...
+  uint64 total_stake = 5;
+}
+
+message StakerResponse {
+  // staker ...
+  kyve.stakers.v1beta1.Staker staker = 1;
+  // valaccounts ...
+  repeated kyve.stakers.v1beta1.Valaccount valaccounts = 2;
+}

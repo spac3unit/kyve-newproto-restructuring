@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kyve/query/v1beta1/params.proto";
+import "kyve/query/v1beta1/responses.proto";
 import "kyve/pool/v1beta1/pool.proto";
 import "kyve/stakers/v1beta1/stakers.proto";
 import "kyve/bundles/v1beta1/bundles.proto";
@@ -33,19 +34,6 @@ service Query {
   rpc Staker(QueryStakerRequest) returns (QueryStakerResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/staker/{address}";
   }
-}
-
-message PoolResponse {
-  // id ...
-  uint64 id = 1;
-  // pool ...
-  kyve.pool.v1beta1.Pool pool = 2;
-  // bundle_proposal ...
-  kyve.bundles.v1beta1.BundleProposal bundle_proposal = 3;
-  // stakers ...
-  repeated string stakers = 4;
-  // total_stake ...
-  uint64 total_stake = 5;
 }
 
 // this line is used by starport scaffolding # 3
@@ -80,13 +68,6 @@ message QueryPoolRequest {
 message QueryPoolResponse {
   // pool ...
   PoolResponse pool = 1 [(gogoproto.nullable) = false];
-}
-
-message StakerResponse {
-  // staker ...
-  kyve.stakers.v1beta1.Staker staker = 1 [(gogoproto.nullable) = false];
-  // valaccounts ...
-  repeated kyve.stakers.v1beta1.Valaccount valaccounts = 2 [(gogoproto.nullable) = false];
 }
 
 // QueryStakersRequest is the request type for the Query/Stakers RPC method.

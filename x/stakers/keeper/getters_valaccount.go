@@ -23,7 +23,7 @@ func (k Keeper) DoesValaccountExist(
 func (k Keeper) GetAllValaccountsOfPool(
 	ctx sdk.Context,
 	poolId uint64,
-) (val []types.Valaccount) {
+) (val []*types.Valaccount) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
 
 	iterator := sdk.KVStorePrefixIterator(store, util.GetByteKey(poolId))
@@ -38,7 +38,7 @@ func (k Keeper) GetAllValaccountsOfPool(
 
 		k.cdc.MustUnmarshal(iterator.Value(), &valaccount)
 
-		val = append(val, valaccount)
+		val = append(val, &valaccount)
 	}
 
 	return
@@ -48,7 +48,7 @@ func (k Keeper) GetAllValaccountsOfPool(
 func (k Keeper) GetValaccountsFromStaker(
 	ctx sdk.Context,
 	stakerAddress string,
-) (val []types.Valaccount) {
+) (val []*types.Valaccount) {
 	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
 
 	iterator := sdk.KVStorePrefixIterator(storeIndex2, util.GetByteKey(stakerAddress))
@@ -60,7 +60,7 @@ func (k Keeper) GetValaccountsFromStaker(
 		valaccount, valaccountFound := k.GetValaccount(ctx, poolId, stakerAddress)
 
 		if valaccountFound {
-			val = append(val, valaccount)
+			val = append(val, &valaccount)
 		}
 	}
 
