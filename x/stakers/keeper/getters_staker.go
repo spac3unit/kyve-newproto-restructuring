@@ -8,6 +8,9 @@ import (
 	"github.com/KYVENetwork/chain/x/stakers/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // UpdateStakerMetadata ...
@@ -183,6 +186,31 @@ func (k Keeper) GetStaker(
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+func (k Keeper) GetPaginatedStakerQuery(ctx sdk.Context, pagination *query.PageRequest) ([]types.Staker, *query.PageResponse, error) {
+	var stakers []types.Staker
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
+
+	pageRes, err := query.FilteredPaginate(store, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var staker types.Staker
+		if err := k.cdc.Unmarshal(value, &staker); err != nil {
+			return false, err
+		}
+
+		if accumulate {
+			stakers = append(stakers, staker)
+		}
+
+		return true, nil
+	})
+
+	if err != nil {
+		return nil, nil, status.Error(codes.Internal, err.Error())
+	}
+	
+	return stakers, pageRes, nil
 }
 
 // DoesStakerExist returns true if the staker exists

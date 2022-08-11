@@ -6,6 +6,7 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kyve/query/v1beta1/params.proto";
 import "kyve/pool/v1beta1/pool.proto";
+import "kyve/stakers/v1beta1/stakers.proto";
 import "kyve/bundles/v1beta1/bundles.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
@@ -18,9 +19,19 @@ service Query {
     option (google.api.http).get = "/kyve/query/v1beta1/pools";
   }
 
-  // Pool queries a pool by ID.
+  // PoolById queries a pool by ID.
   rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/pool/{id}";
+  }
+
+  // Stakers queries for all stakers.
+  rpc Stakers(QueryStakersRequest) returns (QueryStakersResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/stakers";
+  }
+
+  // Staker queries for all stakers.
+  rpc Staker(QueryStakerRequest) returns (QueryStakerResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/staker/{address}";
   }
 }
 
@@ -69,4 +80,37 @@ message QueryPoolRequest {
 message QueryPoolResponse {
   // pool ...
   PoolResponse pool = 1 [(gogoproto.nullable) = false];
+}
+
+message StakerResponse {
+  // staker ...
+  kyve.stakers.v1beta1.Staker staker = 1 [(gogoproto.nullable) = false];
+  // valaccounts ...
+  repeated kyve.stakers.v1beta1.Valaccount valaccounts = 2 [(gogoproto.nullable) = false];
+}
+
+// QueryStakersRequest is the request type for the Query/Stakers RPC method.
+message QueryStakersRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+// QueryStakersResponse is the response type for the Query/Stakers RPC method.
+message QueryStakersResponse {
+  // stakers ...
+  repeated StakerResponse stakers = 1 [(gogoproto.nullable) = false];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryStakerRequest is the request type for the Query/Staker RPC method.
+message QueryStakerRequest {
+  // address ...
+  string address = 1;
+}
+
+// QueryStakerResponse is the response type for the Query/Staker RPC method.
+message QueryStakerResponse {
+  // stakers ...
+  StakerResponse staker = 1 [(gogoproto.nullable) = false];
 }

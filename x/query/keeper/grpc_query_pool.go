@@ -22,14 +22,14 @@ func (k Keeper) Pools(c context.Context, req *types.QueryPoolsRequest) (*types.Q
 		return nil, err
 	}
 
-	poolResponses := make([]types.PoolResponse, 0)
+	data := make([]types.PoolResponse, 0)
 
 	for _, pool := range pools {
 		bundleProposal, _ := k.bundleKeeper.GetBundleProposal(ctx, pool.Id)
 		stakers := k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, pool.Id)
 		totalStake := k.stakerKeeper.GetTotalStake(ctx, pool.Id)
 
-		poolResponses = append(poolResponses, types.PoolResponse{
+		data = append(data, types.PoolResponse{
 			Id: pool.Id,
 			Pool: &pool,
 			BundleProposal: &bundleProposal,
@@ -38,7 +38,7 @@ func (k Keeper) Pools(c context.Context, req *types.QueryPoolsRequest) (*types.Q
 		})
 	}
 
-	return &types.QueryPoolsResponse{Pools: poolResponses, Pagination: pageRes}, nil
+	return &types.QueryPoolsResponse{Pools: data, Pagination: pageRes}, nil
 }
 
 func (k Keeper) Pool(c context.Context, req *types.QueryPoolRequest) (*types.QueryPoolResponse, error) {
