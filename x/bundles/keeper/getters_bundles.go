@@ -24,6 +24,7 @@ func (k Keeper) GetBundleProposal(
 
 	b := store.Get(types.BundleProposalKey(poolId))
 	if b == nil {
+		val.PoolId = poolId
 		return val, false
 	}
 

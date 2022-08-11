@@ -2,10 +2,15 @@ package keeper
 
 import (
 	"encoding/binary"
+	"strings"
 
 	"github.com/KYVENetwork/chain/x/pool/types"
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // GetPoolCount get the total number of pool
@@ -91,6 +96,46 @@ func (k Keeper) GetAllPools(ctx sdk.Context) (list []types.Pool) {
 	}
 
 	return
+}
+
+func (k Keeper) GetPaginatedPoolsQuery(ctx sdk.Context, pagination *query.PageRequest, search string, runtime string, paused bool) ([]types.Pool, *query.PageResponse, error) {
+	var pools []types.Pool
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PoolKey)
+
+	pageRes, err := query.FilteredPaginate(store, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var pool pooltypes.Pool
+		if err := k.cdc.Unmarshal(value, &pool); err != nil {
+			return false, err
+		}
+
+		// filter search
+		if !strings.Contains(strings.ToLower(pool.Name), strings.ToLower(search)) {
+			return false, nil
+		}
+
+		// filter runtime
+		if runtime != "" && runtime != pool.Runtime {
+			return false, nil
+		}
+
+		// filter paused
+		if paused != pool.Paused {
+			return false, nil
+		}
+
+		if accumulate {
+			pools = append(pools, pool)
+		}
+
+		return true, nil
+	})
+
+	if err != nil {
+		return nil, nil, status.Error(codes.Internal, err.Error())
+	}
+	
+	return pools, pageRes, nil
 }
 
 // GetPoolIDBytes returns the byte representation of the ID

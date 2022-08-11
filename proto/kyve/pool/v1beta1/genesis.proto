@@ -12,7 +12,7 @@ option go_package = "github.com/KYVENetwork/chain/x/pool/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   // pool_list ...
-  repeated Pool pool_list = 2 [(gogoproto.nullable) = false];
+  repeated kyve.pool.v1beta1.Pool pool_list = 2 [(gogoproto.nullable) = false];
   // pool_count ...
   uint64 pool_count = 3;
 }

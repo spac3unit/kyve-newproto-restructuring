@@ -25,10 +25,16 @@ service Query {
 }
 
 message PoolResponse {
+  // id ...
+  uint64 id = 1;
   // pool ...
-  kyve.pool.v1beta1.Pool pool = 1;
+  kyve.pool.v1beta1.Pool pool = 2;
   // bundle_proposal ...
-  kyve.bundles.v1beta1.BundleProposal bundle_proposal = 2;
+  kyve.bundles.v1beta1.BundleProposal bundle_proposal = 3;
+  // stakers ...
+  repeated string stakers = 4;
+  // total_stake ...
+  uint64 total_stake = 5;
 }
 
 // this line is used by starport scaffolding # 3
