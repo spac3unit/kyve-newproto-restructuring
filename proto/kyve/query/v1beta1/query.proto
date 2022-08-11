@@ -5,26 +5,62 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "kyve/query/v1beta1/params.proto";
-// this line is used by starport scaffolding # 1
+import "kyve/pool/v1beta1/pool.proto";
+import "kyve/bundles/v1beta1/bundles.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/KYVENetwork/chain/query/params";
+
+  // Pools queries for all pools.
+  rpc Pools(QueryPoolsRequest) returns (QueryPoolsResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/pools";
   }
-  // this line is used by starport scaffolding # 2
+
+  // Pool queries a pool by ID.
+  rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/pool/{id}";
+  }
 }
 
-// QueryParamsRequest is request type for the Query/Params RPC method.
-message QueryParamsRequest {}
-
-// QueryParamsResponse is response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+message PoolResponse {
+  // pool ...
+  kyve.pool.v1beta1.Pool pool = 1;
+  // bundle_proposal ...
+  kyve.bundles.v1beta1.BundleProposal bundle_proposal = 2;
 }
 
 // this line is used by starport scaffolding # 3
+
+// QueryPoolsRequest is the request type for the Query/Pools RPC method.
+message QueryPoolsRequest {
+  // pagination defines an optional pagination for the request.
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+  // search ...
+  string search = 2;
+  // runtime ...
+  string runtime = 3;
+  // paused ...
+  bool paused = 4;
+}
+
+// QueryPoolsResponse is the response type for the Query/Pools RPC method.
+message QueryPoolsResponse {
+  // pools ...
+  repeated PoolResponse pools = 1 [(gogoproto.nullable) = false];
+  // pagination defines the pagination in the response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// QueryPoolRequest is the request type for the Query/Pool RPC method.
+message QueryPoolRequest {
+  // id defines the unique ID of the pool.
+  uint64 id = 1;
+}
+
+// QueryPoolResponse is the response type for the Query/Pool RPC method.
+message QueryPoolResponse {
+  // pool ...
+  PoolResponse pool = 1 [(gogoproto.nullable) = false];
+}
