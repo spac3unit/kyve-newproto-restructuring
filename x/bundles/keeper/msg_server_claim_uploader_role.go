@@ -18,7 +18,7 @@ func (k msgServer) ClaimUploaderRole(
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO check pool reached min stake+delegation
-	if poolErr := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId); poolErr != nil {
+	if poolErr := k.AssertPoolCanRun(ctx, msg.PoolId); poolErr != nil {
 		return nil, poolErr
 	}
 

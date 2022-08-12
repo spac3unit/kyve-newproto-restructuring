@@ -36,12 +36,19 @@ func QueryKeeper(t testing.TB) (*keeper.Keeper, sdk.Context) {
 		memStoreKey,
 		"QueryParams",
 	)
-	k := keeper.NewKeeper(
-		cdc,
-		storeKey,
-		memStoreKey,
-		paramsSubspace,
-	)
+	// k := keeper.NewKeeper(
+	// 	cdc,
+	// 	storeKey,
+	// 	memStoreKey,
+	// 	paramsSubspace,
+
+	// 	authkeeper.AccountKeeper{},
+	// 	bankkeeper.BaseKeeper{},
+	// 	distrkeeper.Keeper{},
+		
+	// )
+	_ = paramsSubspace
+	var k *keeper.Keeper
 
 	ctx := sdk.NewContext(stateStore, tmproto.Header{}, false, log.NewNopLogger())
 

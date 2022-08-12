@@ -17,7 +17,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 	for _, pool := range k.poolKeeper.GetAllPools(ctx) {
 		// TODO: Set pool status
 
-		err := k.poolKeeper.AssertPoolCanRun(ctx, pool.Id)
+		err := k.AssertPoolCanRun(ctx, pool.Id)
 		bundleProposal, _ := k.GetBundleProposal(ctx, pool.Id)
 
 		// Remove next uploader if pool is not active

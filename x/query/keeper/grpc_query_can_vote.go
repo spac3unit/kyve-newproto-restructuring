@@ -27,10 +27,10 @@ func (k Keeper) CanVote(c context.Context, req *types.QueryCanVoteRequest) (*typ
 
 	bundleProposal, _ := k.bundleKeeper.GetBundleProposal(ctx, req.PoolId)
 
-	if err := k.poolKeeper.AssertPoolCanRun(ctx, req.PoolId); err != nil {
+	if err := k.bundleKeeper.AssertPoolCanRun(ctx, req.PoolId); err != nil {
 		return &types.QueryCanVoteResponse{
 			Possible: false,
-			Reason: "pool status is not active",
+			Reason: err.Error(),
 		}, nil
 	}
 

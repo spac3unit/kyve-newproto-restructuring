@@ -21,4 +21,8 @@ var (
 	ErrVoterIsUploader        = sdkerrors.Register(ModuleName, 1112, "voter is uploader")
 	ErrInvalidVote            = sdkerrors.Register(ModuleName, 1119, "invalid vote %v")
 	ErrInvalidStorageId       = sdkerrors.Register(ModuleName, 1120, "current storageId %v does not match provided storageId")
+	ErrPoolPaused             = sdkerrors.Register(ModuleName, 1121, "pool is paused")
+	ErrPoolCurrentlyUpgrading = sdkerrors.Register(ModuleName, 1122, "pool currently upgrading")
+	ErrMinStakeNotReached = sdkerrors.Register(ModuleName, 1200, "min stake not reached")
+	ErrPoolOutOfFunds = sdkerrors.Register(ModuleName, 1201, "pool is out of funds")
 )

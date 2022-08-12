@@ -11,7 +11,7 @@ import (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgSubmitBundleProposal{}, "bundles/SubmitBundleProposal", nil)
-	cdc.RegisterConcrete(&MsgVoteProposal{}, "bundles/VoteProposal", nil)
+	cdc.RegisterConcrete(&MsgVoteBundleProposal{}, "bundles/VoteBundleProposal", nil)
 	cdc.RegisterConcrete(&MsgClaimUploaderRole{}, "bundles/ClaimUploaderRole", nil)
 }
 
@@ -21,7 +21,7 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgSubmitBundleProposal{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgVoteProposal{},
+		&MsgVoteBundleProposal{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgClaimUploaderRole{},

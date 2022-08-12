@@ -17,7 +17,7 @@ func (k msgServer) VoteBundleProposal(
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO check min stake+delegation
-	if err := k.poolKeeper.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
+	if err := k.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
 		return nil, err
 	}
 

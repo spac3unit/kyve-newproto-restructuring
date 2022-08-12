@@ -9,7 +9,39 @@ import (
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	poolmoduletypes "github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
+
+// AssertPoolCanRun ...
+func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
+
+	pool, poolErr := k.poolKeeper.GetPoolWithError(ctx, poolId)
+	if poolErr != nil {
+		return poolErr
+	}
+
+	// Error if the pool is upgrading.
+	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
+		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolCurrentlyUpgrading.Error())
+	}
+
+	// Error if the pool is paused.
+	if pool.Paused {
+		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolPaused.Error())
+	}
+
+	// Error if the pool has no funds.
+	if len(pool.Funders) == 0 {
+		return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrPoolOutOfFunds.Error())
+	}
+
+	// Error if min stake is not reached
+	if k.stakerKeeper.GetTotalStake(ctx, pool.Id) < pool.MinStake {
+		return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrMinStakeNotReached.Error())
+	}
+
+	return nil
+}
 
 func containsElement(array []string, element string) bool {
 	for _, v := range array {

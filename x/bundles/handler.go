@@ -20,8 +20,8 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.MsgSubmitBundleProposal:
 			res, err := msgServer.SubmitBundleProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
-		case *types.MsgVoteProposal:
-			res, err := msgServer.VoteProposal(sdk.WrapSDKContext(ctx), msg)
+		case *types.MsgVoteBundleProposal:
+			res, err := msgServer.VoteBundleProposal(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 		case *types.MsgClaimUploaderRole:
 			res, err := msgServer.ClaimUploaderRole(sdk.WrapSDKContext(ctx), msg)
