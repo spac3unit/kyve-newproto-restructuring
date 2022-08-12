@@ -202,7 +202,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -330,7 +330,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -558,7 +558,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,

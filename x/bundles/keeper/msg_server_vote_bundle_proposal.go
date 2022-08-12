@@ -11,9 +11,9 @@ import (
 )
 
 // VoteProposal handles the logic of an SDK message that allows protocol nodes to vote on a pool's bundle proposal.
-func (k msgServer) VoteProposal(
-	goCtx context.Context, msg *types.MsgVoteProposal,
-) (*types.MsgVoteProposalResponse, error) {
+func (k msgServer) VoteBundleProposal(
+	goCtx context.Context, msg *types.MsgVoteBundleProposal,
+) (*types.MsgVoteBundleProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// TODO check min stake+delegation
@@ -96,5 +96,5 @@ func (k msgServer) VoteProposal(
 		return nil, err
 	}
 
-	return &types.MsgVoteProposalResponse{}, nil
+	return &types.MsgVoteBundleProposalResponse{}, nil
 }

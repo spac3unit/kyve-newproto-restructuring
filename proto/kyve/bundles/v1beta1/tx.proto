@@ -11,8 +11,8 @@ service Msg {
     // this line is used by starport scaffolding # proto/tx/rpc
   // SubmitBundleProposal ...
   rpc SubmitBundleProposal(MsgSubmitBundleProposal) returns (MsgSubmitBundleProposalResponse);
-  // VoteProposal ...
-  rpc VoteProposal(MsgVoteProposal) returns (MsgVoteProposalResponse);
+  // VoteBundleProposal ...
+  rpc VoteBundleProposal(MsgVoteBundleProposal) returns (MsgVoteBundleProposalResponse);
   // ClaimUploaderRole ...
   rpc ClaimUploaderRole(MsgClaimUploaderRole) returns (MsgClaimUploaderRoleResponse);
 }
@@ -60,8 +60,8 @@ enum VoteType {
   VOTE_TYPE_ABSTAIN = 3;
 }
 
-// MsgVoteProposal defines a SDK message for voting on a bundle proposal.
-message MsgVoteProposal {
+// MsgVoteBundleProposal defines a SDK message for voting on a bundle proposal.
+message MsgVoteBundleProposal {
   // creator ...
   string creator = 1;
   // staker ...
@@ -74,8 +74,8 @@ message MsgVoteProposal {
   VoteType vote = 5;
 }
 
-// MsgVoteProposalResponse defines the Msg/VoteProposal response type.
-message MsgVoteProposalResponse {}
+// MsgVoteBundleProposalResponse defines the Msg/VoteBundleProposal response type.
+message MsgVoteBundleProposalResponse {}
 
 // MsgClaimUploaderRole defines a SDK message for claiming the uploader role.
 message MsgClaimUploaderRole {

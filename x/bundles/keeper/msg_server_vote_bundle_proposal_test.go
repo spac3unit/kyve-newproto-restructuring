@@ -83,7 +83,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -112,7 +112,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Valaddress: i.ALICE,
 		})
 
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -121,7 +121,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesError(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -129,7 +129,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Vote:      bundletypes.VOTE_TYPE_YES,
 		})
 
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesError(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -159,7 +159,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -188,7 +188,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Valaddress: i.ALICE,
 		})
 
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -197,7 +197,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesError(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -205,7 +205,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Vote:      bundletypes.VOTE_TYPE_NO,
 		})
 
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesError(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -235,7 +235,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -264,7 +264,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Valaddress: i.ALICE,
 		})
 
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -273,7 +273,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesError(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -302,7 +302,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Valaddress: i.ALICE,
 		})
 
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -311,7 +311,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -340,7 +340,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 			Valaddress: i.ALICE,
 		})
 
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -349,7 +349,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesSuccess(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -379,7 +379,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesError(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,
@@ -409,7 +409,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 		})
 
 		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgVoteProposal{
+		s.RunTxBundlesError(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.ALICE,
 			Staker:    i.BOB,
 			PoolId:    0,

@@ -9,6 +9,14 @@ const TypeMsgClaimUploaderRole = "claim_uploader_role"
 
 var _ sdk.Msg = &MsgClaimUploaderRole{}
 
+func NewMsgClaimUploaderRole(creator string, staker string, poolId uint64) *MsgClaimUploaderRole {
+	return &MsgClaimUploaderRole{
+		Creator: creator,
+		Staker:      staker,
+		PoolId:  poolId,
+	}
+}
+
 func (msg *MsgClaimUploaderRole) Route() string {
 	return RouterKey
 }
