@@ -111,7 +111,6 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(pool.CurrentKey).To(Equal("99"))
 		Expect(pool.CurrentValue).To(Equal("test_value"))
 		Expect(pool.CurrentHeight).To(Equal(uint64(100)))
-		Expect(pool.TotalBytes).To(Equal(uint64(100)))
 		Expect(pool.TotalBundles).To(Equal(uint64(1)))
 
 		// check if finalized bundle got saved
@@ -234,7 +233,6 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(pool.CurrentKey).To(Equal("99"))
 		Expect(pool.CurrentValue).To(Equal("test_value"))
 		Expect(pool.CurrentHeight).To(Equal(uint64(100)))
-		Expect(pool.TotalBytes).To(Equal(uint64(100)))
 		Expect(pool.TotalBundles).To(Equal(uint64(1)))
 
 		// check if finalized bundle got saved
@@ -362,7 +360,6 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(pool.CurrentKey).To(Equal(""))
 		Expect(pool.CurrentValue).To(BeEmpty())
 		Expect(pool.CurrentHeight).To(BeZero())
-		Expect(pool.TotalBytes).To(BeZero())
 		Expect(pool.TotalBundles).To(BeZero())
 
 		// check if finalized bundle exists
@@ -460,7 +457,6 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(pool.CurrentKey).To(Equal(""))
 		Expect(pool.CurrentValue).To(BeEmpty())
 		Expect(pool.CurrentHeight).To(BeZero())
-		Expect(pool.TotalBytes).To(BeZero())
 		Expect(pool.TotalBundles).To(BeZero())
 
 		// check if finalized bundle exists
@@ -590,7 +586,6 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(pool.CurrentKey).To(Equal(""))
 		Expect(pool.CurrentValue).To(BeEmpty())
 		Expect(pool.CurrentHeight).To(BeZero())
-		Expect(pool.TotalBytes).To(BeZero())
 		Expect(pool.TotalBundles).To(BeZero())
 
 		// check if finalized bundle exists

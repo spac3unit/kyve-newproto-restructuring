@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -26,15 +27,30 @@ func (k Keeper) Pools(c context.Context, req *types.QueryPoolsRequest) (*types.Q
 
 	for _, pool := range pools {
 		bundleProposal, _ := k.bundleKeeper.GetBundleProposal(ctx, pool.Id)
-		valaccounts := k.stakerKeeper.GetAllValaccountsOfPool(ctx, pool.Id)
+		stakers := k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, pool.Id)
 		totalStake := k.stakerKeeper.GetTotalStake(ctx, pool.Id)
+
+		var status pooltypes.PoolStatus
+
+		if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
+			status = pooltypes.POOL_STATUS_UPGRADING
+		} else if pool.Paused {
+			status = pooltypes.POOL_STATUS_PAUSED
+		} else if totalStake < pool.MinStake {
+			status = pooltypes.POOL_STATUS_NOT_ENOUGH_STAKE
+		} else if pool.TotalFunds == 0 {
+			status = pooltypes.POOL_STATUS_NO_FUNDS
+		} else {
+			status = pooltypes.POOL_STATUS_ACTIVE
+		}
 
 		data = append(data, types.PoolResponse{
 			Id: pool.Id,
-			Pool: &pool,
+			Data: &pool,
 			BundleProposal: &bundleProposal,
-			Valaccounts: valaccounts,
+			Stakers: stakers,
 			TotalStake: totalStake,
+			Status: status,
 		})
 	}
 
@@ -53,14 +69,29 @@ func (k Keeper) Pool(c context.Context, req *types.QueryPoolRequest) (*types.Que
 	}
 
 	bundleProposal, _ := k.bundleKeeper.GetBundleProposal(ctx, pool.Id)
-	valaccounts := k.stakerKeeper.GetAllValaccountsOfPool(ctx, pool.Id)
+	stakers := k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, pool.Id)
 	totalStake := k.stakerKeeper.GetTotalStake(ctx, pool.Id)
+
+	var status pooltypes.PoolStatus
+
+	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
+		status = pooltypes.POOL_STATUS_UPGRADING
+	} else if pool.Paused {
+		status = pooltypes.POOL_STATUS_PAUSED
+	} else if totalStake < pool.MinStake {
+		status = pooltypes.POOL_STATUS_NOT_ENOUGH_STAKE
+	} else if pool.TotalFunds == 0 {
+		status = pooltypes.POOL_STATUS_NO_FUNDS
+	} else {
+		status = pooltypes.POOL_STATUS_ACTIVE
+	}
 
 	return &types.QueryPoolResponse{Pool: types.PoolResponse{
 		Id: pool.Id,
-		Pool: &pool,
+		Data: &pool,
 		BundleProposal: &bundleProposal,
-		Valaccounts: valaccounts,
+		Stakers: stakers,
 		TotalStake: totalStake,
+		Status: status,
 	}}, nil
 }

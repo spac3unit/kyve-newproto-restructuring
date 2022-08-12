@@ -270,7 +270,6 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 	// Finalize the proposal, saving useful information.
 	// eventFromHeight := pool.CurrentHeight
 	pool.CurrentHeight = bundleProposal.ToHeight
-	pool.TotalBytes = pool.TotalBytes + bundleProposal.ByteSize
 	pool.TotalBundles = pool.TotalBundles + 1
 	pool.CurrentKey = bundleProposal.ToKey
 	pool.CurrentValue = bundleProposal.ToValue
