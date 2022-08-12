@@ -4,8 +4,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	// this line is used by starport scaffolding # 1
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
@@ -13,7 +15,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgFundPool{}, "registry/FundPool", nil)
 	cdc.RegisterConcrete(&MsgDefundPool{}, "registry/DefundPool", nil)
 
-	//cdc.RegisterConcrete(&CreatePoolProposal{}, "kyve/CreatePoolProposal", nil)
+	cdc.RegisterConcrete(&CreatePoolProposal{}, "kyve/CreatePoolProposal", nil)
 	//cdc.RegisterConcrete(&UpdatePoolProposal{}, "kyve/UpdatePoolProposal", nil)
 	//cdc.RegisterConcrete(&PausePoolProposal{}, "kyve/PausePoolProposal", nil)
 	//cdc.RegisterConcrete(&UnpausePoolProposal{}, "kyve/UnpausePoolProposal", nil)
@@ -33,16 +35,10 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 
 	// TODO gov types ?
 	//// this line is used by starport scaffolding # 3
-	//registry.RegisterImplementations(
-	//	(*govtypes.Content)(nil),
-	//	&CreatePoolProposal{},
-	//	&UpdatePoolProposal{},
-	//	&PausePoolProposal{},
-	//	&UnpausePoolProposal{},
-	//	&SchedulePoolUpgradeProposal{},
-	//	&CancelPoolUpgradeProposal{},
-	//	&ResetPoolProposal{},
-	//)
+	registry.RegisterImplementations(
+		(*govtypes.Content)(nil),
+		&CreatePoolProposal{},
+	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

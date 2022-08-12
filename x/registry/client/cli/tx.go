@@ -31,7 +31,7 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdSubmitCreatePoolProposal())
+	// cmd.AddCommand(CmdSubmitCreatePoolProposal())
 	cmd.AddCommand(CmdSubmitUpdatePoolProposal())
 	cmd.AddCommand(CmdSubmitPausePoolProposal())
 	cmd.AddCommand(CmdSubmitUnpausePoolProposal())
@@ -42,87 +42,87 @@ func GetTxCmd() *cobra.Command {
 	return cmd
 }
 
-func CmdSubmitCreatePoolProposal() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "create-pool [flags]",
-		Args:  cobra.ExactArgs(11),
-		Short: "Submit a proposal to create a pool.",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
+// func CmdSubmitCreatePoolProposal() *cobra.Command {
+// 	cmd := &cobra.Command{
+// 		Use:   "create-pool [flags]",
+// 		Args:  cobra.ExactArgs(11),
+// 		Short: "Submit a proposal to create a pool.",
+// 		RunE: func(cmd *cobra.Command, args []string) error {
+// 			clientCtx, err := client.GetClientTxContext(cmd)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			uploadInterval, err := strconv.ParseUint(args[5], 10, 64)
-			if err != nil {
-				return err
-			}
+// 			uploadInterval, err := strconv.ParseUint(args[5], 10, 64)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			operatingCost, err := strconv.ParseUint(args[6], 10, 64)
-			if err != nil {
-				return err
-			}
+// 			operatingCost, err := strconv.ParseUint(args[6], 10, 64)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			maxBundleSize, err := strconv.ParseUint(args[7], 10, 64)
-			if err != nil {
-				return err
-			}
+// 			maxBundleSize, err := strconv.ParseUint(args[7], 10, 64)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			minStake, err := strconv.ParseUint(args[11], 10, 64)
-			if err != nil {
-				return err
-			}
+// 			minStake, err := strconv.ParseUint(args[11], 10, 64)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			title, err := cmd.Flags().GetString(cli.FlagTitle)
-			if err != nil {
-				return err
-			}
+// 			title, err := cmd.Flags().GetString(cli.FlagTitle)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			description, err := cmd.Flags().GetString(cli.FlagDescription)
-			if err != nil {
-				return err
-			}
+// 			description, err := cmd.Flags().GetString(cli.FlagDescription)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			from := clientCtx.GetFromAddress()
+// 			from := clientCtx.GetFromAddress()
 
-			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
-			if err != nil {
-				return err
-			}
-			deposit, err := sdk.ParseCoinsNormalized(depositStr)
-			if err != nil {
-				return err
-			}
+// 			depositStr, err := cmd.Flags().GetString(cli.FlagDeposit)
+// 			if err != nil {
+// 				return err
+// 			}
+// 			deposit, err := sdk.ParseCoinsNormalized(depositStr)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			content := types.NewCreatePoolProposal(title, description, args[0], args[1], args[2], args[3], uploadInterval, operatingCost, maxBundleSize, args[8], args[9], args[10], minStake)
+// 			content := types.NewCreatePoolProposal(title, description, args[0], args[1], args[2], args[3], uploadInterval, operatingCost, maxBundleSize, args[8], args[9], args[10], minStake)
 
-			isExpedited, err := cmd.Flags().GetBool(cli.FlagIsExpedited)
-			if err != nil {
-				return err
-			}
+// 			isExpedited, err := cmd.Flags().GetBool(cli.FlagIsExpedited)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from, isExpedited)
-			if err != nil {
-				return err
-			}
+// 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from, isExpedited)
+// 			if err != nil {
+// 				return err
+// 			}
 
-			if err = msg.ValidateBasic(); err != nil {
-				return err
-			}
+// 			if err = msg.ValidateBasic(); err != nil {
+// 				return err
+// 			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
+// 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+// 		},
+// 	}
 
-	cmd.Flags().String(cli.FlagTitle, "", "The proposal title")
-	cmd.Flags().String(cli.FlagDescription, "", "The proposal description")
-	cmd.Flags().Bool(cli.FlagIsExpedited, false, "If true, makes the proposal an expedited one")
-	cmd.Flags().String(cli.FlagDeposit, "", "The proposal deposit")
-	_ = cmd.MarkFlagRequired(cli.FlagTitle)
-	_ = cmd.MarkFlagRequired(cli.FlagDescription)
+// 	cmd.Flags().String(cli.FlagTitle, "", "The proposal title")
+// 	cmd.Flags().String(cli.FlagDescription, "", "The proposal description")
+// 	cmd.Flags().Bool(cli.FlagIsExpedited, false, "If true, makes the proposal an expedited one")
+// 	cmd.Flags().String(cli.FlagDeposit, "", "The proposal deposit")
+// 	_ = cmd.MarkFlagRequired(cli.FlagTitle)
+// 	_ = cmd.MarkFlagRequired(cli.FlagDescription)
 
-	return cmd
-}
+// 	return cmd
+// }
 
 func CmdSubmitUpdatePoolProposal() *cobra.Command {
 	cmd := &cobra.Command{

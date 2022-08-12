@@ -10,7 +10,18 @@ import (
 	"github.com/KYVENetwork/chain/x/stakers"
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/gov"
 )
+
+func (suite *KeeperTestSuite) RunTxGov(msg sdk.Msg) (*sdk.Result, error) {
+	cachedCtx, commit := suite.ctx.CacheContext()
+	resp, err := gov.NewHandler(suite.app.GovKeeper)(cachedCtx, msg)
+	if err == nil {
+		commit()
+		return resp, nil
+	}
+	return nil, err
+}
 
 func (suite *KeeperTestSuite) RunTxPool(msg sdk.Msg) (*sdk.Result, error) {
 	cachedCtx, commit := suite.ctx.CacheContext()
@@ -50,6 +61,16 @@ func (suite *KeeperTestSuite) RunTxBundles(msg sdk.Msg) (*sdk.Result, error) {
 		return resp, nil
 	}
 	return nil, err
+}
+
+func (suite *KeeperTestSuite) RunTxGovSuccess(msg sdk.Msg) {
+	_, err := suite.RunTxGov(msg)
+	Expect(err).To(BeNil())
+}
+
+func (suite *KeeperTestSuite) RunTxGovError(msg sdk.Msg) {
+	_, err := suite.RunTxGov(msg)
+	Expect(err).NotTo(BeNil())
 }
 
 func (suite *KeeperTestSuite) RunTxPoolSuccess(msg sdk.Msg) {

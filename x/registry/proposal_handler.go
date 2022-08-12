@@ -13,8 +13,6 @@ import (
 func NewRegistryProposalHandler(k keeper.Keeper) govtypes.Handler {
 	return func(ctx sdk.Context, content govtypes.Content) error {
 		switch c := content.(type) {
-		case *types.CreatePoolProposal:
-			return handleCreatePoolProposal(ctx, k, c)
 		case *types.UpdatePoolProposal:
 			return handleUpdatePoolProposal(ctx, k, c)
 		case *types.PausePoolProposal:

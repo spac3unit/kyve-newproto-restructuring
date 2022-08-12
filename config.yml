@@ -29,21 +29,14 @@ genesis:
       voting_params:
         # 1 day
         voting_period: "120s"
-        proposal_voting_periods: [
-          {
-            proposal_type: "kyve.registry.v1beta1.CreatePoolProposal",
-            # 2 hours
-            voting_period: "120s"
-          },
-        ]
         # 30 minutes
         expedited_voting_period: "1800s"
       deposit_params:
           min_deposit: [
             {
               denom: "tkyve",
-              # 5_000 $KYVE
-              amount: "5_000_000_000_000"
+              # 50 $KYVE
+              amount: "50_000_000_000"
             }
           ]
           # 5 minutes
@@ -51,8 +44,8 @@ genesis:
           min_expedited_deposit: [
             {
               denom: "tkyve",
-              # 25_000 $KYVE
-              amount: "25_000_000_000_000"
+              # 250 $KYVE
+              amount: "250_000_000_000"
             }
           ]
     pool:

@@ -5,7 +5,6 @@ import (
 )
 
 const (
-	ProposalTypeCreatePool          = "CreatePool"
 	ProposalTypeUpdatePool          = "UpdatePool"
 	ProposalTypePausePool           = "PausePool"
 	ProposalTypeUnpausePool         = "UnpausePool"
@@ -15,8 +14,6 @@ const (
 )
 
 func init() {
-	govtypes.RegisterProposalType(ProposalTypeCreatePool)
-	govtypes.RegisterProposalTypeCodec(&CreatePoolProposal{}, "kyve/CreatePoolProposal")
 	govtypes.RegisterProposalType(ProposalTypeUpdatePool)
 	govtypes.RegisterProposalTypeCodec(&UpdatePoolProposal{}, "kyve/UpdatePoolProposal")
 	govtypes.RegisterProposalType(ProposalTypePausePool)
@@ -32,7 +29,6 @@ func init() {
 }
 
 var (
-	_ govtypes.Content = &CreatePoolProposal{}
 	_ govtypes.Content = &UpdatePoolProposal{}
 	_ govtypes.Content = &PausePoolProposal{}
 	_ govtypes.Content = &UnpausePoolProposal{}
@@ -40,39 +36,6 @@ var (
 	_ govtypes.Content = &CancelPoolUpgradeProposal{}
 	_ govtypes.Content = &ResetPoolProposal{}
 )
-
-func NewCreatePoolProposal(title string, description string, name string, runtime string, logo string, config string, uploadInterval uint64, operatingCost uint64, maxBundleSize uint64, version string, binaries string, startKey string, minStake uint64) govtypes.Content {
-	return &CreatePoolProposal{
-		Title:          title,
-		Description:    description,
-		Name:           name,
-		Runtime:        runtime,
-		Logo:           logo,
-		Config:         config,
-		UploadInterval: uploadInterval,
-		OperatingCost:  operatingCost,
-		MaxBundleSize:  maxBundleSize,
-		Version:        version,
-		Binaries:       binaries,
-		StartKey:       startKey,
-		MinStake:       minStake,
-	}
-}
-
-func (p *CreatePoolProposal) ProposalRoute() string { return RouterKey }
-
-func (p *CreatePoolProposal) ProposalType() string {
-	return ProposalTypeCreatePool
-}
-
-func (p *CreatePoolProposal) ValidateBasic() error {
-	err := govtypes.ValidateAbstract(p)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
 
 func NewUpdatePoolProposal(title string, description string, id uint64, name string, runtime string, logo string, config string, uploadInterval uint64, operatingCost uint64, maxBundleSize uint64, minStake uint64) govtypes.Content {
 	return &UpdatePoolProposal{

@@ -22,52 +22,52 @@ type CreatePoolRequest struct {
 	Runtime        string       `json:"runtime" yaml:"runtime"`
 	Logo           string       `json:"logo" yaml:"logo"`
 	Config         string       `json:"config" yaml:"config"`
+	StartKey       string       `json:"startKey" yaml:"startKey"`
 	UploadInterval uint64       `json:"uploadInterval" yaml:"uploadInterval"`
 	OperatingCost  uint64       `json:"operatingCost" yaml:"operatingCost"`
+	MinStake       uint64       `json:"minStake" yaml:"minStake"`
 	MaxBundleSize  uint64       `json:"maxBundleSize" yaml:"maxBundleSize"`
 	Version        string       `json:"version" yaml:"version"`
 	Binaries       string       `json:"binaries" yaml:"binaries"`
-	StartKey       string       `json:"startKey" yaml:"startKey"`
-	MinStake       uint64       `json:"minStake" yaml:"minStake"`
 }
 
-func ProposalCreatePoolRESTHandler(clientCtx client.Context) govrest.ProposalRESTHandler {
-	return govrest.ProposalRESTHandler{
-		SubRoute: "create-pool",
-		Handler:  newCreatePoolHandler(clientCtx),
-	}
-}
+// func ProposalCreatePoolRESTHandler(clientCtx client.Context) govrest.ProposalRESTHandler {
+// 	return govrest.ProposalRESTHandler{
+// 		SubRoute: "create-pool",
+// 		Handler:  newCreatePoolHandler(clientCtx),
+// 	}
+// }
 
-func newCreatePoolHandler(clientCtx client.Context) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		var req CreatePoolRequest
+// func newCreatePoolHandler(clientCtx client.Context) http.HandlerFunc {
+// 	return func(w http.ResponseWriter, r *http.Request) {
+// 		var req CreatePoolRequest
 
-		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
-			return
-		}
+// 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
+// 			return
+// 		}
 
-		req.BaseReq = req.BaseReq.Sanitize()
-		if !req.BaseReq.ValidateBasic(w) {
-			return
-		}
+// 		req.BaseReq = req.BaseReq.Sanitize()
+// 		if !req.BaseReq.ValidateBasic(w) {
+// 			return
+// 		}
 
-		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
+// 		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
+// 		if rest.CheckBadRequestError(w, err) {
+// 			return
+// 		}
 
-		content := types.NewCreatePoolProposal(req.Title, req.Description, req.Name, req.Runtime, req.Logo, req.Config, req.UploadInterval, req.OperatingCost, req.MaxBundleSize, req.Version, req.Binaries, req.StartKey, req.MinStake)
-		msg, err := govtypes.NewMsgSubmitProposal(content, req.Deposit, fromAddr, req.IsExpedited)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
-		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
-			return
-		}
+// 		content := types.NewCreatePoolProposal(req.Title, req.Description, req.Name, req.Runtime, req.Logo, req.Config, req.UploadInterval, req.OperatingCost, req.MaxBundleSize, req.Version, req.Binaries, req.StartKey, req.MinStake)
+// 		msg, err := govtypes.NewMsgSubmitProposal(content, req.Deposit, fromAddr, req.IsExpedited)
+// 		if rest.CheckBadRequestError(w, err) {
+// 			return
+// 		}
+// 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
+// 			return
+// 		}
 
-		tx.WriteGeneratedTxResponse(clientCtx, w, req.BaseReq, msg)
-	}
-}
+// 		tx.WriteGeneratedTxResponse(clientCtx, w, req.BaseReq, msg)
+// 	}
+// }
 
 type UpdatePoolRequest struct {
 	BaseReq        rest.BaseReq `json:"base_req" yaml:"base_req"`

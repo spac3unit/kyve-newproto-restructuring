@@ -1,8 +1,7 @@
 package integration
 
 import (
-	"crypto/ecdsa"
-	"crypto/rand"
+	"fmt"
 	mrand "math/rand"
 	"time"
 
@@ -16,11 +15,8 @@ import (
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	"github.com/stretchr/testify/suite"
 	abci "github.com/tendermint/tendermint/abci/types"
-	tmcrypto "github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/tmhash"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	tmversion "github.com/tendermint/tendermint/proto/tendermint/version"
@@ -127,17 +123,12 @@ func (suite *KeeperTestSuite) SetupApp() {
 
 	suite.denom = "tkyve"
 
-	privKey, err := ecdsa.GenerateKey(secp256k1.S256(), rand.Reader)
-	_ = err
-	//require.NoError(t, err)
+	suite.address = common.HexToAddress("0xBf71F763e4DEd30139C40160AE74Df881D5C7A2d")
 
-	addressBytes := tmcrypto.Address(crypto.PubkeyToAddress(privKey.PublicKey).Bytes())
-	suite.address = common.BytesToAddress(addressBytes)
+	bech32, _ := sdk.Bech32ifyAddressBytes("kyve", suite.address.Bytes())
+	fmt.Println(bech32)
 
 	// consensus key
-	privKey, err = ecdsa.GenerateKey(secp256k1.S256(), rand.Reader)
-	//require.NoError(t, err)
-
 	ePriv := ed25519.GenPrivKeyFromSecret([]byte{1})
 	suite.consAddress = sdk.ConsAddress(ePriv.PubKey().Address())
 
@@ -175,13 +166,17 @@ func (suite *KeeperTestSuite) SetupApp() {
 	stakingParams.BondDenom = suite.denom
 	suite.app.StakingKeeper.SetParams(suite.ctx, stakingParams)
 
+	depositParams := suite.app.GovKeeper.GetDepositParams(suite.ctx)
+	depositParams.MinDeposit = sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(100_000_000_000))) // set min deposit to 100 KYVE
+	suite.app.GovKeeper.SetDepositParams(suite.ctx, depositParams)
+
 	// Set Validator
 	valAddr := sdk.ValAddress(suite.address.Bytes())
-	validator, err := stakingtypes.NewValidator(valAddr, ePriv.PubKey(), stakingtypes.Description{})
+	validator, _ := stakingtypes.NewValidator(valAddr, ePriv.PubKey(), stakingtypes.Description{})
 	//require.NoError(t, err)
 	validator = stakingkeeper.TestingUpdateValidator(suite.app.StakingKeeper, suite.ctx, validator, true)
 	suite.app.StakingKeeper.AfterValidatorCreated(suite.ctx, validator.GetOperator())
-	err = suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)
+	suite.app.StakingKeeper.SetValidatorByConsAddr(suite.ctx, validator)
 	//require.NoError(t, err)
 	validators := suite.app.StakingKeeper.GetValidators(suite.ctx, 1)
 	suite.validator = validators[0]
