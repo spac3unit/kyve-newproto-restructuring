@@ -42,7 +42,6 @@ service Query {
 
   // FinalizedBundles ...
   rpc FinalizedBundles(QueryFinalizedBundlesRequest) returns (QueryFinalizedBundlesResponse) {
-    option deprecated = true;
     option (google.api.http).get = "/kyve/query/v1beta1/finalized_bundles/{pool_id}";
   }
 

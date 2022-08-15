@@ -50,7 +50,7 @@ var _ = Describe("Create Pool", Ordered, func() {
 
 		s.RunTxGovSuccess(&govtypes.MsgSubmitProposal{
 			Content: content,
-			InitialDeposit: sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(100*i.KYVE))),
+			InitialDeposit: sdk.NewCoins(sdk.NewInt64Coin(i.KYVE_DENOM, int64(100*i.KYVE))),
 			Proposer: i.ALICE,
 			IsExpedited: false,
 		})

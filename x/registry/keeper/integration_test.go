@@ -2,11 +2,12 @@ package keeper_test
 
 import (
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/KYVENetwork/chain/x/registry/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
-	"testing"
-	"time"
 )
 
 func TestIntegration(t *testing.T) {
@@ -265,7 +266,7 @@ func testStaking(t *testing.T) {
 
 	// Check bobs balance.
 	acc, _ := sdk.AccAddressFromBech32(BOB_ADDR)
-	balance := s.app.BankKeeper.GetBalance(s.ctx, acc, "tkyve")
+	balance := s.app.BankKeeper.GetBalance(s.ctx, acc, i.KYVE_DENOM)
 
 	// Bobs balacne should be 1000KYVE - 0.02 * 10 KYVE
 	require.Equal(t, 1000*KYVE-200_000_000, balance.Amount.Uint64())

@@ -39,6 +39,7 @@ var (
 )
 
 const KYVE = uint64(1_000_000_000)
+const KYVE_DENOM = "tkyve"
 
 func NewCleanChain() KeeperTestSuite {
 	s := KeeperTestSuite{}
@@ -67,7 +68,7 @@ func (suite *KeeperTestSuite) initDummyAccounts() {
 }
 
 func (suite *KeeperTestSuite) Mint(address string, amount uint64) error {
-	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
+	coins := sdk.NewCoins(sdk.NewInt64Coin(KYVE_DENOM, int64(amount)))
 	err := suite.app.BankKeeper.MintCoins(suite.ctx, "pool", coins)
 	if err != nil {
 		return err
@@ -167,7 +168,7 @@ func (suite *KeeperTestSuite) SetupApp() {
 	suite.app.StakingKeeper.SetParams(suite.ctx, stakingParams)
 
 	depositParams := suite.app.GovKeeper.GetDepositParams(suite.ctx)
-	depositParams.MinDeposit = sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(100_000_000_000))) // set min deposit to 100 KYVE
+	depositParams.MinDeposit = sdk.NewCoins(sdk.NewInt64Coin(KYVE_DENOM, int64(100_000_000_000))) // set min deposit to 100 KYVE
 	suite.app.GovKeeper.SetDepositParams(suite.ctx, depositParams)
 
 	// Set Validator
