@@ -25,7 +25,7 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdSubmitCreatePoolProposal())
+	//cmd.AddCommand(CmdSubmitCreatePoolProposal())
 
 	cmd.AddCommand(CmdFundPool())
 	cmd.AddCommand(CmdDefundPool())

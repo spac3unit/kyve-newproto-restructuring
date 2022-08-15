@@ -8,7 +8,6 @@ import (
 
 	"github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	"github.com/spf13/cobra"
@@ -16,9 +15,9 @@ import (
 
 func CmdSubmitCreatePoolProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create-pool-proposal [flags]",
+		Use:   "create-pool-proposal [title] [description] [name] [runtime] [logo] [config] [start_key] [upload_interval] [operating_cost] [min_stake] [max_bundle_size]",
+		Short: "Broadcast message create-pool-proposal",
 		Args:  cobra.ExactArgs(10),
-		Short: "Submit a proposal to create a pool.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
@@ -100,7 +99,7 @@ func CmdSubmitCreatePoolProposal() *cobra.Command {
 		},
 	}
 
-	flags.AddTxFlagsToCmd(cmd)
+	//flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
 }
