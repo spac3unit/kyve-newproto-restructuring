@@ -50,6 +50,11 @@ service Query {
     option (google.api.http).get = "/kyve/query/v1beta1/finalized_bundle/{pool_id}/{id}";
   }
 
+  // CanValidate ...
+  rpc CanValidate(QueryCanValidateRequest) returns (QueryCanValidateResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/can_validate/{pool_id}/{valaddress}";
+  }
+
   // CanPropose ...
   rpc CanPropose(QueryCanProposeRequest) returns (QueryCanProposeResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/can_propose/{pool_id}/{staker}/{proposer}/{from_height}";
@@ -159,6 +164,22 @@ message QueryFinalizedBundleRequest {
 message QueryFinalizedBundleResponse {
   // finalized_bundle ...
   kyve.bundles.v1beta1.FinalizedBundle finalized_bundle = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryCanProposeRequest is the request type for the Query/CanPropose RPC method.
+message QueryCanValidateRequest {
+  // pool_id defines the unique ID of the pool.
+  uint64 pool_id = 1;
+  // valaddress ...
+  string valaddress = 2;
+}
+
+// QueryCanProposeResponse is the response type for the Query/CanPropose RPC method.
+message QueryCanValidateResponse {
+  // possible ...
+  bool possible = 1;
+  // reason ...
+  string reason = 2;
 }
 
 // QueryCanProposeRequest is the request type for the Query/CanPropose RPC method.
