@@ -47,12 +47,14 @@ func (k Keeper) Slash(
 			return 0, err
 		}
 
-		ctx.EventManager().EmitTypedEvent(&types.EventSlash{
+		if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventSlash{
 			PoolId:    poolId,
 			Address:   staker.Address,
 			Amount:    slash,
 			SlashType: slashType,
-		})
+		}); errEmit != nil {
+			return 0, errEmit
+		}
 
 		return slash, nil
 	}
@@ -88,10 +90,6 @@ func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint6
 	}
 
 	return nil
-}
-
-func (k Keeper) GetAuthorizedStaker(ctx sdk.Context, stakerAddress string, authAddress string) {
-	// TODO
 }
 
 func (k Keeper) AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error {
