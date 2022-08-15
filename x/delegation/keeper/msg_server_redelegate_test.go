@@ -14,11 +14,14 @@ var _ = Describe("Delegation", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeAll(func() {
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:  i.ALICE,
-			Name:     "Moontest",
-			Config:   "{}",
-			Binaries: "{}",
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,

@@ -17,11 +17,14 @@ var _ = Describe("Join Pool", Ordered, func() {
 		s = i.NewCleanChain()
 
 		// create pool
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:  i.ALICE,
-			Name:     "Moontest",
-			Config:   "{}",
-			Binaries: "{}",
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		// create staker
@@ -167,11 +170,14 @@ var _ = Describe("Join Pool", Ordered, func() {
 			Valaddress: i.BOB,
 		})
 
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:  i.ALICE,
-			Name:     "Moontest2",
-			Config:   "{}",
-			Binaries: "{}",
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest2",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		// ACT
@@ -194,11 +200,14 @@ var _ = Describe("Join Pool", Ordered, func() {
 			Valaddress: i.BOB,
 		})
 
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:  i.ALICE,
-			Name:     "Moontest2",
-			Config:   "{}",
-			Binaries: "{}",
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest2",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		// ACT

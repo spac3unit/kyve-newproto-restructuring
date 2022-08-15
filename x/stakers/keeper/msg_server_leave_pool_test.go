@@ -17,11 +17,14 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		s = i.NewCleanChain()
 
 		// create pool
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:  i.ALICE,
-			Name:     "Moontest",
-			Config:   "{}",
-			Binaries: "{}",
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		// create staker
@@ -122,11 +125,14 @@ var _ = Describe("Leave Pool", Ordered, func() {
 
 	It("Try to leave multiple pools", func() {
 		// ARRANGE
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:  i.ALICE,
-			Name:     "Moontest2",
-			Config:   "{}",
-			Binaries: "{}",
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{

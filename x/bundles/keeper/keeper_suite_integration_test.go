@@ -22,15 +22,18 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		s = i.NewCleanChain()
 
 		// create clean pool for every test case
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:        i.ALICE,
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
 			Name:           "Moontest",
-			Config:         "{}",
-			Binaries:       "{}",
 			MaxBundleSize:  100,
 			StartKey:       "0",
 			UploadInterval: 60,
 			OperatingCost:  10_000,
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{

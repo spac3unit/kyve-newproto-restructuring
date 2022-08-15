@@ -1,7 +1,6 @@
 package integration
 
 import (
-	"fmt"
 	mrand "math/rand"
 	"time"
 
@@ -126,8 +125,8 @@ func (suite *KeeperTestSuite) SetupApp() {
 
 	suite.address = common.HexToAddress("0xBf71F763e4DEd30139C40160AE74Df881D5C7A2d")
 
-	bech32, _ := sdk.Bech32ifyAddressBytes("kyve", suite.address.Bytes())
-	fmt.Println(bech32)
+	// bech32, _ := sdk.Bech32ifyAddressBytes("kyve", suite.address.Bytes())
+	// fmt.Println(bech32)
 
 	// consensus key
 	ePriv := ed25519.GenPrivKeyFromSecret([]byte{1})

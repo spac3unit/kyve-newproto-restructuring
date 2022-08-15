@@ -18,14 +18,18 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		s = i.NewCleanChain()
 
 		// create clean pool for every test case
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:        i.ALICE,
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
 			Name:           "Moontest",
-			Config:         "{}",
-			Binaries:       "{}",
 			MaxBundleSize:  100,
 			StartKey:       "0",
 			UploadInterval: 60,
+			OperatingCost:  10_000,
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
@@ -139,11 +143,14 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		s.CommitAfterSeconds(60)
 
 		// ARRANGE
-		s.RunTxPoolSuccess(&pooltypes.MsgCreatePool{
-			Creator:  i.ALICE,
-			Name:     "Moontest2",
-			Config:   "{}",
-			Binaries: "{}",
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest2",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
