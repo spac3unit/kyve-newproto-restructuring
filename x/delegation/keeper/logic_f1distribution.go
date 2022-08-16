@@ -31,9 +31,9 @@ func (k Keeper) f1StartNewPeriod(ctx sdk.Context, staker string, delegationData 
 
 	// Get previous entry
 	// F1: corresponds to $Entry_{f-1}$
-	previousEntry, found := k.GetDelegationEntries(ctx, staker, delegationData.LatestIndexK)
+	previousEntry, found := k.GetDelegationEntry(ctx, staker, delegationData.LatestIndexK)
 	if !found {
-		previousEntry.ValueNew = sdk.NewDec(0)
+		previousEntry.Value = sdk.NewDec(0)
 	}
 
 	// Calculate quotient of current round
@@ -48,16 +48,16 @@ func (k Keeper) f1StartNewPeriod(ctx sdk.Context, staker string, delegationData 
 	}
 
 	// Add previous entry to current one
-	currentPeriodValue = currentPeriodValue.Add(previousEntry.ValueNew)
+	currentPeriodValue = currentPeriodValue.Add(previousEntry.Value)
 
 	// Increment index for the next period
 	indexF := delegationData.LatestIndexK + 1
 
 	// Add entry for new period to KV-Store
-	k.SetDelegationEntries(ctx, types.DelegationEntries{
-		ValueNew: currentPeriodValue,
-		Staker:   staker,
-		KIndex:   indexF,
+	k.SetDelegationEntry(ctx, types.DelegationEntry{
+		Value:  currentPeriodValue,
+		Staker: staker,
+		KIndex: indexF,
 	})
 
 	// Reset the rewards for the next period back to zero
@@ -138,12 +138,12 @@ func (k Keeper) f1RemoveDelegator(ctx sdk.Context, stakerAddress string, delegat
 	//Remove Delegator
 	k.RemoveDelegator(ctx, delegator.Staker, delegator.Delegator)
 	//Remove old entry
-	k.RemoveDelegationEntries(ctx, stakerAddress, delegator.KIndex)
+	k.RemoveDelegationEntry(ctx, stakerAddress, delegator.KIndex)
 
 	// Final cleanup
 	if delegationData.DelegatorCount == 0 {
 		k.RemoveDelegationData(ctx, delegationData.Staker)
-		k.RemoveDelegationEntries(ctx, stakerAddress, delegationData.LatestIndexK)
+		k.RemoveDelegationEntry(ctx, stakerAddress, delegationData.LatestIndexK)
 	} else {
 		k.SetDelegationData(ctx, delegationData)
 	}
@@ -207,17 +207,17 @@ func (k Keeper) f1WithdrawRewards(ctx sdk.Context, stakerAddress string, delegat
 	k.f1IterateConstantDelegationPeriods(ctx, stakerAddress, delegatorAddress, delegator.KIndex, endIndex,
 		func(startIndex uint64, endIndex uint64, delegation sdk.Dec) {
 			// entry difference
-			firstEntry, found := k.GetDelegationEntries(ctx, stakerAddress, startIndex)
+			firstEntry, found := k.GetDelegationEntry(ctx, stakerAddress, startIndex)
 			if !found {
 				panic("Entry 1 does not exist") // TODO replace with panic halt
 			}
 
-			secondEntry, found := k.GetDelegationEntries(ctx, stakerAddress, endIndex)
+			secondEntry, found := k.GetDelegationEntry(ctx, stakerAddress, endIndex)
 			if !found {
 				panic("Entry 1 does not exist") // TODO replace with panic halt
 			}
 
-			difference := secondEntry.ValueNew.Sub(firstEntry.ValueNew)
+			difference := secondEntry.Value.Sub(firstEntry.Value)
 
 			periodReward := difference.Mul(delegation)
 

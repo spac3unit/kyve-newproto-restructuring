@@ -16,41 +16,43 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetDelegator(ctx, delegator)
 	}
 
-	for _, entry := range genState.DelegationEntries {
-		k.SetDelegationEntries(ctx, entry)
+	for _, entry := range genState.DelegationEntryList {
+		k.SetDelegationEntry(ctx, entry)
 	}
 
-	for _, entry := range genState.DelegationData {
+	for _, entry := range genState.DelegationDataList {
 		k.SetDelegationData(ctx, entry)
 	}
 
-	for _, entry := range genState.UndelegationQueueEntry {
-		// TODO set undelegation queue entry
-		_ = entry
+	for _, entry := range genState.UndelegationQueueEntryList {
+		k.SetUndelegationQueueEntry(ctx, entry)
 	}
 
-	// TODO set Undelegation Queue State
+	k.SetQueueState(ctx, genState.QueueStateUndelegation)
 
-	// TODO set redelegation
+	for _, entry := range genState.RedelegationCooldownList {
+		k.SetRedelegationCooldown(ctx, entry)
+	}
 
 }
 
 // ExportGenesis returns the capability module's exported genesis.
 func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis := types.DefaultGenesis()
+
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.DelegatorList = k.GetAllDelegator(ctx)
 
-	genesis.DelegationEntries = k.GetAllDelegationEntries(ctx)
+	genesis.DelegationEntryList = k.GetAllDelegationEntries(ctx)
 
-	genesis.DelegationData = k.GetAllDelegationData(ctx)
+	genesis.DelegationDataList = k.GetAllDelegationData(ctx)
 
-	// TODO set undelegation queue entry
+	genesis.UndelegationQueueEntryList = k.GetAllUnbondingDelegationQueueEntries(ctx)
 
-	// TODO set queue state
+	genesis.QueueStateUndelegation = k.GetQueueState(ctx)
 
-	// TODO set redelegation cooldown
+	genesis.RedelegationCooldownList = k.GetAllRedelegationCooldownEntries(ctx)
 
 	return genesis
 }

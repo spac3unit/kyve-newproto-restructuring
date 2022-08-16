@@ -22,7 +22,7 @@ const (
 )
 
 var (
-	// DelegatorKeyPrefix is the prefix to retrieve all Delegator
+	// DelegatorKeyPrefix is the prefix to retrieve all Delegator entries
 	DelegatorKeyPrefix = []byte{1, 0}
 	// DelegatorKeyPrefixIndex2 is the prefix for a different key order for the DelegatorKeyPrefix
 	DelegatorKeyPrefixIndex2 = []byte{1, 1}
@@ -34,19 +34,19 @@ var (
 	DelegationDataKeyPrefix = []byte{3, 0}
 
 	// DelegationSlashEntriesKeyPrefix ...
-	DelegationSlashEntriesKeyPrefix = []byte{10, 0}
+	DelegationSlashEntriesKeyPrefix = []byte{4, 0}
 
 	// QueueKey ...
-	QueueKey = []byte{4, 0}
+	QueueKey = []byte{5}
 
 	// UndelegationQueueKeyPrefix ...
-	UndelegationQueueKeyPrefix = []byte{4, 1}
+	UndelegationQueueKeyPrefix = []byte{6, 0}
 
 	// UndelegationQueueKeyPrefixIndex2 ...
-	UndelegationQueueKeyPrefixIndex2 = []byte{4, 2}
+	UndelegationQueueKeyPrefixIndex2 = []byte{6, 1}
 
 	// RedelegationCooldownPrefix ...
-	RedelegationCooldownPrefix = []byte{14}
+	RedelegationCooldownPrefix = []byte{7}
 )
 
 // DelegatorKey returns the store Key to retrieve a Delegator from the index fields

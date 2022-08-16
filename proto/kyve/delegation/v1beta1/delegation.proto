@@ -7,7 +7,8 @@ import "gogoproto/gogo.proto";
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 
 
-// Delegator ...
+// Delegator stores the information that one address has delegated to another address
+// It stores important information for the F1-Fee distribution algorithm
 message Delegator {
   // staker ...
   string staker = 1;
@@ -19,16 +20,18 @@ message Delegator {
   uint64 initial_amount = 4;
 }
 
-// DelegationEntries ...
-message DelegationEntries {
-  // staker ...
+// DelegationEntry represents an entry according to the F1-Fee-Distribution algorithm.
+// Take a look at TODO for more details regarding the algorithm
+message DelegationEntry {
+
+  // staker on protocol level
   string staker = 1;
-  // k_index ...
+
+  // k_index is the of the period this entry ends
   uint64 k_index = 2;
-  // balance ...
-  string value = 3;
-  // value1
-  string valueNew = 4 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
+
+  // value is the quotient of collected rewards and total stake according to F1-distribution
+  string value = 3 [(gogoproto.customtype) = "github.com/cosmos/cosmos-sdk/types.Dec", (gogoproto.nullable) = false];
 }
 
 // DelegationPoolData ...

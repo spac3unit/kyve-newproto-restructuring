@@ -6,8 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// SetDelegationEntries set a specific delegationEntries in the store from its index
-func (k Keeper) SetDelegationEntries(ctx sdk.Context, delegationEntries types.DelegationEntries) {
+// SetDelegationEntry set a specific delegationEntries in the store from its index
+func (k Keeper) SetDelegationEntry(ctx sdk.Context, delegationEntries types.DelegationEntry) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 	b := k.cdc.MustMarshal(&delegationEntries)
 	store.Set(types.DelegationEntriesKey(
@@ -16,13 +16,13 @@ func (k Keeper) SetDelegationEntries(ctx sdk.Context, delegationEntries types.De
 	), b)
 }
 
-// GetDelegationEntries returns a delegationEntries from its index
-func (k Keeper) GetDelegationEntries(
+// GetDelegationEntry returns a delegationEntries from its index
+func (k Keeper) GetDelegationEntry(
 	ctx sdk.Context,
 	stakerAddress string,
 	kIndex uint64,
 
-) (val types.DelegationEntries, found bool) {
+) (val types.DelegationEntry, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 
 	b := store.Get(types.DelegationEntriesKey(
@@ -37,8 +37,8 @@ func (k Keeper) GetDelegationEntries(
 	return val, true
 }
 
-// RemoveDelegationEntries removes a delegationEntries from the store
-func (k Keeper) RemoveDelegationEntries(
+// RemoveDelegationEntry removes a delegationEntries from the store
+func (k Keeper) RemoveDelegationEntry(
 	ctx sdk.Context,
 	stakerAddress string,
 	kIndex uint64,
@@ -52,14 +52,14 @@ func (k Keeper) RemoveDelegationEntries(
 }
 
 // GetAllDelegationEntries returns all delegationEntries
-func (k Keeper) GetAllDelegationEntries(ctx sdk.Context) (list []types.DelegationEntries) {
+func (k Keeper) GetAllDelegationEntries(ctx sdk.Context) (list []types.DelegationEntry) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var val types.DelegationEntries
+		var val types.DelegationEntry
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}

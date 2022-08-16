@@ -10,11 +10,25 @@ option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 
 // GenesisState defines the delegation module's genesis state.
 message GenesisState {
+
+  // Params ...
   Params params = 1 [(gogoproto.nullable) = false];
+
+  // delegator_list ...
   repeated Delegator delegator_list = 2 [(gogoproto.nullable) = false];
-  repeated DelegationEntries delegation_entries = 3 [(gogoproto.nullable) = false];
-  repeated DelegationData delegation_data = 4 [(gogoproto.nullable) = false];
-  repeated UndelegationQueueEntry undelegation_queue_entry = 5 [(gogoproto.nullable) = false];
+
+  // delegation_entry_list ...
+  repeated DelegationEntry delegation_entry_list = 3 [(gogoproto.nullable) = false];
+
+  // delegation_data_list ...
+  repeated DelegationData delegation_data_list = 4 [(gogoproto.nullable) = false];
+
+  // undelegation_queue_entry_list ...
+  repeated UndelegationQueueEntry undelegation_queue_entry_list = 5 [(gogoproto.nullable) = false];
+
+  // queue_state_undelegation ...
   QueueState queue_state_undelegation = 6 [(gogoproto.nullable) = false];
-  repeated RedelegationCooldown redelegation_cooldown_entries = 7 [(gogoproto.nullable) = false];
+
+  // redelegation_cooldown_list ...
+  repeated RedelegationCooldown redelegation_cooldown_list = 7 [(gogoproto.nullable) = false];
 }
