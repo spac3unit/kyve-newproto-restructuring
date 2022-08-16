@@ -38,6 +38,7 @@ var (
 )
 
 const KYVE = uint64(1_000_000_000)
+const TKYVE = uint64(1)
 const KYVE_DENOM = "tkyve"
 
 func NewCleanChain() KeeperTestSuite {

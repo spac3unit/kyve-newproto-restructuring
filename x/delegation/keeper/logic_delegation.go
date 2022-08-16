@@ -18,20 +18,7 @@ func (k Keeper) GetDelegationAmount(ctx sdk.Context, staker string) uint64 {
 }
 
 func (k Keeper) GetDelegationAmountOfDelegator(ctx sdk.Context, stakerAddress string, delegatorAddress string) uint64 {
-	delegator, found := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
-	if !found {
-		return 0
-	}
-
-	data, _ := k.GetDelegationData(ctx, stakerAddress)
-
-	balance := sdk.NewDec(int64(delegator.InitialAmount))
-	for _, slash := range k.GetAllDelegationSlashesBetween(ctx, stakerAddress, delegator.KIndex, data.LatestIndexK+2) {
-		slashPercentage, _ := sdk.NewDecFromStr(slash.Percentage)
-		balance = balance.Mul(sdk.NewDec(1).Sub(slashPercentage))
-	}
-
-	return uint64(balance.RoundInt64())
+	return k.f1GetCurrentDelegation(ctx, stakerAddress, delegatorAddress)
 }
 
 func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, payerModuleName string) (success bool) {
@@ -53,45 +40,35 @@ func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, pay
 }
 
 func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, fraction sdk.Dec) {
-	f1 := F1Distribution{
-		k:             k,
-		ctx:           ctx,
-		stakerAddress: staker,
-	}
+	slashedAmount := k.f1Slash(ctx, staker, fraction)
 
-	f1.Slash(fraction.String())
+	// Transfer tokens to the delegation module
+	if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, types.ModuleName, slashedAmount); err != nil {
+		util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
+	}
 }
 
 // Delegate performs a safe delegation with all necessary checks
 // Warning: does not transfer the amount (only the rewards)
 func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
 
-	// Create a new F1Distribution struct for interacting with delegations.
-	f1Distribution := F1Distribution{
-		k:                k,
-		ctx:              ctx,
-		stakerAddress:    stakerAddress,
-		delegatorAddress: delegatorAddress,
-	}
-
 	// Check if the sender is already a delegator.
 	_, delegatorExists := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
 
 	if delegatorExists {
 		// If the sender is already a delegator, first perform an undelegation, before then delegating.
-		reward := f1Distribution.Withdraw()
+		reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
 		err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
 		if err != nil {
 			return err
 		}
 
 		// Perform redelegation
-		unDelegateAmount := f1Distribution.Undelegate()
-		f1Distribution.Delegate(unDelegateAmount + amount)
-
+		unDelegateAmount := k.f1RemoveDelegator(ctx, stakerAddress, delegatorAddress)
+		k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, unDelegateAmount+amount)
 	} else {
 		// If the sender isn't already a delegator, simply create a new delegation entry.
-		f1Distribution.Delegate(amount)
+		k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, amount)
 	}
 
 	// TODO where to update staker delegation and pool delegation?
@@ -105,27 +82,18 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
 
 	// Check if the sender is already a delegator.
-	delegator, delegatorExists := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
+	_, delegatorExists := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
 	if !delegatorExists {
 		return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
 	}
 
 	// Check if the sender is trying to undelegate more than they have delegated.
-	//TODO check slashes
-	if amount > delegator.InitialAmount {
+	if amount > k.GetDelegationAmountOfDelegator(ctx, stakerAddress, delegatorAddress) {
 		return sdkErrors.Wrapf(sdkErrors.ErrInsufficientFunds, types.ErrNotEnoughDelegation.Error(), amount)
 	}
 
-	// Create a new F1Distribution struct for interacting with delegations.
-	f1Distribution := F1Distribution{
-		k:                k,
-		ctx:              ctx,
-		stakerAddress:    stakerAddress,
-		delegatorAddress: delegatorAddress,
-	}
-
 	// Withdraw all rewards for the sender.
-	reward := f1Distribution.Withdraw()
+	reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
 
 	// Transfer tokens from this module to sender.
 	err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
@@ -134,9 +102,9 @@ func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, deleg
 	}
 
 	// Perform an internal re-delegation.
-	undelegatedAmount := f1Distribution.Undelegate()
+	undelegatedAmount := k.f1RemoveDelegator(ctx, stakerAddress, delegatorAddress)
 	redelegation := undelegatedAmount - amount
-	f1Distribution.Delegate(redelegation)
+	k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, redelegation)
 
 	return nil
 }

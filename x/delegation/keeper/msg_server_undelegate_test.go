@@ -110,6 +110,16 @@ var _ = Describe("Undelegation", Ordered, func() {
 	It("Undelegate Slashed Amount", func() {
 
 		delegationDummyBefore := s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])
+		Expect(delegationDummyBefore).To(Equal(5_000_000_000 * i.TKYVE))
+
+		balanceDummyBefore := s.GetBalanceFromAddress(i.DUMMY[0])
+
+		// Undelegate everything
+		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  5_000_000_000 * i.TKYVE,
+		})
 
 		fraction, err := sdk.NewDecFromStr("0.1")
 		Expect(err).To(BeNil())
@@ -117,12 +127,22 @@ var _ = Describe("Undelegation", Ordered, func() {
 
 		delegationDummyAfter := s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])
 
-		slashes := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
-		_ = slashes
+		Expect(delegationDummyAfter).To(Equal(4_500_000_000 * i.TKYVE))
 
-		fmt.Println("Slash")
-		fmt.Println(delegationDummyBefore)
-		fmt.Println(delegationDummyAfter)
+		balanceDummyMiddle := s.GetBalanceFromAddress(i.DUMMY[0])
+		Expect(balanceDummyBefore).To(Equal(balanceDummyMiddle))
+
+		// Wait unbonding.
+
+		s.CommitAfterSeconds(s.App().DelegationKeeper.UnbondingDelegationTime(s.Ctx()) + 1)
+		s.CommitAfterSeconds(1)
+
+		balanceDummyAfter := s.GetBalanceFromAddress(i.DUMMY[0])
+		Expect(balanceDummyAfter).To(Equal(balanceDummyBefore + 4_500_000_000*i.TKYVE))
+
+		delegationDummyAfterAfter := s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])
+
+		Expect(delegationDummyAfterAfter).To(Equal(0 * i.TKYVE))
 
 		//
 		////Delegation amount stays the same (due to unbonding)

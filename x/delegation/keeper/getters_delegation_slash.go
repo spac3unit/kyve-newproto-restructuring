@@ -72,7 +72,7 @@ func (k Keeper) GetAllDelegationSlashesBetween(ctx sdk.Context, staker string, s
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationSlashEntriesKeyPrefix)
 	//iterator := sdk.KVStorePrefixIterator(store, util.GetByteKey(staker))
 
-	iterator := store.Iterator(util.GetByteKey(staker, start), util.GetByteKey(staker, end))
+	iterator := store.Iterator(util.GetByteKey(staker, start), util.GetByteKey(staker, end+1))
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {

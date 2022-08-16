@@ -6,8 +6,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// TODO Implement slashing of delegators
-
 // StartUnbondingDelegator ...
 func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegatorAddress string, amount uint64) (error error) {
 
@@ -54,22 +52,22 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 			removed = true
 		} else if undelegationEntry.CreationTime+k.UnbondingDelegationTime(ctx) < uint64(ctx.BlockTime().Unix()) {
 
+			availableAmount := k.GetDelegationAmountOfDelegator(ctx, undelegationEntry.Staker, undelegationEntry.Delegator)
+			unbondingAmount := util.MinUint64(availableAmount, undelegationEntry.Amount)
+
+			// TODO error handling?
+			k.performUndelegation(ctx, undelegationEntry.Staker, undelegationEntry.Delegator, unbondingAmount)
+
 			// Transfer the money
 			if err := util.TransferFromModuleToAddress(
 				k.bankKeeper,
 				ctx,
 				types.ModuleName,
 				undelegationEntry.Delegator,
-				undelegationEntry.Amount,
+				unbondingAmount,
 			); err != nil {
 				return
 			}
-
-			availableAmount := k.GetDelegationAmountOfDelegator(ctx, undelegationEntry.Staker, undelegationEntry.Delegator)
-			unbondingAmount := util.MinUint64(availableAmount, undelegationEntry.Amount)
-
-			// TODO error handling?
-			k.performUndelegation(ctx, undelegationEntry.Staker, undelegationEntry.Delegator, unbondingAmount)
 
 			k.RemoveUndelegationQueueEntry(ctx, &undelegationEntry)
 

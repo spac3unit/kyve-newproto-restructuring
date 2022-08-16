@@ -21,16 +21,8 @@ func (k msgServer) WithdrawRewards(goCtx context.Context, msg *types.MsgWithdraw
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
 	}
 
-	// Create a new F1Distribution struct for interacting with delegations.
-	f1Distribution := F1Distribution{
-		k:                k.Keeper,
-		ctx:              ctx,
-		stakerAddress:    msg.Staker,
-		delegatorAddress: msg.Creator,
-	}
-
 	// Withdraw all rewards for the sender.
-	reward := f1Distribution.Withdraw()
+	reward := k.f1WithdrawRewards(ctx, msg.Staker, msg.Creator)
 
 	// Transfer tokens from this module to sender.
 	err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, msg.Creator, reward)

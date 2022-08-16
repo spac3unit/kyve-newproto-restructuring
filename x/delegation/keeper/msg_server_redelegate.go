@@ -8,8 +8,6 @@ import (
 
 // Redelegate lets a user redelegate from one staker to another staker
 func (k msgServer) Redelegate(goCtx context.Context, msg *types.MsgRedelegate) (*types.MsgRedelegateResponse, error) {
-
-	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	if err := k.consumeRedelegationSpell(ctx, msg.Creator); err != nil {

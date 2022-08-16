@@ -31,7 +31,10 @@ func (k Keeper) f1StartNewPeriod(ctx sdk.Context, staker string, delegationData 
 
 	// Get previous entry
 	// F1: corresponds to $Entry_{f-1}$
-	previousEntry, _ := k.GetDelegationEntries(ctx, staker, delegationData.LatestIndexK)
+	previousEntry, found := k.GetDelegationEntries(ctx, staker, delegationData.LatestIndexK)
+	if !found {
+		previousEntry.ValueNew = sdk.NewDec(0)
+	}
 
 	// Calculate quotient of current round
 	// If totalDelegation is zero the quotient is also zero
@@ -120,8 +123,7 @@ func (k Keeper) f1RemoveDelegator(ctx sdk.Context, stakerAddress string, delegat
 		util.PanicHalt(k.upgradeKeeper, ctx, "No delegationData although somebody is delegating")
 	}
 
-	// TODO calculate remaining balance regarding slashes
-	balance := sdk.NewDec(0)
+	balance := k.f1GetCurrentDelegation(ctx, stakerAddress, delegatorAddress)
 
 	// Start new period
 	k.f1StartNewPeriod(ctx, stakerAddress, &delegationData)
@@ -130,7 +132,7 @@ func (k Keeper) f1RemoveDelegator(ctx sdk.Context, stakerAddress string, delegat
 	//delegationData.LatestIndexWasUndelegation = true
 
 	// Update Metadata
-	delegationData.TotalDelegation -= uint64(balance.RoundInt64())
+	delegationData.TotalDelegation -= balance
 	delegationData.DelegatorCount -= 1
 
 	//Remove Delegator
@@ -146,14 +148,14 @@ func (k Keeper) f1RemoveDelegator(ctx sdk.Context, stakerAddress string, delegat
 		k.SetDelegationData(ctx, delegationData)
 	}
 
-	return uint64(balance.RoundInt64())
+	return balance
 }
 
 // f1Slash performs a slash within the f1-logic.
 // It ends the current round and start a new one with reduced total delegation.
 // A slash entry is created which is needed to calculate the correct delegation amount
 // of every delegator.
-func (k Keeper) f1Slash(ctx sdk.Context, stakerAddress string, fraction sdk.Dec) {
+func (k Keeper) f1Slash(ctx sdk.Context, stakerAddress string, fraction sdk.Dec) (amount uint64) {
 
 	delegationData, _ := k.GetDelegationData(ctx, stakerAddress)
 
@@ -171,12 +173,13 @@ func (k Keeper) f1Slash(ctx sdk.Context, stakerAddress string, fraction sdk.Dec)
 	// TODO check for rounding errors
 	// remaining_total_delegation = total_delegation * (1 - fraction)
 	totalDelegation := sdk.NewDec(int64(delegationData.TotalDelegation))
-	slashFactor := sdk.NewDec(1).Sub(fraction)
-	newTotalDelegation := totalDelegation.Mul(slashFactor)
+	slashedAmount := uint64(totalDelegation.Mul(fraction).RoundInt64())
 
 	// Update metadata
-	delegationData.TotalDelegation = uint64(newTotalDelegation.RoundInt64())
+	delegationData.TotalDelegation = uint64(totalDelegation.RoundInt64()) - slashedAmount
 	k.SetDelegationData(ctx, delegationData)
+
+	return slashedAmount
 }
 
 // f1WithdrawRewards calculates all outstanding rewards and withdraws them from
@@ -243,12 +246,11 @@ func (k Keeper) f1IterateConstantDelegationPeriods(ctx sdk.Context, stakerAddres
 	prevIndex := minIndex
 	for _, slash := range slashes {
 		// TODO handle rounding errors
-		// TODO correct do index+1 for periods
-		handler(prevIndex, slash.KIndex, delegatorBalance)
+		handler(prevIndex, slash.KIndex-1, delegatorBalance)
 		delegatorBalance = delegatorBalance.Mul(sdk.NewDec(1).Sub(slash.Fraction))
 		prevIndex = slash.KIndex
 	}
-	handler(prevIndex, maxIndex, delegatorBalance)
+	handler(prevIndex, maxIndex-1, delegatorBalance)
 }
 
 // f1GetCurrentDelegation calculates the current delegation of a delegator.
@@ -277,329 +279,6 @@ func (k Keeper) f1GetCurrentDelegation(ctx sdk.Context, stakerAddress string, de
 // f1GetOutstandingRewards calculates the current outstanding rewards without modifying the f1-state.
 // This method can be used for queries.
 func (k Keeper) f1GetOutstandingRewards(ctx sdk.Context) uint64 {
+	// TODO implement
 	return 0
 }
-
-// ================
-
-//// F1Distribution contains all necessary objects to operate the fee-distribution algorithm
-//type F1Distribution struct {
-//	k                Keeper
-//	ctx              sdk.Context
-//	stakerAddress    string
-//	delegatorAddress string
-//}
-
-//func (f1 F1Distribution) updateEntries(
-//	fMinus1Index uint64,
-//	currentRewards uint64,
-//	totalDelegation uint64,
-//	deleteOldEntry bool,
-//) (entryFBalance sdk.Dec, indexF uint64) {
-//	// F1Paper: Current period f = delegationPoolData.LatestIndexK + 1
-//
-//	// get last but one entry for F1Distribution, init with zero if it is the first delegator
-//	// F1Paper: Entry_{f-1}
-//	f1fMinus1, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, fMinus1Index)
-//	f1fMinus1Balance := sdk.NewDec(0)
-//	if found {
-//		f1fMinus1Balance, _ = sdk.NewDecFromStr(f1fMinus1.Value)
-//	}
-//
-//	// F1Paper: T_f / n_f
-//	f1FinalBalance := sdk.NewDec(0)
-//	if totalDelegation != 0 {
-//		decCurrentRewards := sdk.NewDec(int64(currentRewards))
-//		decTotalDelegation := sdk.NewDec(int64(totalDelegation))
-//
-//		f1FinalBalance = decCurrentRewards.Quo(decTotalDelegation)
-//	}
-//
-//	// F1Paper Entry_f
-//	entryFBalance = f1fMinus1Balance.Add(f1FinalBalance)
-//
-//	indexF = fMinus1Index + 1
-//
-//	if deleteOldEntry {
-//		//Remove Old entry
-//		f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, fMinus1Index)
-//	}
-//
-//	// Insert Entry_F
-//	f1.k.SetDelegationEntries(f1.ctx, types.DelegationEntries{
-//		Value:  entryFBalance.String(),
-//		Staker: f1.stakerAddress,
-//		KIndex: indexF,
-//	})
-//
-//	return entryFBalance, indexF
-//}
-//
-//// Delegate performs a F1-delegation on the distribution struct.
-//func (f1 F1Distribution) Delegate(amount uint64) {
-//
-//	if amount == 0 {
-//		return
-//	}
-//
-//	// Fetch metadata
-//	delegationPoolData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
-//
-//	// Init default data-set, if this is the first delegator
-//	if !found {
-//		delegationPoolData = types.DelegationData{
-//			CurrentRewards:  0,
-//			TotalDelegation: 0,
-//			LatestIndexK:    0,
-//			DelegatorCount:  0,
-//			Staker:          f1.stakerAddress,
-//		}
-//	}
-//
-//	_, indexF := f1.updateEntries(delegationPoolData.LatestIndexK, delegationPoolData.CurrentRewards,
-//		delegationPoolData.TotalDelegation, delegationPoolData.LatestIndexWasUndelegation)
-//
-//	delegationPoolData.LatestIndexWasUndelegation = false
-//	// Reset Values according to F1Paper, i.e T=0
-//	delegationPoolData.CurrentRewards = 0
-//
-//	// Update metadata
-//	delegationPoolData.TotalDelegation += amount
-//	delegationPoolData.DelegatorCount += 1
-//
-//	delegationPoolData.LatestIndexK = indexF
-//
-//	f1.k.SetDelegationData(f1.ctx, delegationPoolData)
-//
-//	f1.k.SetDelegator(f1.ctx, types.Delegator{
-//		Staker:        f1.stakerAddress,
-//		Delegator:     f1.delegatorAddress,
-//		InitialAmount: amount,
-//		KIndex:        indexF,
-//	})
-//}
-//
-//func (f1 F1Distribution) Slash(percentage string) {
-//	data, _ := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
-//	f1.updateEntries(data.LatestIndexK, data.CurrentRewards, data.TotalDelegation, false /* TODO check*/)
-//
-//	f1.k.SetDelegationSlashEntry(f1.ctx, types.DelegationSlash{
-//		Staker:     f1.stakerAddress,
-//		KIndex:     data.LatestIndexK + 1, // TODO find nicer way
-//		Percentage: percentage,
-//	})
-//
-//	slashPercentage, _ := sdk.NewDecFromStr(percentage)
-//	totalDelegation := sdk.NewDec(int64(data.TotalDelegation)).Mul(sdk.NewDec(1).Sub(slashPercentage))
-//
-//	data.TotalDelegation -= uint64(totalDelegation.RoundInt64())
-//}
-//
-//// Undelegate
-//// Undelegates the full amount.
-//// Withdraw() must be called before, otherwise the reward is gone
-//func (f1 F1Distribution) Undelegate() (undelegatedAmount uint64) {
-//
-//	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
-//	if !found {
-//		return 0
-//	}
-//
-//	// Fetch metadata
-//	delegationData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
-//	if !found {
-//		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "No delegationData although somebody is delegating")
-//	}
-//
-//	balance := sdk.NewDec(int64(delegator.InitialAmount))
-//	for _, slash := range f1.k.GetAllDelegationSlashesBetween(f1.ctx, f1.stakerAddress, delegator.KIndex, delegationData.LatestIndexK) {
-//		slashPercentage, _ := sdk.NewDecFromStr(slash.Percentage)
-//		balance = balance.Mul(sdk.NewDec(1).Sub(slashPercentage))
-//	}
-//
-//	_, indexF := f1.updateEntries(delegationData.LatestIndexK, delegationData.CurrentRewards,
-//		delegationData.TotalDelegation, delegationData.LatestIndexWasUndelegation)
-//
-//	// add flag that entry can be deleted after next entry is created
-//	delegationData.LatestIndexWasUndelegation = true
-//
-//	// Reset Values according to F1Paper, i.e T=0
-//	delegationData.CurrentRewards = 0
-//	delegationData.LatestIndexK = indexF
-//
-//	// Update Metadata
-//	delegationData.TotalDelegation -= uint64(balance.RoundInt64())
-//	delegationData.DelegatorCount -= 1
-//
-//	//Remove Delegator
-//	f1.k.RemoveDelegator(f1.ctx, delegator.Staker, delegator.Delegator)
-//
-//	//Remove old entry
-//	f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
-//
-//	if delegationData.DelegatorCount == 0 {
-//		f1.k.RemoveDelegationData(f1.ctx, delegationData.Staker)
-//		f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, indexF)
-//	} else {
-//		f1.k.SetDelegationData(f1.ctx, delegationData)
-//	}
-//
-//	return delegator.InitialAmount
-//}
-//
-//// Withdraw
-//// F1Withdraw updates the states for F1-Algorithm and returns the amount of coins the user has earned.
-//// The Method does NOT transfer the money.
-//func (f1 F1Distribution) Withdraw() (reward uint64) {
-//
-//	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
-//	if !found {
-//		return 0
-//	}
-//
-//	// Fetch metadata
-//	delegationData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
-//	if !found {
-//		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "No delegationData although somebody is delegating")
-//	}
-//
-//	_, indexF := f1.updateEntries(delegationData.LatestIndexK, delegationData.CurrentRewards,
-//		delegationData.TotalDelegation, delegationData.LatestIndexWasUndelegation)
-//
-//	delegationData.LatestIndexWasUndelegation = false
-//
-//	// Reset Values according to F1Paper, i.e T=0
-//	delegationData.CurrentRewards = 0
-//	delegationData.LatestIndexK = indexF
-//
-//	f1.k.SetDelegationData(f1.ctx, delegationData)
-//
-//	//Calculate Reward
-//	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
-//	if !found {
-//		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "Delegator does not have entry")
-//	}
-//
-//	//Remove Old entry
-//	f1.k.RemoveDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
-//
-//	//Update Delegator
-//	delegator.KIndex = indexF
-//	f1.k.SetDelegator(f1.ctx, delegator)
-//
-//	rewards := sdk.NewDec(0)
-//
-//	dummyFirst := types.DelegationSlash{
-//		Staker:     f1.stakerAddress,
-//		KIndex:     f1K.KIndex,
-//		Percentage: "0",
-//	}
-//	dummyLast := types.DelegationSlash{
-//		Staker:     f1.stakerAddress,
-//		KIndex:     indexF,
-//		Percentage: "0",
-//	}
-//	slashes := []types.DelegationSlash{dummyFirst}
-//	slashes = append(slashes, f1.k.GetAllDelegationSlashesBetween(f1.ctx, f1.stakerAddress, f1K.KIndex, indexF)...)
-//	slashes = append(slashes, dummyLast)
-//
-//	delegatorBalance := sdk.NewDec(int64(delegator.InitialAmount))
-//	for i := 1; i < len(slashes); i++ {
-//		difference := f1.getEntriesDifference(slashes[i-1].KIndex, slashes[i].KIndex)
-//
-//		slashPercentage, _ := sdk.NewDecFromStr(slashes[i-1].Percentage)
-//		delegatorBalance = delegatorBalance.Mul(sdk.NewDec(1).Sub(slashPercentage))
-//
-//		rewards = rewards.Add(difference.Mul(delegatorBalance))
-//	}
-//
-//	return uint64(rewards.RoundInt64())
-//}
-//
-//func (k Keeper) iterateSlashes(ctx sdk.Context, stakerAddress string, startIndex uint64, endIndex uint64,
-//	handler func(slash types.DelegationSlash)) {
-//
-//	dummyFirst := types.DelegationSlash{
-//		Staker:     stakerAddress,
-//		KIndex:     startIndex,
-//		Percentage: "0",
-//	}
-//	// TODO find clean way
-//	dummyLast := types.DelegationSlash{
-//		Staker:     stakerAddress,
-//		KIndex:     endIndex,
-//		Percentage: "0",
-//	}
-//
-//	slashes := []types.DelegationSlash{dummyFirst}
-//	slashes = append(slashes, k.GetAllDelegationSlashesBetween(ctx, stakerAddress, startIndex, endIndex)...)
-//	slashes = append(slashes, dummyLast)
-//
-//	for i := 1; i < len(slashes); i++ {
-//		handler(slashes[i-1])
-//	}
-//
-//}
-//
-//func (f1 F1Distribution) getEntriesDifference(index1 uint64, index2 uint64) (reward sdk.Dec) {
-//	// get last but one entry for F1Distribution, init with zero if it is the first delegator
-//	// F1Paper: Entry_{f-1}
-//	f1Index1, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, index1)
-//	f1Index1Balance := sdk.NewDec(0)
-//	if found {
-//		f1Index1Balance, _ = sdk.NewDecFromStr(f1Index1.Value)
-//	}
-//
-//	f1Index2, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, index2)
-//	f1Index2Balance := sdk.NewDec(0)
-//	if found {
-//		f1Index2Balance, _ = sdk.NewDecFromStr(f1Index2.Value)
-//	}
-//
-//	return f1Index2Balance.Sub(f1Index1Balance)
-//}
-//
-//// getCurrentReward
-//// Calculates and returns the current reward, *without* performing any state changes
-//// TODO include slashing
-//func (f1 F1Distribution) getCurrentReward() (reward uint64) {
-//
-//	delegator, found := f1.k.GetDelegator(f1.ctx, f1.stakerAddress, f1.delegatorAddress)
-//	if !found {
-//		return 0
-//	}
-//
-//	// Fetch metadata
-//	delegationPoolData, found := f1.k.GetDelegationData(f1.ctx, f1.stakerAddress)
-//	if !found {
-//		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "No delegationData although somebody is delegating")
-//	}
-//
-//	// get last but one entry for F1Distribution, init with zero if it is the first delegator
-//	// F1Paper: Entry_{f-1}
-//	f1fMinus1, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegationPoolData.LatestIndexK)
-//	f1fMinus1Balance := sdk.NewDec(0)
-//	if found {
-//		f1fMinus1Balance, _ = sdk.NewDecFromStr(f1fMinus1.Value)
-//	}
-//
-//	// F1Paper: T_f / n_f
-//	f1FinalBalance := sdk.NewDec(0)
-//	if delegationPoolData.TotalDelegation != 0 {
-//		decCurrentRewards := sdk.NewDec(int64(delegationPoolData.CurrentRewards))
-//		decTotalDelegation := sdk.NewDec(int64(delegationPoolData.TotalDelegation))
-//
-//		f1FinalBalance = decCurrentRewards.Quo(decTotalDelegation)
-//	}
-//
-//	f1FinalBalance = f1FinalBalance.Add(f1fMinus1Balance)
-//
-//	//Calculate Reward
-//	f1K, found := f1.k.GetDelegationEntries(f1.ctx, f1.stakerAddress, delegator.KIndex)
-//	if !found {
-//		util.PanicHalt(f1.k.upgradeKeeper, f1.ctx, "Delegator does not have an entry")
-//	}
-//
-//	f1kBalance, _ := sdk.NewDecFromStr(f1K.Value)
-//	return uint64(sdk.NewDec(int64(delegator.InitialAmount)).Mul(f1FinalBalance.Sub(f1kBalance)).RoundInt64())
-//}

@@ -11,7 +11,6 @@ import (
 
 // Delegate ...
 func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
-	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Performs logical delegation without transferring the amount

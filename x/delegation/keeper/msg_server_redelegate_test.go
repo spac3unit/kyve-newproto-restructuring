@@ -69,10 +69,6 @@ var _ = Describe("Delegation", Ordered, func() {
 
 	It("Redelegate 1 KYVE to Bob", func() {
 
-		println("PArams:")
-		println(s.App().StakersKeeper.UploadSlash(s.Ctx()))
-		println(s.App().DelegationKeeper.RedelegationMaxAmount(s.Ctx()))
-
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
 
