@@ -11,10 +11,13 @@ import (
 func (k msgServer) LeavePool(goCtx context.Context, msg *types.MsgLeavePool) (*types.MsgLeavePoolResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	_, valaccountFound := k.GetValaccount(ctx, msg.PoolId, msg.Creator)
+	valaccount, valaccountFound := k.GetValaccount(ctx, msg.PoolId, msg.Creator)
 	if !valaccountFound {
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrInvalidRequest, types.ErrAlreadyLeftPool.Error())
 	}
+
+	valaccount.IsLeaving = true
+	k.setValaccount(ctx, valaccount)
 
 	err := k.orderLeavePool(ctx, msg.Creator, msg.PoolId)
 	if err != nil {

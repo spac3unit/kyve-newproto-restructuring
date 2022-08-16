@@ -66,6 +66,7 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		Expect(valaccount.PoolId).To(BeZero())
 		Expect(valaccount.Valaddress).To(Equal(i.BOB))
 		Expect(valaccount.Points).To(BeZero())
+		Expect(valaccount.IsLeaving).To(BeTrue())
 
 		valaccountsOfPool := s.App().StakersKeeper.GetAllValaccountsOfPool(s.Ctx(), 0)
 
@@ -160,6 +161,7 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		Expect(valaccount.PoolId).To(Equal(uint64(1)))
 		Expect(valaccount.Valaddress).To(Equal(i.CHARLIE))
 		Expect(valaccount.Points).To(BeZero())
+		Expect(valaccount.IsLeaving).To(BeTrue())
 
 		valaccountsOfPool := s.App().StakersKeeper.GetAllValaccountsOfPool(s.Ctx(), 1)
 
