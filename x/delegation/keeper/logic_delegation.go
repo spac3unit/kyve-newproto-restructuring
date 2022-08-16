@@ -17,6 +17,23 @@ func (k Keeper) GetDelegationAmount(ctx sdk.Context, staker string) uint64 {
 	return 0
 }
 
+func (k Keeper) GetDelegationAmountOfDelegator(ctx sdk.Context, stakerAddress string, delegatorAddress string) uint64 {
+	delegator, found := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
+	if !found {
+		return 0
+	}
+
+	data, _ := k.GetDelegationData(ctx, stakerAddress)
+
+	balance := sdk.NewDec(int64(delegator.InitialAmount))
+	for _, slash := range k.GetAllDelegationSlashesBetween(ctx, stakerAddress, delegator.KIndex, data.LatestIndexK+2) {
+		slashPercentage, _ := sdk.NewDecFromStr(slash.Percentage)
+		balance = balance.Mul(sdk.NewDec(1).Sub(slashPercentage))
+	}
+
+	return uint64(balance.RoundInt64())
+}
+
 func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, payerModuleName string) (success bool) {
 	// Assert there are delegators
 	if k.DoesDelegationDataExist(ctx, staker) {
@@ -35,8 +52,14 @@ func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, pay
 	return false
 }
 
-func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, amount uint64) {
-	// TODO stub
+func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, fraction sdk.Dec) {
+	f1 := F1Distribution{
+		k:             k,
+		ctx:           ctx,
+		stakerAddress: staker,
+	}
+
+	f1.Slash(fraction.String())
 }
 
 // Delegate performs a safe delegation with all necessary checks
@@ -88,7 +111,8 @@ func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, deleg
 	}
 
 	// Check if the sender is trying to undelegate more than they have delegated.
-	if amount > delegator.DelegationAmount {
+	//TODO check slashes
+	if amount > delegator.InitialAmount {
 		return sdkErrors.Wrapf(sdkErrors.ErrInsufficientFunds, types.ErrNotEnoughDelegation.Error(), amount)
 	}
 

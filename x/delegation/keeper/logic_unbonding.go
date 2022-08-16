@@ -65,6 +65,12 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 				return
 			}
 
+			availableAmount := k.GetDelegationAmountOfDelegator(ctx, undelegationEntry.Staker, undelegationEntry.Delegator)
+			unbondingAmount := util.MinUint64(availableAmount, undelegationEntry.Amount)
+
+			// TODO error handling?
+			k.performUndelegation(ctx, undelegationEntry.Staker, undelegationEntry.Delegator, unbondingAmount)
+
 			k.RemoveUndelegationQueueEntry(ctx, &undelegationEntry)
 
 			// Update tailIndex (lowIndex) of queue

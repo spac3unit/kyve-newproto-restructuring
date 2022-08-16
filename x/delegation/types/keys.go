@@ -33,6 +33,9 @@ var (
 	// DelegationDataKeyPrefix ...
 	DelegationDataKeyPrefix = []byte{3, 0}
 
+	// DelegationSlashEntriesKeyPrefix ...
+	DelegationSlashEntriesKeyPrefix = []byte{10, 0}
+
 	// QueueKey ...
 	QueueKey = []byte{4, 0}
 
@@ -78,4 +81,8 @@ func UndelegationQueueKeyIndex2(stakerAddress string, kIndex uint64) []byte {
 
 func RedelegationCooldownKey(delegator string, block uint64) []byte {
 	return util.GetByteKey(delegator, block)
+}
+
+func DelegationSlashEntriesKey(stakerAddress string, kIndex uint64) []byte {
+	return util.GetByteKey(stakerAddress, kIndex)
 }
