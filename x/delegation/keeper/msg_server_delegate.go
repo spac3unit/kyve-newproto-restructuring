@@ -9,9 +9,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// Delegate ...
+// Delegate handles the transaction of delegating a specific amount of $KYVE to a staker
+// The only requirement for the transaction to succeed is that the staker exists
+// and the user has enough balance.
 func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// TODO check if staker exist?
 
 	// Performs logical delegation without transferring the amount
 	if err := k.performDelegation(ctx, msg.Staker, msg.Creator, msg.Amount); err != nil {

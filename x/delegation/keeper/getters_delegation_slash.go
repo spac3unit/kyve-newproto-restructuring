@@ -7,7 +7,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// SetDelegationSlashEntry ...
+// The `DelegationSlash` entry stores every slash that happened to a staker.
+// This is needed by the F1-Fee algorithm to correctly calculate the
+// remaining delegation of delegators whose staker got slashed.
+
+// SetDelegationSlashEntry for the affected staker with the index of the period
+// the slash is starting.
 func (k Keeper) SetDelegationSlashEntry(ctx sdk.Context, slashEntry types.DelegationSlash) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationSlashEntriesKeyPrefix)
 	b := k.cdc.MustMarshal(&slashEntry)
@@ -17,7 +22,7 @@ func (k Keeper) SetDelegationSlashEntry(ctx sdk.Context, slashEntry types.Delega
 	), b)
 }
 
-// GetDelegationSlashEntry ...
+// GetDelegationSlashEntry returns a DelegationSlash for the given staker and index.
 func (k Keeper) GetDelegationSlashEntry(
 	ctx sdk.Context,
 	stakerAddress string,
@@ -37,7 +42,7 @@ func (k Keeper) GetDelegationSlashEntry(
 	return val, true
 }
 
-// RemoveDelegationSlashEntry ...
+// RemoveDelegationSlashEntry removes a entry for a given staker and index
 func (k Keeper) RemoveDelegationSlashEntry(
 	ctx sdk.Context,
 	stakerAddress string,
@@ -51,7 +56,7 @@ func (k Keeper) RemoveDelegationSlashEntry(
 	))
 }
 
-// GetAllDelegationSlashEntries ...
+// GetAllDelegationSlashEntries returns all delegation slash entries (of all stakers)
 func (k Keeper) GetAllDelegationSlashEntries(ctx sdk.Context) (list []types.DelegationSlash) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationSlashEntriesKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
@@ -67,8 +72,12 @@ func (k Keeper) GetAllDelegationSlashEntries(ctx sdk.Context) (list []types.Dele
 	return
 }
 
+// GetAllDelegationSlashesBetween returns all Slashes that happened between the given periods
+// `start` and `end` are both inclusive.
 func (k Keeper) GetAllDelegationSlashesBetween(ctx sdk.Context, staker string, start uint64, end uint64) (list []types.DelegationSlash) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationSlashEntriesKeyPrefix)
+
+	// use iterator with end+1 because the end of the iterator is exclusive
 	iterator := store.Iterator(util.GetByteKey(staker, start), util.GetByteKey(staker, end+1))
 	defer iterator.Close()
 

@@ -6,6 +6,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// `Delegator` is created for every delegator (address) that delegates
+// to a staker. It stores the initial amount delegated and the index
+// of the F1-period where the user started to become a delegator.
+// When the user performs a redelegation this object is recreated.
+// To query the current delegation use `GetDelegationAmountOfDelegator()`
+// as the `initialAmount` does not consider slashes.
+
 // SetDelegator set a specific delegator in the store from its index
 func (k Keeper) SetDelegator(ctx sdk.Context, delegator types.Delegator) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefix)
@@ -29,17 +36,23 @@ func (k Keeper) GetDelegator(
 	delegatorAddress string,
 ) (val types.Delegator, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefix)
-
-	b := store.Get(types.DelegatorKey(
-		stakerAddress,
-		delegatorAddress,
-	))
+	b := store.Get(types.DelegatorKey(stakerAddress, delegatorAddress))
 	if b == nil {
 		return val, false
 	}
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// DoesDelegatorExist checks if the key exists in the KV-store
+func (k Keeper) DoesDelegatorExist(
+	ctx sdk.Context,
+	stakerAddress string,
+	delegatorAddress string,
+) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefix)
+	return store.Has(types.DelegatorKey(stakerAddress, delegatorAddress))
 }
 
 // RemoveDelegator removes a delegator from the store
@@ -60,8 +73,8 @@ func (k Keeper) RemoveDelegator(
 	))
 }
 
-// GetAllDelegator returns all delegator
-func (k Keeper) GetAllDelegator(ctx sdk.Context) (list []types.Delegator) {
+// GetAllDelegators returns all delegators (of all stakers)
+func (k Keeper) GetAllDelegators(ctx sdk.Context) (list []types.Delegator) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegatorKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 

@@ -6,6 +6,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// These functions are meant to be called from external modules
+// For now this is the bundles module which needs to interact
+// with the delegation module.
+// All these functions are safe in the way that they do not return errors
+// and every edge case is handled within the function itself.
+
+// GetDelegationAmount returns the sum of all delegations for a specific staker.
+// If the staker does not exist, it returns zero as the staker as zero delegations
 func (k Keeper) GetDelegationAmount(ctx sdk.Context, staker string) uint64 {
 	delegationData, found := k.GetDelegationData(ctx, staker)
 
@@ -16,10 +24,18 @@ func (k Keeper) GetDelegationAmount(ctx sdk.Context, staker string) uint64 {
 	return 0
 }
 
+// GetDelegationAmountOfDelegator returns the amount of how many $KYVE `delegatorAddress`
+// has delegated to `stakerAddress`. If one of the addresses does not exist, it returns zero.
 func (k Keeper) GetDelegationAmountOfDelegator(ctx sdk.Context, stakerAddress string, delegatorAddress string) uint64 {
 	return k.f1GetCurrentDelegation(ctx, stakerAddress, delegatorAddress)
 }
 
+// PayoutRewards transfers `amount` $nKYVE from the `payerModuleName`-module to the delegation module.
+// It then awards these tokens internally to all delegators of staker `staker`.
+// Delegators can then receive these rewards if they call the `withdraw`-transaction.
+//
+// This method return false if the payout failed. This happens usually if there are no
+// delegators for that staker. If this happens one should do something else with the rewards.
 func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, payerModuleName string) (success bool) {
 	// Assert there are delegators
 	if k.DoesDelegationDataExist(ctx, staker) {
@@ -38,10 +54,14 @@ func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, pay
 	return false
 }
 
+// SlashDelegators reduces the delegation of all delegators of `staker` by fraction
+// and transfers the amount to the Treasury.
 func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, fraction sdk.Dec) {
+
+	// Perform F1-slash and get slashed amount in nKYVE
 	slashedAmount := k.f1Slash(ctx, staker, fraction)
 
-	// Transfer tokens to the delegation module
+	// Transfer tokens to the Treasury
 	if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, types.ModuleName, slashedAmount); err != nil {
 		util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
 	}

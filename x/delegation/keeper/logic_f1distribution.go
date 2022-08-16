@@ -209,12 +209,12 @@ func (k Keeper) f1WithdrawRewards(ctx sdk.Context, stakerAddress string, delegat
 			// entry difference
 			firstEntry, found := k.GetDelegationEntry(ctx, stakerAddress, startIndex)
 			if !found {
-				panic("Entry 1 does not exist") // TODO replace with panic halt
+				util.PanicHalt(k.upgradeKeeper, ctx, "Entry 1 does not exist")
 			}
 
 			secondEntry, found := k.GetDelegationEntry(ctx, stakerAddress, endIndex)
 			if !found {
-				panic("Entry 1 does not exist") // TODO replace with panic halt
+				util.PanicHalt(k.upgradeKeeper, ctx, "Entry 2 does not exist")
 			}
 
 			difference := secondEntry.Value.Sub(firstEntry.Value)

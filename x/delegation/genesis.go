@@ -42,7 +42,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.Params = k.GetParams(ctx)
 
-	genesis.DelegatorList = k.GetAllDelegator(ctx)
+	genesis.DelegatorList = k.GetAllDelegators(ctx)
 
 	genesis.DelegationEntryList = k.GetAllDelegationEntries(ctx)
 

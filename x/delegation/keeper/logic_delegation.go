@@ -11,10 +11,7 @@ import (
 // Warning: does not transfer the amount (only the rewards)
 func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
 
-	// Check if the sender is already a delegator.
-	_, delegatorExists := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
-
-	if delegatorExists {
+	if k.DoesDelegatorExist(ctx, stakerAddress, delegatorAddress) {
 		// If the sender is already a delegator, first perform an undelegation, before then delegating.
 		reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
 		err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
@@ -30,8 +27,7 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 		k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, amount)
 	}
 
-	// TODO where to update staker delegation and pool delegation?
-	// TODO should this even be an aggregation variable
+	// TODO where to update pool delegation? Should this even be an aggregation variable
 
 	return nil
 }
@@ -40,9 +36,8 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 // Warning: It does not create an unbonding entry; it does not transfer the delegation back (only the rewards)
 func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
 
-	// Check if the sender is already a delegator.
-	_, delegatorExists := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
-	if !delegatorExists {
+	// Check if the sender is a delegator
+	if k.DoesDelegatorExist(ctx, stakerAddress, delegatorAddress) {
 		return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
 	}
 
@@ -64,6 +59,8 @@ func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, deleg
 	undelegatedAmount := k.f1RemoveDelegator(ctx, stakerAddress, delegatorAddress)
 	redelegation := undelegatedAmount - amount
 	k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, redelegation)
+
+	// TODO where to update pool delegation? Should this even be an aggregation variable
 
 	return nil
 }

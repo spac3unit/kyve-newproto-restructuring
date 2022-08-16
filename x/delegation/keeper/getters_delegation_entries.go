@@ -6,7 +6,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// SetDelegationEntry set a specific delegationEntries in the store from its index
+// The `DelegationEntry` stores the quotient of the collected rewards
+// and the total delegation of every period. A period is a phase
+// where the total delegation was unchanged and just rewards were
+// paid out. More details can be found in the specs of this module
+
+// SetDelegationEntry set a specific delegationEntry in the store for the staker
+// and a given index
 func (k Keeper) SetDelegationEntry(ctx sdk.Context, delegationEntries types.DelegationEntry) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 	b := k.cdc.MustMarshal(&delegationEntries)
@@ -16,7 +22,7 @@ func (k Keeper) SetDelegationEntry(ctx sdk.Context, delegationEntries types.Dele
 	), b)
 }
 
-// GetDelegationEntry returns a delegationEntries from its index
+// GetDelegationEntry returns a delegationEntry from its index
 func (k Keeper) GetDelegationEntry(
 	ctx sdk.Context,
 	stakerAddress string,
@@ -37,7 +43,8 @@ func (k Keeper) GetDelegationEntry(
 	return val, true
 }
 
-// RemoveDelegationEntry removes a delegationEntries from the store
+// RemoveDelegationEntry removes a delegationEntry for the given staker with the
+// given index from the store
 func (k Keeper) RemoveDelegationEntry(
 	ctx sdk.Context,
 	stakerAddress string,
@@ -51,7 +58,7 @@ func (k Keeper) RemoveDelegationEntry(
 	))
 }
 
-// GetAllDelegationEntries returns all delegationEntries
+// GetAllDelegationEntries returns all delegationEntries (of all stakers)
 func (k Keeper) GetAllDelegationEntries(ctx sdk.Context) (list []types.DelegationEntry) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DelegationEntriesKeyPrefix)
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
