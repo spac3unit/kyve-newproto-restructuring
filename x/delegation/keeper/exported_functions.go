@@ -66,3 +66,7 @@ func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, fraction sdk.Dec
 		util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
 	}
 }
+
+func (k Keeper) GetOutstandingRewards(ctx sdk.Context, staker string, delegator string) uint64 {
+	return k.f1GetOutstandingRewards(ctx, staker, delegator)
+}

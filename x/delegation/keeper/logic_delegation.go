@@ -37,7 +37,7 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
 
 	// Check if the sender is a delegator
-	if k.DoesDelegatorExist(ctx, stakerAddress, delegatorAddress) {
+	if !k.DoesDelegatorExist(ctx, stakerAddress, delegatorAddress) {
 		return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
 	}
 

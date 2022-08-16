@@ -19,7 +19,7 @@ func (k msgServer) Redelegate(goCtx context.Context, msg *types.MsgRedelegate) (
 		return nil, err
 	}
 
-	// The redelegation is translated into a undelegation from the old staker ...
+	// The redelegation is translated into an undelegation from the old staker ...
 	if err := k.performUndelegation(ctx, msg.FromStaker, msg.Creator, msg.Amount); err != nil {
 		return nil, err
 	}

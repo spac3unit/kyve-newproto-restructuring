@@ -207,17 +207,7 @@ func (k Keeper) f1WithdrawRewards(ctx sdk.Context, stakerAddress string, delegat
 	k.f1IterateConstantDelegationPeriods(ctx, stakerAddress, delegatorAddress, delegator.KIndex, endIndex,
 		func(startIndex uint64, endIndex uint64, delegation sdk.Dec) {
 			// entry difference
-			firstEntry, found := k.GetDelegationEntry(ctx, stakerAddress, startIndex)
-			if !found {
-				util.PanicHalt(k.upgradeKeeper, ctx, "Entry 1 does not exist")
-			}
-
-			secondEntry, found := k.GetDelegationEntry(ctx, stakerAddress, endIndex)
-			if !found {
-				util.PanicHalt(k.upgradeKeeper, ctx, "Entry 2 does not exist")
-			}
-
-			difference := secondEntry.Value.Sub(firstEntry.Value)
+			difference := k.f1GetEntryDifference(ctx, stakerAddress, startIndex, endIndex)
 
 			periodReward := difference.Mul(delegation)
 
@@ -278,7 +268,72 @@ func (k Keeper) f1GetCurrentDelegation(ctx sdk.Context, stakerAddress string, de
 
 // f1GetOutstandingRewards calculates the current outstanding rewards without modifying the f1-state.
 // This method can be used for queries.
-func (k Keeper) f1GetOutstandingRewards(ctx sdk.Context) uint64 {
-	// TODO implement
-	return 0
+func (k Keeper) f1GetOutstandingRewards(ctx sdk.Context, stakerAddress string, delegatorAddress string) uint64 {
+	delegator, found := k.GetDelegator(ctx, stakerAddress, delegatorAddress)
+	if !found {
+		return 0
+	}
+
+	// Fetch metadata
+	delegationData, found := k.GetDelegationData(ctx, stakerAddress)
+	if !found {
+		util.PanicHalt(k.upgradeKeeper, ctx, "No delegationData although somebody is delegating")
+	}
+
+	// End current period and use it for calculating the reward
+	endIndex := delegationData.LatestIndexK
+
+	// According to F1 the reward is calculated as the difference between two entries multiplied by the
+	// delegation amount for the period.
+	// To incorporate slashing one needs to iterate all slashes and calculate the reward for every period
+	// separately and then sum it.
+	reward := sdk.NewDec(0)
+	latestBalance := sdk.NewDec(int64(delegator.InitialAmount))
+	k.f1IterateConstantDelegationPeriods(ctx, stakerAddress, delegatorAddress, delegator.KIndex, endIndex,
+		func(startIndex uint64, endIndex uint64, delegation sdk.Dec) {
+
+			difference := k.f1GetEntryDifference(ctx, stakerAddress, startIndex, endIndex)
+			// Multiply with delegation for round
+			periodReward := difference.Mul(delegation)
+			// Add to total rewards
+			reward = reward.Add(periodReward)
+
+			// For calculating the last (ongoing) period
+			latestBalance = delegation
+		})
+
+	// Append missing rewards from last period to ongoing period
+	entry, found := k.GetDelegationEntry(ctx, stakerAddress, delegationData.LatestIndexK)
+	if !found {
+		util.PanicHalt(k.upgradeKeeper, ctx, "Entry does not exist")
+	}
+
+	currentPeriodValue := sdk.NewDec(0)
+	if delegationData.TotalDelegation != 0 {
+		decCurrentRewards := sdk.NewDec(int64(delegationData.CurrentRewards))
+		decTotalDelegation := sdk.NewDec(int64(delegationData.TotalDelegation))
+
+		// F1: $T_f / n_f$
+		currentPeriodValue = decCurrentRewards.Quo(decTotalDelegation)
+	}
+
+	ongoingPeriodReward := currentPeriodValue.Sub(entry.Value).Mul(latestBalance)
+
+	reward = reward.Add(ongoingPeriodReward)
+	return uint64(reward.RoundInt64())
+}
+
+func (k Keeper) f1GetEntryDifference(ctx sdk.Context, stakerAddress string, lowIndex uint64, highIndex uint64) sdk.Dec {
+	// entry difference
+	firstEntry, found := k.GetDelegationEntry(ctx, stakerAddress, lowIndex)
+	if !found {
+		util.PanicHalt(k.upgradeKeeper, ctx, "Entry 1 does not exist")
+	}
+
+	secondEntry, found := k.GetDelegationEntry(ctx, stakerAddress, highIndex)
+	if !found {
+		util.PanicHalt(k.upgradeKeeper, ctx, "Entry 2 does not exist")
+	}
+
+	return secondEntry.Value.Sub(firstEntry.Value)
 }
