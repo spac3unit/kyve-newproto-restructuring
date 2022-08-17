@@ -67,6 +67,8 @@ func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, fraction sdk.Dec
 	}
 }
 
+// GetOutstandingRewards calculates the current rewards a delegator has collected for
+// the given staker.
 func (k Keeper) GetOutstandingRewards(ctx sdk.Context, staker string, delegator string) uint64 {
 	return k.f1GetOutstandingRewards(ctx, staker, delegator)
 }

@@ -36,7 +36,7 @@ func (k Keeper) f1StartNewPeriod(ctx sdk.Context, staker string, delegationData 
 		previousEntry.Value = sdk.NewDec(0)
 	}
 
-	// Calculate quotient of current round
+	// Calculate quotient of current period
 	// If totalDelegation is zero the quotient is also zero
 	currentPeriodValue := sdk.NewDec(0)
 	if delegationData.TotalDelegation != 0 {
@@ -65,7 +65,10 @@ func (k Keeper) f1StartNewPeriod(ctx sdk.Context, staker string, delegationData 
 	delegationData.CurrentRewards = 0
 	delegationData.LatestIndexK = indexF
 
-	// TODO efficient pruning?
+	if delegationData.LatestIndexWasUndelegation {
+		k.RemoveDelegationEntry(ctx, previousEntry.Staker, previousEntry.KIndex)
+		delegationData.LatestIndexWasUndelegation = false
+	}
 
 	return indexF
 }
@@ -88,12 +91,13 @@ func (k Keeper) f1CreateDelegator(ctx sdk.Context, staker string, delegator stri
 		}
 	}
 
-	// Finish current round
+	// Finish current period
 	k.f1StartNewPeriod(ctx, staker, &delegationData)
 
 	// Update metadata
 	delegationData.TotalDelegation += amount
 	delegationData.DelegatorCount += 1
+	k.SetDelegationData(ctx, delegationData)
 
 	k.SetDelegator(ctx, types.Delegator{
 		Staker:        staker,
@@ -101,8 +105,6 @@ func (k Keeper) f1CreateDelegator(ctx sdk.Context, staker string, delegator stri
 		InitialAmount: amount,
 		KIndex:        delegationData.LatestIndexK,
 	})
-
-	k.SetDelegationData(ctx, delegationData)
 }
 
 // f1RemoveDelegator performs a full undelegation and removes the delegator from the f1-logic
@@ -128,8 +130,7 @@ func (k Keeper) f1RemoveDelegator(ctx sdk.Context, stakerAddress string, delegat
 	// Start new period
 	k.f1StartNewPeriod(ctx, stakerAddress, &delegationData)
 
-	// TODO
-	//delegationData.LatestIndexWasUndelegation = true
+	delegationData.LatestIndexWasUndelegation = true
 
 	// Update Metadata
 	delegationData.TotalDelegation -= balance
@@ -142,17 +143,15 @@ func (k Keeper) f1RemoveDelegator(ctx sdk.Context, stakerAddress string, delegat
 
 	// Final cleanup
 	if delegationData.DelegatorCount == 0 {
-		k.RemoveDelegationData(ctx, delegationData.Staker)
 		k.RemoveDelegationEntry(ctx, stakerAddress, delegationData.LatestIndexK)
-	} else {
-		k.SetDelegationData(ctx, delegationData)
 	}
+	k.SetDelegationData(ctx, delegationData)
 
 	return balance
 }
 
 // f1Slash performs a slash within the f1-logic.
-// It ends the current round and start a new one with reduced total delegation.
+// It ends the current period and start a new one with reduced total delegation.
 // A slash entry is created which is needed to calculate the correct delegation amount
 // of every delegator.
 func (k Keeper) f1Slash(ctx sdk.Context, stakerAddress string, fraction sdk.Dec) (amount uint64) {
@@ -170,13 +169,12 @@ func (k Keeper) f1Slash(ctx sdk.Context, stakerAddress string, fraction sdk.Dec)
 		Fraction: fraction,
 	})
 
-	// TODO check for rounding errors
 	// remaining_total_delegation = total_delegation * (1 - fraction)
 	totalDelegation := sdk.NewDec(int64(delegationData.TotalDelegation))
-	slashedAmount := uint64(totalDelegation.Mul(fraction).RoundInt64())
+	slashedAmount := totalDelegation.Mul(fraction).TruncateInt().Uint64()
 
-	// Update metadata
-	delegationData.TotalDelegation = uint64(totalDelegation.RoundInt64()) - slashedAmount
+	// Remove slashed amount from delegation metadata
+	delegationData.TotalDelegation -= slashedAmount
 	k.SetDelegationData(ctx, delegationData)
 
 	return slashedAmount
@@ -198,6 +196,7 @@ func (k Keeper) f1WithdrawRewards(ctx sdk.Context, stakerAddress string, delegat
 
 	// End current period and use it for calculating the reward
 	endIndex := k.f1StartNewPeriod(ctx, stakerAddress, &delegationData)
+	k.SetDelegationData(ctx, delegationData)
 
 	// According to F1 the reward is calculated as the difference between two entries multiplied by the
 	// delegation amount for the period.
@@ -214,7 +213,15 @@ func (k Keeper) f1WithdrawRewards(ctx sdk.Context, stakerAddress string, delegat
 			reward = reward.Add(periodReward)
 		})
 
-	return uint64(reward.RoundInt64())
+	// Delete Delegator entry as he has no outstanding rewards anymore.
+	// To account for slashes, also update the initial amount.
+	k.RemoveDelegationEntry(ctx, stakerAddress, delegator.KIndex)
+	// Delegator now starts at the latest index.
+	delegator.KIndex = endIndex
+	delegator.InitialAmount = k.GetDelegationAmountOfDelegator(ctx, delegator.Staker, delegator.Delegator)
+	k.SetDelegator(ctx, delegator)
+
+	return reward.TruncateInt().Uint64()
 }
 
 // f1IterateConstantDelegationPeriods iterates all periods between minIndex and maxIndex (both inclusive)
@@ -235,9 +242,9 @@ func (k Keeper) f1IterateConstantDelegationPeriods(ctx sdk.Context, stakerAddres
 
 	prevIndex := minIndex
 	for _, slash := range slashes {
-		// TODO handle rounding errors
 		handler(prevIndex, slash.KIndex-1, delegatorBalance)
-		delegatorBalance = delegatorBalance.Mul(sdk.NewDec(1).Sub(slash.Fraction))
+		slashedAmount := delegatorBalance.MulTruncate(slash.Fraction)
+		delegatorBalance = delegatorBalance.Sub(slashedAmount)
 		prevIndex = slash.KIndex
 	}
 	handler(prevIndex, maxIndex-1, delegatorBalance)
@@ -263,7 +270,7 @@ func (k Keeper) f1GetCurrentDelegation(ctx sdk.Context, stakerAddress string, de
 			latestBalance = delegation
 		})
 
-	return uint64(latestBalance.RoundInt64())
+	return latestBalance.TruncateInt().Uint64()
 }
 
 // f1GetOutstandingRewards calculates the current outstanding rewards without modifying the f1-state.
@@ -293,7 +300,7 @@ func (k Keeper) f1GetOutstandingRewards(ctx sdk.Context, stakerAddress string, d
 		func(startIndex uint64, endIndex uint64, delegation sdk.Dec) {
 
 			difference := k.f1GetEntryDifference(ctx, stakerAddress, startIndex, endIndex)
-			// Multiply with delegation for round
+			// Multiply with delegation for period
 			periodReward := difference.Mul(delegation)
 			// Add to total rewards
 			reward = reward.Add(periodReward)
@@ -307,6 +314,7 @@ func (k Keeper) f1GetOutstandingRewards(ctx sdk.Context, stakerAddress string, d
 	if !found {
 		util.PanicHalt(k.upgradeKeeper, ctx, "Entry does not exist")
 	}
+	_ = entry
 
 	currentPeriodValue := sdk.NewDec(0)
 	if delegationData.TotalDelegation != 0 {
@@ -317,10 +325,10 @@ func (k Keeper) f1GetOutstandingRewards(ctx sdk.Context, stakerAddress string, d
 		currentPeriodValue = decCurrentRewards.Quo(decTotalDelegation)
 	}
 
-	ongoingPeriodReward := currentPeriodValue.Sub(entry.Value).Mul(latestBalance)
+	ongoingPeriodReward := currentPeriodValue.Mul(latestBalance)
 
 	reward = reward.Add(ongoingPeriodReward)
-	return uint64(reward.RoundInt64())
+	return reward.TruncateInt().Uint64()
 }
 
 func (k Keeper) f1GetEntryDifference(ctx sdk.Context, stakerAddress string, lowIndex uint64, highIndex uint64) sdk.Dec {

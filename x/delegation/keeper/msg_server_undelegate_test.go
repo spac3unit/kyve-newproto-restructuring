@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -76,9 +75,6 @@ var _ = Describe("Undelegation", Ordered, func() {
 			Amount:  11 * i.KYVE,
 		})
 
-		fmt.Println(res)
-		fmt.Println(err)
-
 		Expect(res).To(BeNil())
 		Expect(err).ToNot(BeNil())
 	})
@@ -144,7 +140,6 @@ var _ = Describe("Undelegation", Ordered, func() {
 
 		Expect(delegationDummyAfterAfter).To(Equal(0 * i.TKYVE))
 
-		//
 		////Delegation amount stays the same (due to unbonding)
 		//Expect(delegationDummyBefore).To(Equal(delegationDummyAfter))
 		//Expect(delegationDummyAfter).To(Equal(10 * i.KYVE))
@@ -156,5 +151,63 @@ var _ = Describe("Undelegation", Ordered, func() {
 		//Expect(delegationDummyAfter).To(Equal(5 * i.KYVE))
 
 	})
+
+	It("Delegate twice and undelegate twice", func() {
+		// Undelegate everything
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[10],
+			Staker:  i.ALICE,
+			Amount:  5_000_000_000 * i.TKYVE,
+		})
+
+		s.CommitAfterSeconds(10)
+
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[11],
+			Staker:  i.ALICE,
+			Amount:  5_000_000_000 * i.TKYVE,
+		})
+
+		s.CommitAfterSeconds(10)
+
+		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
+			Creator: i.DUMMY[10],
+			Staker:  i.ALICE,
+			Amount:  5_000_000_000 * i.TKYVE,
+		})
+
+		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
+			Creator: i.DUMMY[11],
+			Staker:  i.ALICE,
+			Amount:  5_000_000_000 * i.TKYVE,
+		})
+
+	})
+
+	It("Undelegate all and check state", func() {
+		delegators := s.App().DelegationKeeper.GetAllDelegators(s.Ctx())
+		delegationEntries := s.App().DelegationKeeper.GetAllDelegationEntries(s.Ctx())
+
+		for _, delegator := range delegators {
+			s.RunTxDelegatorSuccess(&types.MsgUndelegate{
+				Creator: delegator.Delegator,
+				Staker:  delegator.Staker,
+				Amount:  s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), delegator.Staker, delegator.Delegator),
+			})
+		}
+
+		s.CommitAfterSeconds(s.App().DelegationKeeper.UnbondingDelegationTime(s.Ctx()) + 10)
+		s.CommitAfterSeconds(10)
+		s.CommitAfterSeconds(10)
+
+		delegationEntries = s.App().DelegationKeeper.GetAllDelegationEntries(s.Ctx())
+		delegators = s.App().DelegationKeeper.GetAllDelegators(s.Ctx())
+		slashes := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
+
+		Expect(len(slashes)).To(Equal(len(delegationEntries)))
+		Expect(delegators).To(HaveLen(0))
+	})
+
+	// TODO test undelegate with multiple slashes
 
 })

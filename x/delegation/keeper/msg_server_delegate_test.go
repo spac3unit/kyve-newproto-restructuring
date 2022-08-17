@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"fmt"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -93,11 +92,10 @@ var _ = Describe("Delegation", Ordered, func() {
 	})
 
 	It("Payout delegators", func() {
-
 		s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 1*i.KYVE, pooltypes.ModuleName)
 
-		fmt.Println("PAYPYOUT")
-		fmt.Println(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB))
+		outstandingRewardsBefore := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
+		Expect(outstandingRewardsBefore).To(Equal(1 * i.KYVE))
 
 		bobBalanceBefore := s.GetBalanceFromAddress(i.BOB)
 		s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
@@ -108,8 +106,24 @@ var _ = Describe("Delegation", Ordered, func() {
 
 		Expect(bobBalanceAfter).To(Equal(bobBalanceBefore + 1*i.KYVE))
 
-		// TODO wrong value; also check withdrawing same amount twice
-		fmt.Println(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB))
-
+		outstandingRewardsAfter := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
+		Expect(outstandingRewardsAfter).To(Equal(0 * i.TKYVE))
 	})
+
+	It("Don't pay out rewards twice", func() {
+		outstandingRewardsBefore := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
+
+		bobBalanceBefore := s.GetBalanceFromAddress(i.BOB)
+		s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
+			Creator: i.BOB,
+			Staker:  i.ALICE,
+		})
+		bobBalanceAfter := s.GetBalanceFromAddress(i.BOB)
+
+		Expect(bobBalanceAfter).To(Equal(bobBalanceBefore))
+
+		outstandingRewardsAfter := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
+		Expect(outstandingRewardsAfter).To(Equal(outstandingRewardsBefore))
+	})
+
 })

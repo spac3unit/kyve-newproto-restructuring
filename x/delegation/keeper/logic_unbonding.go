@@ -7,7 +7,7 @@ import (
 )
 
 // StartUnbondingDelegator ...
-func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegatorAddress string, amount uint64) (error error) {
+func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegatorAddress string, amount uint64) {
 
 	// the queue is ordered by time
 	queueState := k.GetQueueState(ctx)
@@ -28,8 +28,6 @@ func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegato
 	}
 
 	k.SetUndelegationQueueEntry(ctx, undelegationQueueEntry)
-
-	return nil
 }
 
 // ProcessDelegatorUnbondingQueue ...

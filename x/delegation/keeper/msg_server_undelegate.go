@@ -21,9 +21,7 @@ func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (
 	}
 
 	// Create and insert Unbonding queue entry.
-	if unbondingError := k.StartUnbondingDelegator(ctx, msg.Staker, msg.Creator, msg.Amount); unbondingError != nil {
-		return nil, unbondingError
-	}
+	k.StartUnbondingDelegator(ctx, msg.Staker, msg.Creator, msg.Amount)
 
 	return &types.MsgUndelegateResponse{}, nil
 }
