@@ -8,8 +8,28 @@ import "kyve/query/v1beta1/responses.proto";
 import "kyve/pool/v1beta1/pool.proto";
 import "kyve/stakers/v1beta1/stakers.proto";
 import "kyve/bundles/v1beta1/bundles.proto";
+import "kyve/query/v1beta1/delegation.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
+
+
+// This query servers all queries for the following modules:
+// bundles, pool, delegation, stakers
+// as a lot of request require composition of multiple module-data
+// everything will be served from one single query module.
+
+// Therefore the queries are allowed to have the package prefixes
+// of these modules in their query url
+// The named package do not implement own requires (expect for params)
+
+
+// For simplicity all queries and their objects are in the corresponding
+// proto files
+
+
+
+// SPLIT INTO SEPARATE QUERIES
+
 
 // Query defines the gRPC querier service.
 service Query {
@@ -63,6 +83,28 @@ service Query {
   rpc CanVote(QueryCanVoteRequest) returns (QueryCanVoteResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/can_vote/{pool_id}/{staker}/{voter}/{storage_id}";
   }
+
+  // Delegation
+
+//  rpc test returns {
+//
+//  }
+
+//  // Delegator returns all delegation info
+//  rpc Delegator(QueryDelegatorRequest) returns (QueryDelegatorResponse) {
+//    option (google.api.http).get = "/kyve/registry/v1beta1/delegator/{pool_id}/{staker}/{delegator}";
+//  }
+
+//  // DelegatorsByPoolAndStaker ...
+//  rpc DelegatorsByPoolAndStaker(QueryDelegatorsByPoolAndStakerRequest) returns (QueryDelegatorsByPoolAndStakerResponse) {
+//    option (google.api.http).get = "/kyve/registry/v1beta1/delegators_by_pool_and_staker/{pool_id}/{staker}";
+//  }
+//
+//  // StakersByPoolAndDelegator ...
+//  rpc StakersByPoolAndDelegator(QueryStakersByPoolAndDelegatorRequest) returns (QueryStakersByPoolAndDelegatorResponse) {
+//    option (google.api.http).get = "/kyve/registry/v1beta1/stakers_by_pool_and_delegator/{pool_id}/{delegator}";
+//  }
+
 }
 
 // QueryPoolsRequest is the request type for the Query/Pools RPC method.

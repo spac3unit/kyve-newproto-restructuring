@@ -24,7 +24,9 @@ const (
 var (
 	// DelegatorKeyPrefix is the prefix to retrieve all Delegator entries
 	DelegatorKeyPrefix = []byte{1, 0}
+
 	// DelegatorKeyPrefixIndex2 is the prefix for a different key order for the DelegatorKeyPrefix
+	// TODO consider using memStore for second indexes, if they are only needed by the logic.
 	DelegatorKeyPrefixIndex2 = []byte{1, 1}
 
 	// DelegationEntriesKeyPrefix is the prefix to retrieve all DelegationEntries
@@ -56,7 +58,7 @@ func DelegatorKey(stakerAddress string, delegatorAddress string) []byte {
 
 // DelegatorKeyIndex2 returns the store Key to retrieve a Delegator from the index fields
 func DelegatorKeyIndex2(delegatorAddress string, stakerAddress string) []byte {
-	return util.GetByteKey(stakerAddress, delegatorAddress)
+	return util.GetByteKey(delegatorAddress, stakerAddress)
 }
 
 // DelegationEntriesKey returns the store Key to retrieve a DelegationEntries from the index fields
