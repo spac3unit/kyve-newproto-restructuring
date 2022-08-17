@@ -25,13 +25,20 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the delegation module's genesis state.
 type GenesisState struct {
-	Params                     Params                   `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
-	DelegatorList              []Delegator              `protobuf:"bytes,2,rep,name=delegator_list,json=delegatorList,proto3" json:"delegator_list"`
-	DelegationEntryList        []DelegationEntry        `protobuf:"bytes,3,rep,name=delegation_entry_list,json=delegationEntryList,proto3" json:"delegation_entry_list"`
-	DelegationDataList         []DelegationData         `protobuf:"bytes,4,rep,name=delegation_data_list,json=delegationDataList,proto3" json:"delegation_data_list"`
+	// Params ...
+	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	// delegator_list ...
+	DelegatorList []Delegator `protobuf:"bytes,2,rep,name=delegator_list,json=delegatorList,proto3" json:"delegator_list"`
+	// delegation_entry_list ...
+	DelegationEntryList []DelegationEntry `protobuf:"bytes,3,rep,name=delegation_entry_list,json=delegationEntryList,proto3" json:"delegation_entry_list"`
+	// delegation_data_list ...
+	DelegationDataList []DelegationData `protobuf:"bytes,4,rep,name=delegation_data_list,json=delegationDataList,proto3" json:"delegation_data_list"`
+	// undelegation_queue_entry_list ...
 	UndelegationQueueEntryList []UndelegationQueueEntry `protobuf:"bytes,5,rep,name=undelegation_queue_entry_list,json=undelegationQueueEntryList,proto3" json:"undelegation_queue_entry_list"`
-	QueueStateUndelegation     QueueState               `protobuf:"bytes,6,opt,name=queue_state_undelegation,json=queueStateUndelegation,proto3" json:"queue_state_undelegation"`
-	RedelegationCooldownList   []RedelegationCooldown   `protobuf:"bytes,7,rep,name=redelegation_cooldown_list,json=redelegationCooldownList,proto3" json:"redelegation_cooldown_list"`
+	// queue_state_undelegation ...
+	QueueStateUndelegation QueueState `protobuf:"bytes,6,opt,name=queue_state_undelegation,json=queueStateUndelegation,proto3" json:"queue_state_undelegation"`
+	// redelegation_cooldown_list ...
+	RedelegationCooldownList []RedelegationCooldown `protobuf:"bytes,7,rep,name=redelegation_cooldown_list,json=redelegationCooldownList,proto3" json:"redelegation_cooldown_list"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
