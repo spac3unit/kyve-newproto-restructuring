@@ -18,9 +18,7 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 	// TODO check if staker exist?
 
 	// Performs logical delegation without transferring the amount
-	if err := k.performDelegation(ctx, msg.Staker, msg.Creator, msg.Amount); err != nil {
-		return nil, err
-	}
+	k.performDelegation(ctx, msg.Staker, msg.Creator, msg.Amount)
 
 	// Transfer tokens from sender to this module.
 	if transferErr := util.TransferFromAddressToModule(k.bankKeeper, ctx, msg.Creator, types.ModuleName, msg.Amount); transferErr != nil {

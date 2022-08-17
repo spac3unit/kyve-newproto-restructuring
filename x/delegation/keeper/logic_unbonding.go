@@ -50,11 +50,8 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 			removed = true
 		} else if undelegationEntry.CreationTime+k.UnbondingDelegationTime(ctx) < uint64(ctx.BlockTime().Unix()) {
 
-			availableAmount := k.GetDelegationAmountOfDelegator(ctx, undelegationEntry.Staker, undelegationEntry.Delegator)
-			unbondingAmount := util.MinUint64(availableAmount, undelegationEntry.Amount)
-
-			// TODO error handling?
-			k.performUndelegation(ctx, undelegationEntry.Staker, undelegationEntry.Delegator, unbondingAmount)
+			// Perform undelegation and save undelegated amount to then transfer back to the user
+			undelegatedAmount := k.performUndelegation(ctx, undelegationEntry.Staker, undelegationEntry.Delegator, undelegationEntry.Amount)
 
 			// Transfer the money
 			if err := util.TransferFromModuleToAddress(
@@ -62,7 +59,7 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 				ctx,
 				types.ModuleName,
 				undelegationEntry.Delegator,
-				unbondingAmount,
+				undelegatedAmount,
 			); err != nil {
 				return
 			}

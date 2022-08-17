@@ -4,19 +4,18 @@ import (
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/delegation/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // Delegate performs a safe delegation with all necessary checks
 // Warning: does not transfer the amount (only the rewards)
-func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
+func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) {
 
 	if k.DoesDelegatorExist(ctx, stakerAddress, delegatorAddress) {
 		// If the sender is already a delegator, first perform an undelegation, before then delegating.
 		reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
 		err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
 		if err != nil {
-			return err
+			util.PanicHalt(k.upgradeKeeper, ctx, "no money left in module")
 		}
 
 		// Perform redelegation
@@ -28,39 +27,35 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 	}
 
 	// TODO where to update pool delegation? Should this even be an aggregation variable
-
-	return nil
 }
 
-// Undelegate performs a safe undelegation
-// Warning: It does not create an unbonding entry; it does not transfer the delegation back (only the rewards)
-func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) error {
+// performUndelegation performs immediately an undelegation of the given amount from the given staker
+// If the amount is greater than the available amount, only the available amount will be undelegated.
+// This method also transfers the rewards back to the given user.
+func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) (actualAmount uint64) {
 
-	// Check if the sender is a delegator
-	if !k.DoesDelegatorExist(ctx, stakerAddress, delegatorAddress) {
-		return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
-	}
-
-	// Check if the sender is trying to undelegate more than they have delegated.
-	if amount > k.GetDelegationAmountOfDelegator(ctx, stakerAddress, delegatorAddress) {
-		return sdkErrors.Wrapf(sdkErrors.ErrInsufficientFunds, types.ErrNotEnoughDelegation.Error(), amount)
-	}
+	//availableAmount := k.GetDelegationAmountOfDelegator(ctx, stakerAddress, delegatorAddress)
+	//unbondingAmount := util.MinUint64(availableAmount, amount)
 
 	// Withdraw all rewards for the sender.
 	reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
 
 	// Transfer tokens from this module to sender.
-	err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward)
-	if err != nil {
-		return err
+	if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward); err != nil {
+		util.PanicHalt(k.upgradeKeeper, ctx, "no money left in module")
 	}
 
 	// Perform an internal re-delegation.
 	undelegatedAmount := k.f1RemoveDelegator(ctx, stakerAddress, delegatorAddress)
-	redelegation := undelegatedAmount - amount
-	k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, redelegation)
+
+	redelegation := uint64(0)
+	if undelegatedAmount > amount {
+		// if user didnt undelegate everything ...
+		redelegation = undelegatedAmount - amount
+		// ... create a new delegator entry with the remaining amount
+		k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, redelegation)
+	}
 
 	// TODO where to update pool delegation? Should this even be an aggregation variable
-
-	return nil
+	return undelegatedAmount - redelegation
 }

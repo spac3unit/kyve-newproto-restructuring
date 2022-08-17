@@ -210,4 +210,6 @@ var _ = Describe("Undelegation", Ordered, func() {
 
 	// TODO test undelegate with multiple slashes
 
+	// TODO test rewards retrieval on undelegation
+
 })
