@@ -4,7 +4,6 @@ package KYVENetwork.chain.query;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "kyve/query/v1beta1/params.proto";
 import "kyve/query/v1beta1/responses.proto";
 import "kyve/pool/v1beta1/pool.proto";
 import "kyve/stakers/v1beta1/stakers.proto";

@@ -32,7 +32,7 @@ type (
 		poolKeeper       poolkeeper.Keeper
 		stakerKeeper     stakerskeeper.Keeper
 		delegationKeeper delegationkeeper.Keeper
-		bundleKeeper bundlekeeper.Keeper
+		bundleKeeper     bundlekeeper.Keeper
 	}
 )
 
@@ -50,10 +50,6 @@ func NewKeeper(
 	delegationKeeper delegationkeeper.Keeper,
 	bundleKeeper bundlekeeper.Keeper,
 ) *Keeper {
-	// set KeyTable if it has not already been set
-	if !ps.HasKeyTable() {
-		ps = ps.WithKeyTable(types.ParamKeyTable())
-	}
 
 	return &Keeper{
 
@@ -68,7 +64,7 @@ func NewKeeper(
 		poolKeeper:       poolKeeper,
 		stakerKeeper:     stakerKeeper,
 		delegationKeeper: delegationKeeper,
-		bundleKeeper: bundleKeeper,
+		bundleKeeper:     bundleKeeper,
 	}
 }
 
