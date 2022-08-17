@@ -1,0 +1,34 @@
+syntax = "proto3";
+package KYVENetwork.chain.query;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "kyve/query/v1beta1/params.proto";
+import "kyve/query/v1beta1/responses.proto";
+import "kyve/pool/v1beta1/pool.proto";
+import "kyve/stakers/v1beta1/stakers.proto";
+import "kyve/bundles/v1beta1/bundles.proto";
+
+option go_package = "github.com/KYVENetwork/chain/x/query/types";
+
+// Query defines the gRPC querier service.
+service DelegationQuery {
+
+  // CanVote checks if voter on pool can still vote for the given bundle
+  rpc HelloWorld(HelloWorldRequest) returns (HelloWorldResponse) {
+    option (google.api.http).get = "/kyve/delegation/v1beta1/hello/{name}";
+  }
+}
+
+// HelloWorldRequest ...
+message HelloWorldRequest {
+  // name ...
+  string name = 1;
+}
+
+// HelloWorldResponse ...
+message HelloWorldResponse {
+  // reason ...
+  string reason = 1;
+}
