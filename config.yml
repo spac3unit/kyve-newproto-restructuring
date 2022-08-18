@@ -151,6 +151,9 @@ genesis:
           status: "POOL_STATUS_NOT_ENOUGH_VALIDATORS"
         }
       ]
+    delegation:
+      params:
+        unbonding_delegation_time: 10
 validator:
   name: alice
   staked: "1000000000000000tkyve"

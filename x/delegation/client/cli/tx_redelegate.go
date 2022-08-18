@@ -11,8 +11,8 @@ import (
 
 func CmdRedelegate() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delegate [from_staker] [to_staker] [amount]",
-		Short: "Broadcast message delegate-pool",
+		Use:   "redelegate [from_staker] [to_staker] [amount]",
+		Short: "Redelegate the given amount from one staker to another",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

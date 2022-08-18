@@ -32,6 +32,8 @@ func GetByteKey(keys ...interface{}) []byte {
 			builder.AInt(v)
 		case string:
 			builder.AString(v)
+		case []byte:
+			builder.Key = append(builder.Key, v...)
 		}
 	}
 	return builder.Key

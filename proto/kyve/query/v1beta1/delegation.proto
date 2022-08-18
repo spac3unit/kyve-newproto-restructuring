@@ -122,4 +122,5 @@ message DelegationForStakerResponse {
   uint64 delegator_count = 5;
 
   // TODO add pools ?
+  // TODO add pending commission changes
 }

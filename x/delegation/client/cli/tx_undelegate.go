@@ -12,7 +12,7 @@ import (
 func CmdUndelegate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "undelegate [staker] [amount]",
-		Short: "Broadcast message undelegate",
+		Short: "Start undelegating the given amount from the staker",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

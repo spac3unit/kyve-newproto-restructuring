@@ -6,3 +6,4 @@ import (
 
 var _ types.QueryServer = Keeper{}
 var _ types.QueryDelegationServer = Keeper{}
+var _ types.QueryAccountServer = Keeper{}

@@ -72,6 +72,7 @@ func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, rtr *mux.Rout
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 	types.RegisterQueryDelegationHandlerClient(context.Background(), mux, types.NewQueryDelegationClient(clientCtx))
+	types.RegisterQueryAccountHandlerClient(context.Background(), mux, types.NewQueryAccountClient(clientCtx))
 }
 
 // GetTxCmd returns the capability module's root tx command.
@@ -134,6 +135,7 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
 	types.RegisterQueryDelegationServer(cfg.QueryServer(), am.keeper)
+	types.RegisterQueryAccountServer(cfg.QueryServer(), am.keeper)
 }
 
 // RegisterInvariants registers the capability module's invariants.

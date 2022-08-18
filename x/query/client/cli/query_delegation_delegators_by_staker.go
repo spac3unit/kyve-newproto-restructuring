@@ -1,10 +1,9 @@
 package cli
 
 import (
-	"github.com/spf13/cast"
 	"strconv"
 
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -14,26 +13,20 @@ var _ = strconv.Itoa(0)
 
 func CmdDelegatorsByPoolAndStaker() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "delegators-by-pool-and-staker [pool-id] [staker]",
-		Short: "Query account_stakers_delegation_list",
-		Args:  cobra.ExactArgs(2),
+		Use:   "delegators-by-staker [staker]",
+		Short: "Query all delegators for given staker",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			reqPoolId, err := cast.ToUint64E(args[0])
-			if err != nil {
-				return err
-			}
-			reqStaker := args[1]
+			reqStaker := args[0]
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := types.NewQueryDelegationClient(clientCtx)
 
-			params := &types.QueryDelegatorsByPoolAndStakerRequest{
-
-				PoolId: reqPoolId,
+			params := &types.QueryDelegatorsByStakerRequest{
 				Staker: reqStaker,
 			}
 
@@ -43,7 +36,7 @@ func CmdDelegatorsByPoolAndStaker() *cobra.Command {
 			}
 			params.Pagination = pageReq
 
-			res, err := queryClient.DelegatorsByPoolAndStaker(cmd.Context(), params)
+			res, err := queryClient.DelegatorsByStaker(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

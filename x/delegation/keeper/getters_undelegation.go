@@ -1,6 +1,8 @@
 package keeper
 
 import (
+	"encoding/binary"
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -62,6 +64,22 @@ func (k Keeper) GetAllUnbondingDelegationQueueEntries(ctx sdk.Context) (list []t
 		var val types.UndelegationQueueEntry
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
+	}
+
+	return
+}
+
+// GetAllUnbondingDelegationQueueEntriesOfDelegator returns all delegator unbondings of the given address
+func (k Keeper) GetAllUnbondingDelegationQueueEntriesOfDelegator(ctx sdk.Context, address string) (list []types.UndelegationQueueEntry) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), util.GetByteKey(types.UndelegationQueueKeyPrefixIndex2, address))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		index := binary.BigEndian.Uint64(iterator.Key()[0:8])
+
+		entry, _ := k.GetUndelegationQueueEntry(ctx, index)
+		list = append(list, entry)
 	}
 
 	return

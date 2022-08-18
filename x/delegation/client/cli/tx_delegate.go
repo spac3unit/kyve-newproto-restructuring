@@ -12,7 +12,7 @@ import (
 func CmdDelegate() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delegate [staker] [amount]",
-		Short: "Broadcast message delegate",
+		Short: "Delegate the given amount (in nKYVE) to the given staker (address)",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 

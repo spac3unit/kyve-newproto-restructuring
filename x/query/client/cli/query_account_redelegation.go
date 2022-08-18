@@ -3,7 +3,7 @@ package cli
 import (
 	"strconv"
 
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
@@ -11,10 +11,10 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdAccountFundedList() *cobra.Command {
+func CmdAccountRedelegation() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "account-funded-list [address]",
-		Short: "Query account-funded-list",
+		Use:   "account-redelegation [address]",
+		Short: "Query account-redelegation cooldown entries",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]
@@ -24,13 +24,13 @@ func CmdAccountFundedList() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := types.NewQueryAccountClient(clientCtx)
 
-			params := &types.QueryAccountFundedListRequest{
+			params := &types.QueryAccountRedelegationRequest{
 				Address: reqAddress,
 			}
 
-			res, err := queryClient.AccountFundedList(cmd.Context(), params)
+			res, err := queryClient.AccountRedelegation(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
