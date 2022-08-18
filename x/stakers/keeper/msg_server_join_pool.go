@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"github.com/KYVENetwork/chain/util"
 
 	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -45,10 +46,15 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 
 	k.AddValaccountToPool(ctx, msg.PoolId, msg.Creator, msg.Valaddress)
 
+	if err := util.TransferFromAddressToAddress(k.bankKeeper, ctx, msg.Creator, msg.Valaddress, msg.Amount); err != nil {
+		return nil, err
+	}
+
 	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventJoinPool{
 		PoolId:     msg.PoolId,
 		Staker:     msg.Creator,
 		Valaddress: msg.Valaddress,
+		Amount:     msg.Amount,
 	}); errEmit != nil {
 		return nil, errEmit
 	}

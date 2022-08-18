@@ -11,12 +11,19 @@ import (
 
 func CmdJoinPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "join-pool [pool_id] [valaddress]",
+		Use:   "join-pool [pool_id] [valaddress] [amount]",
 		Short: "Broadcast message join-pool",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
 			argPoolId, err := cast.ToUint64E(args[0])
+			if err != nil {
+				return err
+			}
+
+			argValaddress := args[1]
+
+			argAmount, err := cast.ToUint64E(args[2])
 			if err != nil {
 				return err
 			}
@@ -27,9 +34,10 @@ func CmdJoinPool() *cobra.Command {
 			}
 
 			msg := types.MsgJoinPool{
-				Creator: clientCtx.GetFromAddress().String(),
-				PoolId:  argPoolId,
-				Valaddress: args[1],
+				Creator:    clientCtx.GetFromAddress().String(),
+				PoolId:     argPoolId,
+				Valaddress: argValaddress,
+				Amount:     argAmount,
 			}
 
 			if err := msg.ValidateBasic(); err != nil {

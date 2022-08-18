@@ -5,6 +5,7 @@ import (
 )
 
 type BankKeeper interface {
+	SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
@@ -16,6 +17,23 @@ type DistrKeeper interface {
 
 type AccountKeeper interface {
 	GetModuleAddress(moduleName string) sdk.AccAddress
+}
+
+// TransferFromAddressToAddress sends tokens from the given address to a specified address.
+func TransferFromAddressToAddress(bankKeeper BankKeeper, ctx sdk.Context, fromAddress string, toAddress string, amount uint64) error {
+	sender, errSenderAddress := sdk.AccAddressFromBech32(fromAddress)
+	if errSenderAddress != nil {
+		return errSenderAddress
+	}
+
+	recipient, errRecipientAddress := sdk.AccAddressFromBech32(toAddress)
+	if errRecipientAddress != nil {
+		return errRecipientAddress
+	}
+
+	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
+	err := bankKeeper.SendCoins(ctx, sender, recipient, coins)
+	return err
 }
 
 // TransferToAddress sends tokens from the given module to a specified address.
