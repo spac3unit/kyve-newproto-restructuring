@@ -6,7 +6,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// GetQueueState ...
+// GetQueueState returns a queue state object based on the identifier as
+// there are multiple queues present in the stakers module
 func (k Keeper) GetQueueState(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER) (state types.QueueState) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	b := store.Get(identifier)
@@ -19,7 +20,8 @@ func (k Keeper) GetQueueState(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER
 	return
 }
 
-// SetQueueState ...
+// SetQueueState sets a endBlocker queue state based on the identifier.
+// The identifier is used to distinguish between different queues.
 func (k Keeper) SetQueueState(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER, state types.QueueState) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
 	b := k.cdc.MustMarshal(&state)

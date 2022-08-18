@@ -350,6 +350,7 @@ func NewApp(
 		app.BankKeeper,
 		app.DistrKeeper,
 		app.PoolKeeper,
+		app.UpgradeKeeper,
 	)
 
 	app.DelegationKeeper = *delegationmodulekeeper.NewKeeper(

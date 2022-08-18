@@ -10,7 +10,8 @@ import (
 // === QUEUE ENTRIES ===
 // #####################
 
-// SetUnbondingStakeEntry ...
+// SetUnbondingStakeEntry adds a new queue entry to the store.
+// Also inserts a second index for faster lookup.
 func (k Keeper) SetUnbondingStakeEntry(ctx sdk.Context, unbondingStakeEntry types.UnbondingStakeEntry) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.UnbondingStakingEntryKeyPrefix)
 	b := k.cdc.MustMarshal(&unbondingStakeEntry)

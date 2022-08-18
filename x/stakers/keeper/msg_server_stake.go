@@ -9,17 +9,19 @@ import (
 )
 
 // Stake handles the logic of an SDK message that allows protocol nodes to stake
+// If no staker object exists, a new staker will be created.
+// Otherwise, the amount will be added to the existing staker
+// Every user can create a staker object with some stake. However,
+// only if stake + delegation is large enough to join a pool the staker
+// is able to participate in the protocol
 func (k msgServer) Stake(goCtx context.Context, msg *types.MsgStake) (*types.MsgStakeResponse, error) {
-	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// Check if the sender is already a staker.
-	stakerExists := k.DoesStakerExist(ctx, msg.Creator)
-
-	if stakerExists {
+	if k.DoesStakerExist(ctx, msg.Creator) {
+		// If staker already exists, add amount to existing staker
 		k.AddAmountToStaker(ctx, msg.Creator, msg.Amount)
 	} else {
-		// Append new staker
+		// Create and append new staker to store
 		k.AppendStaker(ctx, types.Staker{
 			Address:    msg.Creator,
 			Amount:     msg.Amount,

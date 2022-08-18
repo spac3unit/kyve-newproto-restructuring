@@ -5,9 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// TODO maybe generalise in global module with generics ?
-
-// insertQueueEntry inserts an entry into the queue identified by `identifier`
+// getNextQueueSlot inserts an entry into the queue identified by `identifier`
 // It automatically updates the queue state and uses the block time.
 func (k Keeper) getNextQueueSlot(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER) (index uint64) {
 
@@ -23,7 +21,8 @@ func (k Keeper) getNextQueueSlot(ctx sdk.Context, identifier types.QUEUE_IDENTIF
 	return queueState.HighIndex
 }
 
-// processQueue ...
+// processQueue passes the tail of the queue to the `processEntry(...)`-function
+// The processing continues as long as the function returns true.
 func (k Keeper) processQueue(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER, processEntry func(index uint64) bool) {
 	// Get Queue information
 	queueState := k.GetQueueState(ctx, identifier)

@@ -7,6 +7,8 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// StartUnbondingStaker creates an unbonding entry with the given amount.
+// The entry is inserted into the queue and executed after the UnbondingTime is over.
 func (k Keeper) StartUnbondingStaker(ctx sdk.Context, address string, amount uint64) (error error) {
 
 	staker, stakerFound := k.GetStaker(ctx, address)
@@ -36,7 +38,8 @@ func (k Keeper) StartUnbondingStaker(ctx sdk.Context, address string, amount uin
 
 	k.SetUnbondingStakeEntry(ctx, unbondingQueueEntry)
 
-	// TODO move to getters
+	// WARN: Not within getters file.
+	// TODO add info to specs folder
 	staker.UnbondingAmount += amount
 	k.setStaker(ctx, staker)
 
@@ -45,8 +48,6 @@ func (k Keeper) StartUnbondingStaker(ctx sdk.Context, address string, amount uin
 
 // ProcessStakerUnbondingQueue is called at the end of every block and checks the
 // tail of the UnbondingStakingQueue for Undelegations that can be performed
-// This O(t) with t being the amount of undelegation-transactions which has been performed within
-// a timeframe of one block
 func (k Keeper) ProcessStakerUnbondingQueue(ctx sdk.Context) {
 
 	k.processQueue(ctx, types.QUEUE_IDENTIFIER_UNSTAKING, func(index uint64) bool {
@@ -65,8 +66,10 @@ func (k Keeper) ProcessStakerUnbondingQueue(ctx sdk.Context) {
 			if foundStaker {
 
 				// Check if stake decreased during unbonding time
-				var unstakeAmount uint64 = queueEntry.Amount
+				var unstakeAmount = queueEntry.Amount
 
+				// In case the staker got slashed during unbonding
+				// only unbond the available amount
 				if unstakeAmount > staker.Amount {
 					unstakeAmount = staker.Amount
 				}
@@ -75,19 +78,19 @@ func (k Keeper) ProcessStakerUnbondingQueue(ctx sdk.Context) {
 
 				// Transfer tokens from sender to this module.
 				if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, staker.Address, unstakeAmount); err != nil {
-					// TODO: handle error?
+					util.PanicHalt(k.upgradeKeeper, ctx, "stakers module out of funds")
 				}
 
-				if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventUnstakePool{
+				ctx.EventManager().EmitTypedEvent(&types.EventUnstakePool{
 					Address: staker.Address,
 					Amount:  unstakeAmount,
-				}); errEmit != nil {
-					// TODO: handle error?
-				}
+				})
 			}
 
+			// continue with next entry
 			return true
 		}
+		// stop processing queue
 		return false
 	})
 }

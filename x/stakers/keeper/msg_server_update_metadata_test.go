@@ -42,7 +42,7 @@ var _ = Describe("Update Metadata", Ordered, func() {
 			Creator: i.ALICE,
 			Moniker: "KYVE Node Runner",
 			Website: "https://kyve.network",
-			Logo: "https://arweave.net/Tewyv2P5VEG8EJ6AUQORdqNTectY9hlOrWPK8wwo-aU",
+			Logo:    "https://arweave.net/Tewyv2P5VEG8EJ6AUQORdqNTectY9hlOrWPK8wwo-aU",
 		})
 
 		// ASSERT
@@ -59,7 +59,7 @@ var _ = Describe("Update Metadata", Ordered, func() {
 			Creator: i.ALICE,
 			Moniker: "",
 			Website: "",
-			Logo: "",
+			Logo:    "",
 		})
 
 		// ASSERT

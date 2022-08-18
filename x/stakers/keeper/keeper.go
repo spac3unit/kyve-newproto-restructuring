@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 
 	poolkeeper "github.com/KYVENetwork/chain/x/pool/keeper"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
@@ -27,6 +28,7 @@ type (
 		bankKeeper    bankkeeper.Keeper
 		distrkeeper   distrkeeper.Keeper
 		poolKeeper    poolkeeper.Keeper
+		upgradeKeeper upgradekeeper.Keeper
 	}
 )
 
@@ -40,6 +42,7 @@ func NewKeeper(
 	bankKeeper bankkeeper.Keeper,
 	distrkeeper distrkeeper.Keeper,
 	poolKeeper poolkeeper.Keeper,
+	upgradeKeeper upgradekeeper.Keeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -57,6 +60,7 @@ func NewKeeper(
 		bankKeeper:    bankKeeper,
 		distrkeeper:   distrkeeper,
 		poolKeeper:    poolKeeper,
+		upgradeKeeper: upgradeKeeper,
 	}
 }
 

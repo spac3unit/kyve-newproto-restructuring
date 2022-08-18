@@ -48,25 +48,25 @@ func (k Keeper) MaxPoints(ctx sdk.Context) (res uint64) {
 	return
 }
 
-// UnbondingStakingTime ...
+// UnbondingStakingTime returns the UnbondingStakingTime param
 func (k Keeper) UnbondingStakingTime(ctx sdk.Context) (res uint64) {
 	k.paramstore.Get(ctx, types.KeyUnbondingStakingTime, &res)
 	return
 }
 
-// CommissionChangeTime ...
+// CommissionChangeTime returns the CommissionChangeTime param
 func (k Keeper) CommissionChangeTime(ctx sdk.Context) (res uint64) {
 	k.paramstore.Get(ctx, types.KeyCommissionChangeTime, &res)
 	return
 }
 
-// LeavePoolTime ...
+// LeavePoolTime returns the LeavePoolTime param
 func (k Keeper) LeavePoolTime(ctx sdk.Context) (res uint64) {
 	k.paramstore.Get(ctx, types.KeyLeavePoolTime, &res)
 	return
 }
 
-// ParamStore ...
+// ParamStore returns the entire param store
 func (k Keeper) ParamStore() (paramStore paramtypes.Subspace) {
 	return k.paramstore
 }
