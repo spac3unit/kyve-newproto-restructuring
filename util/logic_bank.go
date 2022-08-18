@@ -2,13 +2,24 @@ package util
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	distrKeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
 )
 
+type BankKeeper interface {
+	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error
+	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
+	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
+}
+
+type DistrKeeper interface {
+	FundCommunityPool(ctx sdk.Context, amount sdk.Coins, sender sdk.AccAddress) error
+}
+
+type AccountKeeper interface {
+	GetModuleAddress(moduleName string) sdk.AccAddress
+}
+
 // TransferToAddress sends tokens from the given module to a specified address.
-func TransferFromModuleToAddress(bankKeeper bankkeeper.Keeper, ctx sdk.Context, module string, address string, amount uint64) error {
+func TransferFromModuleToAddress(bankKeeper BankKeeper, ctx sdk.Context, module string, address string, amount uint64) error {
 	recipient, errAddress := sdk.AccAddressFromBech32(address)
 	if errAddress != nil {
 		return errAddress
@@ -20,7 +31,7 @@ func TransferFromModuleToAddress(bankKeeper bankkeeper.Keeper, ctx sdk.Context, 
 }
 
 // TransferToRegistry sends tokens from a specified address to the given module.
-func TransferFromAddressToModule(bankKeeper bankkeeper.Keeper, ctx sdk.Context, address string, module string, amount uint64) error {
+func TransferFromAddressToModule(bankKeeper BankKeeper, ctx sdk.Context, address string, module string, amount uint64) error {
 	sender, errAddress := sdk.AccAddressFromBech32(address)
 	if errAddress != nil {
 		return errAddress
@@ -32,14 +43,14 @@ func TransferFromAddressToModule(bankKeeper bankkeeper.Keeper, ctx sdk.Context, 
 }
 
 // TransferInterModule ...
-func TransferFromModuleToModule(bankKeeper bankkeeper.Keeper, ctx sdk.Context, fromModule string, toModule string, amount uint64) error {
+func TransferFromModuleToModule(bankKeeper BankKeeper, ctx sdk.Context, fromModule string, toModule string, amount uint64) error {
 	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
 	err := bankKeeper.SendCoinsFromModuleToModule(ctx, fromModule, toModule, coins)
 	return err
 }
 
 // transferToTreasury sends tokens from this module to the treasury (community spend pool).
-func TransferFromAddressToTreasury(distrKeeper distrKeeper.Keeper, ctx sdk.Context, address string, amount uint64) error {
+func TransferFromAddressToTreasury(distrKeeper DistrKeeper, ctx sdk.Context, address string, amount uint64) error {
 	sender, errAddress := sdk.AccAddressFromBech32(address)
 	if errAddress != nil {
 		return errAddress
@@ -54,7 +65,7 @@ func TransferFromAddressToTreasury(distrKeeper distrKeeper.Keeper, ctx sdk.Conte
 }
 
 // transferToTreasury sends tokens from this module to the treasury (community spend pool).
-func TransferFromModuleToTreasury(accountKeeper authkeeper.AccountKeeper, distrKeeper distrKeeper.Keeper, ctx sdk.Context, module string, amount uint64) error {
+func TransferFromModuleToTreasury(accountKeeper AccountKeeper, distrKeeper DistrKeeper, ctx sdk.Context, module string, amount uint64) error {
 	sender := accountKeeper.GetModuleAddress(module)
 	coins := sdk.NewCoins(sdk.NewInt64Coin("tkyve", int64(amount)))
 

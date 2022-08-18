@@ -2,10 +2,13 @@ package util
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradeTypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 	"strconv"
 )
+
+type UpgradeKeeper interface {
+	ScheduleUpgrade(ctx sdk.Context, plan upgradeTypes.Plan) error
+}
 
 // PanicHalt performs an emergency upgrade which immediately halts the chain
 // The Team has to come up with a solution and develop a patch to handle
@@ -14,7 +17,7 @@ import (
 // This function is there to do assertions and in case of a violation
 // it will shut down the chain gracefully, to make it easier to recover from
 // a fatal error
-func PanicHalt(upgradeKeeper upgradekeeper.Keeper, ctx sdk.Context, message string) {
+func PanicHalt(upgradeKeeper UpgradeKeeper, ctx sdk.Context, message string) {
 
 	// Choose next block for the upgrade
 	upgradeBlockHeight := ctx.BlockHeader().Height + 1
