@@ -32,33 +32,6 @@ func NewRegistryProposalHandler(k keeper.Keeper) govtypes.Handler {
 	}
 }
 
-func handleCreatePoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.CreatePoolProposal) error {
-	pool := types.Pool{
-		Creator:        govtypes.ModuleName,
-		Name:           p.Name,
-		Runtime:        p.Runtime,
-		Logo:           p.Logo,
-		Config:         p.Config,
-		UploadInterval: p.UploadInterval,
-		OperatingCost:  p.OperatingCost,
-		BundleProposal: &types.BundleProposal{},
-		MaxBundleSize:  p.MaxBundleSize,
-		Protocol: &types.Protocol{
-			Version:     p.Version,
-			LastUpgrade: uint64(ctx.BlockTime().Unix()),
-			Binaries:    p.Binaries,
-		},
-		UpgradePlan: &types.UpgradePlan{},
-		StartKey:    p.StartKey,
-		Status:      types.POOL_STATUS_NOT_ENOUGH_VALIDATORS,
-		MinStake:    p.MinStake,
-	}
-
-	k.AppendPool(ctx, pool)
-
-	return nil
-}
-
 func handleUpdatePoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.UpdatePoolProposal) error {
 	pool, found := k.GetPool(ctx, p.Id)
 	if !found {

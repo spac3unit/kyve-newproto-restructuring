@@ -1,6 +1,8 @@
 syntax = "proto3";
 package kyve.pool.v1beta1;
 
+import "kyve/pool/v1beta1/gov.proto";
+
 option go_package = "github.com/KYVENetwork/chain/x/pool/types";
 
 // Msg defines the Msg service.
@@ -9,6 +11,14 @@ service Msg {
   rpc FundPool(MsgFundPool) returns (MsgFundPoolResponse);
   // DefundPool ...
   rpc DefundPool(MsgDefundPool) returns (MsgDefundPoolResponse);
+
+  // GOV
+
+  // CreatePool ...
+  rpc CreatePool(GovMsgCreatePool) returns (GovMsgCreatePoolResponse);
+  // UpdatePool ...
+  rpc UpdatePool(GovMsgUpdatePool) returns (GovMsgUpdatePoolResponse);
+
 }
 
 // MsgFundPool defines a SDK message for funding a pool.

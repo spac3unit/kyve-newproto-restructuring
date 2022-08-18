@@ -3,13 +3,10 @@ package kyve.pool.v1beta1;
 
 option go_package = "github.com/KYVENetwork/chain/x/pool/types";
 
-// CreatePoolProposal defines a SDK message for creating a pool.
-message CreatePoolProposal {
+// GovMsgCreatePool defines a SDK message for creating a pool.
+message GovMsgCreatePool {
   // title ...
-  string title = 1;
-  // description ...
-  string description = 2;
-
+  string creator = 1;
   // name ...
   string name = 3;
   // runtime ...
@@ -33,3 +30,36 @@ message CreatePoolProposal {
   // binaries ...
   string binaries = 13;
 }
+
+message GovMsgCreatePoolResponse {}
+
+// GovMsgUpdatePool is a gov Content type for updating a pool.
+message GovMsgUpdatePool {
+  // creator ...
+  string creator = 1;
+  // id ...
+  uint64 id = 2;
+  // payload
+  string payload = 3;
+
+//  // name ...
+//  string name = 4;
+//  // runtime ...
+//  string runtime = 5;
+//  // logo ...
+//  string logo = 6;
+//  // versions ...
+//  string versions = 7 [deprecated = true];
+//  // config ...
+//  string config = 8;
+//  // upload_interval ...
+//  uint64 upload_interval = 9;
+//  // operating_cost ...
+//  uint64 operating_cost = 10;
+//  // max_bundle_size ...
+//  uint64 max_bundle_size = 11;
+//  // min_stake ...
+//  uint64 min_stake = 12;
+}
+
+message GovMsgUpdatePoolResponse {}
