@@ -19,6 +19,19 @@ service Msg {
   // UpdatePool ...
   rpc UpdatePool(GovMsgUpdatePool) returns (GovMsgUpdatePoolResponse);
 
+  // PausePool ...
+  rpc PausePool(GovMsgPausePool) returns (GovMsgPausePoolResponse);
+  // UpdatePool ...
+  rpc UnpausePool(GovMsgUnpausePool) returns (GovMsgUnpausePoolResponse);
+
+  // UpdatePool ...
+  rpc PoolUpgrade(GovMsgPoolUpgrade) returns (GovMsgPoolUpgradeResponse);
+  // UpdatePool ...
+  rpc CancelPoolUpgrade(GovMsgCancelPoolUpgrade) returns (GovMsgCancelPoolUpgradeResponse);
+
+  // ResetPool ... TODO should this be part of the bundles module?
+//  rpc ResetPool(GovMsgResetPool) returns (GovMsgResetPoolResponse);
+
 }
 
 // MsgFundPool defines a SDK message for funding a pool.

@@ -10,7 +10,8 @@ var (
 
 // funding errors
 var (
-	ErrFundsTooLow            = sdkerrors.Register(ModuleName, 1101, "minimum funding amount of %vkyve not reached")
-	ErrDefundTooHigh          = sdkerrors.Register(ModuleName, 1102, "maximum defunding amount of %vkyve surpassed")
-	ErrInvalidJson            = sdkerrors.Register(ModuleName, 1103, "invalid json object: %v")
+	ErrFundsTooLow   = sdkerrors.Register(ModuleName, 1101, "minimum funding amount of %vkyve not reached")
+	ErrDefundTooHigh = sdkerrors.Register(ModuleName, 1102, "maximum defunding amount of %vkyve surpassed")
+	ErrInvalidJson   = sdkerrors.Register(ModuleName, 1103, "invalid json object: %v")
+	ErrInvalidArgs   = sdkerrors.Register(ModuleName, 1107, "invalid args")
 )

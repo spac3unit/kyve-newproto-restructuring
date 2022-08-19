@@ -32,6 +32,18 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		case *types.GovMsgUpdatePool:
 			res, err := msgServer.UpdatePool(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.GovMsgPausePool:
+			res, err := msgServer.PausePool(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.GovMsgUnpausePool:
+			res, err := msgServer.UnpausePool(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.GovMsgPoolUpgrade:
+			res, err := msgServer.PoolUpgrade(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
+		case *types.GovMsgCancelPoolUpgrade:
+			res, err := msgServer.CancelPoolUpgrade(sdk.WrapSDKContext(ctx), msg)
+			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:
 			errMsg := fmt.Sprintf("unrecognized %s message type: %T", types.ModuleName, msg)

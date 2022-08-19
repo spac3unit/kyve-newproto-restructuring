@@ -128,3 +128,114 @@ func (k msgServer) UpdatePool(goCtx context.Context, p *types.GovMsgUpdatePool) 
 
 	return &types.GovMsgUpdatePoolResponse{}, nil
 }
+
+func (k msgServer) PausePool(goCtx context.Context, p *types.GovMsgPausePool) (*types.GovMsgPausePoolResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Attempt to fetch the pool, throw an error if not found.
+	pool, found := k.GetPool(ctx, p.Id)
+	if !found {
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
+	}
+
+	// Throw an error if the pool is already paused.
+	if pool.Paused {
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, "Pool is already paused.")
+	}
+
+	// Pause the pool and return.
+	pool.Paused = true
+	k.SetPool(ctx, pool)
+
+	return &types.GovMsgPausePoolResponse{}, nil
+}
+
+func (k msgServer) UnpausePool(goCtx context.Context, p *types.GovMsgUnpausePool) (*types.GovMsgUnpausePoolResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Attempt to fetch the pool, throw an error if not found.
+	pool, found := k.GetPool(ctx, p.Id)
+	if !found {
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
+	}
+
+	// Throw an error if the pool is already unpaused.
+	if !pool.Paused {
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, "Pool is already unpaused.")
+	}
+
+	// Unpause the pool and return.
+	pool.Paused = false
+	k.SetPool(ctx, pool)
+
+	return &types.GovMsgUnpausePoolResponse{}, nil
+}
+
+func (k msgServer) PoolUpgrade(goCtx context.Context, p *types.GovMsgPoolUpgrade) (*types.GovMsgPoolUpgradeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Check if upgrade version and binaries are not empty
+	if p.Version == "" || p.Binaries == "" {
+		return nil, types.ErrInvalidArgs
+	}
+
+	var scheduledAt uint64
+
+	// If upgrade time was already surpassed we upgrade immediately
+	if p.ScheduledAt < uint64(ctx.BlockTime().Unix()) {
+		scheduledAt = uint64(ctx.BlockTime().Unix())
+	} else {
+		scheduledAt = p.ScheduledAt
+	}
+
+	// go through every pool and schedule the upgrade
+	for _, pool := range k.GetAllPools(ctx) {
+		// Skip if runtime does not match
+		if pool.Runtime != p.Runtime {
+			continue
+		}
+
+		// Skip if pool is currently upgrading
+		if pool.UpgradePlan.ScheduledAt > 0 {
+			continue
+		}
+
+		// register upgrade plan
+		pool.UpgradePlan = &types.UpgradePlan{
+			Version:     p.Version,
+			Binaries:    p.Binaries,
+			ScheduledAt: scheduledAt,
+			Duration:    p.Duration,
+		}
+
+		// Update the pool
+		k.SetPool(ctx, pool)
+	}
+
+	return &types.GovMsgPoolUpgradeResponse{}, nil
+}
+
+func (k msgServer) CancelPoolUpgrade(goCtx context.Context, p *types.GovMsgCancelPoolUpgrade) (*types.GovMsgCancelPoolUpgradeResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// go through every pool and cancel the upgrade
+	for _, pool := range k.GetAllPools(ctx) {
+		// Skip if runtime does not match
+		if pool.Runtime != p.Runtime {
+			continue
+		}
+
+		// Continue if there is no upgrade scheduled
+		if pool.UpgradePlan.ScheduledAt == 0 {
+			continue
+		}
+
+		// clear upgrade plan
+		pool.UpgradePlan = &types.UpgradePlan{}
+
+		// Update the pool
+		k.SetPool(ctx, pool)
+	}
+
+	return &types.GovMsgCancelPoolUpgradeResponse{}, nil
+}
