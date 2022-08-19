@@ -197,9 +197,7 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
 	}
 
-	_, stakerFound := k.stakerKeeper.GetStaker(ctx, bundleProposal.Uploader)
-
-	if !stakerFound {
+	if !k.stakerKeeper.DoesStakerExist(ctx, bundleProposal.Uploader) {
 		bundleReward.Treasury = bundleReward.Total
 
 		return

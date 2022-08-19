@@ -104,8 +104,9 @@ func (k msgServer) SubmitBundleProposal(
 		}
 
 		// send delegation rewards to delegators
-		// TODO: double check if delegation module receives assets
-		k.delegationKeeper.AddAmountToDelegationRewards(ctx, bundleProposal.Uploader, bundleReward.Delegation)
+		// TODO method returns true/false if there were delegators who received $KYVE
+		// TODO if method returns false, send the money to the staker instead.
+		k.delegationKeeper.PayoutRewards(ctx, bundleProposal.Uploader, bundleReward.Delegation, types.ModuleName)
 
 		// slash stakers who voted incorrectly
 		for _, voter := range bundleProposal.VotersInvalid {

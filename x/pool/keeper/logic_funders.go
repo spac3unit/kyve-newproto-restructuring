@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// PayoutAmount equally splits the amount between all funders and removes
+// ChargeFundersOfPool equally splits the amount between all funders and removes
 // the appropriate amount from each funder.
 // All funders who can't afford the amount, are kicked out.
 // Their remaining amount is transferred to the Treasury

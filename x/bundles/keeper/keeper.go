@@ -3,13 +3,6 @@ package keeper
 import (
 	"fmt"
 
-	delegationkeeper "github.com/KYVENetwork/chain/x/delegation/keeper"
-	poolkeeper "github.com/KYVENetwork/chain/x/pool/keeper"
-	stakerskeeper "github.com/KYVENetwork/chain/x/stakers/keeper"
-	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
-	distrkeeper "github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/KYVENetwork/chain/x/bundles/types"
@@ -25,12 +18,12 @@ type (
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
 
-		accountKeeper    authkeeper.AccountKeeper
-		bankKeeper       bankkeeper.Keeper
-		distrkeeper      distrkeeper.Keeper
-		poolKeeper       poolkeeper.Keeper
-		stakerKeeper     stakerskeeper.Keeper
-		delegationKeeper delegationkeeper.Keeper
+		accountKeeper    types.AccountKeeper
+		bankKeeper       types.BankKeeper
+		distrkeeper      types.DistrKeeper
+		poolKeeper       types.PoolKeeper
+		stakerKeeper     types.StakerKeeper
+		delegationKeeper types.DelegationKeeper
 	}
 )
 
@@ -40,12 +33,12 @@ func NewKeeper(
 	memKey sdk.StoreKey,
 	ps paramtypes.Subspace,
 
-	accountKeeper authkeeper.AccountKeeper,
-	bankKeeper bankkeeper.Keeper,
-	distrkeeper distrkeeper.Keeper,
-	poolKeeper poolkeeper.Keeper,
-	stakerKeeper stakerskeeper.Keeper,
-	delegationKeeper delegationkeeper.Keeper,
+	accountKeeper types.AccountKeeper,
+	bankKeeper types.BankKeeper,
+	distrkeeper types.DistrKeeper,
+	poolKeeper types.PoolKeeper,
+	stakerKeeper types.StakerKeeper,
+	delegationKeeper types.DelegationKeeper,
 
 ) *Keeper {
 	// set KeyTable if it has not already been set
