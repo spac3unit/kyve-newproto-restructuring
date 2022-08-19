@@ -76,7 +76,7 @@ genesis:
           total_funds: "0",
 
           protocol:
-            version: "1.3.0"
+            version: "1.7.0"
             binaries: "{\"macos\":\"https://github.com/kyve-org/evm/releases/download/v1.0.5/kyve-evm-macos.zip\"}"
             last_upgrade: "0",
           upgrade_plan:
