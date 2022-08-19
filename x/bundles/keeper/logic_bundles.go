@@ -43,20 +43,11 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 	return nil
 }
 
-func containsElement(array []string, element string) bool {
-	for _, v := range array {
-		if v == element {
-			return true
-		}
-	}
-	return false
-}
-
 func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) error {
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 
-	current_height := bundleProposal.ToHeight
-	current_key := bundleProposal.ToKey
+	currentHeight := bundleProposal.ToHeight
+	currentKey := bundleProposal.ToKey
 
 	// Validate storage id
 	if msg.StorageId == "" {
@@ -65,38 +56,38 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 
 	// Check if the sender is the designated uploader.
 	if bundleProposal.NextUploader != msg.Staker {
-		return types.ErrNotDesignatedUploader
+		return sdkErrors.Wrapf(types.ErrNotDesignatedUploader, "expected %v received %v", bundleProposal.NextUploader, msg.Staker)
 	}
 
 	// Validate upload interval has been surpassed
 	if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval) {
-		return types.ErrUploadInterval
+		return sdkErrors.Wrapf(types.ErrUploadInterval, "expected %v < %v", ctx.BlockTime().Unix(), bundleProposal.CreatedAt+pool.UploadInterval)
 	}
 
 	// Validate if bundle is not too big
-	if msg.ToHeight-current_height > pool.MaxBundleSize {
-		return types.ErrMaxBundleSize
+	if msg.ToHeight-currentHeight > pool.MaxBundleSize {
+		return sdkErrors.Wrapf(types.ErrMaxBundleSize, "expected %v received %v", pool.MaxBundleSize, msg.ToHeight-currentHeight)
 	}
 
 	// Validate from height
-	if msg.FromHeight != current_height {
-		return types.ErrFromHeight
+	if msg.FromHeight != currentHeight {
+		return sdkErrors.Wrapf(types.ErrFromHeight, "expected %v received %v", currentHeight, msg.FromHeight)
 	}
 
 	// Validate to height
-	if msg.ToHeight < current_height {
-		return types.ErrToHeight
+	if msg.ToHeight < currentHeight {
+		return sdkErrors.Wrapf(types.ErrToHeight, "expected %v < %v", msg.ToHeight, currentHeight)
 	}
 
 	// Validate from key
-	if current_key != "" && msg.FromKey != current_key {
+	if currentKey != "" && msg.FromKey != currentKey {
 		return types.ErrFromKey
 	}
 
 	// check if bundle is of type no data bundle
 	if strings.HasPrefix(msg.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 		// Validate bundle args
-		if msg.ToHeight != current_height || msg.ByteSize != 0 {
+		if msg.ToHeight != currentHeight || msg.ByteSize != 0 {
 			return types.ErrInvalidArgs
 		}
 
@@ -110,7 +101,7 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 			return types.ErrInvalidArgs
 		}
 	} else {
-		if msg.ToHeight <= current_height || msg.ByteSize == 0 {
+		if msg.ToHeight <= currentHeight || msg.ByteSize == 0 {
 			return types.ErrInvalidArgs
 		}
 

@@ -27,7 +27,7 @@ func (k Keeper) CanPropose(c context.Context, req *types.QueryCanProposeRequest)
 	if err := k.bundleKeeper.AssertPoolCanRun(ctx, req.PoolId); err != nil {
 		return &types.QueryCanProposeResponse{
 			Possible: false,
-			Reason: err.Error(),
+			Reason:   err.Error(),
 		}, nil
 	}
 
@@ -35,7 +35,7 @@ func (k Keeper) CanPropose(c context.Context, req *types.QueryCanProposeRequest)
 	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, req.PoolId, req.Staker, req.Proposer); err != nil {
 		return &types.QueryCanProposeResponse{
 			Possible: false,
-			Reason: "valaccount not authorized",
+			Reason:   "valaccount not authorized",
 		}, nil
 	}
 
@@ -48,7 +48,7 @@ func (k Keeper) CanPropose(c context.Context, req *types.QueryCanProposeRequest)
 	}
 
 	// Check if designated uploader
-	if bundleProposal.NextUploader != req.Proposer {
+	if bundleProposal.NextUploader != req.Staker {
 		return &types.QueryCanProposeResponse{
 			Possible: false,
 			Reason:   "not designated uploader",
@@ -65,6 +65,6 @@ func (k Keeper) CanPropose(c context.Context, req *types.QueryCanProposeRequest)
 
 	return &types.QueryCanProposeResponse{
 		Possible: true,
-		Reason: "",
+		Reason:   "",
 	}, nil
 }
