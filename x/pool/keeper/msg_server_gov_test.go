@@ -11,7 +11,6 @@ var _ = Describe("Gov Pool", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeAll(func() {
-		// init new clean chain
 		s = i.NewCleanChain()
 	})
 
@@ -21,7 +20,11 @@ var _ = Describe("Gov Pool", Ordered, func() {
 	})
 
 	It("Create Pool", func() {
-		// ACT
+		// Arrange
+		_, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(found).To(BeFalse())
+
+		// Act
 		s.RunTxPoolSuccess(&pooltypes.GovMsgCreatePool{
 			Creator:        "govAddress",
 			Name:           "Moontest",
@@ -37,8 +40,8 @@ var _ = Describe("Gov Pool", Ordered, func() {
 			Binaries:       "{\"b1\": \"string\"}",
 		})
 
+		// Assert
 		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-
 		Expect(found).To(BeTrue())
 		Expect(pool.Name).To(Equal("Moontest"))
 		Expect(pool.Runtime).To(Equal("Runtime"))
@@ -72,4 +75,114 @@ var _ = Describe("Gov Pool", Ordered, func() {
 		Expect(pool.MaxBundleSize).To(Equal(uint64(4)))
 	})
 
+	It("Pause Pool", func() {
+		// Arrange
+		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(found).To(BeTrue())
+		Expect(pool.Paused).To(BeFalse())
+
+		// Act
+		s.RunTxPoolSuccess(&pooltypes.GovMsgPausePool{
+			Creator: i.GOV,
+			Id:      0,
+		})
+
+		// Assert
+		poolAfter, foundAfter := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(foundAfter).To(BeTrue())
+		Expect(poolAfter.Paused).To(BeTrue())
+
+		poolAfter.Paused = false
+		Expect(pool).To(Equal(poolAfter))
+	})
+
+	It("Pause Pool when already paused", func() {
+		// Arrange
+		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(found).To(BeTrue())
+		Expect(pool.Paused).To(BeTrue())
+
+		// Act
+		s.RunTxPoolError(&pooltypes.GovMsgPausePool{
+			Creator: i.GOV,
+			Id:      0,
+		})
+
+		// Assert
+		poolAfter, foundAfter := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(foundAfter).To(BeTrue())
+		Expect(pool).To(Equal(poolAfter))
+	})
+
+	It("Unpause Pool", func() {
+		// Arrange
+		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(found).To(BeTrue())
+		Expect(pool.Paused).To(BeTrue())
+
+		// Act
+		s.RunTxPoolSuccess(&pooltypes.GovMsgUnpausePool{
+			Creator: i.GOV,
+			Id:      0,
+		})
+
+		// Assert
+		poolAfter, foundAfter := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(foundAfter).To(BeTrue())
+		Expect(poolAfter.Paused).To(BeFalse())
+
+		poolAfter.Paused = true
+		Expect(pool).To(Equal(poolAfter))
+	})
+
+	It("Unpause Pool when already unpaused", func() {
+		// Arrange
+		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(found).To(BeTrue())
+		Expect(pool.Paused).To(BeFalse())
+
+		// Act
+		s.RunTxPoolError(&pooltypes.GovMsgUnpausePool{
+			Creator: i.GOV,
+			Id:      0,
+		})
+
+		// Assert
+		poolAfter, foundAfter := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(foundAfter).To(BeTrue())
+		Expect(pool).To(Equal(poolAfter))
+	})
+
+	It("Create Upgrade Pool proposal", func() {
+		// Arrange
+		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(found).To(BeTrue())
+		Expect(pool.Paused).To(BeFalse())
+
+		// Act
+		s.RunTxPoolSuccess(&pooltypes.GovMsgPoolUpgrade{
+			Creator:     i.GOV,
+			Runtime:     "Runtime",
+			Version:     "new version",
+			ScheduledAt: uint64(s.Ctx().BlockTime().Unix() + 1000),
+			Duration:    60,
+			Binaries:    "{\"test\": \"link.com\"}",
+		})
+
+		// Assert
+		poolAfter, foundAfter := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(foundAfter).To(BeTrue())
+
+		Expect(poolAfter.UpgradePlan.Version).To(Equal("new version"))
+		Expect(poolAfter.UpgradePlan.ScheduledAt).To(Equal(uint64(s.Ctx().BlockTime().Unix() + 1000)))
+		Expect(poolAfter.UpgradePlan.Duration).To(Equal(uint64(60)))
+		Expect(poolAfter.UpgradePlan.Binaries).To(Equal("{\"test\": \"link.com\"}"))
+
+		// Fast-forward
+		s.CommitAfterSeconds(2000)
+		s.CommitAfterSeconds(1)
+
+		//TODO check
+		//Expect(poolAfter.UpgradePlan).To(Equal(pooltypes.UpgradePlan{}))
+	})
 })

@@ -1,15 +1,11 @@
 package keeper
 
 import (
-	"context"
-
 	"github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) HandlePoolUpgrades(goCtx context.Context) {
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
+func (k Keeper) HandlePoolUpgrades(ctx sdk.Context) {
 
 	for _, pool := range k.GetAllPools(ctx) {
 		// Handle pool upgrades
