@@ -239,3 +239,60 @@ func (k msgServer) CancelPoolUpgrade(goCtx context.Context, p *types.GovMsgCance
 
 	return &types.GovMsgCancelPoolUpgradeResponse{}, nil
 }
+
+// TODO move to bundles module?
+//func handleResetPoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.ResetPoolProposal) error {
+//	// Attempt to fetch the pool, throw an error if not found.
+//	pool, found := k.GetPool(ctx, p.Id)
+//	if !found {
+//		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
+//	}
+//
+//	// Check if proposal can be found with bundle id
+//	_, foundProposal := k.GetProposalByPoolIdAndBundleId(ctx, p.Id, p.BundleId)
+//	if !foundProposal {
+//		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrProposalNotFound.Error(), p.Id, p.BundleId)
+//	}
+//
+//	fmt.Println("proposals")
+//
+//	// Delete all proposals created after reset proposal
+//	for _, proposal := range k.GetProposalsByPoolIdSinceBundleId(ctx, p.Id, p.BundleId) {
+//		fmt.Printf("%v\n", proposal)
+//		k.RemoveProposal(ctx, proposal)
+//	}
+//
+//	// Reset pool to latest bundle
+//	if p.BundleId == 0 {
+//		// if reset pool id is zero reset pool to "genesis state"
+//		pool.CurrentHeight = 0
+//		pool.TotalBundles = 0
+//		pool.CurrentKey = ""
+//		pool.CurrentValue = ""
+//		pool.BundleProposal = &types.BundleProposal{
+//			NextUploader: pool.BundleProposal.NextUploader,
+//			CreatedAt:    uint64(ctx.BlockTime().Unix()),
+//		}
+//	} else {
+//		// Check if reset proposal can be found with bundle id
+//		resetProposal, foundResetProposal := k.GetProposalByPoolIdAndBundleId(ctx, p.Id, p.BundleId-1)
+//		if !foundResetProposal {
+//			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrProposalNotFound.Error(), p.Id, p.BundleId-1)
+//		}
+//
+//		// reset pool to previous valid bundle
+//		pool.CurrentHeight = resetProposal.ToHeight
+//		pool.TotalBundles = p.BundleId
+//		pool.CurrentKey = resetProposal.Key
+//		pool.CurrentValue = resetProposal.Value
+//		pool.BundleProposal = &types.BundleProposal{
+//			NextUploader: pool.BundleProposal.NextUploader,
+//			CreatedAt:    uint64(ctx.BlockTime().Unix()),
+//		}
+//	}
+//
+//	// Update the pool
+//	k.SetPool(ctx, pool)
+//
+//	return nil
+//}

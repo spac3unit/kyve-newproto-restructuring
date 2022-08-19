@@ -93,7 +93,6 @@ import (
 
 	"github.com/KYVENetwork/chain/docs"
 	registrymodule "github.com/KYVENetwork/chain/x/registry"
-	registrymoduleclient "github.com/KYVENetwork/chain/x/registry/client"
 	registrymodulekeeper "github.com/KYVENetwork/chain/x/registry/keeper"
 	registrymoduletypes "github.com/KYVENetwork/chain/x/registry/types"
 
@@ -144,13 +143,6 @@ func getGovProposalHandlers() []govclient.ProposalHandler {
 		upgradeclient.CancelProposalHandler,
 		ibcclientclient.UpdateClientProposalHandler,
 		ibcclientclient.UpgradeProposalHandler,
-		// this line is used by starport scaffolding # stargate/app/govProposalHandler
-		registrymoduleclient.UpdatePoolHandler,
-		registrymoduleclient.PausePoolHandler,
-		registrymoduleclient.UnpausePoolHandler,
-		registrymoduleclient.SchedulePoolUpgradeHandler,
-		registrymoduleclient.CancelPoolUpgradeHandler,
-		// TODO maybe add gov handlers for bundles, pool, stakers, etc. ?
 	)
 
 	return govProposalHandlers
@@ -413,11 +405,7 @@ func NewApp(
 		AddRoute(paramproposal.RouterKey, params.NewParamChangeProposalHandler(app.ParamsKeeper)).
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
-		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		//AddRoute(poolmoduletypes.RouterKey, poolmodule.NewRegistryProposalHandler(app.PoolKeeper)).
-		AddRoute(registrymoduletypes.RouterKey, registrymodule.NewRegistryProposalHandler(app.RegistryKeeper))
-	// TODO maybe add gov route?
-
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
 		&stakingKeeper, &app.RegistryKeeper, govRouter,

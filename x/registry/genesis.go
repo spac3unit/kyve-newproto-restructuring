@@ -80,8 +80,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.PoolCount = k.GetPoolCount(ctx)
 	genesis.FunderList = k.GetAllFunder(ctx)
 
-	// TODO migrate
-
 	genesis.StakerList = k.GetAllStaker(ctx)
 	genesis.DelegatorList = k.GetAllDelegator(ctx)
 	genesis.DelegationPoolDataList = k.GetAllDelegationPoolData(ctx)
