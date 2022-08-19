@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	bundletypes "github.com/KYVENetwork/chain/x/bundles/types"
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -23,13 +22,7 @@ func (k Keeper) FinalizedBundles(c context.Context, req *types.QueryFinalizedBun
 		return nil, err
 	}
 
-	data := make([]bundletypes.FinalizedBundle, 0)
-
-	for _, bundle := range finalizedBundles {
-		data = append(data, bundle)
-	}
-
-	return &types.QueryFinalizedBundlesResponse{FinalizedBundles: data, Pagination: pageRes}, nil
+	return &types.QueryFinalizedBundlesResponse{FinalizedBundles: finalizedBundles, Pagination: pageRes}, nil
 }
 
 func (k Keeper) FinalizedBundle(c context.Context, req *types.QueryFinalizedBundleRequest) (*types.QueryFinalizedBundleResponse, error) {

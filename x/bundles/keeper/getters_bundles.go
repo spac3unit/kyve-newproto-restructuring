@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -65,20 +66,15 @@ func (k Keeper) GetFinalizedBundle(
 func (k Keeper) GetPaginatedFinalizedBundleQuery(ctx sdk.Context, pagination *query.PageRequest, poolId uint64) ([]types.FinalizedBundle, *query.PageResponse, error) {
 	var data []types.FinalizedBundle
 
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FinalizedBundlePrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), util.GetByteKey(types.FinalizedBundlePrefix, poolId))
 
 	pageRes, err := query.FilteredPaginate(store, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var finalizedBundle types.FinalizedBundle
-		if err := k.cdc.Unmarshal(value, &finalizedBundle); err != nil {
-			return false, err
-		}
-
-		// filter pool id
-		if poolId != finalizedBundle.PoolId {
-			return false, nil
-		}
-
 		if accumulate {
+			var finalizedBundle types.FinalizedBundle
+			if err := k.cdc.Unmarshal(value, &finalizedBundle); err != nil {
+				return false, err
+			}
+
 			data = append(data, finalizedBundle)
 		}
 
@@ -88,6 +84,6 @@ func (k Keeper) GetPaginatedFinalizedBundleQuery(ctx sdk.Context, pagination *qu
 	if err != nil {
 		return nil, nil, status.Error(codes.Internal, err.Error())
 	}
-	
+
 	return data, pageRes, nil
 }

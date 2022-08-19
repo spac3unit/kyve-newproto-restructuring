@@ -22,6 +22,25 @@ service QueryBundles {
     option (google.api.http).get = "/kyve/query/v1beta1/finalized_bundle/{pool_id}/{id}";
   }
 
+
+  // TODO which of these queries are actually needed?
+//  // ProposalByHeight ...
+//  rpc ProposalByHeight(QueryProposalByHeightRequest) returns (QueryProposalByHeightResponse) {
+//    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_by_height/{pool_id}/{height}";
+//  }
+//
+//  // ProposalSinceFinalizedAt ...
+//  rpc ProposalSinceFinalizedAt(QueryProposalSinceFinalizedAtRequest) returns (QueryProposalSinceFinalizedAtResponse) {
+//    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_finalized_at/{pool_id}/{finalized_at}";
+//  }
+//
+//  // ProposalSinceId ...
+//  rpc ProposalSinceId(QueryProposalSinceIdRequest) returns (QueryProposalSinceIdResponse) {
+//    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_id/{pool_id}/{id}";
+//  }
+
+
+
   // CanValidate ...
   rpc CanValidate(QueryCanValidateRequest) returns (QueryCanValidateResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/can_validate/{pool_id}/{valaddress}";

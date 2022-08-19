@@ -3,7 +3,7 @@ package cli
 import (
 	"strconv"
 
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cast"
@@ -12,34 +12,37 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdCanVote() *cobra.Command {
+func CmdCanPropose() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "can-vote [id] [voter]",
-		Short: "Query canVote",
+		Use:   "can-propose [id] [proposer]",
+		Short: "Query canPropose",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqId, err := cast.ToUint64E(args[0])
 			if err != nil {
 				return err
 			}
-			reqStorageId := args[1]
-			reqVoter := args[2]
+			reqProposer := args[1]
+			reqFromHeight, err := cast.ToUint64E(args[2])
+			if err != nil {
+				return err
+			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := types.NewQueryBundlesClient(clientCtx)
 
-			params := &types.QueryCanVoteRequest{
+			params := &types.QueryCanProposeRequest{
 
-				PoolId:    reqId,
-				StorageId: reqStorageId,
-				Voter:     reqVoter,
+				PoolId:     reqId,
+				Proposer:   reqProposer,
+				FromHeight: reqFromHeight,
 			}
 
-			res, err := queryClient.CanVote(cmd.Context(), params)
+			res, err := queryClient.CanPropose(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

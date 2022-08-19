@@ -11,30 +11,7 @@ option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 
 // Query defines the gRPC registry querier service.
 service Query {
-  // PARAMS
 
-
-  // POOL
-
-  // Pool queries a pool by ID.
-  rpc Pool(QueryPoolRequest) returns (QueryPoolResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/pool/{id}";
-  }
-
-  // Pools queries for all pools.
-  rpc Pools(QueryPoolsRequest) returns (QueryPoolsResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/pools";
-  }
-
-  // FundersList returns all funder addresses with their corresponding funding amount for a given pool
-  rpc FundersList(QueryFundersListRequest) returns (QueryFundersListResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/funders_list/{pool_id}";
-  }
-
-  // Funder returns all funder info
-  rpc Funder(QueryFunderRequest) returns (QueryFunderResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/funder/{pool_id}/{funder}";
-  }
 
   // StakersList returns all staker addresses with their corresponding staking amount for a given pool
   rpc StakersList(QueryStakersListRequest) returns (QueryStakersListResponse) {
@@ -53,17 +30,6 @@ service Query {
 
   // WARP
 
-  // Proposal ...
-  rpc Proposal(QueryProposalRequest) returns (QueryProposalResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/proposal/{storage_id}";
-  }
-
-  // Proposals ...
-  rpc Proposals(QueryProposalsRequest) returns (QueryProposalsResponse) {
-    option deprecated = true;
-    option (google.api.http).get = "/kyve/registry/v1beta1/proposals/{pool_id}";
-  }
-
   // ProposalByHeight ...
   rpc ProposalByHeight(QueryProposalByHeightRequest) returns (QueryProposalByHeightResponse) {
     option (google.api.http).get = "/kyve/registry/v1beta1/proposal_by_height/{pool_id}/{height}";
@@ -81,101 +47,18 @@ service Query {
 
   // PROTOCOL NODE - FLOW
 
-  // CanPropose ...
-  rpc CanPropose(QueryCanProposeRequest) returns (QueryCanProposeResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/can_propose/{pool_id}/{proposer}/{from_height}";
-  }
-
-  // CanVote checks if voter on pool can still vote for the given bundle
-  rpc CanVote(QueryCanVoteRequest) returns (QueryCanVoteResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/can_vote/{pool_id}/{voter}/{storage_id}";
-  }
 
   // StakeInfo returns necessary information to become a staker (used by the protocol nodes)
   rpc StakeInfo(QueryStakeInfoRequest) returns (QueryStakeInfoResponse) {
     option (google.api.http).get = "/kyve/registry/v1beta1/stake_info/{pool_id}/{staker}";
   }
 
-  // STATS FOR USER ACCOUNT
-
-  // AccountStakedList ...
-  rpc AccountStakedList(QueryAccountStakedListRequest) returns (QueryAccountStakedListResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/account_staked_list/{address}";
-  }
-
-  // AccountDelegationList ...
-  rpc AccountDelegationList(QueryAccountDelegationListRequest) returns (QueryAccountDelegationListResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/account_delegation_list/{address}";
-  }
 
 }
-
-// ######################
-// =====   PARAMS   =====
-// ######################
-
 
 // ######################
 // =====    POOL    =====
 // ######################
-
-// QueryPoolRequest is the request type for the Query/Pool RPC method.
-message QueryPoolRequest {
-  // id defines the unique ID of the pool.
-  uint64 id = 1;
-}
-
-// QueryPoolResponse is the response type for the Query/Pool RPC method.
-message QueryPoolResponse {
-  // pool ...
-  kyve.registry.v1beta1.Pool pool = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryPoolsRequest is the request type for the Query/Pools RPC method.
-message QueryPoolsRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  // search ...
-  string search = 2;
-  // runtime ...
-  string runtime = 3;
-  // paused ...
-  bool paused = 4;
-}
-
-// QueryPoolsResponse is the response type for the Query/Pools RPC method.
-message QueryPoolsResponse {
-  // pools ...
-  repeated kyve.registry.v1beta1.Pool pools = 1 [(gogoproto.nullable) = false];
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryFundersListRequest is the request type for the Query/FundersList RPC method.
-message QueryFundersListRequest {
-  // pool_id defines the unique ID of the pool.
-  uint64 pool_id = 1;
-}
-
-// QueryFundersListResponse is the response type for the Query/FundersList RPC method.
-message QueryFundersListResponse {
-  // funders ...
-  repeated kyve.registry.v1beta1.Funder funders = 1;
-}
-
-// QueryFunderRequest is the request type for the Query/Funder RPC method.
-message QueryFunderRequest {
-  // pool_id defines the unique ID of the pool.
-  uint64 pool_id = 1;
-  // funder
-  string funder = 2;
-}
-
-// QueryFunderResponse is the response type for the Query/Funder RPC method.
-message QueryFunderResponse {
-  // funder ...
-  kyve.registry.v1beta1.Funder funder = 1;
-}
 
 // QueryStakersListRequest is the request type for the Query/StakersList RPC method.
 message QueryStakersListRequest {
@@ -279,34 +162,6 @@ message VoteStatusResponse {
 // =====    WARP    =====
 // ######################
 
-// QueryProposalRequest is the request type for the Query/Proposal RPC method.
-message QueryProposalRequest {
-  // storage_id ...
-  string storage_id = 1;
-}
-
-// QueryProposalResponse is the response type for the Query/Proposal RPC method.
-message QueryProposalResponse {
-  // proposal ...
-  kyve.registry.v1beta1.Proposal proposal = 1 [(gogoproto.nullable) = false];
-}
-
-// QueryProposalsRequest is the request type for the Query/Proposals RPC method.
-message QueryProposalsRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  // pool_id ...
-  uint64 pool_id = 2;
-}
-
-// QueryProposalsResponse is the response type for the Query/Proposals RPC method.
-message QueryProposalsResponse {
-  // proposals ...
-  repeated kyve.registry.v1beta1.Proposal proposals = 1 [(gogoproto.nullable) = false];
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
 // QueryProposalByHeightRequest is the request type for the Query/ProposalByHeight RPC method.
 message QueryProposalByHeightRequest {
   // pool_id ...
@@ -359,42 +214,6 @@ message QueryProposalSinceIdResponse {
 
 // PROTOCOL NODE - FLOW
 
-// QueryCanProposeRequest is the request type for the Query/CanPropose RPC method.
-message QueryCanProposeRequest {
-  // pool_id defines the unique ID of the pool.
-  uint64 pool_id = 1;
-  // proposer ...
-  string proposer = 2;
-  // from_height ...
-  uint64 from_height = 3;
-}
-
-// QueryCanProposeResponse is the response type for the Query/CanPropose RPC method.
-message QueryCanProposeResponse {
-  // possible ...
-  bool possible = 1;
-  // reason ...
-  string reason = 2;
-}
-
-// QueryCanVoteRequest is the request type for the Query/CanVote RPC method.
-message QueryCanVoteRequest {
-  // pool_id defines the unique ID of the pool.
-  uint64 pool_id = 1;
-  // voter ...
-  string voter = 2;
-  // storage_id ...
-  string storage_id = 3;
-}
-
-// QueryCanVoteResponse is the response type for the Query/CanVote RPC method.
-message QueryCanVoteResponse {
-  // possible ...
-  bool possible = 1;
-  // reason ...
-  string reason = 2;
-}
-
 // QueryStakeInfoRequest is the request type for the Query/StakeInfo RPC method.
 message QueryStakeInfoRequest {
   // pool_id ...
@@ -420,22 +239,6 @@ message QueryStakeInfoResponse {
 // ###################
 
 
-// QueryAccountStakedListRequest ...
-message QueryAccountStakedListRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  // address ...
-  string address = 2;
-}
-
-// QueryAccountStakedListResponse is the response type for the Query/StakedList RPC method.
-message QueryAccountStakedListResponse {
-  // staked ...
-  repeated Staked staked = 1 [(gogoproto.nullable) = false];
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
 // Staked ...
 message Staked {
   // staker ...
@@ -452,38 +255,4 @@ message Staked {
   uint64 unbonding_amount = 7;
   // upload_probability
   string upload_probability = 8;
-}
-
-// QueryAccountDelegationListRequest ...
-message QueryAccountDelegationListRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  // address ...
-  string address = 2;
-}
-
-// QueryAccountDelegationListRequest is the response type for the Query/AccountDelegationList RPC method.
-message QueryAccountDelegationListResponse {
-  // delegations ...
-  repeated kyve.registry.v1beta1.DelegatorResponse delegations = 1 [(gogoproto.nullable) = false];
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// DelegatorResponse ...
-message DelegatorResponse {
-  // account ...
-  string account = 1;
-  // pool ...
-  kyve.registry.v1beta1.Pool pool = 2;
-  // current_reward ...
-  uint64 current_reward = 3;
-  // delegation_amount ...
-  uint64 delegation_amount = 4;
-  // staker ...
-  string staker = 5;
-  // pending_commission_change
-  PendingCommissionChange pending_commission_change = 6;
-  // delegation_pool_data ...
-  kyve.registry.v1beta1.DelegationPoolData delegation_pool_data = 7;
 }

@@ -5,8 +5,6 @@ import (
 	"fmt"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 
-	// this line is used by starport scaffolding # 1
-
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/spf13/cobra"

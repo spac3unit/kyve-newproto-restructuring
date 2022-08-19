@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/KYVENetwork/chain/x/registry/types"
+	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cast"
@@ -35,7 +35,7 @@ func CmdListPool() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := types.NewQueryPoolClient(clientCtx)
 
 			params := &types.QueryPoolsRequest{
 				Pagination: pageReq,
@@ -70,7 +70,7 @@ func CmdShowPool() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryClient(clientCtx)
+			queryClient := types.NewQueryPoolClient(clientCtx)
 
 			id, err := strconv.ParseUint(args[0], 10, 64)
 			if err != nil {

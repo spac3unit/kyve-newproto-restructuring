@@ -11,64 +11,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// Deprecated: Proposals is deprecated as the return order is depending on the random bundle id
-// Proposals return all bundles for a given pool ordered by storage_id (which is random)
-func (k Keeper) Proposals(c context.Context, req *types.QueryProposalsRequest) (*types.QueryProposalsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	var proposals []types.Proposal
-	ctx := sdk.UnwrapSDKContext(c)
-
-	store := ctx.KVStore(k.storeKey)
-	proposalStore := prefix.NewStore(store, types.KeyPrefix(types.ProposalKeyPrefix))
-
-	pageRes, err := query.FilteredPaginate(proposalStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var proposal types.Proposal
-		if err := k.cdc.Unmarshal(value, &proposal); err != nil {
-			return false, err
-		}
-
-		// filter pool
-		if proposal.PoolId != req.PoolId {
-			return false, nil
-		}
-
-		if accumulate {
-			proposals = append(proposals, proposal)
-		}
-
-		return true, nil
-	})
-
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return &types.QueryProposalsResponse{Proposals: proposals, Pagination: pageRes}, nil
-}
-
-// Proposal returns the validated Proposal for a given storage_id
-// This method is used to confirm if the provided storage_id (e.g. from a third party)
-// is an actual valid bundle uploaded to KYVE.
-func (k Keeper) Proposal(c context.Context, req *types.QueryProposalRequest) (*types.QueryProposalResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-	ctx := sdk.UnwrapSDKContext(c)
-
-	val, found := k.GetProposal(
-		ctx,
-		req.StorageId,
-	)
-	if !found {
-		return nil, status.Error(codes.InvalidArgument, "not found")
-	}
-
-	return &types.QueryProposalResponse{Proposal: val}, nil
-}
-
 // ProposalByHeight returns the proposal which contains the requested height of the datasource.
 func (k Keeper) ProposalByHeight(goCtx context.Context, req *types.QueryProposalByHeightRequest) (*types.QueryProposalByHeightResponse, error) {
 	if req == nil {

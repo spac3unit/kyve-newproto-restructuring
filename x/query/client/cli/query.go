@@ -24,8 +24,9 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	// cmd.AddCommand(CmdQueryParams())
-	// this line is used by starport scaffolding # 1
+	// Pool
+	cmd.AddCommand(CmdShowPool())
+	cmd.AddCommand(CmdListPool())
 
 	cmd.AddCommand(CmdAccountAssets())
 	cmd.AddCommand(CmdAccountFundedList())
@@ -37,6 +38,12 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdDelegator())
 	cmd.AddCommand(CmdStakersByPoolAndDelegator())
 	cmd.AddCommand(CmdDelegatorsByPoolAndStaker())
+
+	// Bundles
+	cmd.AddCommand(CmdCanPropose())
+	cmd.AddCommand(CmdCanVote())
+	cmd.AddCommand(CmdShowFinalizedBundle())
+	cmd.AddCommand(CmdListFinalizedBundles())
 
 	return cmd
 }
