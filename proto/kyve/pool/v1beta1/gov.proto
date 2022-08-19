@@ -31,6 +31,7 @@ message GovMsgCreatePool {
   string binaries = 13;
 }
 
+// GovMsgCreatePoolResponse ...
 message GovMsgCreatePoolResponse {}
 
 
@@ -44,6 +45,7 @@ message GovMsgUpdatePool {
   string payload = 3;
 }
 
+// GovMsgUpdatePoolResponse ...
 message GovMsgUpdatePoolResponse {}
 
 
@@ -55,6 +57,7 @@ message GovMsgPausePool {
   uint64 id = 2;
 }
 
+// GovMsgPausePoolResponse ...
 message GovMsgPausePoolResponse{}
 
 
@@ -66,6 +69,7 @@ message GovMsgUnpausePool {
   uint64 id = 2;
 }
 
+// GovMsgUnpausePoolResponse ...
 message GovMsgUnpausePoolResponse{}
 
 
@@ -86,6 +90,7 @@ message GovMsgPoolUpgrade {
   string binaries = 6;
 }
 
+// GovMsgPoolUpgradeResponse ...
 message GovMsgPoolUpgradeResponse{}
 
 
@@ -97,6 +102,7 @@ message GovMsgCancelPoolUpgrade {
   string runtime = 2;
 }
 
+// GovMsgCancelPoolUpgradeResponse ...
 message GovMsgCancelPoolUpgradeResponse{}
 
 
@@ -110,4 +116,5 @@ message GovMsgResetPool {
   uint64 bundle_id = 3;
 }
 
+// GovMsgResetPoolResponse ...
 message GovMsgResetPoolResponse{}

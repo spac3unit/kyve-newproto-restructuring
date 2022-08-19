@@ -167,6 +167,7 @@ func (m *GovMsgCreatePool) GetBinaries() string {
 	return ""
 }
 
+// GovMsgCreatePoolResponse ...
 type GovMsgCreatePoolResponse struct {
 }
 
@@ -267,6 +268,7 @@ func (m *GovMsgUpdatePool) GetPayload() string {
 	return ""
 }
 
+// GovMsgUpdatePoolResponse ...
 type GovMsgUpdatePoolResponse struct {
 }
 
@@ -358,6 +360,7 @@ func (m *GovMsgPausePool) GetId() uint64 {
 	return 0
 }
 
+// GovMsgPausePoolResponse ...
 type GovMsgPausePoolResponse struct {
 }
 
@@ -449,6 +452,7 @@ func (m *GovMsgUnpausePool) GetId() uint64 {
 	return 0
 }
 
+// GovMsgUnpausePoolResponse ...
 type GovMsgUnpausePoolResponse struct {
 }
 
@@ -576,6 +580,7 @@ func (m *GovMsgPoolUpgrade) GetBinaries() string {
 	return ""
 }
 
+// GovMsgPoolUpgradeResponse ...
 type GovMsgPoolUpgradeResponse struct {
 }
 
@@ -667,6 +672,7 @@ func (m *GovMsgCancelPoolUpgrade) GetRuntime() string {
 	return ""
 }
 
+// GovMsgCancelPoolUpgradeResponse ...
 type GovMsgCancelPoolUpgradeResponse struct {
 }
 
@@ -767,6 +773,7 @@ func (m *GovMsgResetPool) GetBundleId() uint64 {
 	return 0
 }
 
+// GovMsgResetPoolResponse ...
 type GovMsgResetPoolResponse struct {
 }
 

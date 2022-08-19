@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package kyve.bundles.v1beta1;
 
-import "gogoproto/gogo.proto";
 import "kyve/bundles/v1beta1/bundles.proto";
 import "kyve/bundles/v1beta1/tx.proto";
 
@@ -20,6 +19,7 @@ message EventBundleVote {
   VoteType vote = 4;
 }
 
+// EventBundleProposed ...
 message EventBundleProposed {
   // pool_id ...
   uint64 pool_id = 1;
@@ -64,11 +64,11 @@ message EventBundleFinalized {
   // status ...
   BundleStatus status = 7;
   // rewardTreasury ...
-  uint64 rewardTreasury = 8;
+  uint64 reward_treasury = 8;
   // rewardUploader ...
-  uint64 rewardUploader = 9;
+  uint64 reward_uploader = 9;
   // rewardDelegation ...
-  uint64 rewardDelegation = 10;
+  uint64 reward_delegation = 10;
   // rewardTotal ...
-  uint64 rewardTotal = 11; 
+  uint64 reward_total = 11;
 }

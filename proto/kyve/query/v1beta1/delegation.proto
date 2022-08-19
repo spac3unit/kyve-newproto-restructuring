@@ -1,5 +1,5 @@
 syntax = "proto3";
-package KYVENetwork.chain.query;
+package kyve.query.v1beta1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "google/api/annotations.proto";
@@ -76,7 +76,7 @@ message QueryDelegatorsByStakerRequest {
 message QueryDelegatorsByStakerResponse {
   // delegators ...
   repeated StakerDelegatorResponse delegators = 1 [(gogoproto.nullable) = false];
-  // total_delegation ...
+  // total_delegation ... (consider metadata object)
   uint64 total_delegation = 2;
   // total_delegation ...
   uint64 total_delegator_count = 3;
@@ -121,6 +121,9 @@ message DelegationForStakerResponse {
   // delegator_count ...
   uint64 delegator_count = 5;
 
+  // stake amount (self delegation)
+
+  // logo, name, status
   // TODO add pools ?
   // TODO add pending commission changes
 }

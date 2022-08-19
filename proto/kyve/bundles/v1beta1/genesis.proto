@@ -8,6 +8,10 @@ option go_package = "github.com/KYVENetwork/chain/x/bundles/types";
 
 // GenesisState defines the bundles module's genesis state.
 message GenesisState {
+
+  // params ...
   Params params = 1 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
+
+  // TODO add missing state
 }

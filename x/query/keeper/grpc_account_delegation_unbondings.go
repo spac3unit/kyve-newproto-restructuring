@@ -53,7 +53,6 @@ func (k Keeper) AccountDelegationUnbondings(goCtx context.Context, req *types.Qu
 				Amount:       unbondingEntry.Amount,
 				CreationTime: unbondingEntry.CreationTime,
 				Staker:       nil,
-				Pool:         "todo",
 			})
 		}
 		return true, nil

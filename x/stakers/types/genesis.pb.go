@@ -25,14 +25,22 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // GenesisState defines the stakers module's genesis state.
 type GenesisState struct {
-	Params                  Params                  `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
-	StakerList              []Staker                `protobuf:"bytes,2,rep,name=staker_list,json=stakerList,proto3" json:"staker_list"`
+	// params ...
+	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	// staker_list ...
+	StakerList []Staker `protobuf:"bytes,2,rep,name=staker_list,json=stakerList,proto3" json:"staker_list"`
+	// commission_change_entries ...
 	CommissionChangeEntries []CommissionChangeEntry `protobuf:"bytes,3,rep,name=commission_change_entries,json=commissionChangeEntries,proto3" json:"commission_change_entries"`
-	UnbondingStakeEntries   []UnbondingStakeEntry   `protobuf:"bytes,4,rep,name=unbonding_stake_entries,json=unbondingStakeEntries,proto3" json:"unbonding_stake_entries"`
-	LeavePoolEntries        []LeavePoolEntry        `protobuf:"bytes,5,rep,name=leave_pool_entries,json=leavePoolEntries,proto3" json:"leave_pool_entries"`
-	QueueStateUnstaking     QueueState              `protobuf:"bytes,6,opt,name=queue_state_unstaking,json=queueStateUnstaking,proto3" json:"queue_state_unstaking"`
-	QueueStateCommission    QueueState              `protobuf:"bytes,7,opt,name=queue_state_commission,json=queueStateCommission,proto3" json:"queue_state_commission"`
-	QueueStateLeave         QueueState              `protobuf:"bytes,8,opt,name=queue_state_leave,json=queueStateLeave,proto3" json:"queue_state_leave"`
+	// unbonding_stake_entries ...
+	UnbondingStakeEntries []UnbondingStakeEntry `protobuf:"bytes,4,rep,name=unbonding_stake_entries,json=unbondingStakeEntries,proto3" json:"unbonding_stake_entries"`
+	// leave_pool_entries ...
+	LeavePoolEntries []LeavePoolEntry `protobuf:"bytes,5,rep,name=leave_pool_entries,json=leavePoolEntries,proto3" json:"leave_pool_entries"`
+	// queue_state_unstaking ...
+	QueueStateUnstaking QueueState `protobuf:"bytes,6,opt,name=queue_state_unstaking,json=queueStateUnstaking,proto3" json:"queue_state_unstaking"`
+	// queue_state_commission ...
+	QueueStateCommission QueueState `protobuf:"bytes,7,opt,name=queue_state_commission,json=queueStateCommission,proto3" json:"queue_state_commission"`
+	// queue_state_leave ...
+	QueueStateLeave QueueState `protobuf:"bytes,8,opt,name=queue_state_leave,json=queueStateLeave,proto3" json:"queue_state_leave"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
