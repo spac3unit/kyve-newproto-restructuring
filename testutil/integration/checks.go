@@ -59,21 +59,32 @@ func (suite *KeeperTestSuite) VerifyPoolTotalFunds() {
 
 func (suite *KeeperTestSuite) VerifyPoolQueries() {
 	poolsState := suite.App().PoolKeeper.GetAllPools(suite.Ctx())
-	poolsQuery, stakersQueryErr := suite.App().QueryKeeper.Pools(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryPoolsRequest{})
 
-	Expect(stakersQueryErr).To(BeNil())
-	Expect(poolsQuery.Pools).To(HaveLen(len(poolsState)))
+	poolsQuery := make([]querytypes.PoolResponse, 0)
+
+	activePoolsQuery, activePoolsQueryErr := suite.App().QueryKeeper.Pools(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryPoolsRequest{})
+	pausedPoolsQuery, pausedPoolsQueryErr := suite.App().QueryKeeper.Pools(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryPoolsRequest{
+		Paused: true,
+	})
+
+	poolsQuery = append(poolsQuery, activePoolsQuery.Pools...)
+	poolsQuery = append(poolsQuery, pausedPoolsQuery.Pools...)
+
+	Expect(activePoolsQueryErr).To(BeNil())
+	Expect(pausedPoolsQueryErr).To(BeNil())
+
+	Expect(poolsQuery).To(HaveLen(len(poolsState)))
 
 	for i := range poolsState {
 		bundleProposalState, _ := suite.App().BundlesKeeper.GetBundleProposal(suite.Ctx(), poolsState[i].Id)
 		stakersState := suite.App().StakersKeeper.GetAllStakerAddressesOfPool(suite.Ctx(), poolsState[i].Id)
 		totalStakeState := suite.App().StakersKeeper.GetTotalStake(suite.Ctx(), poolsState[i].Id)
 
-		Expect(poolsQuery.Pools[i].Id).To(Equal(poolsState[i].Id))
-		Expect(*poolsQuery.Pools[i].Data).To(Equal(poolsState[i]))
-		Expect(*poolsQuery.Pools[i].BundleProposal).To(Equal(bundleProposalState))
-		Expect(poolsQuery.Pools[i].Stakers).To(Equal(stakersState))
-		Expect(poolsQuery.Pools[i].TotalStake).To(Equal(totalStakeState))
+		Expect(poolsQuery[i].Id).To(Equal(poolsState[i].Id))
+		Expect(*poolsQuery[i].Data).To(Equal(poolsState[i]))
+		Expect(*poolsQuery[i].BundleProposal).To(Equal(bundleProposalState))
+		Expect(poolsQuery[i].Stakers).To(Equal(stakersState))
+		Expect(poolsQuery[i].TotalStake).To(Equal(totalStakeState))
 
 		poolByIdQuery, poolByIdQueryErr := suite.App().QueryKeeper.Pool(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryPoolRequest{
 			Id: poolsState[i].Id,
@@ -83,7 +94,7 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 		Expect(poolByIdQuery.Pool.Id).To(Equal(poolsState[i].Id))
 		Expect(*poolByIdQuery.Pool.Data).To(Equal(poolsState[i]))
 		Expect(*poolByIdQuery.Pool.BundleProposal).To(Equal(bundleProposalState))
-		Expect(poolsQuery.Pools[i].Stakers).To(Equal(stakersState))
+		Expect(poolsQuery[i].Stakers).To(Equal(stakersState))
 		Expect(poolByIdQuery.Pool.TotalStake).To(Equal(totalStakeState))
 	}
 }

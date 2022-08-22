@@ -8,7 +8,6 @@ import (
 	bundletypes "github.com/KYVENetwork/chain/x/bundles/types"
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -20,17 +19,12 @@ func (k Keeper) CanVote(c context.Context, req *types.QueryCanVoteRequest) (*typ
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	_, found := k.poolKeeper.GetPool(ctx, req.PoolId)
-	if !found {
-		return nil, sdkerrors.ErrKeyNotFound
-	}
-
 	bundleProposal, _ := k.bundleKeeper.GetBundleProposal(ctx, req.PoolId)
 
 	if err := k.bundleKeeper.AssertPoolCanRun(ctx, req.PoolId); err != nil {
 		return &types.QueryCanVoteResponse{
 			Possible: false,
-			Reason: err.Error(),
+			Reason:   err.Error(),
 		}, nil
 	}
 
@@ -38,7 +32,7 @@ func (k Keeper) CanVote(c context.Context, req *types.QueryCanVoteRequest) (*typ
 	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, req.PoolId, req.Staker, req.Voter); err != nil {
 		return &types.QueryCanVoteResponse{
 			Possible: false,
-			Reason: "valaccount not authorized",
+			Reason:   "valaccount not authorized",
 		}, nil
 	}
 
@@ -71,14 +65,14 @@ func (k Keeper) CanVote(c context.Context, req *types.QueryCanVoteRequest) (*typ
 	hasVotedInvalid := util.ContainsString(bundleProposal.VotersInvalid, req.Staker)
 	hasVotedAbstain := util.ContainsString(bundleProposal.VotersAbstain, req.Staker)
 
-	if hasVotedValid{
+	if hasVotedValid {
 		return &types.QueryCanVoteResponse{
 			Possible: false,
 			Reason:   "has already voted valid",
 		}, nil
 	}
 
-	if hasVotedInvalid{
+	if hasVotedInvalid {
 		return &types.QueryCanVoteResponse{
 			Possible: false,
 			Reason:   "has already voted invalid",
@@ -94,6 +88,6 @@ func (k Keeper) CanVote(c context.Context, req *types.QueryCanVoteRequest) (*typ
 
 	return &types.QueryCanVoteResponse{
 		Possible: true,
-		Reason: "",
+		Reason:   "",
 	}, nil
 }
