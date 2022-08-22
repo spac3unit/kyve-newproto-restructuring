@@ -1,7 +1,6 @@
 package integration
 
 import (
-	"fmt"
 	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	. "github.com/onsi/gomega"
 
@@ -182,20 +181,10 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 	Expect(stakersQueryErr).To(BeNil())
 	Expect(poolsQuery.Pools).To(HaveLen(len(poolsState)))
 
-	fmt.Println("---")
-
-	for i, _ := range poolsState {
+	for i := range poolsState {
 		bundleProposalState, _ := suite.App().BundlesKeeper.GetBundleProposal(suite.Ctx(), poolsState[i].Id)
 		stakersState := suite.App().StakersKeeper.GetAllStakerAddressesOfPool(suite.Ctx(), poolsState[i].Id)
 		totalStakeState := suite.App().StakersKeeper.GetTotalStake(suite.Ctx(), poolsState[i].Id)
-
-		fmt.Println(poolsState)
-		fmt.Println(poolsQuery.Pools)
-
-		if len(poolsQuery.Pools) > 1 {
-			fmt.Println(poolsQuery.Pools[0])
-			fmt.Println(poolsQuery.Pools[1])
-		}
 
 		Expect(poolsQuery.Pools[i].Id).To(Equal(poolsState[i].Id))
 		Expect(*poolsQuery.Pools[i].Data).To(Equal(poolsState[i]))
@@ -223,7 +212,7 @@ func (suite *KeeperTestSuite) VerifyStakersQueries() {
 	Expect(stakersQueryErr).To(BeNil())
 	Expect(stakersQuery.Stakers).To(HaveLen(len(stakersState)))
 
-	for i, _ := range stakersState {
+	for i := range stakersState {
 		valaccounts := suite.App().StakersKeeper.GetValaccountsFromStaker(suite.Ctx(), stakersState[i].Address)
 
 		Expect(*stakersQuery.Stakers[i].Staker).To(Equal(stakersState[i]))

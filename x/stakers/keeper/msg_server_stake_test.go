@@ -105,4 +105,39 @@ var _ = Describe("Staking", Ordered, func() {
 		_, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		Expect(found).To(BeFalse())
 	})
+
+	It("Create a second staker", func() {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.ALICE,
+			Amount:  100 * i.KYVE,
+		})
+
+		// ACT
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.BOB,
+			Amount:  150 * i.KYVE,
+		})
+
+		// ASSERT
+		balanceAfter := s.GetBalanceFromAddress(i.BOB)
+
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.BOB)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.BOB)
+
+		Expect(found).To(BeTrue())
+
+		Expect(initialBalance - balanceAfter).To(Equal(150 * i.KYVE))
+
+		Expect(staker.Address).To(Equal(i.BOB))
+		Expect(staker.Amount).To(Equal(150 * i.KYVE))
+		Expect(staker.UnbondingAmount).To(BeZero())
+		Expect(staker.Commission).To(Equal(types.DefaultCommission))
+
+		Expect(staker.Moniker).To(BeEmpty())
+		Expect(staker.Logo).To(BeEmpty())
+		Expect(staker.Website).To(BeEmpty())
+
+		Expect(valaccounts).To(BeEmpty())
+	})
 })
