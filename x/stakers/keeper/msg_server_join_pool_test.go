@@ -41,11 +41,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyStakersModuleAssetsIntegrity()
-		s.VerifyPoolTotalStake()
-
-		s.VerifyStakersQueries()
-		s.VerifyPoolQueries()
+		s.PerformValidityChecks()
 	})
 
 	It("Staker was just created", func() {

@@ -37,8 +37,7 @@ var _ = Describe("Defund Pool", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyPoolModuleAssetsIntegrity()
-		s.VerifyPoolTotalFunds()
+		s.PerformValidityChecks()
 	})
 
 	It("Defund more than funded", func() {

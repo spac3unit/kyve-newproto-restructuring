@@ -66,11 +66,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyPoolModuleAssetsIntegrity()
-		s.VerifyStakersModuleAssetsIntegrity()
-
-		s.VerifyPoolTotalFunds()
-		s.VerifyPoolTotalStake()
+		s.PerformValidityChecks()
 	})
 
 	It("Produce valid bundles with one node", func() {

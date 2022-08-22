@@ -30,8 +30,7 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyPoolModuleAssetsIntegrity()
-		s.VerifyStakersModuleAssetsIntegrity()
+		s.PerformValidityChecks()
 	})
 
 	It("Try to claim uploader role without pool being funded", func() {

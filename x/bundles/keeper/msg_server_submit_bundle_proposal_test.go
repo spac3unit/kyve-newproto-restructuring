@@ -56,8 +56,7 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyPoolModuleAssetsIntegrity()
-		s.VerifyStakersModuleAssetsIntegrity()
+		s.PerformValidityChecks()
 	})
 
 	It("Try to submit proposal", func() {

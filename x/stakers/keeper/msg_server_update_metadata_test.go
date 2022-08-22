@@ -23,8 +23,7 @@ var _ = Describe("Update Metadata", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyStakersModuleAssetsIntegrity()
-		s.VerifyPoolTotalStake()
+		s.PerformValidityChecks()
 	})
 
 	It("Get default metadata", func() {
