@@ -355,7 +355,7 @@ func NewApp(
 		app.DistrKeeper,
 		app.PoolKeeper,
 		app.UpgradeKeeper,
-		// TODO stakers
+		app.StakersKeeper,
 	)
 
 	app.BundlesKeeper = *bundlesmodulekeeper.NewKeeper(

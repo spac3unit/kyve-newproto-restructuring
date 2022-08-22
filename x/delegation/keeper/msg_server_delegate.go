@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 
 	"github.com/KYVENetwork/chain/util"
 
@@ -15,7 +16,9 @@ import (
 func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO check if staker exist?
+	if !k.stakersKeeper.DoesStakerExist(ctx, msg.Staker) {
+		return nil, sdkErrors.Wrap(types.ErrStakerDoesNotExist, msg.Staker)
+	}
 
 	// Performs logical delegation without transferring the amount
 	k.performDelegation(ctx, msg.Staker, msg.Creator, msg.Amount)

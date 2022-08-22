@@ -23,6 +23,7 @@ type (
 		distrkeeper   types.DistrKeeper
 		poolKeeper    types.PoolKeeper
 		upgradeKeeper types.UpgradeKeeper
+		stakersKeeper types.StakersKeeper
 	}
 )
 
@@ -37,6 +38,7 @@ func NewKeeper(
 	distrkeeper types.DistrKeeper,
 	poolKeeper types.PoolKeeper,
 	upgradeKeeper types.UpgradeKeeper,
+	stakersKeeper types.StakersKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -53,6 +55,7 @@ func NewKeeper(
 		distrkeeper:   distrkeeper,
 		poolKeeper:    poolKeeper,
 		upgradeKeeper: upgradeKeeper,
+		stakersKeeper: stakersKeeper,
 	}
 }
 

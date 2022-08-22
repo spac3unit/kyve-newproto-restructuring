@@ -29,3 +29,7 @@ type PoolKeeper interface {
 type UpgradeKeeper interface {
 	ScheduleUpgrade(ctx sdk.Context, plan types.Plan) error
 }
+
+type StakersKeeper interface {
+	DoesStakerExist(ctx sdk.Context, staker string) bool
+}
