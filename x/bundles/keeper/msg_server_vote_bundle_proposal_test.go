@@ -67,8 +67,7 @@ var _ = Describe("Vote Proposal", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyPoolModuleAssetsIntegrity()
-		s.VerifyStakersModuleAssetsIntegrity()
+		s.PerformValidityChecks()
 	})
 
 	It("Try to vote valid on proposal", func() {

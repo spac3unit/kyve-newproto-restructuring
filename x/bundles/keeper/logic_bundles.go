@@ -23,28 +23,27 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 
 	// Error if the pool is upgrading.
 	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
-		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolCurrentlyUpgrading.Error())
+		return types.ErrPoolCurrentlyUpgrading
 	}
 
 	// Error if the pool is paused.
 	if pool.Paused {
-		return sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrPoolPaused.Error())
+		return types.ErrPoolPaused
 	}
 
 	// Error if the pool has no funds.
 	if len(pool.Funders) == 0 {
-		return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrPoolOutOfFunds.Error())
+		return types.ErrPoolOutOfFunds
 	}
 
 	// Error if min stake is not reached
-	if k.stakerKeeper.GetTotalStake(ctx, pool.Id)+k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) < pool.MinStake {
-		return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrMinStakeNotReached.Error())
+	if k.stakerKeeper.GetTotalStake(ctx, pool.Id) + k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) < pool.MinStake {
+		return types.ErrMinStakeNotReached
 	}
 
 	return nil
 }
 
-// validateSubmitBundleArgs checks the given bundle submit message for the valid format
 func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) error {
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 
@@ -363,7 +362,7 @@ func (k Keeper) chooseNextUploaderFromAllStakers(ctx sdk.Context, poolId uint64)
 	return k.chooseNextUploaderFromSelectedStakers(ctx, poolId, stakers)
 }
 
-// GetVoteDistribution is an internal function evaluates the quorum status of a bundle proposal.
+// getVoteDistribution is an internal function evaulates the quorum status of a bundle proposal.
 func (k Keeper) GetVoteDistribution(ctx sdk.Context, poolId uint64) (voteDistribution types.VoteDistribution) {
 	bundleProposal, found := k.GetBundleProposal(ctx, poolId)
 	if !found {

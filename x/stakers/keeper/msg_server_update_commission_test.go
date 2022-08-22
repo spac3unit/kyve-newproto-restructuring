@@ -23,8 +23,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 	})
 
 	AfterEach(func() {
-		s.VerifyStakersModuleAssetsIntegrity()
-		s.VerifyPoolTotalStake()
+		s.PerformValidityChecks()
 	})
 
 	It("Get default commission", func() {
@@ -36,7 +35,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "0.5",
 		})
 
@@ -55,7 +54,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission to 0%", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "0",
 		})
 
@@ -74,7 +73,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission to 100%", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "1",
 		})
 
@@ -93,7 +92,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission with invalid number", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "teset",
 		})
 
@@ -105,7 +104,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission with negative number", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "-0.5",
 		})
 
@@ -117,7 +116,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission with to high number", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "2",
 		})
 
@@ -129,17 +128,17 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission during change time", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "0.5",
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "0.2",
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "0.3",
 		})
 
@@ -158,17 +157,17 @@ var _ = Describe("Update Commission", Ordered, func() {
 	It("Update commission during change time to same value", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "0.5",
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: "0.2",
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
-			Creator: i.ALICE,
+			Creator:    i.ALICE,
 			Commission: stakerstypes.DefaultCommission,
 		})
 
