@@ -24,11 +24,11 @@ func (k Keeper) Stakers(c context.Context, req *types.QueryStakersRequest) (*typ
 
 	data := make([]types.StakerResponse, 0)
 
-	for _, staker := range stakers {
-		valaccounts := k.stakerKeeper.GetValaccountsFromStaker(ctx, staker.Address)
+	for i := range stakers {
+		valaccounts := k.stakerKeeper.GetValaccountsFromStaker(ctx, stakers[i].Address)
 
 		data = append(data, types.StakerResponse{
-			Staker: &staker,
+			Staker:      &stakers[i],
 			Valaccounts: valaccounts,
 		})
 	}
@@ -50,7 +50,7 @@ func (k Keeper) Staker(c context.Context, req *types.QueryStakerRequest) (*types
 	valaccounts := k.stakerKeeper.GetValaccountsFromStaker(ctx, staker.Address)
 
 	return &types.QueryStakerResponse{Staker: types.StakerResponse{
-		Staker: &staker,
+		Staker:      &staker,
 		Valaccounts: valaccounts,
 	}}, nil
 }
