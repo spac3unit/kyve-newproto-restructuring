@@ -329,6 +329,7 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.DistrKeeper,
+		app.UpgradeKeeper,
 	)
 
 	app.StakersKeeper = *stakersmodulekeeper.NewKeeper(
@@ -355,7 +356,7 @@ func NewApp(
 		app.DistrKeeper,
 		app.PoolKeeper,
 		app.UpgradeKeeper,
-		// TODO stakers
+		app.StakersKeeper,
 	)
 
 	app.BundlesKeeper = *bundlesmodulekeeper.NewKeeper(

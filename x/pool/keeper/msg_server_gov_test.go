@@ -26,16 +26,16 @@ var _ = Describe("Gov Pool", Ordered, func() {
 
 		// Act
 		s.RunTxPoolSuccess(&pooltypes.GovMsgCreatePool{
-			Creator:        "govAddress",
-			Name:           "Moontest",
-			Runtime:        "Runtime",
-			Logo:           "logo",
+			Creator:        i.GOV,
+			Name:           "Moonbeam",
+			Runtime:        "@kyve/evm",
+			Logo:           "https://arweave.net/9FJDam56yBbmvn8rlamEucATH5UcYqSBw468rlCXn8E",
 			Config:         "{\"config\": \"test\"}",
 			StartKey:       "0",
-			UploadInterval: 1,
-			OperatingCost:  2,
-			MinStake:       3,
-			MaxBundleSize:  4,
+			UploadInterval: 60,
+			OperatingCost:  2_500_000_000,
+			MinStake:       100_000_000_000,
+			MaxBundleSize:  100,
 			Version:        "1",
 			Binaries:       "{\"b1\": \"string\"}",
 		})
@@ -43,16 +43,17 @@ var _ = Describe("Gov Pool", Ordered, func() {
 		// Assert
 		pool, found := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		Expect(found).To(BeTrue())
-		Expect(pool.Name).To(Equal("Moontest"))
-		Expect(pool.Runtime).To(Equal("Runtime"))
+		Expect(pool.Name).To(Equal("Moonbeam"))
+		Expect(pool.Runtime).To(Equal("@kyve/evm"))
+		Expect(pool.Logo).To(Equal("https://arweave.net/9FJDam56yBbmvn8rlamEucATH5UcYqSBw468rlCXn8E"))
 		Expect(pool.Config).To(Equal("{\"config\": \"test\"}"))
 		Expect(pool.StartKey).To(Equal("0"))
-		Expect(pool.UploadInterval).To(Equal(uint64(1)))
-		Expect(pool.OperatingCost).To(Equal(uint64(2)))
-		Expect(pool.MinStake).To(Equal(uint64(3)))
-		Expect(pool.MaxBundleSize).To(Equal(uint64(4)))
-
-		// TODO version binaries?
+		Expect(pool.UploadInterval).To(Equal(uint64(60)))
+		Expect(pool.OperatingCost).To(Equal(uint64(2_500_000_000)))
+		Expect(pool.MinStake).To(Equal(uint64(100_000_000_000)))
+		Expect(pool.MaxBundleSize).To(Equal(uint64(100)))
+		Expect(pool.Protocol.Version).To(Equal("1"))
+		Expect(pool.Protocol.Binaries).To(Equal("{\"b1\": \"string\"}"))
 	})
 
 	It("Update Pool", func() {
@@ -66,13 +67,16 @@ var _ = Describe("Gov Pool", Ordered, func() {
 
 		Expect(found).To(BeTrue())
 		Expect(pool.Name).To(Equal("Bitcoin"))
-		Expect(pool.Runtime).To(Equal("Runtime"))
+		Expect(pool.Runtime).To(Equal("@kyve/evm"))
+		Expect(pool.Logo).To(Equal("https://arweave.net/9FJDam56yBbmvn8rlamEucATH5UcYqSBw468rlCXn8E"))
 		Expect(pool.Config).To(Equal("{\"config\": \"test\"}"))
 		Expect(pool.StartKey).To(Equal("0"))
-		Expect(pool.UploadInterval).To(Equal(uint64(1)))
-		Expect(pool.OperatingCost).To(Equal(uint64(2)))
-		Expect(pool.MinStake).To(Equal(uint64(3)))
-		Expect(pool.MaxBundleSize).To(Equal(uint64(4)))
+		Expect(pool.UploadInterval).To(Equal(uint64(60)))
+		Expect(pool.OperatingCost).To(Equal(uint64(2_500_000_000)))
+		Expect(pool.MinStake).To(Equal(uint64(100_000_000_000)))
+		Expect(pool.MaxBundleSize).To(Equal(uint64(100)))
+		Expect(pool.Protocol.Version).To(Equal("1"))
+		Expect(pool.Protocol.Binaries).To(Equal("{\"b1\": \"string\"}"))
 	})
 
 	It("Pause Pool", func() {
@@ -162,7 +166,7 @@ var _ = Describe("Gov Pool", Ordered, func() {
 		// Act
 		s.RunTxPoolSuccess(&pooltypes.GovMsgPoolUpgrade{
 			Creator:     i.GOV,
-			Runtime:     "Runtime",
+			Runtime:     "@kyve/evm",
 			Version:     "new version",
 			ScheduledAt: uint64(s.Ctx().BlockTime().Unix() + 1000),
 			Duration:    60,

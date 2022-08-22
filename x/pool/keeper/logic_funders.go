@@ -11,17 +11,24 @@ import (
 // All funders who can't afford the amount, are kicked out.
 // Their remaining amount is transferred to the Treasury
 // Function throws an error if pool ran out of funds.
-// TODO where is the amount transferred?
-func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64) error {
+// The receiverModuleName should be the name of the module which charges the funders
+// (this will usually be the bundles module)
+func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64, receiverModuleName string) error {
 
 	pool, poolErr := k.GetPoolWithError(ctx, poolId)
 	if poolErr != nil {
 		return poolErr
 	}
 
+	// This is the amount every funder will be charged
 	var amountPerFunder uint64
+
+	// Due to discrete division there will be a reminder which can not be split
+	// equally among all funders. This amount is charged to the lowest funder
 	var amountRemainder uint64
 
+	// When a funder is not able to pay, all the remaining funds will be moved
+	// to the treasury.
 	var slashedFunds uint64
 
 	// Remove all funders who can't afford amountPerFunder
@@ -32,9 +39,15 @@ func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint6
 		lowestFunder := pool.GetLowestFunder()
 
 		if amountRemainder+amountPerFunder > lowestFunder.Amount {
-			// TODO: check if funder gets properly removed from pool
 			pool.RemoveFunder(lowestFunder)
-			// TODO: emit defund event
+			if errEmit := ctx.EventManager().EmitTypedEvent(&pooltypes.EventDefundPool{
+				PoolId:  poolId,
+				Address: lowestFunder.Address,
+				Amount:  lowestFunder.Amount,
+			}); errEmit != nil {
+				return errEmit
+			}
+
 			slashedFunds += lowestFunder.Amount
 		} else {
 			break
@@ -44,8 +57,13 @@ func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint6
 	if slashedFunds > 0 {
 		// send slash to treasury
 		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, pooltypes.ModuleName, slashedFunds); err != nil {
-			// TODO: return 0, err?
+			util.PanicHalt(k.upgradeKeeper, ctx, "pool module out of funds")
 		}
+	}
+
+	if len(pool.Funders) == 0 {
+		k.SetPool(ctx, pool)
+		return pooltypes.ErrFundsTooLow
 	}
 
 	// Remove amount from funders

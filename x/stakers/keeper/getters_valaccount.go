@@ -73,7 +73,8 @@ func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string) {
 	if found {
 		valaccount.Points = valaccount.Points + 1
 
-		// TODO: move max_points to params
+		// TODO: use maxPoints from params
+		// TODO: dont call logic within getters -> move to logic file
 		if valaccount.Points >= 5 {
 			k.Slash(ctx, poolId, stakerAddress, types.SLASH_TYPE_TIMEOUT)
 			k.ResetPoints(ctx, poolId, stakerAddress)

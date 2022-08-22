@@ -32,7 +32,7 @@ type PoolKeeper interface {
 	SetPool(ctx sdk.Context, pool pooltypes.Pool)
 
 	GetAllPools(ctx sdk.Context) (list []pooltypes.Pool)
-	ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64) error
+	ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64, receiverModuleName string) error
 }
 
 type StakerKeeper interface {
