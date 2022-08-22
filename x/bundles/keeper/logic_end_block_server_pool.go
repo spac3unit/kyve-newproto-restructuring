@@ -34,7 +34,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		// Check if bundle needs to be dropped
 		if bundleProposal.StorageId != "" && !strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
 			// check if the quorum was actually reached
-			voteDistribution := k.getVoteDistribution(ctx, pool.Id)
+			voteDistribution := k.GetVoteDistribution(ctx, pool.Id)
 
 			if voteDistribution.Status == types.BUNDLE_STATUS_NO_QUORUM {
 				// handle stakers who did not vote at all

@@ -39,7 +39,10 @@ service QueryBundles {
 //    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_id/{pool_id}/{id}";
 //  }
 
-
+  // CurrentVoteStatus ...
+  rpc CurrentVoteStatus(QueryCurrentVoteStatusRequest) returns (QueryCurrentVoteStatusResponse) {
+    option (google.api.http).get = "/kyve/query/v1beta1/current_vote_status/{pool_id}";
+  }
 
   // CanValidate ...
   rpc CanValidate(QueryCanValidateRequest) returns (QueryCanValidateResponse) {
@@ -76,6 +79,28 @@ message QueryFinalizedBundlesResponse {
   repeated kyve.bundles.v1beta1.FinalizedBundle finalized_bundles = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// ===============================
+// current_vote_status/{pool_id}
+// ===============================
+
+// QueryCurrentVoteStatusRequest is the request type for the Query/Staker RPC method.
+message QueryCurrentVoteStatusRequest {
+  // pool_id ...
+  uint64 pool_id = 1;
+}
+
+// QueryCurrentVoteStatusResponse is the response type for the Query/Staker RPC method.
+message QueryCurrentVoteStatusResponse {
+  // valid ...
+  uint64 valid = 1;
+  // invalid ...
+  uint64 invalid = 2;
+  // abstain ...
+  uint64 abstain = 3;
+  // total ...
+  uint64 total = 4;
 }
 
 

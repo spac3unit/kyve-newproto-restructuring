@@ -357,7 +357,7 @@ func (k Keeper) chooseNextUploaderFromAllStakers(ctx sdk.Context, poolId uint64)
 }
 
 // getVoteDistribution is an internal function evaulates the quorum status of a bundle proposal.
-func (k Keeper) getVoteDistribution(ctx sdk.Context, poolId uint64) (voteDistribution types.VoteDistribution) {
+func (k Keeper) GetVoteDistribution(ctx sdk.Context, poolId uint64) (voteDistribution types.VoteDistribution) {
 	bundleProposal, found := k.GetBundleProposal(ctx, poolId)
 	if !found {
 		return
