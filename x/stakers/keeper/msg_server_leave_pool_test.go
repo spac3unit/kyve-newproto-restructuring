@@ -44,6 +44,9 @@ var _ = Describe("Leave Pool", Ordered, func() {
 	AfterEach(func() {
 		s.VerifyStakersModuleAssetsIntegrity()
 		s.VerifyPoolTotalStake()
+
+		s.VerifyStakersQueries()
+		s.VerifyPoolQueries()
 	})
 
 	It("Leave a pool", func() {

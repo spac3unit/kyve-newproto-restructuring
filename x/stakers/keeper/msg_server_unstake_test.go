@@ -28,6 +28,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 	AfterEach(func() {
 		s.VerifyStakersModuleAssetsIntegrity()
 		s.VerifyPoolTotalStake()
+		s.VerifyStakersQueries()
 	})
 
 	It("Unstake 50 KYVE", func() {

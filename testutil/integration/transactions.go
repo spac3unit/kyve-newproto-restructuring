@@ -1,6 +1,8 @@
 package integration
 
 import (
+	"fmt"
+	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	. "github.com/onsi/gomega"
 
 	"github.com/KYVENetwork/chain/x/bundles"
@@ -171,4 +173,74 @@ func (suite *KeeperTestSuite) VerifyPoolTotalStake() {
 
 		Expect(actualBalance).To(Equal(expectedBalance))
 	}
+}
+
+func (suite *KeeperTestSuite) VerifyPoolQueries() {
+	poolsState := suite.App().PoolKeeper.GetAllPools(suite.Ctx())
+	poolsQuery, stakersQueryErr := suite.App().QueryKeeper.Pools(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryPoolsRequest{})
+
+	Expect(stakersQueryErr).To(BeNil())
+	Expect(poolsQuery.Pools).To(HaveLen(len(poolsState)))
+
+	fmt.Println("---")
+
+	for i, _ := range poolsState {
+		bundleProposalState, _ := suite.App().BundlesKeeper.GetBundleProposal(suite.Ctx(), poolsState[i].Id)
+		stakersState := suite.App().StakersKeeper.GetAllStakerAddressesOfPool(suite.Ctx(), poolsState[i].Id)
+		totalStakeState := suite.App().StakersKeeper.GetTotalStake(suite.Ctx(), poolsState[i].Id)
+
+		fmt.Println(poolsState)
+		fmt.Println(poolsQuery.Pools)
+
+		if len(poolsQuery.Pools) > 1 {
+			fmt.Println(poolsQuery.Pools[0])
+			fmt.Println(poolsQuery.Pools[1])
+		}
+
+		Expect(poolsQuery.Pools[i].Id).To(Equal(poolsState[i].Id))
+		Expect(*poolsQuery.Pools[i].Data).To(Equal(poolsState[i]))
+		Expect(*poolsQuery.Pools[i].BundleProposal).To(Equal(bundleProposalState))
+		Expect(poolsQuery.Pools[i].Stakers).To(Equal(stakersState))
+		Expect(poolsQuery.Pools[i].TotalStake).To(Equal(totalStakeState))
+
+		poolByIdQuery, poolByIdQueryErr := suite.App().QueryKeeper.Pool(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryPoolRequest{
+			Id: poolsState[i].Id,
+		})
+
+		Expect(poolByIdQueryErr).To(BeNil())
+		Expect(poolByIdQuery.Pool.Id).To(Equal(poolsState[i].Id))
+		Expect(*poolByIdQuery.Pool.Data).To(Equal(poolsState[i]))
+		Expect(*poolByIdQuery.Pool.BundleProposal).To(Equal(bundleProposalState))
+		Expect(poolsQuery.Pools[i].Stakers).To(Equal(stakersState))
+		Expect(poolByIdQuery.Pool.TotalStake).To(Equal(totalStakeState))
+	}
+}
+
+func (suite *KeeperTestSuite) VerifyStakersQueries() {
+	stakersState := suite.App().StakersKeeper.GetAllStakers(suite.Ctx())
+	stakersQuery, stakersQueryErr := suite.App().QueryKeeper.Stakers(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryStakersRequest{})
+
+	Expect(stakersQueryErr).To(BeNil())
+	Expect(stakersQuery.Stakers).To(HaveLen(len(stakersState)))
+
+	for i, _ := range stakersState {
+		valaccounts := suite.App().StakersKeeper.GetValaccountsFromStaker(suite.Ctx(), stakersState[i].Address)
+
+		Expect(*stakersQuery.Stakers[i].Staker).To(Equal(stakersState[i]))
+		Expect(stakersQuery.Stakers[i].Valaccounts).To(Equal(valaccounts))
+
+		stakerByAddressQuery, stakersByAddressQueryErr := suite.App().QueryKeeper.Staker(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryStakerRequest{
+			Address: stakersState[i].Address,
+		})
+
+		Expect(stakersByAddressQueryErr).To(BeNil())
+		Expect(*stakerByAddressQuery.Staker.Staker).To(Equal(stakersState[i]))
+		Expect(stakerByAddressQuery.Staker.Valaccounts).To(Equal(valaccounts))
+	}
+
+	unbondingState := suite.App().StakersKeeper.GetAllUnbondingStakeEntries(suite.Ctx())
+	unbondingQuery, unbondingQueryErr := suite.App().QueryKeeper.AccountStakingUnbondings(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryAccountStakingUnbondingsRequest{})
+
+	Expect(unbondingQueryErr).To(BeNil())
+	Expect(unbondingState).To(ContainElements(unbondingQuery.Unbondings))
 }

@@ -22,6 +22,7 @@ var _ = Describe("Staking", Ordered, func() {
 	AfterEach(func() {
 		s.VerifyStakersModuleAssetsIntegrity()
 		s.VerifyPoolTotalStake()
+		s.VerifyStakersQueries()
 	})
 
 	It("Create new staker with 100 KYVE", func() {
@@ -50,7 +51,7 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(staker.Logo).To(BeEmpty())
 		Expect(staker.Website).To(BeEmpty())
 
-		Expect(valaccounts).To(HaveLen(0))
+		Expect(valaccounts).To(BeEmpty())
 	})
 
 	It("Stake additional 50 KYVE", func() {
@@ -104,7 +105,4 @@ var _ = Describe("Staking", Ordered, func() {
 		_, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		Expect(found).To(BeFalse())
 	})
-
-	// TODO: test updating moniker, logo and website
-	// TODO: test kicking out lowest staker
 })

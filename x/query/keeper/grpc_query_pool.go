@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"context"
-
+	"fmt"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -22,10 +22,17 @@ func (k Keeper) Pools(c context.Context, req *types.QueryPoolsRequest) (*types.Q
 		return nil, err
 	}
 
+	fmt.Println(pools)
+
 	data := make([]types.PoolResponse, 0)
 	for _, pool := range pools {
-		data = append(data, k.parsePoolResponse(ctx, &pool))
+		fmt.Println(pool)
+		parsed := k.parsePoolResponse(ctx, &pool)
+
+		data = append(data, parsed)
 	}
+
+	fmt.Println(data)
 
 	return &types.QueryPoolsResponse{Pools: data, Pagination: pageRes}, nil
 }
