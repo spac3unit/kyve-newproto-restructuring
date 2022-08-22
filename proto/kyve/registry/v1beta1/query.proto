@@ -12,7 +12,6 @@ option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 // Query defines the gRPC registry querier service.
 service Query {
 
-
   // StakersList returns all staker addresses with their corresponding staking amount for a given pool
   rpc StakersList(QueryStakersListRequest) returns (QueryStakersListResponse) {
     option (google.api.http).get = "/kyve/registry/v1beta1/stakers_list/{pool_id}";
@@ -21,11 +20,6 @@ service Query {
   // Staker returns all staker info
   rpc Staker(QueryStakerRequest) returns (QueryStakerResponse) {
     option (google.api.http).get = "/kyve/registry/v1beta1/staker/{pool_id}/{staker}";
-  }
-
-  // VoteStatus returns all vote info
-  rpc VoteStatus(QueryVoteStatusRequest) returns (QueryVoteStatusResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/vote_status/{pool_id}";
   }
 
   // WARP
@@ -44,15 +38,6 @@ service Query {
   rpc ProposalSinceId(QueryProposalSinceIdRequest) returns (QueryProposalSinceIdResponse) {
     option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_id/{pool_id}/{id}";
   }
-
-  // PROTOCOL NODE - FLOW
-
-
-  // StakeInfo returns necessary information to become a staker (used by the protocol nodes)
-  rpc StakeInfo(QueryStakeInfoRequest) returns (QueryStakeInfoResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/stake_info/{pool_id}/{staker}";
-  }
-
 
 }
 
@@ -134,30 +119,6 @@ message StakerResponse {
   PendingCommissionChange pending_commission_change = 14;
 }
 
-// QueryVoteStatusRequest is the request type for the Query/VoteStatus RPC method.
-message QueryVoteStatusRequest {
-  // pool_id defines the unique ID of the pool.
-  uint64 pool_id = 1;
-}
-
-// QueryVoteStatusResponse is the response type for the Query/VoteStatus RPC method.
-message QueryVoteStatusResponse {
-  // staker ...
-  kyve.registry.v1beta1.VoteStatusResponse vote_status = 1;
-}
-
-// VoteStatusResponse ...
-message VoteStatusResponse {
-  // valid ...
-  uint64 valid = 1;
-  // invalid ...
-  uint64 invalid = 2;
-  // abstain ...
-  uint64 abstain = 3;
-  // total ...
-  uint64 total = 4;
-}
-
 // ######################
 // =====    WARP    =====
 // ######################
@@ -212,47 +173,3 @@ message QueryProposalSinceIdResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// PROTOCOL NODE - FLOW
-
-// QueryStakeInfoRequest is the request type for the Query/StakeInfo RPC method.
-message QueryStakeInfoRequest {
-  // pool_id ...
-  uint64 pool_id = 1;
-  // staker ..
-  string staker = 2;
-}
-
-// QueryStakeInfoResponse is the response type for the Query/StakeInfo RPC method.
-message QueryStakeInfoResponse {
-  // balance ...
-  string balance = 1;
-  // current_stake ...
-  string current_stake = 2;
-  // minimum_stake ...
-  string minimum_stake = 3;
-  // status ...
-  StakerStatus status = 4;
-}
-
-// ###################
-// ===== ACCOUNT =====
-// ###################
-
-
-// Staked ...
-message Staked {
-  // staker ...
-  string staker = 1;
-  // pool_id ...
-  uint64 pool_id = 2;
-  // account ...
-  string account = 3;
-  // amount ...
-  uint64 amount = 4;
-  // pool ...
-  kyve.registry.v1beta1.Pool pool = 6;
-  // unbonding_amount ...
-  uint64 unbonding_amount = 7;
-  // upload_probability
-  string upload_probability = 8;
-}

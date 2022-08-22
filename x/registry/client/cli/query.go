@@ -31,7 +31,5 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 
 	// PROTOCOL NODE - FLOW
 
-	cmd.AddCommand(CmdStakeInfo())
-
 	return cmd
 }
