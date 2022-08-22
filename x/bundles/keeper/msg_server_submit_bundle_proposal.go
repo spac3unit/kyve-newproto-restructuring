@@ -70,7 +70,7 @@ func (k msgServer) SubmitBundleProposal(
 	}
 
 	// check if the quorum was actually reached
-	voteDistribution := k.getVoteDistribution(ctx, msg.PoolId)
+	voteDistribution := k.GetVoteDistribution(ctx, msg.PoolId)
 
 	// handle valid proposal
 	if voteDistribution.Status == types.BUNDLE_STATUS_VALID {
