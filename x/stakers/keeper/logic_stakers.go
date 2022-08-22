@@ -33,8 +33,17 @@ func (k Keeper) Slash(
 	staker, found := k.GetStaker(ctx, stakerAddress)
 
 	if found {
-		// Parse the provided slash percentage and panic on any errors.
-		slashAmountRatio, _ := sdk.NewDecFromStr("0.01") // TODO use params
+
+		// Retrieve slash fraction from params
+		var slashAmountRatio sdk.Dec
+		switch slashType {
+		case types.SLASH_TYPE_TIMEOUT:
+			slashAmountRatio, _ = sdk.NewDecFromStr(k.TimeoutSlash(ctx))
+		case types.SLASH_TYPE_VOTE:
+			slashAmountRatio, _ = sdk.NewDecFromStr(k.VoteSlash(ctx))
+		case types.SLASH_TYPE_UPLOAD:
+			slashAmountRatio, _ = sdk.NewDecFromStr(k.UploadSlash(ctx))
+		}
 
 		// Compute how much we're going to slash the staker.
 		slash := uint64(sdk.NewDec(int64(staker.Amount)).Mul(slashAmountRatio).RoundInt64())

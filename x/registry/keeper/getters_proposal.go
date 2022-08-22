@@ -105,37 +105,3 @@ func (k Keeper) GetAllProposal(ctx sdk.Context) (list []types.Proposal) {
 
 	return
 }
-
-// TODO delete this function after v0.6.1 migration
-func (k Keeper) UpgradeHelperV060MigrateSecondIndex(ctx sdk.Context) {
-
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ProposalKeyPrefixIndex2)
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	var keysToDelete [][]byte
-
-	for ; iterator.Valid(); iterator.Next() {
-		keyArray := iterator.Key()
-		var key = make([]byte, len(keyArray))
-		copy(key, keyArray)
-		keysToDelete = append(keysToDelete, key)
-	}
-
-	println("Delete ", len(keysToDelete), " index keys")
-
-	for _, key := range keysToDelete {
-		store.Delete(key)
-	}
-
-	storeIndex := prefix.NewStore(ctx.KVStore(k.storeKey), types.ProposalKeyPrefixIndex2)
-	var counter uint64 = 0
-	for _, proposal := range k.GetAllProposal(ctx) {
-		counter++
-		// Insert bundle id for second index
-		storeIndex.Set(types.ProposalKeyIndex2(proposal.PoolId, proposal.Id), []byte(proposal.StorageId))
-	}
-	println("Created ", counter, " index keys")
-
-}

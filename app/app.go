@@ -329,6 +329,7 @@ func NewApp(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.DistrKeeper,
+		app.UpgradeKeeper,
 	)
 
 	app.StakersKeeper = *stakersmodulekeeper.NewKeeper(

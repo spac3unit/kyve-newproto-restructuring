@@ -30,13 +30,13 @@ var (
 	DelegatorKeyPrefixIndex2 = []byte{1, 1}
 
 	// DelegationEntriesKeyPrefix is the prefix to retrieve all DelegationEntries
-	DelegationEntriesKeyPrefix = []byte{2, 0}
+	DelegationEntriesKeyPrefix = []byte{2}
 
 	// DelegationDataKeyPrefix ...
-	DelegationDataKeyPrefix = []byte{3, 0}
+	DelegationDataKeyPrefix = []byte{3}
 
 	// DelegationSlashEntriesKeyPrefix ...
-	DelegationSlashEntriesKeyPrefix = []byte{4, 0}
+	DelegationSlashEntriesKeyPrefix = []byte{4}
 
 	// QueueKey ...
 	QueueKey = []byte{5}
@@ -71,12 +71,10 @@ func DelegationDataKey(stakerAddress string) []byte {
 	return util.GetByteKey(stakerAddress)
 }
 
-// UndelegationQueueKey ...
 func UndelegationQueueKey(kIndex uint64) []byte {
 	return util.GetByteKey(kIndex)
 }
 
-// UndelegationQueueKeyIndex2 ...
 func UndelegationQueueKeyIndex2(stakerAddress string, kIndex uint64) []byte {
 	return util.GetByteKey(stakerAddress, kIndex)
 }

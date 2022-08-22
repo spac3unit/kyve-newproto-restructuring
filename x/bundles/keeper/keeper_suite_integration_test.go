@@ -401,9 +401,11 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
 		Expect(stakerFound).To(BeTrue())
 
-		// 1% slash
-		Expect(staker.Amount).To(Equal(99 * i.KYVE))
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(299 * i.KYVE))
+		// Upload Slash
+		fraction, _ := sdk.NewDecFromStr(s.App().StakersKeeper.UploadSlash(s.Ctx()))
+		expectedBalance := sdk.NewDec(int64(100 * i.KYVE)).Mul(sdk.NewDec(1).Sub(fraction)).TruncateInt().Uint64()
+		Expect(staker.Amount).To(Equal(expectedBalance))
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(200*i.KYVE + expectedBalance))
 
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)

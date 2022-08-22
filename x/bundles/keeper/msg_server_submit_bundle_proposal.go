@@ -77,14 +77,8 @@ func (k msgServer) SubmitBundleProposal(
 		// Calculate the total reward for the bundle, and individual payouts.
 		bundleReward := k.calculatePayouts(ctx, msg.PoolId)
 
-		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward.Total); err != nil {
-			return nil, err
-		}
-
-		pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
-		bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
-
-		if len(pool.Funders) == 0 {
+		// TODO check balance flow
+		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward.Total, types.ModuleName); err != nil {
 			// drop bundle because pool ran out of funds
 			bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 			k.SetBundleProposal(ctx, bundleProposal)
@@ -92,6 +86,9 @@ func (k msgServer) SubmitBundleProposal(
 
 			return &types.MsgSubmitBundleProposalResponse{}, nil
 		}
+
+		pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
+		bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
 
 		// send network fee to treasury
 		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, pooltypes.ModuleName, bundleReward.Treasury); err != nil {
