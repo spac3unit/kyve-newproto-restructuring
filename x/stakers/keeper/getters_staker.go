@@ -128,7 +128,6 @@ func (k Keeper) GetLowestStaker(ctx sdk.Context, poolId uint64) (val types.Stake
 
 func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
 	k.setStaker(ctx, staker)
-	// TODO add total staker count
 }
 
 // #############################
@@ -209,7 +208,7 @@ func (k Keeper) GetPaginatedStakerQuery(ctx sdk.Context, pagination *query.PageR
 	if err != nil {
 		return nil, nil, status.Error(codes.Internal, err.Error())
 	}
-	
+
 	return stakers, pageRes, nil
 }
 

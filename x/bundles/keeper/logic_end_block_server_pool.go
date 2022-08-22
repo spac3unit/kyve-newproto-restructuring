@@ -80,6 +80,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		// Now we slash and remove the current next_uploader and select a new one.
 
 		k.stakerKeeper.Slash(ctx, pool.Id, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
+		k.delegationKeeper.SlashDelegators(ctx, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
 
 		k.stakerKeeper.RemoveValaccountFromPool(ctx, pool.Id, bundleProposal.NextUploader)
 

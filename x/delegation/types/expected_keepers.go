@@ -1,6 +1,7 @@
 package types
 
 import (
+	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/upgrade/types"
 )
@@ -32,4 +33,5 @@ type UpgradeKeeper interface {
 
 type StakersKeeper interface {
 	DoesStakerExist(ctx sdk.Context, staker string) bool
+	GetSlashFraction(ctx sdk.Context, slashType stakerstypes.SlashType) (slashAmountRatio sdk.Dec)
 }

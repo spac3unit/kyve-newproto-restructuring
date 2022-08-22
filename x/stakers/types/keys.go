@@ -48,9 +48,8 @@ var (
 type STAKER_STATS string
 
 var (
-	STAKER_STATS_TOTAL_STAKE          STAKER_STATS = "total_stake"
-	STAKER_STATS_TOTAL_INACTIVE_STAKE STAKER_STATS = "total_inactive_stake"
-	STAKER_STATS_COUNT                STAKER_STATS = "total_stakers"
+	STAKER_STATS_TOTAL_STAKE STAKER_STATS = "total_stake"
+	STAKER_STATS_COUNT       STAKER_STATS = "total_stakers"
 )
 
 // ENUM queue types identifiers

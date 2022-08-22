@@ -25,6 +25,19 @@ func (k Keeper) GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress str
 	return 0
 }
 
+func (k Keeper) GetSlashFraction(ctx sdk.Context, slashType types.SlashType) (slashAmountRatio sdk.Dec) {
+	// Retrieve slash fraction from params
+	switch slashType {
+	case types.SLASH_TYPE_TIMEOUT:
+		slashAmountRatio, _ = sdk.NewDecFromStr(k.TimeoutSlash(ctx))
+	case types.SLASH_TYPE_VOTE:
+		slashAmountRatio, _ = sdk.NewDecFromStr(k.VoteSlash(ctx))
+	case types.SLASH_TYPE_UPLOAD:
+		slashAmountRatio, _ = sdk.NewDecFromStr(k.UploadSlash(ctx))
+	}
+	return
+}
+
 // Slash removed a certain amount of the user and transfers it to the treasury
 // If a user loses all tokens, the function takes care of removing the user completely
 func (k Keeper) Slash(
@@ -73,6 +86,15 @@ func (k Keeper) Slash(
 
 func (k Keeper) GetTotalStake(ctx sdk.Context, poolId uint64) uint64 {
 	return k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE)
+}
+
+func (k Keeper) GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec {
+	staker, _ := k.GetStaker(ctx, stakerAddress)
+	uploaderCommission, err := sdk.NewDecFromStr(staker.Commission)
+	if err != nil {
+		// TODO -> log error to metrics
+	}
+	return uploaderCommission
 }
 
 func (k Keeper) ensureFreeSlot(ctx sdk.Context, poolId uint64, stakeAmount uint64) error {

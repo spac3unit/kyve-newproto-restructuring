@@ -48,9 +48,12 @@ type StakerKeeper interface {
 	ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string)
 
 	AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error
+	GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec
 }
 
 type DelegationKeeper interface {
 	GetDelegationAmount(ctx sdk.Context, staker string) uint64
+	GetDelegationOfPool(ctx sdk.Context, poolId uint64) uint64
 	PayoutRewards(ctx sdk.Context, staker string, amount uint64, payerModuleName string) (success bool)
+	SlashDelegators(ctx sdk.Context, staker string, slashType stakertypes.SlashType)
 }

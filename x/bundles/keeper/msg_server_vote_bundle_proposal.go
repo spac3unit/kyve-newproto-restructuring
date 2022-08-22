@@ -10,13 +10,12 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// VoteProposal handles the logic of an SDK message that allows protocol nodes to vote on a pool's bundle proposal.
+// VoteBundleProposal handles the logic of an SDK message that allows protocol nodes to vote on a pool's bundle proposal.
 func (k msgServer) VoteBundleProposal(
 	goCtx context.Context, msg *types.MsgVoteBundleProposal,
 ) (*types.MsgVoteBundleProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO check min stake+delegation
 	if err := k.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
 		return nil, err
 	}
@@ -76,14 +75,12 @@ func (k msgServer) VoteBundleProposal(
 	} else if msg.Vote == types.VOTE_TYPE_ABSTAIN {
 		bundleProposal.VotersAbstain = append(bundleProposal.VotersAbstain, msg.Staker)
 	} else {
-		return nil, sdkErrors.Wrapf(
-			sdkErrors.ErrUnauthorized, types.ErrInvalidVote.Error(), msg.Vote,
-		)
+		return nil, sdkErrors.Wrapf(sdkErrors.ErrUnauthorized, types.ErrInvalidVote.Error(), msg.Vote)
 	}
 
 	k.SetBundleProposal(ctx, bundleProposal)
 
-	// reset points
+	// reset points as user has now proven to be active
 	k.stakerKeeper.ResetPoints(ctx, msg.PoolId, msg.Staker)
 
 	// Emit a vote event.

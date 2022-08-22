@@ -12,7 +12,8 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// AssertPoolCanRun ...
+// AssertPoolCanRun checks whether the given pool fulfils all
+// technical/formal requirements to produce bundles
 func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 
 	pool, poolErr := k.poolKeeper.GetPoolWithError(ctx, poolId)
@@ -36,13 +37,14 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 	}
 
 	// Error if min stake is not reached
-	if k.stakerKeeper.GetTotalStake(ctx, pool.Id) < pool.MinStake {
+	if k.stakerKeeper.GetTotalStake(ctx, pool.Id)+k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) < pool.MinStake {
 		return sdkErrors.Wrap(sdkErrors.ErrInsufficientFunds, types.ErrMinStakeNotReached.Error())
 	}
 
 	return nil
 }
 
+// validateSubmitBundleArgs checks the given bundle submit message for the valid format
 func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) error {
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 
@@ -160,7 +162,7 @@ func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmod
 	return err
 }
 
-// updateLowestFunder is an internal function that updates the lowest funder entry in a given pool.
+// handleNonVoters ...
 func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 	voters := map[string]bool{}
 	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
@@ -184,39 +186,44 @@ func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 	}
 }
 
+// calculatePayouts deducts the network fee from the rewards and splits the remaining amount
+// between the staker and its delegators. If there are no delegators, the entire amount is
+// awarded to the staker.
 func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward types.BundleReward) {
+
 	pool, _ := k.poolKeeper.GetPool(ctx, poolId)
 	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
 
-	bundleReward.Total = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
-
-	// load and parse network fee TODO: how to test network fee?
-	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
-	if err != nil {
-		// TODO: panic halt?
-		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
-	}
-
+	// Should not happen, if so move everything to the treasury
 	if !k.stakerKeeper.DoesStakerExist(ctx, bundleProposal.Uploader) {
 		bundleReward.Treasury = bundleReward.Total
 
 		return
 	}
 
-	// TODO: check if staker has delegations
+	bundleReward.Total = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
 
+	// TODO: how to test network fee?
+	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
+	if err != nil {
+		// TODO -> External Logging Tool Solution (Prometheus)
+	}
+	// Add fee to treasury
 	bundleReward.Treasury = uint64(sdk.NewDec(int64(bundleReward.Total)).Mul(networkFee).RoundInt64())
+
+	// Remaining rewards to be split between staker and its delegators
 	totalNodeReward := bundleReward.Total - bundleReward.Treasury
 
-	// TODO: check if staker has delegations
-	uploaderCommission, err := sdk.NewDecFromStr( /*staker.Commission*/ "1")
-	if err != nil {
-		// TODO: panic halt?
-		// k.PanicHalt(ctx, "Invalid value for params: "+err.Error())
-	}
+	// Payout delegators
+	if k.delegationKeeper.GetDelegationAmount(ctx, bundleProposal.Uploader) > 0 {
+		commission := k.stakerKeeper.GetCommission(ctx, bundleProposal.Uploader)
 
-	bundleReward.Uploader = uint64(sdk.NewDec(int64(totalNodeReward)).Mul(uploaderCommission).RoundInt64())
-	bundleReward.Delegation = totalNodeReward - bundleReward.Uploader
+		bundleReward.Uploader = uint64(sdk.NewDec(int64(totalNodeReward)).Mul(commission).RoundInt64())
+		bundleReward.Delegation = totalNodeReward - bundleReward.Uploader
+	} else {
+		bundleReward.Uploader = totalNodeReward
+		bundleReward.Delegation = 0
+	}
 
 	return
 }
@@ -356,7 +363,7 @@ func (k Keeper) chooseNextUploaderFromAllStakers(ctx sdk.Context, poolId uint64)
 	return k.chooseNextUploaderFromSelectedStakers(ctx, poolId, stakers)
 }
 
-// getVoteDistribution is an internal function evaulates the quorum status of a bundle proposal.
+// GetVoteDistribution is an internal function evaluates the quorum status of a bundle proposal.
 func (k Keeper) GetVoteDistribution(ctx sdk.Context, poolId uint64) (voteDistribution types.VoteDistribution) {
 	bundleProposal, found := k.GetBundleProposal(ctx, poolId)
 	if !found {
@@ -384,8 +391,8 @@ func (k Keeper) GetVoteDistribution(ctx sdk.Context, poolId uint64) (voteDistrib
 		voteDistribution.Abstain += stake + delegation
 	}
 
-	// TODO: get total delegation of pool
-	voteDistribution.Total = k.stakerKeeper.GetTotalStake(ctx, poolId) + 0
+	voteDistribution.Total = k.stakerKeeper.GetTotalStake(ctx, poolId)
+	voteDistribution.Total += k.delegationKeeper.GetDelegationOfPool(ctx, poolId)
 
 	if voteDistribution.Valid*2 > voteDistribution.Total {
 		voteDistribution.Status = types.BUNDLE_STATUS_VALID

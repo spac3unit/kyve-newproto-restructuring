@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/delegation/types"
+	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -30,6 +31,12 @@ func (k Keeper) GetDelegationAmountOfDelegator(ctx sdk.Context, stakerAddress st
 	return k.f1GetCurrentDelegation(ctx, stakerAddress, delegatorAddress)
 }
 
+// GetDelegationOfPool returns the amount of how many $KYVE users have delegated
+// to stakers that are participating in the given pool
+func (k Keeper) GetDelegationOfPool(ctx sdk.Context, poolId uint64) uint64 {
+	return 0 // TODO implement
+}
+
 // PayoutRewards transfers `amount` $nKYVE from the `payerModuleName`-module to the delegation module.
 // It then awards these tokens internally to all delegators of staker `staker`.
 // Delegators can then receive these rewards if they call the `withdraw`-transaction.
@@ -55,10 +62,10 @@ func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, pay
 
 // SlashDelegators reduces the delegation of all delegators of `staker` by fraction
 // and transfers the amount to the Treasury.
-func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, fraction sdk.Dec) {
+func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, slashType stakerstypes.SlashType) {
 
 	// Perform F1-slash and get slashed amount in nKYVE
-	slashedAmount := k.f1Slash(ctx, staker, fraction)
+	slashedAmount := k.f1Slash(ctx, staker, k.stakersKeeper.GetSlashFraction(ctx, slashType))
 
 	// Transfer tokens to the Treasury
 	if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, types.ModuleName, slashedAmount); err != nil {

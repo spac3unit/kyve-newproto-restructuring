@@ -16,11 +16,8 @@ import (
 func (k msgServer) SubmitBundleProposal(
 	goCtx context.Context, msg *types.MsgSubmitBundleProposal,
 ) (*types.MsgSubmitBundleProposalResponse, error) {
-
-	// Unwrap context and attempt to fetch the pool.
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO check min stake+delegation
 	if err := k.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
 		return nil, err
 	}
@@ -32,7 +29,6 @@ func (k msgServer) SubmitBundleProposal(
 	// TODO BEGIN BUNDLE LOGIC
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 	bundleProposal, found := k.GetBundleProposal(ctx, msg.PoolId)
-
 	if !found {
 		return nil, sdkErrors.ErrNotFound
 	}
@@ -42,7 +38,7 @@ func (k msgServer) SubmitBundleProposal(
 		return nil, err
 	}
 
-	// reset points of uploader
+	// reset points of uploader as node has proven to be active
 	k.stakerKeeper.ResetPoints(ctx, msg.PoolId, msg.Staker)
 
 	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.

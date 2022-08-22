@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -117,9 +116,10 @@ var _ = Describe("Undelegation", Ordered, func() {
 			Amount:  5_000_000_000 * i.TKYVE,
 		})
 
-		fraction, err := sdk.NewDecFromStr("0.1")
-		Expect(err).To(BeNil())
-		s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, fraction)
+		params := s.App().StakersKeeper.GetParams(s.Ctx())
+		params.UploadSlash = "0.1"
+		s.App().StakersKeeper.SetParams(s.Ctx(), params)
+		s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, stakerstypes.SLASH_TYPE_UPLOAD)
 
 		delegationDummyAfter := s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])
 
