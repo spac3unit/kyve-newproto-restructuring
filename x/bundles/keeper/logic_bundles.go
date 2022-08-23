@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/util"
 	"math"
 	"math/rand"
 	"sort"
@@ -37,8 +38,50 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 	}
 
 	// Error if min stake is not reached
-	if k.stakerKeeper.GetTotalStake(ctx, pool.Id) + k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) < pool.MinStake {
+	if k.stakerKeeper.GetTotalStake(ctx, pool.Id)+k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) < pool.MinStake {
 		return types.ErrMinStakeNotReached
+	}
+
+	return nil
+}
+
+func (k Keeper) AssertCanVote(ctx sdk.Context, poolId uint64, staker string, voter string, storageId string) error {
+	if err := k.AssertPoolCanRun(ctx, poolId); err != nil {
+		return err
+	}
+
+	// Check if sender is a staker in pool
+	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, poolId, staker, voter); err != nil {
+		return err
+	}
+
+	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
+
+	// Check if dropped bundle
+	if bundleProposal.StorageId == "" {
+		return types.ErrBundleDropped
+	}
+
+	// Check if no data bundle
+	if strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
+		return types.ErrNoDataBundle
+	}
+
+	// Check if tx matches current bundleProposal
+	if storageId != bundleProposal.StorageId {
+		return types.ErrInvalidStorageId
+	}
+
+	// Check if the sender has already voted on the bundle.
+	hasVotedValid := util.ContainsString(bundleProposal.VotersValid, staker)
+	hasVotedInvalid := util.ContainsString(bundleProposal.VotersInvalid, staker)
+
+	if hasVotedValid {
+		return types.ErrAlreadyVotedValid
+	}
+
+	if hasVotedInvalid {
+		return types.ErrAlreadyVotedInvalid
 	}
 
 	return nil

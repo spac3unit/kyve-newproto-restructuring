@@ -211,8 +211,8 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		s.CommitAfterSeconds(60)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.BOB,
-			Staker:     i.ALICE,
+			Creator:    i.ALICE,
+			Staker:     i.BOB,
 			PoolId:     0,
 			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
 			ByteSize:   100,
@@ -254,15 +254,15 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
 		Expect(bundleProposal.StorageId).To(Equal("P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg"))
-		Expect(bundleProposal.Uploader).To(Equal(i.ALICE))
-		Expect(bundleProposal.NextUploader).To(Equal(i.ALICE))
+		Expect(bundleProposal.Uploader).To(Equal(i.BOB))
+		Expect(bundleProposal.NextUploader).To(Equal(i.BOB))
 		Expect(bundleProposal.ByteSize).To(Equal(uint64(100)))
 		Expect(bundleProposal.ToHeight).To(Equal(uint64(200)))
 		Expect(bundleProposal.ToKey).To(Equal("199"))
 		Expect(bundleProposal.ToValue).To(Equal("test_value2"))
 		Expect(bundleProposal.BundleHash).To(Equal("test_hash2"))
 		Expect(bundleProposal.CreatedAt).NotTo(BeZero())
-		Expect(bundleProposal.VotersValid).To(ContainElement(i.ALICE))
+		Expect(bundleProposal.VotersValid).To(ContainElement(i.BOB))
 		Expect(bundleProposal.VotersInvalid).To(BeEmpty())
 		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
 
@@ -338,8 +338,8 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		s.CommitAfterSeconds(60)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.ALICE,
-			Staker:     i.BOB,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
 			PoolId:     0,
 			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
 			ByteSize:   100,
@@ -372,7 +372,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
 		Expect(bundleProposal.StorageId).To(BeEmpty())
 		Expect(bundleProposal.Uploader).To(BeEmpty())
-		Expect(bundleProposal.NextUploader).To(Equal(i.BOB))
+		Expect(bundleProposal.NextUploader).To(Equal(i.ALICE))
 		Expect(bundleProposal.ByteSize).To(BeZero())
 		Expect(bundleProposal.ToHeight).To(BeZero())
 		Expect(bundleProposal.ToKey).To(BeEmpty())
@@ -566,8 +566,8 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		s.CommitAfterSeconds(60)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.ALICE,
-			Staker:     i.BOB,
+			Creator:    i.BOB,
+			Staker:     i.ALICE,
 			PoolId:     0,
 			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
 			ByteSize:   100,
@@ -600,7 +600,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
 		Expect(bundleProposal.StorageId).To(Equal("y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI"))
 		Expect(bundleProposal.Uploader).To(Equal(i.ALICE))
-		Expect(bundleProposal.NextUploader).To(Equal(i.BOB))
+		Expect(bundleProposal.NextUploader).To(Equal(i.ALICE))
 		Expect(bundleProposal.ByteSize).To(Equal(uint64(100)))
 		Expect(bundleProposal.ToHeight).To(Equal(uint64(100)))
 		Expect(bundleProposal.ToKey).To(Equal("99"))

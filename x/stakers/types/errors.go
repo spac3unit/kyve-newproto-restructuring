@@ -15,4 +15,5 @@ var (
 
 	ErrInvalidCommission          = sdkerrors.Register(ModuleName, 1116, "invalid commission %v")
 	ErrPoolLeaveAlreadyInProgress = sdkerrors.Register(ModuleName, 1117, "Pool leave is already in progress")
+	ErrValaccountUnauthorized     = sdkerrors.Register(ModuleName, 1118, "valaccount unauthorized")
 )

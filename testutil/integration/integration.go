@@ -32,6 +32,15 @@ const (
 	BOB     = "kyve1hvg7zsnrj6h29q9ss577mhrxa04rn94h7zjugq"
 	CHARLIE = "kyve1ay22rr3kz659fupu0tcswlagq4ql6rwm4nuv0s"
 
+	STAKER_0     = "kyve1htgfatqevuvfzvl0sxp97ywteqhg5leha9emf4"
+	VALADDRESS_0 = "kyve1qnf86dkvvtpdukx30r3vajav7rdq8snktm90hm"
+
+	STAKER_1     = "kyve1gnr35rwn8rmflnlzs6nn5hhkmzzkxg9ap8xepw"
+	VALADDRESS_1 = "kyve1hpjgzljglmv00nstk3jvcw0zzq94nu0cuxv5ga"
+
+	STAKER_2     = "kyve1xsemlxghgvusumhqzm2ztjw7dz9krvu3de54e2"
+	VALADDRESS_2 = "kyve1u0870dkae6ql63hxvy9y7g65c0y8csfh8allzl"
+
 	GOV = "TODO insert me" // TODO
 )
 
@@ -55,6 +64,15 @@ func (suite *KeeperTestSuite) initDummyAccounts() {
 	suite.Mint(ALICE, 1000*KYVE)
 	suite.Mint(BOB, 1000*KYVE)
 	suite.Mint(CHARLIE, 1000*KYVE)
+
+	suite.Mint(STAKER_0, 1000*KYVE)
+	suite.Mint(VALADDRESS_0, 1000*KYVE)
+
+	suite.Mint(STAKER_1, 1000*KYVE)
+	suite.Mint(VALADDRESS_1, 1000*KYVE)
+
+	suite.Mint(STAKER_2, 1000*KYVE)
+	suite.Mint(VALADDRESS_2, 1000*KYVE)
 
 	DUMMY = make([]string, 50)
 	mrand.Seed(1)

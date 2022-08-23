@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strings"
-
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -16,51 +14,16 @@ func (k msgServer) VoteBundleProposal(
 ) (*types.MsgVoteBundleProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
-		return nil, err
-	}
-
-	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
+	if err := k.AssertCanVote(ctx, msg.PoolId, msg.Staker, msg.Creator, msg.StorageId); err != nil {
 		return nil, err
 	}
 
 	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
-
-	// Check if the sender is also the bundle's uploader. // TODO: remove?
-	if bundleProposal.Uploader == msg.Staker {
-		return nil, sdkErrors.Wrap(sdkErrors.ErrUnauthorized, types.ErrVoterIsUploader.Error())
-	}
-
-	// Check if bundle is not dropped or NO_DATA_BUNDLE
-	if bundleProposal.StorageId == "" || strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
-		return nil, sdkErrors.Wrapf(
-			sdkErrors.ErrNotFound, types.ErrInvalidStorageId.Error(), bundleProposal.StorageId,
-		)
-	}
-
-	// Check if the sender is voting on the same bundle.
-	if msg.StorageId != bundleProposal.StorageId {
-		return nil, sdkErrors.Wrapf(
-			sdkErrors.ErrNotFound, types.ErrInvalidStorageId.Error(), bundleProposal.StorageId,
-		)
-	}
-
-	// Check if the sender has already voted on the bundle.
-	hasVotedValid := util.ContainsString(bundleProposal.VotersValid, msg.Staker)
-	hasVotedInvalid := util.ContainsString(bundleProposal.VotersInvalid, msg.Staker)
 	hasVotedAbstain := util.ContainsString(bundleProposal.VotersAbstain, msg.Staker)
-
-	if hasVotedValid || hasVotedInvalid {
-		return nil, sdkErrors.Wrapf(
-			sdkErrors.ErrUnauthorized, types.ErrAlreadyVoted.Error(), bundleProposal.StorageId,
-		)
-	}
 
 	if hasVotedAbstain {
 		if msg.Vote == types.VOTE_TYPE_ABSTAIN {
-			return nil, sdkErrors.Wrapf(
-				sdkErrors.ErrUnauthorized, types.ErrAlreadyVoted.Error(), bundleProposal.StorageId,
-			)
+			return nil, types.ErrAlreadyVotedAbstain
 		}
 
 		// remove voter from abstain votes

@@ -127,11 +127,11 @@ func (k Keeper) AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stake
 	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
 
 	if !found {
-		return sdkErrors.ErrNotFound
+		return types.ErrValaccountUnauthorized
 	}
 
 	if valaccount.Valaddress != valaddress {
-		return sdkErrors.ErrUnauthorized
+		return types.ErrValaccountUnauthorized
 	}
 
 	return nil
