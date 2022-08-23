@@ -363,9 +363,9 @@ var _ = Describe("Join Pool", Ordered, func() {
 		Expect(stakerstypes.MaxStakers).To(Equal(50))
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.ALICE,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     1,
 		})
 
@@ -382,7 +382,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 			})
 		}
 
-		// Alice is lowest staker and all stakers are full now.
+		// STAKER_0 is lowest staker and all stakers are full now.
 		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
@@ -400,7 +400,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		// Assert
 		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 150) * i.KYVE))
-		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).ToNot(ContainElement(i.ALICE))
+		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).ToNot(ContainElement(i.STAKER_0))
 	})
 
 	It("Kick out lowest staker with respect to stake + delegation", func() {
@@ -409,9 +409,9 @@ var _ = Describe("Join Pool", Ordered, func() {
 		Expect(stakerstypes.MaxStakers).To(Equal(50))
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.ALICE,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     1 * i.KYVE,
 		})
 
@@ -438,7 +438,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		s.RunTxDelegatorSuccess(&delegationtypes.MsgDelegate{
 			Creator: i.ALICE,
-			Staker:  i.ALICE,
+			Staker:  i.STAKER_0,
 			Amount:  150 * i.KYVE,
 		}) // Alice has now 250 delegation
 
@@ -451,7 +451,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 		})
 
 		// Assert
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 150) * i.KYVE))
-		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).To(ContainElement(i.ALICE))
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
+		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).To(ContainElement(i.STAKER_0))
 	})
 })
