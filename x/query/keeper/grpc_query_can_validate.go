@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -16,11 +15,14 @@ func (k Keeper) CanValidate(c context.Context, req *types.QueryCanValidateReques
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	if _, found := k.poolKeeper.GetPool(ctx, req.PoolId); !found {
-		return nil, sdkerrors.ErrKeyNotFound
+	if _, err := k.poolKeeper.GetPoolWithError(ctx, req.PoolId); err != nil {
+		return &types.QueryCanValidateResponse{
+			Possible: false,
+			Reason:   err.Error(),
+		}, nil
 	}
 
-	var staker string = ""
+	var staker string
 
 	// Check if valaddress has a valaccount in pool
 	for _, valaccount := range k.stakerKeeper.GetAllValaccountsOfPool(ctx, req.PoolId) {

@@ -12,7 +12,7 @@ import (
 var _ = Describe("Unstaking", Ordered, func() {
 	s := i.NewCleanChain()
 
-	initialBalance := s.GetBalanceFromAddress(i.ALICE)
+	initialBalance := s.GetBalanceFromAddress(i.STAKER_0)
 
 	BeforeEach(func() {
 		// init new clean chain
@@ -20,7 +20,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		// create staker
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 	})
@@ -32,16 +32,16 @@ var _ = Describe("Unstaking", Ordered, func() {
 	It("Unstake 50 KYVE", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  50 * i.KYVE,
 		})
 
 		// ASSERT
 		unstakingEntries := s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
-		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
+		balanceAfter := s.GetBalanceFromAddress(i.STAKER_0)
 
-		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
-		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(unstakingEntries).To(HaveLen(1))
 
@@ -49,7 +49,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		Expect(initialBalance - balanceAfter).To(Equal(100 * i.KYVE))
 
-		Expect(staker.Address).To(Equal(i.ALICE))
+		Expect(staker.Address).To(Equal(i.STAKER_0))
 		Expect(staker.Amount).To(Equal(100 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(Equal(50 * i.KYVE))
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
@@ -65,9 +65,9 @@ var _ = Describe("Unstaking", Ordered, func() {
 		s.CommitAfterSeconds(1)
 
 		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
-		balanceAfter = s.GetBalanceFromAddress(i.ALICE)
+		balanceAfter = s.GetBalanceFromAddress(i.STAKER_0)
 
-		staker, _ = s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ = s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(unstakingEntries).To(BeEmpty())
 
@@ -80,7 +80,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 	It("Unstake more than staked", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  101 * i.KYVE,
 		})
 
@@ -92,16 +92,16 @@ var _ = Describe("Unstaking", Ordered, func() {
 	It("Unstake everything", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
 		// ASSERT
 		unstakingEntries := s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
-		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
+		balanceAfter := s.GetBalanceFromAddress(i.STAKER_0)
 
-		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
-		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(unstakingEntries).To(HaveLen(1))
 
@@ -109,7 +109,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		Expect(initialBalance - balanceAfter).To(Equal(100 * i.KYVE))
 
-		Expect(staker.Address).To(Equal(i.ALICE))
+		Expect(staker.Address).To(Equal(i.STAKER_0))
 		Expect(staker.Amount).To(Equal(100 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(Equal(100 * i.KYVE))
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
@@ -125,9 +125,9 @@ var _ = Describe("Unstaking", Ordered, func() {
 		s.CommitAfterSeconds(1)
 
 		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
-		balanceAfter = s.GetBalanceFromAddress(i.ALICE)
+		balanceAfter = s.GetBalanceFromAddress(i.STAKER_0)
 
-		_, found = s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		_, found = s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(unstakingEntries).To(BeEmpty())
 
@@ -139,7 +139,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 	It("Unstake while already unbonding", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  25 * i.KYVE,
 		})
 
@@ -148,7 +148,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  25 * i.KYVE,
 		})
 
@@ -163,14 +163,14 @@ var _ = Describe("Unstaking", Ordered, func() {
 		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
 		Expect(unstakingEntries).To(BeEmpty())
 
-		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
-		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
-		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
+		balanceAfter := s.GetBalanceFromAddress(i.STAKER_0)
 
 		Expect(found).To(BeTrue())
 		Expect(initialBalance - balanceAfter).To(Equal(50 * i.KYVE))
 
-		Expect(staker.Address).To(Equal(i.ALICE))
+		Expect(staker.Address).To(Equal(i.STAKER_0))
 		Expect(staker.Amount).To(Equal(50 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
@@ -185,7 +185,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 	It("Unstake more than staked while already unbonding", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  25 * i.KYVE,
 		})
 
@@ -194,7 +194,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  90 * i.KYVE,
 		})
 
@@ -209,14 +209,14 @@ var _ = Describe("Unstaking", Ordered, func() {
 		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
 		Expect(unstakingEntries).To(BeEmpty())
 
-		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
-		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
-		balanceAfter := s.GetBalanceFromAddress(i.ALICE)
+		staker, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
+		balanceAfter := s.GetBalanceFromAddress(i.STAKER_0)
 
 		Expect(found).To(BeTrue())
 		Expect(initialBalance - balanceAfter).To(Equal(75 * i.KYVE))
 
-		Expect(staker.Address).To(Equal(i.ALICE))
+		Expect(staker.Address).To(Equal(i.STAKER_0))
 		Expect(staker.Amount).To(Equal(75 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))

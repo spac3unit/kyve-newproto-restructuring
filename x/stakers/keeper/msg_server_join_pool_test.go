@@ -13,8 +13,8 @@ import (
 var _ = Describe("Join Pool", Ordered, func() {
 	s := i.NewCleanChain()
 
-	initialBalanceAlice := uint64(0)
-	initialBalanceBob := uint64(0)
+	initialBalanceStaker0 := uint64(0)
+	initialBalanceValaddress0 := uint64(0)
 
 	BeforeEach(func() {
 		// init new clean chain
@@ -33,12 +33,12 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		// create staker
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
-		initialBalanceAlice = s.GetBalanceFromAddress(i.ALICE)
-		initialBalanceBob = s.GetBalanceFromAddress(i.BOB)
+		initialBalanceStaker0 = s.GetBalanceFromAddress(i.STAKER_0)
+		initialBalanceValaddress0 = s.GetBalanceFromAddress(i.VALADDRESS_0)
 	})
 
 	AfterEach(func() {
@@ -47,37 +47,37 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 	It("Staker was just created", func() {
 		// ASSERT
-		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccounts := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 		Expect(valaccounts).To(HaveLen(0))
 	})
 
 	It("Join a pool", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
 		// ASSERT
-		balanceAfterAlice := s.GetBalanceFromAddress(i.ALICE)
-		balanceAfterBob := s.GetBalanceFromAddress(i.BOB)
+		balanceAfterStaker0 := s.GetBalanceFromAddress(i.STAKER_0)
+		balanceAfterValaddress0 := s.GetBalanceFromAddress(i.VALADDRESS_0)
 
-		Expect(initialBalanceAlice - balanceAfterAlice).To(Equal(100 * i.KYVE))
-		Expect(balanceAfterBob - initialBalanceBob).To(Equal(100 * i.KYVE))
+		Expect(initialBalanceStaker0 - balanceAfterStaker0).To(Equal(100 * i.KYVE))
+		Expect(balanceAfterValaddress0 - initialBalanceValaddress0).To(Equal(100 * i.KYVE))
 
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 
-		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.ALICE)
+		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.STAKER_0)
 
 		Expect(found).To(BeTrue())
 
-		Expect(valaccount.Staker).To(Equal(i.ALICE))
+		Expect(valaccount.Staker).To(Equal(i.STAKER_0))
 		Expect(valaccount.PoolId).To(BeZero())
-		Expect(valaccount.Valaddress).To(Equal(i.BOB))
+		Expect(valaccount.Valaddress).To(Equal(i.VALADDRESS_0))
 		Expect(valaccount.Points).To(BeZero())
 		Expect(valaccount.IsLeaving).To(BeFalse())
 
@@ -85,7 +85,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
@@ -95,9 +95,9 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Stake after joining a pool", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
@@ -106,22 +106,22 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  50 * i.KYVE,
 		})
 
 		// ASSERT
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 
-		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.ALICE)
+		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.STAKER_0)
 
 		Expect(found).To(BeTrue())
 
-		Expect(valaccount.Staker).To(Equal(i.ALICE))
+		Expect(valaccount.Staker).To(Equal(i.STAKER_0))
 		Expect(valaccount.PoolId).To(BeZero())
-		Expect(valaccount.Valaddress).To(Equal(i.BOB))
+		Expect(valaccount.Valaddress).To(Equal(i.VALADDRESS_0))
 		Expect(valaccount.Points).To(BeZero())
 		Expect(valaccount.IsLeaving).To(BeFalse())
 
@@ -129,7 +129,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 		totalStakeOfPool = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(Equal(150 * i.KYVE))
@@ -139,22 +139,22 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Try to join the same pool with same valaddress again", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
 		// ASSERT
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 	})
@@ -162,22 +162,22 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Try to join the same pool with a different valaddress again", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.CHARLIE,
+			Valaddress: i.VALADDRESS_1,
 			Amount:     100 * i.KYVE,
 		})
 
 		// ASSERT
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 	})
@@ -185,9 +185,9 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Try to join another pool with same valaddress", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
@@ -203,23 +203,23 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     1,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
 		// ASSERT
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 	})
 
 	It("Try to join another pool with another valaddress", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 			Amount:     100 * i.KYVE,
 		})
 
@@ -235,41 +235,41 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     1,
-			Valaddress: i.CHARLIE,
+			Valaddress: i.VALADDRESS_1,
 		})
 
 		// ASSERT
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 		Expect(valaccountsOfStaker).To(HaveLen(2))
 	})
 
 	It("Join a pool with valaddress which does not exist on chain yet", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
 			Valaddress: "kyve1dx0nvx7y9d44jvr2dr6r2p636jea3f9827rn0x",
 			Amount:     100 * i.KYVE,
 		})
 
 		// ASSERT
-		balanceAfterAlice := s.GetBalanceFromAddress(i.ALICE)
+		balanceAfterStaker0 := s.GetBalanceFromAddress(i.STAKER_0)
 		balanceAfterUnknown := s.GetBalanceFromAddress("kyve1dx0nvx7y9d44jvr2dr6r2p636jea3f9827rn0x")
 
-		Expect(initialBalanceAlice - balanceAfterAlice).To(Equal(100 * i.KYVE))
+		Expect(initialBalanceStaker0 - balanceAfterStaker0).To(Equal(100 * i.KYVE))
 		Expect(balanceAfterUnknown).To(Equal(100 * i.KYVE))
 
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 
-		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.ALICE)
+		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.STAKER_0)
 
 		Expect(found).To(BeTrue())
 
-		Expect(valaccount.Staker).To(Equal(i.ALICE))
+		Expect(valaccount.Staker).To(Equal(i.STAKER_0))
 		Expect(valaccount.PoolId).To(BeZero())
 		Expect(valaccount.Valaddress).To(Equal("kyve1dx0nvx7y9d44jvr2dr6r2p636jea3f9827rn0x"))
 		Expect(valaccount.Points).To(BeZero())
@@ -279,7 +279,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
@@ -289,28 +289,28 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Join a pool with valaddress which does not exist on chain yet and send 0 funds", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
 			Valaddress: "kyve1dx0nvx7y9d44jvr2dr6r2p636jea3f9827rn0x",
 			Amount:     0 * i.KYVE,
 		})
 
 		// ASSERT
-		balanceAfterAlice := s.GetBalanceFromAddress(i.ALICE)
+		balanceAfterStaker0 := s.GetBalanceFromAddress(i.STAKER_0)
 		balanceAfterUnknown := s.GetBalanceFromAddress("kyve1dx0nvx7y9d44jvr2dr6r2p636jea3f9827rn0x")
 
-		Expect(initialBalanceAlice - balanceAfterAlice).To(BeZero())
+		Expect(initialBalanceStaker0 - balanceAfterStaker0).To(BeZero())
 		Expect(balanceAfterUnknown).To(BeZero())
 
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(valaccountsOfStaker).To(HaveLen(1))
 
-		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.ALICE)
+		valaccount, found := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.STAKER_0)
 
 		Expect(found).To(BeTrue())
 
-		Expect(valaccount.Staker).To(Equal(i.ALICE))
+		Expect(valaccount.Staker).To(Equal(i.STAKER_0))
 		Expect(valaccount.PoolId).To(BeZero())
 		Expect(valaccount.Valaddress).To(Equal("kyve1dx0nvx7y9d44jvr2dr6r2p636jea3f9827rn0x"))
 		Expect(valaccount.Points).To(BeZero())
@@ -320,7 +320,7 @@ var _ = Describe("Join Pool", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
@@ -330,14 +330,14 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Join a pool with an invalid valaddress", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
 			Valaddress: "invalid_valaddress",
 			Amount:     100 * i.KYVE,
 		})
 
 		// ASSERT
-		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
+		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(valaccountsOfStaker).To(BeEmpty())
 	})
@@ -345,10 +345,10 @@ var _ = Describe("Join Pool", Ordered, func() {
 	It("Join a pool with more amount than balance", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
 			Valaddress: "invalid_valaddress",
-			Amount:     initialBalanceAlice + 1,
+			Amount:     initialBalanceStaker0 + 1,
 		})
 
 		// ASSERT

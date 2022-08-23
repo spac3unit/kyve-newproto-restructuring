@@ -17,7 +17,7 @@ var _ = Describe("Update Metadata", Ordered, func() {
 
 		// create staker
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 	})
@@ -28,7 +28,7 @@ var _ = Describe("Update Metadata", Ordered, func() {
 
 	It("Get default metadata", func() {
 		// ASSERT
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(staker.Moniker).To(BeEmpty())
 		Expect(staker.Website).To(BeEmpty())
@@ -38,14 +38,14 @@ var _ = Describe("Update Metadata", Ordered, func() {
 	It("Update metadata", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateMetadata{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Moniker: "KYVE Node Runner",
 			Website: "https://kyve.network",
 			Logo:    "https://arweave.net/Tewyv2P5VEG8EJ6AUQORdqNTectY9hlOrWPK8wwo-aU",
 		})
 
 		// ASSERT
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(staker.Moniker).To(Equal("KYVE Node Runner"))
 		Expect(staker.Website).To(Equal("https://kyve.network"))
@@ -55,14 +55,14 @@ var _ = Describe("Update Metadata", Ordered, func() {
 	It("Reset metadata", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateMetadata{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Moniker: "",
 			Website: "",
 			Logo:    "",
 		})
 
 		// ASSERT
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 
 		Expect(staker.Moniker).To(BeEmpty())
 		Expect(staker.Website).To(BeEmpty())

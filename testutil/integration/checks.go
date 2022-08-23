@@ -86,6 +86,7 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 		Expect(poolsQuery[i].Stakers).To(Equal(stakersState))
 		Expect(poolsQuery[i].TotalStake).To(Equal(totalStakeState))
 
+		// test pool by id
 		poolByIdQuery, poolByIdQueryErr := suite.App().QueryKeeper.Pool(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryPoolRequest{
 			Id: poolsState[i].Id,
 		})
@@ -96,6 +97,32 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 		Expect(*poolByIdQuery.Pool.BundleProposal).To(Equal(bundleProposalState))
 		Expect(poolsQuery[i].Stakers).To(Equal(stakersState))
 		Expect(poolByIdQuery.Pool.TotalStake).To(Equal(totalStakeState))
+
+		// test stakers by pool
+		valaccounts := suite.App().StakersKeeper.GetAllValaccountsOfPool(suite.Ctx(), poolsState[i].Id)
+		stakersByPoolState := make([]querytypes.StakerPoolResponse, 0)
+
+		for _, valaccount := range valaccounts {
+			staker, stakerFound := suite.App().StakersKeeper.GetStaker(suite.Ctx(), valaccount.Staker)
+
+			if stakerFound {
+				stakersByPoolState = append(stakersByPoolState, querytypes.StakerPoolResponse{
+					Staker:     &staker,
+					Valaccount: valaccount,
+				})
+			}
+		}
+
+		stakersByPoolQuery, stakersByPoolQueryErr := suite.App().QueryKeeper.StakersByPool(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryStakersByPoolRequest{
+			PoolId: poolsState[i].Id,
+		})
+
+		Expect(stakersByPoolQueryErr).To(BeNil())
+		Expect(stakersByPoolQuery.Stakers).To(HaveLen(len(stakersByPoolState)))
+
+		for s := range stakersByPoolState {
+			Expect(stakersByPoolQuery.Stakers[s]).To(Equal(stakersByPoolState[s]))
+		}
 	}
 }
 

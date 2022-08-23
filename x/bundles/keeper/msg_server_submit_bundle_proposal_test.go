@@ -98,89 +98,6 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.VotersAbstain).To(BeEmpty())
 	})
 
-	It("Try to submit proposal with non existing valaccount", func() {
-		// ARRANGE
-		s.CommitAfterSeconds(60)
-
-		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.CHARLIE,
-			Staker:     i.ALICE,
-			PoolId:     0,
-			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize:   100,
-			FromHeight: 0,
-			ToHeight:   100,
-			FromKey:    "0",
-			ToKey:      "99",
-			ToValue:    "test_value",
-			BundleHash: "test_hash",
-		})
-
-		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.BOB,
-			Staker:     i.CHARLIE,
-			PoolId:     0,
-			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize:   100,
-			FromHeight: 0,
-			ToHeight:   100,
-			FromKey:    "0",
-			ToKey:      "99",
-			ToValue:    "test_value",
-			BundleHash: "test_hash",
-		})
-
-		// ASSERT
-		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-
-		Expect(bundleProposal.StorageId).To(BeEmpty())
-		Expect(bundleProposal.Uploader).To(BeEmpty())
-	})
-
-	It("Try to submit proposal with wrong valaccount", func() {
-		// ARRANGE
-		s.CommitAfterSeconds(60)
-
-		// ARRANGE
-		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
-			Name: "Moontest2",
-			Protocol: &pooltypes.Protocol{
-				Version:     "0.0.0",
-				Binaries:    "{}",
-				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
-			},
-			UpgradePlan: &pooltypes.UpgradePlan{},
-		})
-
-		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator:    i.ALICE,
-			PoolId:     1,
-			Valaddress: i.CHARLIE,
-		})
-
-		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.CHARLIE,
-			Staker:     i.ALICE,
-			PoolId:     0,
-			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize:   100,
-			FromHeight: 0,
-			ToHeight:   100,
-			FromKey:    "0",
-			ToKey:      "99",
-			ToValue:    "test_value",
-			BundleHash: "test_hash",
-		})
-
-		// ASSERT
-		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-
-		Expect(bundleProposal.StorageId).To(BeEmpty())
-		Expect(bundleProposal.Uploader).To(BeEmpty())
-	})
-
 	It("Try to submit proposal with empty storage id", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
@@ -191,29 +108,6 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 			Staker:     i.ALICE,
 			PoolId:     0,
 			StorageId:  "",
-			ByteSize:   100,
-			FromHeight: 0,
-			ToHeight:   100,
-			FromKey:    "0",
-			ToKey:      "99",
-			ToValue:    "test_value",
-			BundleHash: "test_hash",
-		})
-
-		// ASSERT
-		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-
-		Expect(bundleProposal.StorageId).To(BeEmpty())
-		Expect(bundleProposal.Uploader).To(BeEmpty())
-	})
-
-	It("Try to submit proposal within upload interval", func() {
-		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.BOB,
-			Staker:     i.ALICE,
-			PoolId:     0,
-			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
 			ByteSize:   100,
 			FromHeight: 0,
 			ToHeight:   100,
@@ -242,32 +136,6 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
 			ByteSize:   0,
 			FromHeight: 0,
-			ToHeight:   100,
-			FromKey:    "0",
-			ToKey:      "99",
-			ToValue:    "test_value",
-			BundleHash: "test_hash",
-		})
-
-		// ASSERT
-		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-
-		Expect(bundleProposal.StorageId).To(BeEmpty())
-		Expect(bundleProposal.Uploader).To(BeEmpty())
-	})
-
-	It("Try to submit proposal with invalid from height", func() {
-		// ARRANGE
-		s.CommitAfterSeconds(60)
-
-		// ACT
-		s.RunTxBundlesError(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.BOB,
-			Staker:     i.ALICE,
-			PoolId:     0,
-			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
-			ByteSize:   100,
-			FromHeight: 1,
 			ToHeight:   100,
 			FromKey:    "0",
 			ToKey:      "99",
