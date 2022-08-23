@@ -2,9 +2,12 @@ package keeper_test
 
 import (
 	i "github.com/KYVENetwork/chain/testutil/integration"
+	bundletypes "github.com/KYVENetwork/chain/x/bundles/types"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Bundles module integration tests", Ordered, func() {
@@ -58,20 +61,77 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	//It("If no next uploader is defined and timeout is reached the next uploader should be chosen", func() {
-	//	// ACT
-	//	s.CommitAfterSeconds(s.App().BundlesKeeper.UploadTimeout(s.Ctx()))
-	//	s.CommitAfterSeconds(60)
-	//	s.CommitAfterSeconds(1)
-	//
-	//	// ASSERT
-	//	bundleProposal, bundleProposalFound := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-	//	Expect(bundleProposalFound).To(BeTrue())
-	//
-	//	fmt.Println(bundleProposal)
-	//
-	//	Expect(bundleProposal.NextUploader).To(Equal(i.STAKER_0))
-	//})
+	It("Staker is just next uploader and upload timeout does not pass", func() {
+		// ARRANGE
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		// ACT
+		s.CommitAfterSeconds(1)
+
+		// ASSERT
+		poolStakers := s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)
+		Expect(poolStakers).To(HaveLen(1))
+
+		nextUploader, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		Expect(found).To(BeTrue())
+		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
+	})
+
+	It("Staker is just next uploader and upload timeout does not pass but upload interval passed", func() {
+		// ARRANGE
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		// ACT
+		s.CommitAfterSeconds(60)
+		s.CommitAfterSeconds(1)
+
+		// ASSERT
+		poolStakers := s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)
+		Expect(poolStakers).To(HaveLen(1))
+
+		nextUploader, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		Expect(found).To(BeTrue())
+		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
+	})
+
+	It("Staker is just next uploader and upload timeout does pass together with upload interval", func() {
+		// ARRANGE
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		// ACT
+		s.CommitAfterSeconds(s.App().BundlesKeeper.UploadTimeout(s.Ctx()))
+		s.CommitAfterSeconds(60)
+		s.CommitAfterSeconds(1)
+
+		// ASSERT
+		poolStakers := s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)
+		Expect(poolStakers).To(BeEmpty())
+
+		// check if next uploader got removed from pool
+		nextUploader, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		Expect(found).To(BeTrue())
+
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(BeZero())
+
+		// check if next uploader got slashed
+		slashAmountRatio, _ := sdk.NewDecFromStr(s.App().StakersKeeper.TimeoutSlash(s.Ctx()))
+		expectedBalance := 100*i.KYVE - uint64(sdk.NewDec(int64(100*i.KYVE)).Mul(slashAmountRatio).RoundInt64())
+
+		Expect(expectedBalance).To(Equal(nextUploader.Amount))
+	})
+
 	//
 	//It("If bundle proposal reached quorum and next uploader does not upload slash and remove him", func() {
 	//	// ARRANGE

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/KYVENetwork/chain/x/bundles/types"
@@ -74,8 +73,6 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval + k.UploadTimeout(ctx)) {
 			continue
 		}
-
-		fmt.Println("end block", bundleProposal)
 
 		// We now know that the pool is active and the upload timeout has been reached.
 		// Now we slash and remove the current next_uploader and select a new one.
