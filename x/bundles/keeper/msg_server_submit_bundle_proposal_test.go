@@ -62,6 +62,7 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	It("Try to submit proposal", func() {
 		// ARRANGE
 		s.CommitAfterSeconds(60)
+		// TODO: test if waiting time is greater than 60 seconds
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
