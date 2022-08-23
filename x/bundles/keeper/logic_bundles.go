@@ -46,6 +46,7 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 }
 
 func (k Keeper) AssertCanVote(ctx sdk.Context, poolId uint64, staker string, voter string, storageId string) error {
+	// Check basic pool configs
 	if err := k.AssertPoolCanRun(ctx, poolId); err != nil {
 		return err
 	}
@@ -87,6 +88,38 @@ func (k Keeper) AssertCanVote(ctx sdk.Context, poolId uint64, staker string, vot
 	return nil
 }
 
+func (k Keeper) AssertCanPropose(ctx sdk.Context, poolId uint64, staker string, proposer string, fromHeight uint64) error {
+	// Check basic pool configs
+	if err := k.AssertPoolCanRun(ctx, poolId); err != nil {
+		return err
+	}
+
+	// Check if sender is a staker in pool
+	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, poolId, staker, proposer); err != nil {
+		return err
+	}
+
+	pool, _ := k.poolKeeper.GetPool(ctx, poolId)
+	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
+
+	// Check if designated uploader
+	if bundleProposal.NextUploader != staker {
+		return sdkErrors.Wrapf(types.ErrNotDesignatedUploader, "expected %v received %v", bundleProposal.NextUploader, staker)
+	}
+
+	// Check if upload interval has been surpassed
+	if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval) {
+		return sdkErrors.Wrapf(types.ErrUploadInterval, "expected %v < %v", ctx.BlockTime().Unix(), bundleProposal.CreatedAt+pool.UploadInterval)
+	}
+
+	// Check if from_height matches
+	if bundleProposal.ToHeight != fromHeight {
+		return sdkErrors.Wrapf(types.ErrFromHeight, "expected %v received %v", bundleProposal.ToHeight, fromHeight)
+	}
+
+	return nil
+}
+
 func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.BundleProposal, msg *types.MsgSubmitBundleProposal) error {
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 
@@ -98,24 +131,9 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 		return types.ErrInvalidArgs
 	}
 
-	// Check if the sender is the designated uploader.
-	if bundleProposal.NextUploader != msg.Staker {
-		return sdkErrors.Wrapf(types.ErrNotDesignatedUploader, "expected %v received %v", bundleProposal.NextUploader, msg.Staker)
-	}
-
-	// Validate upload interval has been surpassed
-	if uint64(ctx.BlockTime().Unix()) < (bundleProposal.CreatedAt + pool.UploadInterval) {
-		return sdkErrors.Wrapf(types.ErrUploadInterval, "expected %v < %v", ctx.BlockTime().Unix(), bundleProposal.CreatedAt+pool.UploadInterval)
-	}
-
 	// Validate if bundle is not too big
 	if msg.ToHeight-currentHeight > pool.MaxBundleSize {
 		return sdkErrors.Wrapf(types.ErrMaxBundleSize, "expected %v received %v", pool.MaxBundleSize, msg.ToHeight-currentHeight)
-	}
-
-	// Validate from height
-	if msg.FromHeight != currentHeight {
-		return sdkErrors.Wrapf(types.ErrFromHeight, "expected %v received %v", currentHeight, msg.FromHeight)
 	}
 
 	// Validate to height

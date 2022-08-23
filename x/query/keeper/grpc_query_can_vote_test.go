@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Bundles module query tests", Ordered, func() {
+var _ = Describe("Can Vote Tests", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {

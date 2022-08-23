@@ -9,7 +9,6 @@ import (
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // SubmitBundleProposal handles the logic of an SDK message that allows protocol nodes to submit a new bundle proposal.
@@ -18,20 +17,12 @@ func (k msgServer) SubmitBundleProposal(
 ) (*types.MsgSubmitBundleProposalResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if err := k.AssertPoolCanRun(ctx, msg.PoolId); err != nil {
+	if err := k.AssertCanPropose(ctx, msg.PoolId, msg.Staker, msg.Creator, msg.FromHeight); err != nil {
 		return nil, err
 	}
 
-	if err := k.stakerKeeper.AssertValaccountAuthorized(ctx, msg.PoolId, msg.Staker, msg.Creator); err != nil {
-		return nil, err
-	}
-
-	// TODO BEGIN BUNDLE LOGIC
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
-	bundleProposal, found := k.GetBundleProposal(ctx, msg.PoolId)
-	if !found {
-		return nil, sdkErrors.ErrNotFound
-	}
+	bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
 
 	// Validate submit bundle args.
 	if err := k.validateSubmitBundleArgs(ctx, &bundleProposal, msg); err != nil {
