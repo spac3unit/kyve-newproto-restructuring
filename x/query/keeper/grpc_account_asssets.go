@@ -21,11 +21,7 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	response := types.QueryAccountAssetsResponse{
-		ProtocolStaking:          0, // TODO
-		ProtocolStakingUnbonding: 0, // TODO
-		ProtocolFunding:          0, // TODO
-	}
+	response := types.QueryAccountAssetsResponse{}
 
 	// =======
 	// Balance
@@ -38,45 +34,18 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 	// ProtocolStaking + ProtocolStakingUnbonding
 	// ==========================================
 
-	// TODO implement
-
-	//// Iterate all Staker entries
-	//// Fetches the total delegation and calculates the outstanding rewards
-	//stakerStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.StakerKeyPrefix))
-	//var stakerPrefix []byte
-	//stakerPrefix = append(stakerPrefix, []byte(req.Address)...)
-	//stakerPrefix = append(stakerPrefix, []byte("/")...)
-	//stakerIterator := sdk.KVStorePrefixIterator(stakerStore, stakerPrefix)
-	//
-	//defer stakerIterator.Close()
-	//
-	//for ; stakerIterator.Valid(); stakerIterator.Next() {
-	//	var val types.Staker
-	//	k.cdc.MustUnmarshal(stakerIterator.Value(), &val)
-	//
-	//	response.ProtocolStaking += val.Amount
-	//}
-	//
-	//// Unbondings
-	//// Iterate all UnbondingStaker entries to get total unbonding amount
-	//unbondingStaker := prefix.NewStore(ctx.KVStore(k.storeKey), types.UnbondingStakerKeyPrefix)
-	//unbondingStakerIterator := sdk.KVStorePrefixIterator(unbondingStaker, types.KeyPrefixBuilder{}.AString(req.Address).Key)
-	//
-	//defer unbondingStakerIterator.Close()
-	//
-	//for ; unbondingStakerIterator.Valid(); unbondingStakerIterator.Next() {
-	//	var val types.UnbondingStaker
-	//	k.cdc.MustUnmarshal(unbondingStakerIterator.Value(), &val)
-	//
-	//	response.ProtocolStakingUnbonding += val.UnbondingAmount
-	//}
+	staker, _ := k.stakerKeeper.GetStaker(ctx, req.Address)
+	response.ProtocolStaking = staker.Amount
+	response.ProtocolStakingUnbonding = staker.UnbondingAmount
 
 	// ================================================
 	// ProtocolDelegation + ProtocolDelegationUnbonding
 	// ================================================
 
 	// Iterate all Delegator entries
-	delegatorStore := prefix.NewStore(ctx.KVStore(k.delegationKeeper.StoreKey()), util.GetByteKey(delegationtypes.DelegatorKeyPrefixIndex2, req.Address))
+	delegatorStore := prefix.NewStore(
+		ctx.KVStore(k.delegationKeeper.StoreKey()),
+		util.GetByteKey(delegationtypes.DelegatorKeyPrefixIndex2, req.Address))
 	delegatorIterator := sdk.KVStorePrefixIterator(delegatorStore, nil)
 	defer delegatorIterator.Close()
 
@@ -101,20 +70,11 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 	// ProtocolFunding
 	// ===============
 
-	// TODO implement
-
-	//// Iterate all funding entries
-	//funderStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.FunderKeyPrefix))
-	//funderIterator := sdk.KVStorePrefixIterator(funderStore, []byte(req.Address))
-	//
-	//defer funderIterator.Close()
-	//
-	//for ; funderIterator.Valid(); funderIterator.Next() {
-	//	var val types.Funder
-	//	k.cdc.MustUnmarshal(funderIterator.Value(), &val)
-	//
-	//	response.ProtocolFunding += val.Amount
-	//}
+	// Iterate all pools and look if the user is funding
+	for _, pool := range k.poolKeeper.GetAllPools(ctx) {
+		funder, _ := pool.GetFunder(req.Address)
+		response.ProtocolFunding += funder.Amount
+	}
 
 	return &types.QueryAccountAssetsResponse{}, nil
 }

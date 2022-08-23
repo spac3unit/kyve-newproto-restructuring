@@ -2,8 +2,13 @@ package keeper
 
 import (
 	"context"
+	"encoding/binary"
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/query/types"
+	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
+	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -15,38 +20,42 @@ func (k Keeper) AccountStakingUnbondings(goCtx context.Context, req *types.Query
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// TODO implement
-	_ = ctx
-
 	var stakingUnbondings []types.StakingUnbonding
+	// TODO maybe move this function to the stakersModule and provide a function as an argument
+	store := prefix.NewStore(ctx.KVStore(k.stakerKeeper.StoreKey()), util.GetByteKey(stakerstypes.UnbondingStakingEntryKeyPrefixIndex2, req.Address))
+	pageRes, err := query.FilteredPaginate(store, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		if accumulate {
+			index := binary.BigEndian.Uint64(key[0:8])
+			unbondingEntry, _ := k.stakerKeeper.GetUnbondingStakeEntry(ctx, index)
 
-	//// Build prefix. Store is already indexed in an optimal way
-	//prefixBuilder := types.KeyPrefixBuilder{Key: types.UnbondingStakingQueueEntryKeyPrefixIndex2}.AString(req.Address).Key
-	//stakerUnbondingStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixBuilder)
-	//
-	//pageRes, err := query.FilteredPaginate(stakerUnbondingStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-	//	if accumulate {
-	//
-	//		index := binary.BigEndian.Uint64(key[0:8])
-	//		unbondingEntry, _ := k.GetUnbondingStakingQueueEntry(ctx, index)
-	//
-	//		pool, _ := k.GetPool(ctx, unbondingEntry.PoolId)
-	//
-	//		stakingUnbondings = append(stakingUnbondings, types.StakingUnbonding{
-	//			Amount:       unbondingEntry.Amount,
-	//			CreationTime: unbondingEntry.CreationTime,
-	//			Pool:         &pool,
-	//		})
-	//	}
-	//	return true, nil
-	//})
-	//
-	//if err != nil {
-	//	return nil, status.Error(codes.Internal, err.Error())
-	//}
+			stakingUnbondings = append(stakingUnbondings, types.StakingUnbonding{
+				Amount:       unbondingEntry.Amount,
+				CreationTime: unbondingEntry.CreationDate,
+			})
+		}
+		return true, nil
+	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	staker, _ := k.stakerKeeper.GetStaker(ctx, req.Address)
+
+	basicStaker := types.BasicStaker{
+		Address:         staker.Address,
+		Amount:          staker.Amount,
+		UnbondingAmount: staker.UnbondingAmount,
+		Commission:      staker.Commission,
+		Moniker:         staker.Moniker,
+		Website:         staker.Website,
+		Logo:            staker.Website,
+		TotalDelegation: k.delegationKeeper.GetDelegationAmount(ctx, staker.Address),
+	}
 
 	return &types.QueryAccountStakingUnbondingsResponse{
 		Unbondings: stakingUnbondings,
-		//Pagination: pageRes,
+		Staker:     &basicStaker,
+		Pagination: pageRes,
 	}, nil
 }

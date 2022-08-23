@@ -86,6 +86,8 @@ message QueryAccountStakingUnbondingsRequest {
 message QueryAccountStakingUnbondingsResponse {
   // balance ...
   repeated StakingUnbonding unbondings = 1 [(gogoproto.nullable) = false];
+  // staker
+  BasicStaker staker = 3;
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
@@ -95,8 +97,7 @@ message StakingUnbonding {
   // amount
   uint64 amount = 1;
   // creation_time
-  uint64 creation_time = 2;
-  // TODO Staker metadata
+  int64 creation_time = 2;
 }
 
 
@@ -127,8 +128,29 @@ message DelegationUnbonding {
   uint64 amount = 1;
   // creation_time
   uint64 creation_time = 2;
-  // creation_time // TODO; staker, staker_moniker, staker_logo, staker_metadata, commission
-  DelegationForStakerResponse staker = 3;
+  // staker
+  BasicStaker staker = 3;
+}
+
+message BasicStaker {
+  // address ...
+  string address = 1;
+  // amount ...
+  uint64 amount = 2;
+  // unbonding_amount ...
+  uint64 unbonding_amount = 3;
+  // commission ...
+  string commission = 4;
+  // moniker ...
+  string moniker = 5;
+  // website ...
+  string website = 6;
+  // logo ...
+  string logo = 7;
+  // total_delegation ...
+  uint64 total_delegation = 8;
+
+  // TODO Pools, Points?
 }
 
 
@@ -139,10 +161,10 @@ message DelegationUnbonding {
 
 // QueryAccountFundedListRequest is the request type for the account queries with pagination
 message QueryAccountFundedListRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
   // address ...
-  string address = 2;
+  string address = 1;
+  // pagination defines an optional pagination for the request.
+//  cosmos.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryAccountFundedListResponse is the response type for the Query/AccountFundedList RPC method.
@@ -150,18 +172,28 @@ message QueryAccountFundedListResponse {
   // funded ...
   repeated Funded funded = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+//  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // Funded ...
 message Funded {
-  // account ... // TODO remove account ?
-  string account = 1;
   // amount ...
-  uint64 amount = 2;
-  // pool ... TODO find suitable pool object for these kind of queries
-  string pool = 4;
-  // TODO include total funding?
+  uint64 amount = 1;
+  // pool ...
+  BasicPool pool = 2;
+}
+
+message BasicPool {
+  // id ...
+  uint64 id = 1;
+  // name ...
+  string name = 2;
+  // runtime ...
+  string runtime = 3;
+  // logo ...
+  string logo = 4;
+  // total_funds ...
+  uint64 total_funds = 5;
 }
 
 
