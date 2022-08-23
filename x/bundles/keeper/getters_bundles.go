@@ -36,6 +36,23 @@ func (k Keeper) GetBundleProposal(
 	return val, true
 }
 
+func (k Keeper) GetAllBundleProposals(ctx sdk.Context) (list []types.BundleProposal) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.BundleKeyPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.BundleProposal
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+// =====================
+// = Finalized Bundles =
+// =====================
+
 // SetFinalizedBundle set a specific staker in the store from its index
 func (k Keeper) SetFinalizedBundle(ctx sdk.Context, finalizedBundle types.FinalizedBundle) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.FinalizedBundlePrefix)
@@ -77,7 +94,7 @@ func (k Keeper) GetFinalizedBundlesByPool(
 	return
 }
 
-// GetFinalizedBundle returns a staker from its index
+// GetFinalizedBundle ...
 func (k Keeper) GetFinalizedBundle(
 	ctx sdk.Context,
 	poolId uint64,

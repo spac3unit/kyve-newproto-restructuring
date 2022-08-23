@@ -1,7 +1,7 @@
 package types
 
 import (
-	"fmt"
+	"github.com/KYVENetwork/chain/util"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
@@ -53,14 +53,26 @@ func DefaultParams() Params {
 // ParamSetPairs get the params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyUnbondingDelegationTime, &p.UnbondingDelegationTime, validateUint64),
-		paramtypes.NewParamSetPair(KeyRedelegationCooldown, &p.RedelegationCooldown, validateUint64),
-		paramtypes.NewParamSetPair(KeyRedelegationMaxAmount, &p.RedelegationMaxAmount, validateUint64),
+		paramtypes.NewParamSetPair(KeyUnbondingDelegationTime, &p.UnbondingDelegationTime, util.ValidateUint64),
+		paramtypes.NewParamSetPair(KeyRedelegationCooldown, &p.RedelegationCooldown, util.ValidateUint64),
+		paramtypes.NewParamSetPair(KeyRedelegationMaxAmount, &p.RedelegationMaxAmount, util.ValidateUint64),
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if err := util.ValidateUint64(p.UnbondingDelegationTime); err != nil {
+		return err
+	}
+
+	if err := util.ValidateUint64(p.RedelegationCooldown); err != nil {
+		return err
+	}
+
+	if err := util.ValidateUint64(p.RedelegationMaxAmount); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -68,14 +80,4 @@ func (p Params) Validate() error {
 func (p Params) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
-}
-
-// validateMaxPoints validates the MaxPoints param
-func validateUint64(v interface{}) error {
-	_, ok := v.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
-	}
-
-	return nil
 }
