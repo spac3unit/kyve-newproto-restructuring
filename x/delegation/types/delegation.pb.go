@@ -99,7 +99,7 @@ func (m *Delegator) GetInitialAmount() uint64 {
 }
 
 // DelegationEntry represents an entry according to the F1-Fee-Distribution algorithm.
-// Take a look at TODO for more details regarding the algorithm
+// Take a look at x/delegation/keeper/logic_f1distribution.go for more details
 type DelegationEntry struct {
 	// staker on protocol level
 	Staker string `protobuf:"bytes,1,opt,name=staker,proto3" json:"staker,omitempty"`

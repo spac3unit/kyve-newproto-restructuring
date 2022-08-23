@@ -3,6 +3,7 @@ package kyve.bundles.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "kyve/bundles/v1beta1/params.proto";
+import "kyve/bundles/v1beta1/bundles.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/bundles/types";
 
@@ -13,5 +14,7 @@ message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 
-  // TODO add missing state
+  repeated BundleProposal bundle_proposal_list  = 2 [(gogoproto.nullable) = false];
+
+  repeated FinalizedBundle finalized_bundle_list = 3 [(gogoproto.nullable) = false];
 }
