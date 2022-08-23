@@ -45,7 +45,8 @@ const (
 )
 
 var (
-	DUMMY []string
+	DUMMY    []string
+	VALDUMMY []string
 )
 
 const KYVE = uint64(1_000_000_000)
@@ -74,8 +75,10 @@ func (suite *KeeperTestSuite) initDummyAccounts() {
 	suite.Mint(STAKER_2, 1000*KYVE)
 	suite.Mint(VALADDRESS_2, 1000*KYVE)
 
-	DUMMY = make([]string, 50)
 	mrand.Seed(1)
+
+	DUMMY = make([]string, 50)
+
 	for i := 0; i < 50; i++ {
 		byteAddr := make([]byte, 20)
 		for k := 0; k < 20; k++ {
@@ -83,6 +86,17 @@ func (suite *KeeperTestSuite) initDummyAccounts() {
 		}
 		dummy, _ := sdk.Bech32ifyAddressBytes("kyve", byteAddr)
 		DUMMY[i] = dummy
+		suite.Mint(dummy, 1000*KYVE)
+	}
+
+	VALDUMMY = make([]string, 50)
+	for i := 0; i < 50; i++ {
+		byteAddr := make([]byte, 20)
+		for k := 0; k < 20; k++ {
+			byteAddr[k] = byte(mrand.Int())
+		}
+		dummy, _ := sdk.Bech32ifyAddressBytes("kyve", byteAddr)
+		VALDUMMY[i] = dummy
 		suite.Mint(dummy, 1000*KYVE)
 	}
 }

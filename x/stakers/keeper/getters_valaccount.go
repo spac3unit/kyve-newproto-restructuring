@@ -9,7 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// DoesValaccountExist returns a Valaccount from its index
+// DoesValaccountExist only checks if the key is present in the KV-Store
+// without loading and unmarshalling to full entry
 func (k Keeper) DoesValaccountExist(
 	ctx sdk.Context,
 	poolId uint64,
@@ -19,7 +20,7 @@ func (k Keeper) DoesValaccountExist(
 	return store.Has(types.ValaccountKey(poolId, stakerAddress))
 }
 
-// GetAllValaccountsOfPool returns a Valaccount from its index
+// GetAllValaccountsOfPool returns a list of all valaccount
 func (k Keeper) GetAllValaccountsOfPool(
 	ctx sdk.Context,
 	poolId uint64,
@@ -27,32 +28,22 @@ func (k Keeper) GetAllValaccountsOfPool(
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
 
 	iterator := sdk.KVStorePrefixIterator(store, util.GetByteKey(poolId))
-
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-
 		valaccount := types.Valaccount{}
-
-		iterator.Key()
-
 		k.cdc.MustUnmarshal(iterator.Value(), &valaccount)
-
 		val = append(val, &valaccount)
 	}
 
 	return
 }
 
-// getValaccountsFromStaker returns all pools the staker has valaccounts in
-func (k Keeper) GetValaccountsFromStaker(
-	ctx sdk.Context,
-	stakerAddress string,
-) (val []*types.Valaccount) {
+// GetValaccountsFromStaker returns all pools the staker has valaccounts in
+func (k Keeper) GetValaccountsFromStaker(ctx sdk.Context, stakerAddress string) (val []*types.Valaccount) {
 	storeIndex2 := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefixIndex2)
 
 	iterator := sdk.KVStorePrefixIterator(storeIndex2, util.GetByteKey(stakerAddress))
-
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
@@ -65,23 +56,6 @@ func (k Keeper) GetValaccountsFromStaker(
 	}
 
 	return val
-}
-
-func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string) {
-	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
-
-	if found {
-		valaccount.Points = valaccount.Points + 1
-
-		// TODO: use maxPoints from params
-		// TODO: dont call logic within getters -> move to logic file
-		if valaccount.Points >= 5 {
-			k.Slash(ctx, poolId, stakerAddress, types.SLASH_TYPE_TIMEOUT)
-			k.ResetPoints(ctx, poolId, stakerAddress)
-		} else {
-			k.setValaccount(ctx, valaccount)
-		}
-	}
 }
 
 func (k Keeper) GetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) uint64 {
@@ -99,7 +73,7 @@ func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string
 
 	if found {
 		valaccount.Points = 0
-		k.setValaccount(ctx, valaccount)
+		k.SetValaccount(ctx, valaccount)
 	}
 }
 
@@ -107,8 +81,8 @@ func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string
 // #  Raw KV-Store operations  #
 // #############################
 
-// setValaccount set a specific Valaccount in the store from its index
-func (k Keeper) setValaccount(ctx sdk.Context, valaccount types.Valaccount) {
+// SetValaccount set a specific Valaccount in the store from its index
+func (k Keeper) SetValaccount(ctx sdk.Context, valaccount types.Valaccount) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
 	b := k.cdc.MustMarshal(&valaccount)
 	store.Set(types.ValaccountKey(
@@ -156,4 +130,19 @@ func (k Keeper) GetValaccount(
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// GetAllValaccounts ...
+func (k Keeper) GetAllValaccounts(ctx sdk.Context) (list []types.Valaccount) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.ValaccountPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.Valaccount
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
 }

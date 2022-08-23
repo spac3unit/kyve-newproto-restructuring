@@ -35,4 +35,7 @@ message GenesisState {
 
   // queue_state_leave ...
   QueueState queue_state_leave = 8 [(gogoproto.nullable) = false];
+
+  // valaccount_list ...
+  repeated Valaccount valaccount_list = 9 [(gogoproto.nullable) = false];
 }

@@ -17,7 +17,7 @@ func (k msgServer) LeavePool(goCtx context.Context, msg *types.MsgLeavePool) (*t
 	}
 
 	valaccount.IsLeaving = true
-	k.setValaccount(ctx, valaccount)
+	k.SetValaccount(ctx, valaccount)
 
 	err := k.orderLeavePool(ctx, msg.Creator, msg.PoolId)
 	if err != nil {

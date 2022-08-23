@@ -18,9 +18,7 @@ func (k Keeper) SetCommissionChangeEntry(ctx sdk.Context, commissionChangeEntry 
 	binary.BigEndian.PutUint64(indexBytes, commissionChangeEntry.Index)
 
 	indexStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.CommissionChangeEntryKeyPrefixIndex2)
-	indexStore.Set(types.CommissionChangeEntryKeyIndex2(
-		commissionChangeEntry.Staker,
-	), indexBytes)
+	indexStore.Set(types.CommissionChangeEntryKeyIndex2(commissionChangeEntry.Staker), indexBytes)
 }
 
 // GetCommissionChangeEntry ...

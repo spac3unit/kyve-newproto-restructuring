@@ -367,6 +367,8 @@ func NewApp(
 		app.StakersKeeper,
 	)
 
+	app.StakersKeeper.SetDelegationKeeper(app.DelegationKeeper)
+
 	app.BundlesKeeper = *bundlesmodulekeeper.NewKeeper(
 		appCodec,
 		keys[bundlesmoduletypes.StoreKey],
