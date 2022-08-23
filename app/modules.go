@@ -20,6 +20,9 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 
+	// Authz
+	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
+
 	// Bank
 	"github.com/cosmos/cosmos-sdk/x/bank"
 
@@ -78,6 +81,7 @@ import (
 // appModuleBasics returns ModuleBasics for the module BasicManager.
 var appModuleBasics = []module.AppModuleBasic{
 	auth.AppModuleBasic{},
+	authzmodule.AppModuleBasic{},
 	genutil.AppModuleBasic{},
 	bank.AppModuleBasic{},
 	capability.AppModuleBasic{},
@@ -117,7 +121,7 @@ var moduleAccountPermissions = map[string][]string{
 	delegationtypes.ModuleName:     {authtypes.Minter, authtypes.Burner},
 	stakerstypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
 	bundlestypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
-	querytypes.ModuleName:        {authtypes.Minter, authtypes.Burner},
+	querytypes.ModuleName:          {authtypes.Minter, authtypes.Burner},
 	// this line is used by starport scaffolding # stargate/app/maccPerms
 }
 

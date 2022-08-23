@@ -1,11 +1,12 @@
 syntax = "proto3";
+
 package kyve.delegation.v1beta1;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "kyve/delegation/v1beta1/params.proto";
 // this line is used by starport scaffolding # 1
+
 
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 

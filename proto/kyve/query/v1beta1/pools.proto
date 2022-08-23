@@ -1,12 +1,12 @@
 syntax = "proto3";
+
 package kyve.query.v1beta1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
-import "kyve/query/v1beta1/delegation.proto";
-import "kyve/pool/v1beta1/pool.proto";
+import "google/api/annotations.proto";
 import "kyve/bundles/v1beta1/bundles.proto";
+import "kyve/pool/v1beta1/pool.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
@@ -22,7 +22,6 @@ service QueryPool {
     option (google.api.http).get = "/kyve/query/v1beta1/pool/{id}";
   }
 }
-
 
 // ======
 // /pools
@@ -48,6 +47,7 @@ message QueryPoolsResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+// PoolResponse ...
 message PoolResponse {
   // id ...
   uint64 id = 1;
@@ -62,7 +62,6 @@ message PoolResponse {
   // status ...
   kyve.pool.v1beta1.PoolStatus status = 6;
 }
-
 
 // =========
 // pool/{id}

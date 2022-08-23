@@ -6,7 +6,6 @@ import "kyve/stakers/v1beta1/stakers.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
 
-
 // EventStakePool is an event emitted when a protocol node stakes in a pool.
 message EventStakePool {
   // address is the account address of the protocol node.

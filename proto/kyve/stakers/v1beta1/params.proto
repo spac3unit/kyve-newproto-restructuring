@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package kyve.stakers.v1beta1;
 
 import "gogoproto/gogo.proto";
@@ -23,5 +24,4 @@ message Params {
   uint64 commission_change_time = 6;
   // commission_change_time ...
   uint64 leave_pool_time = 7;
-  
 }

@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package kyve.delegation.v1beta1;
 
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
@@ -16,7 +17,7 @@ service Msg {
 }
 
 // MsgDelegate ...
-message MsgDelegate{
+message MsgDelegate {
   // creator ...
   string creator = 1;
   // staker ...

@@ -1,10 +1,10 @@
 syntax = "proto3";
+
 package kyve.query.v1beta1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
-
+import "google/api/annotations.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
@@ -26,11 +26,9 @@ service QueryDelegation {
   }
 }
 
-
 // ==============================
 // delegator/{staker}/{delegator}
 // ==============================
-
 
 // QueryDelegatorRequest is the request type for the Query/Delegator RPC method.
 message QueryDelegatorRequest {
@@ -58,11 +56,9 @@ message StakerDelegatorResponse {
   string staker = 4;
 }
 
-
 // =============================
 // delegators_by_staker/{staker}
 // =============================
-
 
 // QueryDelegatorsByStakerRequest ...
 message QueryDelegatorsByStakerRequest {
@@ -84,11 +80,9 @@ message QueryDelegatorsByStakerResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 4;
 }
 
-
 // ================================
 // stakers_by_delegator/{delegator}
 // ================================
-
 
 // QueryStakersByDelegatorRequest ...
 message QueryStakersByDelegatorRequest {
@@ -121,9 +115,9 @@ message DelegationForStakerResponse {
   // delegator_count ...
   uint64 delegator_count = 5;
 
-  // stake amount (self delegation)
+// stake amount (self delegation)
 
-  // logo, name, status
-  // TODO add pools ?
-  // TODO add pending commission changes
+// logo, name, status
+// TODO add pools ?
+// TODO add pending commission changes
 }

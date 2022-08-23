@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package kyve.stakers.v1beta1;
 
 import "gogoproto/gogo.proto";
@@ -6,11 +7,11 @@ import "kyve/stakers/v1beta1/params.proto";
 import "kyve/stakers/v1beta1/stakers.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
+
 option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
 
 // GenesisState defines the stakers module's genesis state.
 message GenesisState {
-
   // params ...
   Params params = 1 [(gogoproto.nullable) = false];
 

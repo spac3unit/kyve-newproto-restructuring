@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package kyve.pool.v1beta1;
 
 import "kyve/pool/v1beta1/gov.proto";
@@ -29,9 +30,8 @@ service Msg {
   // UpdatePool ...
   rpc CancelPoolUpgrade(GovMsgCancelPoolUpgrade) returns (GovMsgCancelPoolUpgradeResponse);
 
-  // ResetPool ... TODO should this be part of the bundles module?
+// ResetPool ... TODO should this be part of the bundles module?
 //  rpc ResetPool(GovMsgResetPool) returns (GovMsgResetPoolResponse);
-
 }
 
 // MsgFundPool defines a SDK message for funding a pool.

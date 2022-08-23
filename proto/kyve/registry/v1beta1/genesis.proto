@@ -28,7 +28,6 @@ message GenesisState {
   // unbonding_staking_queue_entries ...
   repeated kyve.registry.v1beta1.UnbondingStakingQueueEntry unbonding_staking_queue_entries = 11 [(gogoproto.nullable) = false];
 
-
   // delegator_list ...
   repeated kyve.registry.v1beta1.Delegator delegator_list = 6 [(gogoproto.nullable) = false];
   // delegation_pool_data_list ...
@@ -44,5 +43,4 @@ message GenesisState {
   repeated kyve.registry.v1beta1.UnbondingDelegationQueueEntry unbonding_delegation_queue_entries = 14 [(gogoproto.nullable) = false];
   // redelegation_cooldown_list ...
   repeated kyve.registry.v1beta1.RedelegationCooldown redelegation_cooldown_list = 15 [(gogoproto.nullable) = false];
-
 }

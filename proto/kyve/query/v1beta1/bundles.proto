@@ -1,11 +1,10 @@
 syntax = "proto3";
+
 package kyve.query.v1beta1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
-import "kyve/query/v1beta1/delegation.proto";
-import "kyve/pool/v1beta1/pool.proto";
+import "google/api/annotations.proto";
 import "kyve/bundles/v1beta1/bundles.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
@@ -22,22 +21,21 @@ service QueryBundles {
     option (google.api.http).get = "/kyve/query/v1beta1/finalized_bundle/{pool_id}/{id}";
   }
 
-
   // TODO which of these queries are actually needed?
-//  // ProposalByHeight ...
-//  rpc ProposalByHeight(QueryProposalByHeightRequest) returns (QueryProposalByHeightResponse) {
-//    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_by_height/{pool_id}/{height}";
-//  }
-//
-//  // ProposalSinceFinalizedAt ...
-//  rpc ProposalSinceFinalizedAt(QueryProposalSinceFinalizedAtRequest) returns (QueryProposalSinceFinalizedAtResponse) {
-//    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_finalized_at/{pool_id}/{finalized_at}";
-//  }
-//
-//  // ProposalSinceId ...
-//  rpc ProposalSinceId(QueryProposalSinceIdRequest) returns (QueryProposalSinceIdResponse) {
-//    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_id/{pool_id}/{id}";
-//  }
+  //  // ProposalByHeight ...
+  //  rpc ProposalByHeight(QueryProposalByHeightRequest) returns (QueryProposalByHeightResponse) {
+  //    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_by_height/{pool_id}/{height}";
+  //  }
+  //
+  //  // ProposalSinceFinalizedAt ...
+  //  rpc ProposalSinceFinalizedAt(QueryProposalSinceFinalizedAtRequest) returns (QueryProposalSinceFinalizedAtResponse) {
+  //    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_finalized_at/{pool_id}/{finalized_at}";
+  //  }
+  //
+  //  // ProposalSinceId ...
+  //  rpc ProposalSinceId(QueryProposalSinceIdRequest) returns (QueryProposalSinceIdResponse) {
+  //    option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_id/{pool_id}/{id}";
+  //  }
 
   // CurrentVoteStatus ...
   rpc CurrentVoteStatus(QueryCurrentVoteStatusRequest) returns (QueryCurrentVoteStatusResponse) {
@@ -59,7 +57,6 @@ service QueryBundles {
     option (google.api.http).get = "/kyve/query/v1beta1/can_vote/{pool_id}/{staker}/{voter}/{storage_id}";
   }
 }
-
 
 // ===========================
 // finalized_bundles/{pool_id}
@@ -103,7 +100,6 @@ message QueryCurrentVoteStatusResponse {
   uint64 total = 4;
 }
 
-
 // ===============================
 // finalized_bundle/{pool_id}/{id}
 // ===============================
@@ -121,7 +117,6 @@ message QueryFinalizedBundleResponse {
   // finalized_bundle ...
   kyve.bundles.v1beta1.FinalizedBundle finalized_bundle = 1 [(gogoproto.nullable) = false];
 }
-
 
 // ===================================
 // can_validate/{pool_id}/{valaddress}
@@ -142,7 +137,6 @@ message QueryCanValidateResponse {
   // reason ...
   string reason = 2;
 }
-
 
 // =======================================================
 // can_propose/{pool_id}/{staker}/{proposer}/{from_height}
@@ -168,7 +162,6 @@ message QueryCanProposeResponse {
   string reason = 2;
 }
 
-
 // ================================================
 // can_vote/{pool_id}/{staker}/{voter}/{storage_id}
 // ================================================
@@ -192,4 +185,3 @@ message QueryCanVoteResponse {
   // reason ...
   string reason = 2;
 }
-

@@ -1,11 +1,11 @@
 syntax = "proto3";
+
 package kyve.query.v1beta1;
 
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 import "kyve/stakers/v1beta1/stakers.proto";
-
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
@@ -26,7 +26,6 @@ service QueryStakers {
     option (google.api.http).get = "/kyve/query/v1beta1/stakers_by_pool/{pool_id}";
   }
 }
-
 
 // =======
 // stakers
@@ -54,7 +53,6 @@ message StakerResponse {
   repeated kyve.stakers.v1beta1.Valaccount valaccounts = 2;
 }
 
-
 // ================
 // staker/{address}
 // ================
@@ -70,7 +68,6 @@ message QueryStakerResponse {
   // staker ...
   StakerResponse staker = 1 [(gogoproto.nullable) = false];
 }
-
 
 // =========================
 // stakers_by_pool/{pool_id}

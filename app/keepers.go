@@ -9,6 +9,9 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
+	// Authz
+	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
+
 	// Bank
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
@@ -92,6 +95,7 @@ import (
 
 type Keepers struct {
 	AccountKeeper    authkeeper.AccountKeeper
+	AuthzKeeper      authzkeeper.Keeper
 	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
@@ -116,7 +120,7 @@ type Keepers struct {
 	DelegationKeeper delegationkeeper.Keeper
 	StakersKeeper    stakerskeeper.Keeper
 	BundlesKeeper    bundleskeeper.Keeper
-	QueryKeeper querykeeper.Keeper
+	QueryKeeper      querykeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 }
 
@@ -147,6 +151,7 @@ func (app *App) initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.
 func KVStoreKeys() []string {
 	return []string{
 		authtypes.StoreKey,
+		authzkeeper.StoreKey,
 		banktypes.StoreKey,
 		stakingtypes.StoreKey,
 		minttypes.StoreKey,

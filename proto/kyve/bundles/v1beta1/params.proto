@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package kyve.bundles.v1beta1;
 
 import "gogoproto/gogo.proto";
@@ -15,5 +16,4 @@ message Params {
   uint64 storage_cost = 2;
   // network_fee ...
   string network_fee = 3;
-  
 }

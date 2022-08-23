@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package kyve.bundles.v1beta1;
 
 // this line is used by starport scaffolding # proto/tx/import
@@ -8,7 +9,7 @@ option go_package = "github.com/KYVENetwork/chain/x/bundles/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+  // this line is used by starport scaffolding # proto/tx/rpc
   // SubmitBundleProposal ...
   rpc SubmitBundleProposal(MsgSubmitBundleProposal) returns (MsgSubmitBundleProposalResponse);
   // VoteBundleProposal ...

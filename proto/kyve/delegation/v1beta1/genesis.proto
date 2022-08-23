@@ -1,16 +1,17 @@
 syntax = "proto3";
+
 package kyve.delegation.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "kyve/delegation/v1beta1/params.proto";
 import "kyve/delegation/v1beta1/delegation.proto";
 // this line is used by starport scaffolding # genesis/proto/import
+
+import "kyve/delegation/v1beta1/params.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 
 // GenesisState defines the delegation module's genesis state.
 message GenesisState {
-
   // Params ...
   Params params = 1 [(gogoproto.nullable) = false];
 

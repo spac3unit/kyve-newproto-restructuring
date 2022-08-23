@@ -2,10 +2,6 @@ syntax = "proto3";
 
 package kyve.delegation.v1beta1;
 
-import "gogoproto/gogo.proto";
-import "kyve/delegation/v1beta1/delegation.proto";
-import "kyve/delegation/v1beta1/tx.proto";
-
 option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 
 // ---------- Delegating Events ----------
