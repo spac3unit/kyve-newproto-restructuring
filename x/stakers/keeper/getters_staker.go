@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"encoding/binary"
-	"math"
-
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/stakers/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -40,13 +38,13 @@ func (k Keeper) AddValaccountToPool(ctx sdk.Context, poolId uint64, stakerAddres
 
 	if found {
 		if !k.DoesValaccountExist(ctx, poolId, stakerAddress) {
-			k.setValaccount(ctx, types.Valaccount{
+			k.SetValaccount(ctx, types.Valaccount{
 				PoolId:     poolId,
 				Staker:     stakerAddress,
 				Valaddress: valaddress,
 			})
-			k.addToTotalStake(ctx, poolId, staker.Amount)
-			k.addOneToCount(ctx, poolId)
+			k.AddToTotalStake(ctx, poolId, staker.Amount)
+			k.AddOneToCount(ctx, poolId)
 		}
 	}
 }
@@ -75,7 +73,7 @@ func (k Keeper) AddAmountToStaker(ctx sdk.Context, stakerAddress string, amount 
 		staker.Amount += amount
 
 		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
-			k.addToTotalStake(ctx, valaccount.PoolId, amount)
+			k.AddToTotalStake(ctx, valaccount.PoolId, amount)
 		}
 
 		k.setStaker(ctx, staker)
@@ -113,19 +111,6 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 	}
 }
 
-func (k Keeper) GetLowestStaker(ctx sdk.Context, poolId uint64) (val types.Staker, found bool) {
-	minAmount := uint64(math.Inf(0))
-
-	for _, staker := range k.getAllStakersOfPool(ctx, poolId) {
-		if staker.Amount <= minAmount {
-			minAmount = staker.Amount
-			val = staker
-		}
-	}
-
-	return
-}
-
 func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
 	k.setStaker(ctx, staker)
 }
@@ -133,11 +118,6 @@ func (k Keeper) AppendStaker(ctx sdk.Context, staker types.Staker) {
 // #############################
 // #  Raw KV-Store operations  #
 // #############################
-
-func (k Keeper) getLowestStakerIndex(ctx sdk.Context, poolId uint64) (staker types.Staker, found bool) {
-	// TODO implement
-	return types.Staker{}, false
-}
 
 func (k Keeper) getAllStakersOfPool(ctx sdk.Context, poolId uint64) []types.Staker {
 	valaccounts := k.GetAllValaccountsOfPool(ctx, poolId)
@@ -242,7 +222,7 @@ func (k Keeper) GetStakerCountOfPool(ctx sdk.Context, poolId uint64) uint64 {
 	return k.getStat(ctx, poolId, types.STAKER_STATS_COUNT)
 }
 
-func (k Keeper) addOneToCount(ctx sdk.Context, poolId uint64) {
+func (k Keeper) AddOneToCount(ctx sdk.Context, poolId uint64) {
 	count := k.getStat(ctx, poolId, types.STAKER_STATS_COUNT)
 	k.setStat(ctx, poolId, types.STAKER_STATS_COUNT, count+1)
 }
@@ -252,7 +232,7 @@ func (k Keeper) subtractOneFromCount(ctx sdk.Context, poolId uint64) {
 	k.setStat(ctx, poolId, types.STAKER_STATS_COUNT, count-1)
 }
 
-func (k Keeper) addToTotalStake(ctx sdk.Context, poolId uint64, amount uint64) {
+func (k Keeper) AddToTotalStake(ctx sdk.Context, poolId uint64, amount uint64) {
 	stake := k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE)
 	k.setStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE, stake+amount)
 }

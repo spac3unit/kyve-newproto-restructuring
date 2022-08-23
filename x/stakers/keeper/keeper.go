@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+	delegationkeeper "github.com/KYVENetwork/chain/x/delegation/keeper"
 	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/KYVENetwork/chain/x/stakers/types"
@@ -17,11 +18,12 @@ type (
 		memKey     sdk.StoreKey
 		paramstore paramtypes.Subspace
 
-		accountKeeper types.AccountKeeper
-		bankKeeper    types.BankKeeper
-		distrkeeper   types.DistrKeeper
-		poolKeeper    types.PoolKeeper
-		upgradeKeeper types.UpgradeKeeper
+		accountKeeper    types.AccountKeeper
+		bankKeeper       types.BankKeeper
+		distrkeeper      types.DistrKeeper
+		poolKeeper       types.PoolKeeper
+		upgradeKeeper    types.UpgradeKeeper
+		delegationKeeper delegationkeeper.Keeper
 	}
 )
 
@@ -55,6 +57,10 @@ func NewKeeper(
 		poolKeeper:    poolKeeper,
 		upgradeKeeper: upgradeKeeper,
 	}
+}
+
+func (k *Keeper) SetDelegationKeeper(delegationKeeper delegationkeeper.Keeper) {
+	k.delegationKeeper = delegationKeeper
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {

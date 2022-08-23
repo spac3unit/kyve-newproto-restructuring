@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -354,5 +355,103 @@ var _ = Describe("Join Pool", Ordered, func() {
 		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.ALICE)
 
 		Expect(valaccountsOfStaker).To(BeEmpty())
+	})
+
+	It("Kick out lowest staker", func() {
+
+		// Arrange
+		Expect(stakerstypes.MaxStakers).To(Equal(50))
+
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator:    i.ALICE,
+			PoolId:     0,
+			Valaddress: i.ALICE,
+			Amount:     1,
+		})
+
+		for k := 0; k < 49; k++ {
+			s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+				Creator: i.DUMMY[k],
+				Amount:  150 * i.KYVE,
+			})
+			s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+				Creator:    i.DUMMY[k],
+				PoolId:     0,
+				Valaddress: i.VALDUMMY[k],
+				Amount:     1,
+			})
+		}
+
+		// Alice is lowest staker and all stakers are full now.
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
+
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.BOB,
+			Amount:  150 * i.KYVE,
+		})
+
+		// Act
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator:    i.BOB,
+			PoolId:     0,
+			Valaddress: i.BOB,
+			Amount:     1,
+		})
+
+		// Assert
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 150) * i.KYVE))
+		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).ToNot(ContainElement(i.ALICE))
+	})
+
+	It("Kick out lowest staker with respect to stake + delegation", func() {
+
+		// Arrange
+		Expect(stakerstypes.MaxStakers).To(Equal(50))
+
+		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+			Creator:    i.ALICE,
+			PoolId:     0,
+			Valaddress: i.ALICE,
+			Amount:     1 * i.KYVE,
+		})
+
+		for k := 0; k < 49; k++ {
+			s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+				Creator: i.DUMMY[k],
+				Amount:  150 * i.KYVE,
+			})
+			s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
+				Creator:    i.DUMMY[k],
+				PoolId:     0,
+				Valaddress: i.VALDUMMY[k],
+				Amount:     1 * i.KYVE,
+			})
+		}
+
+		// Alice is lowest staker and all stakers are full now.
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
+
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.BOB,
+			Amount:  150 * i.KYVE,
+		})
+
+		s.RunTxDelegatorSuccess(&delegationtypes.MsgDelegate{
+			Creator: i.ALICE,
+			Staker:  i.ALICE,
+			Amount:  150 * i.KYVE,
+		}) // Alice has now 250 delegation
+
+		// Act
+		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
+			Creator:    i.BOB,
+			PoolId:     0,
+			Valaddress: i.BOB,
+			Amount:     1,
+		})
+
+		// Assert
+		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 150) * i.KYVE))
+		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).To(ContainElement(i.ALICE))
 	})
 })
