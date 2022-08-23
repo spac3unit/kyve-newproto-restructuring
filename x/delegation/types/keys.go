@@ -26,7 +26,6 @@ var (
 	DelegatorKeyPrefix = []byte{1, 0}
 
 	// DelegatorKeyPrefixIndex2 is the prefix for a different key order for the DelegatorKeyPrefix
-	// TODO consider using memStore for second indexes, if they are only needed by the logic.
 	DelegatorKeyPrefixIndex2 = []byte{1, 1}
 
 	// DelegationEntriesKeyPrefix is the prefix to retrieve all DelegationEntries

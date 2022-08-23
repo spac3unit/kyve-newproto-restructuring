@@ -59,7 +59,7 @@ func NewKeeper(
 	}
 }
 
-func (k *Keeper) SetDelegationKeeper(delegationKeeper delegationkeeper.Keeper) {
+func SetDelegationKeeper(k *Keeper, delegationKeeper delegationkeeper.Keeper) {
 	k.delegationKeeper = delegationKeeper
 }
 

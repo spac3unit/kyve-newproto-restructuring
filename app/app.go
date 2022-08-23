@@ -367,7 +367,7 @@ func NewApp(
 		app.StakersKeeper,
 	)
 
-	app.StakersKeeper.SetDelegationKeeper(app.DelegationKeeper)
+	stakersmodulekeeper.SetDelegationKeeper(&app.StakersKeeper, app.DelegationKeeper)
 
 	app.BundlesKeeper = *bundlesmodulekeeper.NewKeeper(
 		appCodec,
@@ -419,7 +419,7 @@ func NewApp(
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper))
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
-		&stakingKeeper, &app.RegistryKeeper, govRouter,
+		&stakingKeeper, &app.DelegationKeeper, govRouter,
 	)
 
 	registryModule := registrymodule.NewAppModule(appCodec, app.RegistryKeeper, app.AccountKeeper, app.BankKeeper, app.UpgradeKeeper)
