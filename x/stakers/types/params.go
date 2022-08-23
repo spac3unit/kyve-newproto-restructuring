@@ -1,8 +1,7 @@
 package types
 
 import (
-	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/KYVENetwork/chain/util"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"gopkg.in/yaml.v2"
 )
@@ -86,18 +85,46 @@ func DefaultParams() Params {
 // ParamSetPairs get the params.ParamSet
 func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
-		paramtypes.NewParamSetPair(KeyVoteSlash, &p.VoteSlash, validateVoteSlash),
-		paramtypes.NewParamSetPair(KeyUploadSlash, &p.UploadSlash, validateUploadSlash),
-		paramtypes.NewParamSetPair(KeyTimeoutSlash, &p.TimeoutSlash, validateTimeoutSlash),
-		paramtypes.NewParamSetPair(KeyMaxPoints, &p.MaxPoints, validateMaxPoints),
-		paramtypes.NewParamSetPair(KeyUnbondingStakingTime, &p.UnbondingStakingTime, validateUnbondingStakingTime),
-		paramtypes.NewParamSetPair(KeyCommissionChangeTime, &p.CommissionChangeTime, validateTrue),
-		paramtypes.NewParamSetPair(KeyLeavePoolTime, &p.LeavePoolTime, validateTrue),
+		paramtypes.NewParamSetPair(KeyVoteSlash, &p.VoteSlash, util.ValidatePercentage),
+		paramtypes.NewParamSetPair(KeyUploadSlash, &p.UploadSlash, util.ValidatePercentage),
+		paramtypes.NewParamSetPair(KeyTimeoutSlash, &p.TimeoutSlash, util.ValidatePercentage),
+		paramtypes.NewParamSetPair(KeyMaxPoints, &p.MaxPoints, util.ValidateUint64),
+		paramtypes.NewParamSetPair(KeyUnbondingStakingTime, &p.UnbondingStakingTime, util.ValidateUint64),
+		paramtypes.NewParamSetPair(KeyCommissionChangeTime, &p.CommissionChangeTime, util.ValidateUint64),
+		paramtypes.NewParamSetPair(KeyLeavePoolTime, &p.LeavePoolTime, util.ValidateUint64),
 	}
 }
 
 // Validate validates the set of params
 func (p Params) Validate() error {
+	if err := util.ValidatePercentage(p.VoteSlash); err != nil {
+		return err
+	}
+
+	if err := util.ValidatePercentage(p.UploadSlash); err != nil {
+		return err
+	}
+
+	if err := util.ValidatePercentage(p.TimeoutSlash); err != nil {
+		return err
+	}
+
+	if err := util.ValidateUint64(p.MaxPoints); err != nil {
+		return err
+	}
+
+	if err := util.ValidateUint64(p.UnbondingStakingTime); err != nil {
+		return err
+	}
+
+	if err := util.ValidateUint64(p.CommissionChangeTime); err != nil {
+		return err
+	}
+
+	if err := util.ValidateUint64(p.LeavePoolTime); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -105,68 +132,4 @@ func (p Params) Validate() error {
 func (p Params) String() string {
 	out, _ := yaml.Marshal(p)
 	return string(out)
-}
-
-func validateTrue(v interface{}) error {
-	return nil
-}
-
-// validateVoteSlash validates the VoteSlash param
-func validateVoteSlash(v interface{}) error {
-	return validatePercentage(v)
-}
-
-// validateUploadSlash validates the UploadSlash param
-func validateUploadSlash(v interface{}) error {
-	return validatePercentage(v)
-}
-
-// validateTimeoutSlash validates the TimeoutSlash param
-func validateTimeoutSlash(v interface{}) error {
-	return validatePercentage(v)
-}
-
-// validateMaxPoints validates the MaxPoints param
-func validateMaxPoints(v interface{}) error {
-	maxPoints, ok := v.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
-	}
-
-	// TODO implement validation
-	_ = maxPoints
-
-	return nil
-}
-
-// validateMaxPoints validates the MaxPoints param
-func validateUnbondingStakingTime(v interface{}) error {
-	_, ok := v.(uint64)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
-	}
-
-	return nil
-}
-
-// validatePercentage ...
-func validatePercentage(v interface{}) error {
-	val, ok := v.(string)
-	if !ok {
-		return fmt.Errorf("invalid parameter type: %T", v)
-	}
-
-	parsedVal, err := sdk.NewDecFromStr(val)
-	if err != nil {
-		return fmt.Errorf("invalid decimal representation: %T", v)
-	}
-
-	if parsedVal.LT(sdk.NewDec(0)) {
-		return fmt.Errorf("percentage should be greater than or equal to 0")
-	}
-	if parsedVal.GT(sdk.NewDec(1)) {
-		return fmt.Errorf("percentage should be less than or equal to 1")
-	}
-
-	return nil
 }
