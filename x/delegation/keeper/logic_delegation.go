@@ -25,8 +25,6 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 		// If the sender isn't already a delegator, simply create a new delegation entry.
 		k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, amount)
 	}
-
-	// TODO where to update pool delegation? Should this even be an aggregation variable
 }
 
 // performUndelegation performs immediately an undelegation of the given amount from the given staker
@@ -56,6 +54,5 @@ func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, deleg
 		k.f1CreateDelegator(ctx, stakerAddress, delegatorAddress, redelegation)
 	}
 
-	// TODO where to update pool delegation? Should this even be an aggregation variable
 	return undelegatedAmount - redelegation
 }

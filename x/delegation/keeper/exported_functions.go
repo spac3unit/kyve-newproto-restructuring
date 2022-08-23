@@ -34,7 +34,11 @@ func (k Keeper) GetDelegationAmountOfDelegator(ctx sdk.Context, stakerAddress st
 // GetDelegationOfPool returns the amount of how many $KYVE users have delegated
 // to stakers that are participating in the given pool
 func (k Keeper) GetDelegationOfPool(ctx sdk.Context, poolId uint64) uint64 {
-	return 0 // TODO implement
+	totalDelegation := uint64(0)
+	for _, address := range k.stakersKeeper.GetAllStakerAddressesOfPool(ctx, poolId) {
+		totalDelegation += k.GetDelegationAmount(ctx, address)
+	}
+	return totalDelegation
 }
 
 // PayoutRewards transfers `amount` $nKYVE from the `payerModuleName`-module to the delegation module.
