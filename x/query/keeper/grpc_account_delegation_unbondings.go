@@ -28,23 +28,10 @@ func (k Keeper) AccountDelegationUnbondings(goCtx context.Context, req *types.Qu
 			index := binary.BigEndian.Uint64(key[0:8])
 			unbondingEntry, _ := k.delegationKeeper.GetUndelegationQueueEntry(ctx, index)
 
-			staker, _ := k.stakerKeeper.GetStaker(ctx, unbondingEntry.Staker)
-
-			basicStaker := types.BasicStaker{
-				Address:         staker.Address,
-				Amount:          staker.Amount,
-				UnbondingAmount: staker.UnbondingAmount,
-				Commission:      staker.Commission,
-				Moniker:         staker.Moniker,
-				Website:         staker.Website,
-				Logo:            staker.Website,
-				TotalDelegation: k.delegationKeeper.GetDelegationAmount(ctx, staker.Address),
-			}
-
 			delegationUnbondings = append(delegationUnbondings, types.DelegationUnbonding{
 				Amount:       unbondingEntry.Amount,
 				CreationTime: unbondingEntry.CreationTime,
-				Staker:       &basicStaker,
+				Staker:       k.getFullStaker(ctx, unbondingEntry.Staker),
 			})
 		}
 		return true, nil

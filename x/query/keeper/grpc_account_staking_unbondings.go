@@ -40,22 +40,9 @@ func (k Keeper) AccountStakingUnbondings(goCtx context.Context, req *types.Query
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	staker, _ := k.stakerKeeper.GetStaker(ctx, req.Address)
-
-	basicStaker := types.BasicStaker{
-		Address:         staker.Address,
-		Amount:          staker.Amount,
-		UnbondingAmount: staker.UnbondingAmount,
-		Commission:      staker.Commission,
-		Moniker:         staker.Moniker,
-		Website:         staker.Website,
-		Logo:            staker.Website,
-		TotalDelegation: k.delegationKeeper.GetDelegationAmount(ctx, staker.Address),
-	}
-
 	return &types.QueryAccountStakingUnbondingsResponse{
 		Unbondings: stakingUnbondings,
-		Staker:     &basicStaker,
+		Staker:     k.getFullStaker(ctx, req.Address),
 		Pagination: pageRes,
 	}, nil
 }

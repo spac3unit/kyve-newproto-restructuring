@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package kyve.query.v1beta1;
+
+option go_package = "github.com/KYVENetwork/chain/x/query/types";
+
+/*
+ This query-module servers all queries for the following modules:
+ bundles, pool, delegation, stakers
+
+ As a lot of request require composition of multiple module-data
+ everything will be served from one single query module.
+
+ Therefore, the queries are allowed to have the package prefixes
+ of these modules in their query url
+ The named package do not implement their own queries (expect for params)
+
+ For simplicity all queries and their objects are in the corresponding
+ proto files
+
+ Messages that are used for across multiple queries are defined here.
+
+*/
+
+// BasicPool contains the necessary properties need for a pool
+// to be displayed in the UI
+message BasicPool {
+  // id ...
+  uint64 id = 1;
+  // name ...
+  string name = 2;
+  // runtime ...
+  string runtime = 3;
+  // logo ...
+  string logo = 4;
+  // total_funds ...
+  uint64 total_funds = 5;
+}
+
+message FullStaker {
+  string address = 1;
+
+  StakerMetadata metadata = 2;
+
+  // amount ...
+  uint64 amount = 3;
+  // unbonding_amount ...
+  uint64 unbonding_amount = 4;
+
+  // total_delegation ...
+  uint64 total_delegation = 8;
+  // delegator_count ...
+  uint64 delegator_count = 5;
+
+  repeated PoolMembership pools = 6;
+}
+
+// BasicStaker contains the necessary properties need for a staker
+// to be displayed in the UI
+message StakerMetadata {
+  // commission ...
+  string commission = 4;
+  // moniker ...
+  string moniker = 5;
+  // website ...
+  string website = 6;
+  // logo ...
+  string logo = 7;
+
+  // pending_commission_change ...
+  CommissionChangeEntry pending_commission_change = 9;
+}
+
+message CommissionChangeEntry {
+  // commission ...
+  string commission = 1;
+  // creation_date ...
+  int64 creation_date = 2;
+}
+
+
+message PoolMembership {
+  BasicPool pool = 1;
+  uint64 points = 2;
+  bool isLeaving = 3;
+  string valaccount = 4;
+}
+
+
+

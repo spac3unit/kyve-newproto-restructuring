@@ -28,14 +28,10 @@ func (k Keeper) StakersByDelegator(goCtx context.Context, req *types.QueryStaker
 		if accumulate {
 			staker := string(key[0:43])
 
-			delegationPoolData, _ := k.delegationKeeper.GetDelegationData(ctx, staker)
-
 			stakers = append(stakers, types.DelegationForStakerResponse{
-				Staker:                staker,
-				CurrentReward:         k.delegationKeeper.GetOutstandingRewards(ctx, staker, req.Delegator),
-				DelegationAmount:      k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, staker, req.Delegator),
-				TotalDelegationAmount: delegationPoolData.TotalDelegation,
-				DelegatorCount:        delegationPoolData.DelegatorCount,
+				Staker:           k.getFullStaker(ctx, staker),
+				CurrentReward:    k.delegationKeeper.GetOutstandingRewards(ctx, staker, req.Delegator),
+				DelegationAmount: k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, staker, req.Delegator),
 			})
 		}
 

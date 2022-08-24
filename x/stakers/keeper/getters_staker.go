@@ -168,29 +168,26 @@ func (k Keeper) GetStaker(
 	return val, true
 }
 
-func (k Keeper) GetPaginatedStakerQuery(ctx sdk.Context, pagination *query.PageRequest) ([]types.Staker, *query.PageResponse, error) {
-	var stakers []types.Staker
-
+func (k Keeper) GetPaginatedStakerQuery(ctx sdk.Context, pagination *query.PageRequest, accumulator func(staker types.Staker)) (*query.PageResponse, error) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.StakerKeyPrefix)
 
 	pageRes, err := query.FilteredPaginate(store, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var staker types.Staker
-		if err := k.cdc.Unmarshal(value, &staker); err != nil {
-			return false, err
-		}
-
 		if accumulate {
-			stakers = append(stakers, staker)
+			var staker types.Staker
+			if err := k.cdc.Unmarshal(value, &staker); err != nil {
+				return false, err
+			}
+			accumulator(staker)
 		}
 
 		return true, nil
 	})
 
 	if err != nil {
-		return nil, nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return stakers, pageRes, nil
+	return pageRes, nil
 }
 
 // DoesStakerExist returns true if the staker exists
