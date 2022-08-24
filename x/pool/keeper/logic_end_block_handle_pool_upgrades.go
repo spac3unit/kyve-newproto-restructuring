@@ -6,7 +6,6 @@ import (
 )
 
 func (k Keeper) HandlePoolUpgrades(ctx sdk.Context) {
-
 	for _, pool := range k.GetAllPools(ctx) {
 		// Handle pool upgrades
 		if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
