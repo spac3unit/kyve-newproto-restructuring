@@ -28,7 +28,7 @@ func (k Keeper) StakersByPool(c context.Context, req *types.QueryStakersByPoolRe
 	for _, valaccount := range valaccounts {
 		if k.stakerKeeper.DoesStakerExist(ctx, valaccount.Staker) {
 			data = append(data, types.StakerPoolResponse{
-				Staker:     k.getFullStaker(ctx, valaccount.Staker),
+				Staker:     k.GetFullStaker(ctx, valaccount.Staker),
 				Valaccount: valaccount,
 			})
 		}

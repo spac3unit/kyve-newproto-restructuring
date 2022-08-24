@@ -20,7 +20,7 @@ func (k Keeper) Stakers(c context.Context, req *types.QueryStakersRequest) (*typ
 
 	data := make([]types.FullStaker, 0)
 	pageRes, err := k.stakerKeeper.GetPaginatedStakerQuery(ctx, req.Pagination, func(staker stakermoduletypes.Staker) {
-		data = append(data, *k.getFullStaker(ctx, staker.Address))
+		data = append(data, *k.GetFullStaker(ctx, staker.Address))
 	})
 	if err != nil {
 		return nil, err
@@ -40,5 +40,5 @@ func (k Keeper) Staker(c context.Context, req *types.QueryStakerRequest) (*types
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	return &types.QueryStakerResponse{Staker: *k.getFullStaker(ctx, req.Address)}, nil
+	return &types.QueryStakerResponse{Staker: *k.GetFullStaker(ctx, req.Address)}, nil
 }

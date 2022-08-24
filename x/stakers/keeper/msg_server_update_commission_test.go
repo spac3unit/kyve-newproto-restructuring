@@ -22,6 +22,7 @@ TEST CASES - msg_server_update_commission.go
 * Update commission multiple times during the commission change time
 * Update commission multiple times during the commission change time with the same value
 * // TODO: commission should reset if staker unstakes everything and stakes again
+* // TODO: update commission with multiple stakers
 
 */
 

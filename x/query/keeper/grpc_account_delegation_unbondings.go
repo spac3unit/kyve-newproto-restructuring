@@ -31,7 +31,7 @@ func (k Keeper) AccountDelegationUnbondings(goCtx context.Context, req *types.Qu
 			delegationUnbondings = append(delegationUnbondings, types.DelegationUnbonding{
 				Amount:       unbondingEntry.Amount,
 				CreationTime: unbondingEntry.CreationTime,
-				Staker:       k.getFullStaker(ctx, unbondingEntry.Staker),
+				Staker:       k.GetFullStaker(ctx, unbondingEntry.Staker),
 			})
 		}
 		return true, nil

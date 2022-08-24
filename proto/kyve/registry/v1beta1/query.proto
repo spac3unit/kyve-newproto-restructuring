@@ -11,16 +11,6 @@ option go_package = "github.com/KYVENetwork/chain/x/registry/types";
 
 // Query defines the gRPC registry querier service.
 service Query {
-  // StakersList returns all staker addresses with their corresponding staking amount for a given pool
-  rpc StakersList(QueryStakersListRequest) returns (QueryStakersListResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/stakers_list/{pool_id}";
-  }
-
-  // Staker returns all staker info
-  rpc Staker(QueryStakerRequest) returns (QueryStakerResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/staker/{pool_id}/{staker}";
-  }
-
   // WARP
 
   // ProposalByHeight ...
@@ -37,84 +27,6 @@ service Query {
   rpc ProposalSinceId(QueryProposalSinceIdRequest) returns (QueryProposalSinceIdResponse) {
     option (google.api.http).get = "/kyve/registry/v1beta1/proposal_since_id/{pool_id}/{id}";
   }
-}
-
-// ######################
-// =====    POOL    =====
-// ######################
-
-// QueryStakersListRequest is the request type for the Query/StakersList RPC method.
-message QueryStakersListRequest {
-  // pool_id defines the unique ID of the pool.
-  uint64 pool_id = 1;
-  // status ...
-  StakerStatus status = 2;
-  // pagination ...
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
-}
-
-// QueryStakersListResponse is the response type for the Query/StakersList RPC method.
-message QueryStakersListResponse {
-  // stakers ...
-  repeated kyve.registry.v1beta1.StakerResponse stakers = 1;
-  // pagination ...
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryStakerRequest is the request type for the Query/Staker RPC method.
-message QueryStakerRequest {
-  // pool_id defines the unique ID of the pool.
-  uint64 pool_id = 1;
-  // staker ...
-  string staker = 2;
-}
-
-// QueryStakerResponse is the response type for the Query/Staker RPC method.
-message QueryStakerResponse {
-  // staker ...
-  kyve.registry.v1beta1.StakerResponse staker = 1;
-}
-
-// PendingCommissionChange ...
-message PendingCommissionChange {
-  // new_commission ...
-  string new_commission = 1;
-  // creation_date ...
-  int64 creation_date = 2;
-  // finish_date ...
-  int64 finish_date = 3;
-}
-
-// StakerResponse ...
-message StakerResponse {
-  // staker ...
-  string staker = 1;
-  // pool_id ...
-  uint64 pool_id = 2;
-  // account ...
-  string account = 3;
-  // amount ...
-  uint64 amount = 4;
-  // total_delegation ...
-  uint64 total_delegation = 5;
-  // commission ...
-  string commission = 6;
-  // moniker ...
-  string moniker = 7;
-  // website ...
-  string website = 8;
-  // logo
-  string logo = 9;
-  // points
-  uint64 points = 10;
-  // unbonding_amount ...
-  uint64 unbonding_amount = 11;
-  // upload_probability
-  string upload_probability = 12;
-  // status
-  StakerStatus status = 13;
-  // pending_commission_change
-  PendingCommissionChange pending_commission_change = 14;
 }
 
 // ######################

@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func (k Keeper) getFullStaker(ctx sdk.Context, stakerAddress string) *types.FullStaker {
+func (k Keeper) GetFullStaker(ctx sdk.Context, stakerAddress string) *types.FullStaker {
 	staker, _ := k.stakerKeeper.GetStaker(ctx, stakerAddress)
 
 	commissionChange, found := k.stakerKeeper.GetCommissionChangeEntryByIndex2(ctx, staker.Address)

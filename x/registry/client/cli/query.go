@@ -22,14 +22,8 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	// PARAMS
 	cmd.AddCommand(CmdParams())
 
-	// POOL
-	cmd.AddCommand(CmdStakersList())
-	cmd.AddCommand(CmdStaker())
-
 	// WARP
 	cmd.AddCommand(CmdProposalByHeight())
-
-	// PROTOCOL NODE - FLOW
 
 	return cmd
 }

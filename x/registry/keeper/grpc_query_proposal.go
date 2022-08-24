@@ -11,6 +11,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+var _ types.QueryServer = Keeper{}
+
 // ProposalByHeight returns the proposal which contains the requested height of the datasource.
 func (k Keeper) ProposalByHeight(goCtx context.Context, req *types.QueryProposalByHeightRequest) (*types.QueryProposalByHeightResponse, error) {
 	if req == nil {

@@ -42,7 +42,7 @@ func (k Keeper) AccountStakingUnbondings(goCtx context.Context, req *types.Query
 
 	return &types.QueryAccountStakingUnbondingsResponse{
 		Unbondings: stakingUnbondings,
-		Staker:     k.getFullStaker(ctx, req.Address),
+		Staker:     k.GetFullStaker(ctx, req.Address),
 		Pagination: pageRes,
 	}, nil
 }
