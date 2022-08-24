@@ -22,6 +22,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		if err != nil {
 			bundleProposal.NextUploader = ""
 			k.SetBundleProposal(ctx, bundleProposal)
+			continue
 		}
 
 		// Skip if we haven't reached the upload interval.

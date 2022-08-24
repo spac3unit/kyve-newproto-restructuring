@@ -13,9 +13,6 @@ import (
 var _ = Describe("Bundles module integration tests", Ordered, func() {
 	s := i.NewCleanChain()
 
-	//initialBalanceStaker0 := s.GetBalanceFromAddress(i.STAKER_0)
-	//initialBalanceValaddress0 := s.GetBalanceFromAddress(i.VALADDRESS_0)
-
 	BeforeEach(func() {
 		// init new clean chain
 		s = i.NewCleanChain()
@@ -25,7 +22,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 			Name:           "Moontest",
 			MaxBundleSize:  100,
 			StartKey:       "0",
-			MinStake:       1 * i.KYVE,
+			MinStake:       100 * i.KYVE,
 			UploadInterval: 60,
 			OperatingCost:  10_000,
 			Protocol: &pooltypes.Protocol{
@@ -52,13 +49,133 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 			PoolId:     0,
 			Valaddress: i.VALADDRESS_0,
 		})
-
-		//initialBalanceStaker0 = s.GetBalanceFromAddress(i.STAKER_0)
-		//initialBalanceValaddress0 = s.GetBalanceFromAddress(i.VALADDRESS_0)
 	})
 
 	AfterEach(func() {
 		s.PerformValidityChecks()
+	})
+
+	It("Next uploader gets removed due to pool upgrading", func() {
+		// ARRANGE
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		pool.UpgradePlan = &pooltypes.UpgradePlan{
+			Version:     "1.0.0",
+			Binaries:    "{}",
+			ScheduledAt: 100,
+			Duration:    3600,
+		}
+
+		s.App().PoolKeeper.SetPool(s.Ctx(), pool)
+
+		// ACT
+		s.CommitAfterSeconds(1)
+
+		// ASSERT
+		poolStakers := s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)
+		Expect(poolStakers).To(HaveLen(1))
+
+		nextUploader, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		Expect(found).To(BeTrue())
+		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
+
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+		Expect(bundleProposal.NextUploader).To(BeEmpty())
+	})
+
+	It("Next uploader gets removed due to pool being paused", func() {
+		// ARRANGE
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		pool.Paused = true
+
+		s.App().PoolKeeper.SetPool(s.Ctx(), pool)
+
+		// ACT
+		s.CommitAfterSeconds(1)
+
+		// ASSERT
+		poolStakers := s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)
+		Expect(poolStakers).To(HaveLen(1))
+
+		nextUploader, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		Expect(found).To(BeTrue())
+		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
+
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+		Expect(bundleProposal.NextUploader).To(BeEmpty())
+	})
+
+	It("Next uploader gets removed due to pool having no funds", func() {
+		// ARRANGE
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
+			Creator: i.ALICE,
+			Id:      0,
+			Amount:  100 * i.KYVE,
+		})
+
+		// ACT
+		s.CommitAfterSeconds(1)
+
+		// ASSERT
+		poolStakers := s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)
+		Expect(poolStakers).To(HaveLen(1))
+
+		nextUploader, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		Expect(found).To(BeTrue())
+		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
+
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+		Expect(bundleProposal.NextUploader).To(BeEmpty())
+	})
+
+	It("Next uploader gets removed due to pool not reaching min stake", func() {
+		// ARRANGE
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		s.RunTxStakersSuccess(&stakertypes.MsgUnstake{
+			Creator: i.STAKER_0,
+			Amount:  50 * i.KYVE,
+		})
+
+		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
+		s.CommitAfterSeconds(1)
+
+		// ACT
+		s.CommitAfterSeconds(1)
+
+		// ASSERT
+		poolStakers := s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)
+		Expect(poolStakers).To(HaveLen(1))
+
+		nextUploader, found := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
+		Expect(found).To(BeTrue())
+		Expect(nextUploader.Amount).To(Equal(50 * i.KYVE))
+
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+		Expect(bundleProposal.NextUploader).To(BeEmpty())
 	})
 
 	It("Staker is just next uploader and upload timeout does not pass", func() {
@@ -249,4 +366,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 	//	Expect(pool.Funders).To(HaveLen(1))
 	//	Expect(funder.Amount).To(Equal(100 * i.KYVE))
 	//})
+
+	// TODO: test if assert pool fails
+	// TODO: test if no staker has claimed the uploader role
 })
