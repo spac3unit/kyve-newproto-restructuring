@@ -5,6 +5,7 @@ package kyve.query.v1beta1;
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "kyve/query/v1beta1/query.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
@@ -105,19 +106,9 @@ message QueryStakersByDelegatorResponse {
 // DelegationForStakerResponse ...
 message DelegationForStakerResponse {
   // staker ...
-  string staker = 1;
+  FullStaker staker = 1;
   // current_reward ...
   uint64 current_reward = 2;
   // delegation_amount ...
   uint64 delegation_amount = 3;
-  // total_delegation_amount ...
-  uint64 total_delegation_amount = 4;
-  // delegator_count ...
-  uint64 delegator_count = 5;
-
-// stake amount (self delegation)
-
-// logo, name, status
-// TODO add pools ?
-// TODO add pending commission changes
 }

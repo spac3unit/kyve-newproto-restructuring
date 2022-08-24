@@ -5,6 +5,7 @@ package kyve.query.v1beta1;
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "kyve/query/v1beta1/query.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
@@ -81,7 +82,7 @@ message QueryAccountStakingUnbondingsResponse {
   // balance ...
   repeated StakingUnbonding unbondings = 1 [(gogoproto.nullable) = false];
   // staker
-  BasicStaker staker = 3;
+  FullStaker staker = 3;
   // pagination defines the pagination in the response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
@@ -121,29 +122,7 @@ message DelegationUnbonding {
   // creation_time
   uint64 creation_time = 2;
   // staker
-  BasicStaker staker = 3;
-}
-
-// BasicStaker ...
-message BasicStaker {
-  // address ...
-  string address = 1;
-  // amount ...
-  uint64 amount = 2;
-  // unbonding_amount ...
-  uint64 unbonding_amount = 3;
-  // commission ...
-  string commission = 4;
-  // moniker ...
-  string moniker = 5;
-  // website ...
-  string website = 6;
-  // logo ...
-  string logo = 7;
-  // total_delegation ...
-  uint64 total_delegation = 8;
-
-// TODO Pools, Points?
+  FullStaker staker = 3;
 }
 
 // =============================
@@ -172,20 +151,6 @@ message Funded {
   uint64 amount = 1;
   // pool ...
   BasicPool pool = 2;
-}
-
-// BasicPool ...
-message BasicPool {
-  // id ...
-  uint64 id = 1;
-  // name ...
-  string name = 2;
-  // runtime ...
-  string runtime = 3;
-  // logo ...
-  string logo = 4;
-  // total_funds ...
-  uint64 total_funds = 5;
 }
 
 // ==============================

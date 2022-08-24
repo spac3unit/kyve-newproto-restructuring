@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	stakermoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
 
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,20 +18,12 @@ func (k Keeper) Stakers(c context.Context, req *types.QueryStakersRequest) (*typ
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	stakers, pageRes, err := k.stakerKeeper.GetPaginatedStakerQuery(ctx, req.Pagination)
+	data := make([]types.FullStaker, 0)
+	pageRes, err := k.stakerKeeper.GetPaginatedStakerQuery(ctx, req.Pagination, func(staker stakermoduletypes.Staker) {
+		data = append(data, *k.getFullStaker(ctx, staker.Address))
+	})
 	if err != nil {
 		return nil, err
-	}
-
-	data := make([]types.StakerResponse, 0)
-
-	for i := range stakers {
-		valaccounts := k.stakerKeeper.GetValaccountsFromStaker(ctx, stakers[i].Address)
-
-		data = append(data, types.StakerResponse{
-			Staker:      &stakers[i],
-			Valaccounts: valaccounts,
-		})
 	}
 
 	return &types.QueryStakersResponse{Stakers: data, Pagination: pageRes}, nil
@@ -42,15 +35,10 @@ func (k Keeper) Staker(c context.Context, req *types.QueryStakerRequest) (*types
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	staker, found := k.stakerKeeper.GetStaker(ctx, req.Address)
-	if !found {
+
+	if !k.stakerKeeper.DoesStakerExist(ctx, req.Address) {
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	valaccounts := k.stakerKeeper.GetValaccountsFromStaker(ctx, staker.Address)
-
-	return &types.QueryStakerResponse{Staker: types.StakerResponse{
-		Staker:      &staker,
-		Valaccounts: valaccounts,
-	}}, nil
+	return &types.QueryStakerResponse{Staker: *k.getFullStaker(ctx, req.Address)}, nil
 }
