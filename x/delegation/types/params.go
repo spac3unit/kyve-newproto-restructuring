@@ -19,7 +19,7 @@ var (
 )
 
 var (
-	KeyRedelegationMaxAmount            = []byte("KeyRedelegationMaxAmount")
+	KeyRedelegationMaxAmount            = []byte("RedelegationMaxAmount")
 	DefaultRedelegationMaxAmount uint64 = 5
 )
 

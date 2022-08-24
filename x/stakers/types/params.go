@@ -34,12 +34,12 @@ var (
 )
 
 var (
-	KeyCommissionChangeTime            = []byte("KeyCommissionChangeTime")
+	KeyCommissionChangeTime            = []byte("CommissionChangeTime")
 	DefaultCommissionChangeTime uint64 = 60 * 60 * 24 * 5
 )
 
 var (
-	KeyLeavePoolTime            = []byte("KeyLeavePoolTime")
+	KeyLeavePoolTime            = []byte("LeavePoolTime")
 	DefaultLeavePoolTime uint64 = 60 * 60 * 24 * 5
 )
 

@@ -15,7 +15,7 @@ option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/KYVENetwork/chain/stakers/params";
+    option (google.api.http).get = "/kyve/stakers/v1beta1/params";
   }
   // this line is used by starport scaffolding # 2
 }
