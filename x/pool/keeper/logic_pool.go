@@ -24,3 +24,21 @@ func (k Keeper) AssertPoolExists(ctx sdk.Context, poolId uint64) error {
 	}
 	return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), poolId)
 }
+
+func (k Keeper) IncrementBundleInformation(
+	ctx sdk.Context,
+	poolId uint64,
+	currentHeight uint64,
+	currentKey string,
+	currentValue string,
+) {
+	pool, found := k.GetPool(ctx, poolId)
+	if found {
+		pool.CurrentHeight = currentHeight
+		pool.TotalBundles = pool.TotalBundles + 1
+		pool.CurrentKey = currentKey
+		pool.CurrentValue = currentValue
+		k.SetPool(ctx, pool)
+	}
+
+}

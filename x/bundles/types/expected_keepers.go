@@ -29,10 +29,10 @@ type PoolKeeper interface {
 	GetPool(ctx sdk.Context, id uint64) (val pooltypes.Pool, found bool)
 
 	// Todo replace with different function
-	SetPool(ctx sdk.Context, pool pooltypes.Pool)
+	IncrementBundleInformation(ctx sdk.Context, poolId uint64, currentHeight uint64, currentKey string, currentValue string)
 
 	GetAllPools(ctx sdk.Context) (list []pooltypes.Pool)
-	ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64, receiverModuleName string) error
+	ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64) error
 }
 
 type StakerKeeper interface {

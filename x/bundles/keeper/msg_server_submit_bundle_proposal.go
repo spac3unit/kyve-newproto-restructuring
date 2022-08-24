@@ -66,7 +66,7 @@ func (k msgServer) SubmitBundleProposal(
 		// Calculate the total reward for the bundle, and individual payouts.
 		bundleReward := k.calculatePayouts(ctx, msg.PoolId)
 
-		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward.Total, types.ModuleName); err != nil {
+		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward.Total); err != nil {
 			// drop bundle because pool ran out of funds
 			bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 			k.SetBundleProposal(ctx, bundleProposal)
