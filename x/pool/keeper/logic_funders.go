@@ -11,9 +11,9 @@ import (
 // All funders who can't afford the amount, are kicked out.
 // Their remaining amount is transferred to the Treasury
 // Function throws an error if pool ran out of funds.
-// The receiverModuleName should be the name of the module which charges the funders
-// (this will usually be the bundles module)
-func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64, receiverModuleName string) error {
+// This method does not transfer any funds. The bundles
+// module is responsible for transferring the rewards out of the module
+func (k Keeper) ChargeFundersOfPool(ctx sdk.Context, poolId uint64, amount uint64) error {
 
 	pool, poolErr := k.GetPoolWithError(ctx, poolId)
 	if poolErr != nil {

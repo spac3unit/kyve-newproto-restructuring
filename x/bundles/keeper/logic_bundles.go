@@ -261,6 +261,7 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 		return
 	}
 
+	// formula for calculating the rewards
 	bundleReward.Total = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
 
 	// TODO: how to test network fee?
@@ -323,6 +324,7 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 		return err
 	}
 
+	// TODO
 	// Finalize the proposal, saving useful information.
 	// eventFromHeight := pool.CurrentHeight
 	pool.CurrentHeight = bundleProposal.ToHeight

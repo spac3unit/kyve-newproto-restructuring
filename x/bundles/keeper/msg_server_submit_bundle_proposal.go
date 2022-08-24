@@ -43,10 +43,12 @@ func (k msgServer) SubmitBundleProposal(
 		return &types.MsgSubmitBundleProposalResponse{}, nil
 	}
 
-	// increase points of stakers who did not vote at all
+	// Previous round contains a bundle which needs to be validated now.
+
+	// increase points of stakers who did not vote at all + slash + remove if necessary
 	k.handleNonVoters(ctx, msg.PoolId)
 
-	// Get next uploader
+	// Get next uploader from stakers voted
 	voters := append(bundleProposal.VotersValid, bundleProposal.VotersInvalid...)
 	nextUploader := ""
 
@@ -56,7 +58,7 @@ func (k msgServer) SubmitBundleProposal(
 		nextUploader = k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
 	}
 
-	// check if the quorum was actually reached
+	// evaluate all votes and determine status based on the votes weighted with stake + delegation
 	voteDistribution := k.GetVoteDistribution(ctx, msg.PoolId)
 
 	// handle valid proposal
@@ -64,7 +66,6 @@ func (k msgServer) SubmitBundleProposal(
 		// Calculate the total reward for the bundle, and individual payouts.
 		bundleReward := k.calculatePayouts(ctx, msg.PoolId)
 
-		// TODO check balance flow
 		if err := k.poolKeeper.ChargeFundersOfPool(ctx, msg.PoolId, bundleReward.Total, types.ModuleName); err != nil {
 			// drop bundle because pool ran out of funds
 			bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
@@ -77,20 +78,23 @@ func (k msgServer) SubmitBundleProposal(
 		pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 		bundleProposal, _ := k.GetBundleProposal(ctx, msg.PoolId)
 
+		uploaderPayout := bundleReward.Uploader
+
+		delegationPayoutSuccessful := k.delegationKeeper.PayoutRewards(ctx, bundleProposal.Uploader, bundleReward.Delegation, pooltypes.ModuleName)
+		// If staker has no delegators add all delegation rewards to the staker rewards
+		if !delegationPayoutSuccessful {
+			uploaderPayout += bundleReward.Delegation
+		}
+
+		// send commission to uploader
+		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, pooltypes.ModuleName, bundleProposal.Uploader, uploaderPayout); err != nil {
+			return nil, err
+		}
+
 		// send network fee to treasury
 		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, pooltypes.ModuleName, bundleReward.Treasury); err != nil {
 			return nil, err
 		}
-
-		// send commission to uploader
-		if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, pooltypes.ModuleName, bundleProposal.Uploader, bundleReward.Uploader); err != nil {
-			return nil, err
-		}
-
-		// send delegation rewards to delegators
-		// TODO method returns true/false if there were delegators who received $KYVE
-		// TODO if method returns false, send the money to the staker instead.
-		k.delegationKeeper.PayoutRewards(ctx, bundleProposal.Uploader, bundleReward.Delegation, types.ModuleName)
 
 		// slash stakers who voted incorrectly
 		for _, voter := range bundleProposal.VotersInvalid {
@@ -102,6 +106,7 @@ func (k msgServer) SubmitBundleProposal(
 			return nil, err
 		}
 
+		// Register the provided bundle as a new proposal for the next round
 		if err := k.registerBundleProposalFromUploader(ctx, pool, bundleProposal, msg, nextUploader); err != nil {
 			return nil, err
 		}
@@ -119,6 +124,8 @@ func (k msgServer) SubmitBundleProposal(
 			}
 		}
 
+		// Drop current bundle. Can't register the provided bundle because the previous bundles
+		// needs to be resubmitted first.
 		if err := k.dropCurrentBundleProposal(ctx, pool, bundleProposal, voteDistribution); err != nil {
 			return nil, err
 		}
