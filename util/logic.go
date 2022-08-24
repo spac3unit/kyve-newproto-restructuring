@@ -3,6 +3,7 @@ package util
 import "C"
 import (
 	"encoding/binary"
+	"fmt"
 )
 
 type KeyPrefixBuilder struct {
@@ -26,8 +27,7 @@ func GetByteKey(keys ...interface{}) []byte {
 	for _, key := range keys {
 		switch v := key.(type) {
 		default:
-			// TODO Maybe dangerous
-			panic("Unsupported byte type")
+			panic(fmt.Sprintf("Unsupported Key Type: %T with value: %#v", v, key))
 		case uint64:
 			builder.AInt(v)
 		case string:

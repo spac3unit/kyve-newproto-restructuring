@@ -197,6 +197,4 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		_, found := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
 		Expect(found).To(BeFalse())
 	})
-
-	// TODO: add test cases where pool is not created
 })

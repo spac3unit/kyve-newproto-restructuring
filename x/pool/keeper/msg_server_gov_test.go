@@ -10,13 +10,13 @@ import (
 var _ = Describe("Gov Pool", Ordered, func() {
 	s := i.NewCleanChain()
 
+	// TODO change to BeforeEach
 	BeforeAll(func() {
 		s = i.NewCleanChain()
 	})
 
 	AfterEach(func() {
-		// TODO: verify test suite
-		//s.PerformValidityChecks()
+		s.PerformValidityChecks()
 	})
 
 	It("Create Pool", func() {

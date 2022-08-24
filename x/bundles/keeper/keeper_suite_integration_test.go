@@ -642,8 +642,4 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 	})
 })
 
-// TODO: split up integration tests into
-// - funding (test with multiple funders and not enough funders)
-// - dropped bundles (test invalid and no quorum) and produce valid after
-// - no data bundles and produce valid after
-// - valid bundles
+// TODO: Test if network fee gets correctly transferred to treasury (not so easy)

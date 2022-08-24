@@ -32,7 +32,6 @@ func (k Keeper) processQueue(ctx sdk.Context, identifier types.QUEUE_IDENTIFIER,
 	for commissionChangePerformed := true; commissionChangePerformed; {
 		commissionChangePerformed = false
 
-		// TODO maybe do index height check before (here)
 		entryRemoved := processEntry(queueState.LowIndex + 1)
 
 		if entryRemoved {

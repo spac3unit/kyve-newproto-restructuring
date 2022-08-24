@@ -275,7 +275,6 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 	// formula for calculating the rewards
 	bundleReward.Total = pool.OperatingCost + (bundleProposal.ByteSize * k.StorageCost(ctx))
 
-	// TODO: how to test network fee?
 	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
 	if err != nil {
 		// TODO -> External Logging Tool Solution (Prometheus)

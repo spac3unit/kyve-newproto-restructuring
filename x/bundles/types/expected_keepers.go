@@ -28,7 +28,6 @@ type PoolKeeper interface {
 	GetPoolWithError(ctx sdk.Context, poolId uint64) (pooltypes.Pool, error)
 	GetPool(ctx sdk.Context, id uint64) (val pooltypes.Pool, found bool)
 
-	// Todo replace with different function
 	IncrementBundleInformation(ctx sdk.Context, poolId uint64, currentHeight uint64, currentKey string, currentValue string)
 
 	GetAllPools(ctx sdk.Context) (list []pooltypes.Pool)
