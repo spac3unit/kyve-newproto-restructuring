@@ -42,12 +42,14 @@ type StakerKeeper interface {
 	Slash(ctx sdk.Context, poolId uint64, stakerAddress string, slashType stakertypes.SlashType) (slashedAmount uint64)
 	GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec
 
-	AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string)
+	GetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) uint64
+	AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string) uint64
+	ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string)
+
 	DoesStakerExist(ctx sdk.Context, staker string) bool
 
 	// TODO replace exported mutation from getters file
 	RemoveValaccountFromPool(ctx sdk.Context, poolId uint64, stakerAddress string)
-	ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string)
 
 	AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error
 }

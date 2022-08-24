@@ -24,11 +24,6 @@ var (
 )
 
 var (
-	KeyMaxPoints            = []byte("MaxPoints")
-	DefaultMaxPoints uint64 = 5
-)
-
-var (
 	KeyUnbondingStakingTime            = []byte("UnbondingStakingTime")
 	DefaultUnbondingStakingTime uint64 = 60 * 60 * 24 * 5
 )
@@ -53,7 +48,6 @@ func NewParams(
 	voteSlash string,
 	uploadSlash string,
 	timeoutSlash string,
-	maxPoints uint64,
 	unbondingStakingTime uint64,
 	commissionChangeTime uint64,
 	leavePoolTime uint64,
@@ -62,7 +56,6 @@ func NewParams(
 		VoteSlash:            voteSlash,
 		UploadSlash:          uploadSlash,
 		TimeoutSlash:         timeoutSlash,
-		MaxPoints:            maxPoints,
 		UnbondingStakingTime: unbondingStakingTime,
 		CommissionChangeTime: commissionChangeTime,
 		LeavePoolTime:        leavePoolTime,
@@ -75,7 +68,6 @@ func DefaultParams() Params {
 		DefaultVoteSlash,
 		DefaultUploadSlash,
 		DefaultTimeoutSlash,
-		DefaultMaxPoints,
 		DefaultUnbondingStakingTime,
 		DefaultCommissionChangeTime,
 		DefaultLeavePoolTime,
@@ -88,7 +80,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyVoteSlash, &p.VoteSlash, util.ValidatePercentage),
 		paramtypes.NewParamSetPair(KeyUploadSlash, &p.UploadSlash, util.ValidatePercentage),
 		paramtypes.NewParamSetPair(KeyTimeoutSlash, &p.TimeoutSlash, util.ValidatePercentage),
-		paramtypes.NewParamSetPair(KeyMaxPoints, &p.MaxPoints, util.ValidateUint64),
 		paramtypes.NewParamSetPair(KeyUnbondingStakingTime, &p.UnbondingStakingTime, util.ValidateUint64),
 		paramtypes.NewParamSetPair(KeyCommissionChangeTime, &p.CommissionChangeTime, util.ValidateUint64),
 		paramtypes.NewParamSetPair(KeyLeavePoolTime, &p.LeavePoolTime, util.ValidateUint64),
@@ -106,10 +97,6 @@ func (p Params) Validate() error {
 	}
 
 	if err := util.ValidatePercentage(p.TimeoutSlash); err != nil {
-		return err
-	}
-
-	if err := util.ValidateUint64(p.MaxPoints); err != nil {
 		return err
 	}
 

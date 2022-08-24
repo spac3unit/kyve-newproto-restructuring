@@ -12,7 +12,6 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 		k.VoteSlash(ctx),
 		k.UploadSlash(ctx),
 		k.TimeoutSlash(ctx),
-		k.MaxPoints(ctx),
 		k.UnbondingStakingTime(ctx),
 		k.CommissionChangeTime(ctx),
 		k.LeavePoolTime(ctx),
@@ -39,12 +38,6 @@ func (k Keeper) UploadSlash(ctx sdk.Context) (res string) {
 // TimeoutSlash returns the TimeoutSlash param
 func (k Keeper) TimeoutSlash(ctx sdk.Context) (res string) {
 	k.paramstore.Get(ctx, types.KeyTimeoutSlash, &res)
-	return
-}
-
-// MaxPoints returns the MaxPoints param
-func (k Keeper) MaxPoints(ctx sdk.Context) (res uint64) {
-	k.paramstore.Get(ctx, types.KeyMaxPoints, &res)
 	return
 }
 

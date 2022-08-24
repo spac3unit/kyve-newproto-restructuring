@@ -9,6 +9,7 @@ import (
 
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	poolmoduletypes "github.com/KYVENetwork/chain/x/pool/types"
+	stakermoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
@@ -222,7 +223,10 @@ func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmod
 	return err
 }
 
-// handleNonVoters ...
+// handleNonVoters checks if stakers in a pool voted on the current bundle proposal
+// if a staker did not vote at all on a bundle proposal he received points
+// if a staker receives a certain number of points he receives a timeout slash and gets
+// kicked out of a pool
 func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 	voters := map[string]bool{}
 	bundleProposal, _ := k.GetBundleProposal(ctx, poolId)
@@ -241,7 +245,14 @@ func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 
 	for _, staker := range k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, poolId) {
 		if !voters[staker] {
-			k.stakerKeeper.AddPoint(ctx, poolId, staker)
+			points := k.stakerKeeper.AddPoint(ctx, poolId, staker)
+
+			if points >= k.MaxPoints(ctx) {
+				k.stakerKeeper.Slash(ctx, poolId, staker, stakermoduletypes.SLASH_TYPE_TIMEOUT)
+				k.delegationKeeper.SlashDelegators(ctx, staker, stakermoduletypes.SLASH_TYPE_TIMEOUT)
+
+				k.stakerKeeper.ResetPoints(ctx, poolId, staker)
+			}
 		}
 	}
 }
@@ -306,7 +317,7 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 
 	k.SetFinalizedBundle(ctx, finalizedBundle)
 
-	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
+	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
 		PoolId:           finalizedBundle.PoolId,
 		Id:               finalizedBundle.Id,
 		Valid:            voteDistribution.Valid,
@@ -318,10 +329,8 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 		RewardUploader:   bundleReward.Uploader,
 		RewardDelegation: bundleReward.Delegation,
 		RewardTotal:      bundleReward.Total,
-	})
-
-	if err != nil {
-		return err
+	}); errEmit != nil {
+		return errEmit
 	}
 
 	// Finalize the proposal, saving useful information.

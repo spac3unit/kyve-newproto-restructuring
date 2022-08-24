@@ -68,6 +68,19 @@ func (k Keeper) GetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) 
 	return 0
 }
 
+func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string) uint64 {
+	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
+
+	if found {
+		valaccount.Points = valaccount.Points + 1
+		k.SetValaccount(ctx, valaccount)
+
+		return valaccount.Points
+	}
+
+	return 0
+}
+
 func (k Keeper) ResetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) {
 	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
 
