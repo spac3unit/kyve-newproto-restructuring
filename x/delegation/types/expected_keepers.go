@@ -35,4 +35,6 @@ type StakersKeeper interface {
 	DoesStakerExist(ctx sdk.Context, staker string) bool
 	GetSlashFraction(ctx sdk.Context, slashType stakerstypes.SlashType) (slashAmountRatio sdk.Dec)
 	GetAllStakerAddressesOfPool(ctx sdk.Context, poolId uint64) (stakers []string)
+	GetAllStakers(ctx sdk.Context) (list []stakerstypes.Staker)
+	GetStaker(ctx sdk.Context, staker string) (val stakerstypes.Staker, found bool)
 }
