@@ -8,7 +8,24 @@ import (
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Update Commission", Ordered, func() {
+/*
+
+TEST CASES - msg_server_update_commission.go
+
+* Get the default commission from a newly created staker
+* Update commission to 50% from previously default commission
+* Update commission to 0% from previously default commission
+* Update commission to 100% from previously default commission
+* Update commission with an invalid number from previously default commission
+* Update commission with a negative number from previously default commission
+* Update commission with a too high number from previously default commission
+* Update commission multiple times during the commission change time
+* Update commission multiple times during the commission change time with the same value
+* // TODO: commission should reset if staker unstakes everything and stakes again
+
+*/
+
+var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -26,13 +43,13 @@ var _ = Describe("Update Commission", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Get default commission", func() {
+	It("Get the default commission from a newly created staker", func() {
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 		Expect(staker.Commission).To(Equal(stakerstypes.DefaultCommission))
 	})
 
-	It("Update commission", func() {
+	It("Update commission to 50% from previously default commission", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
@@ -51,7 +68,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 		Expect(staker.Commission).To(Equal("0.5"))
 	})
 
-	It("Update commission to 0%", func() {
+	It("Update commission to 0% from previously default commission", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
@@ -70,7 +87,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 		Expect(staker.Commission).To(Equal("0"))
 	})
 
-	It("Update commission to 100%", func() {
+	It("Update commission to 100% from previously default commission", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
@@ -89,7 +106,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 		Expect(staker.Commission).To(Equal("1"))
 	})
 
-	It("Update commission with invalid number", func() {
+	It("Update commission with an invalid number from previously default commission", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
@@ -101,7 +118,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 		Expect(staker.Commission).To(Equal(stakerstypes.DefaultCommission))
 	})
 
-	It("Update commission with negative number", func() {
+	It("Update commission with a negative number from previously default commission", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
@@ -113,7 +130,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 		Expect(staker.Commission).To(Equal(stakerstypes.DefaultCommission))
 	})
 
-	It("Update commission with to high number", func() {
+	It("Update commission with a too high number from previously default commission", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
@@ -125,7 +142,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 		Expect(staker.Commission).To(Equal(stakerstypes.DefaultCommission))
 	})
 
-	It("Update commission during change time", func() {
+	It("Update commission multiple times during the commission change time", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
@@ -154,7 +171,7 @@ var _ = Describe("Update Commission", Ordered, func() {
 		Expect(staker.Commission).To(Equal("0.3"))
 	})
 
-	It("Update commission during change time to same value", func() {
+	It("Update commission multiple times during the commission change time with the same value", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,

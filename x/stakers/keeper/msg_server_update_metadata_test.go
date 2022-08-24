@@ -8,7 +8,18 @@ import (
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Update Metadata", Ordered, func() {
+/*
+
+TEST CASES - msg_server_update_metadata.go
+
+* Get the default metadata of a newly created staker
+* Update metadata with real values of a newly created staker
+* Reset metadata to empty values
+* // TODO: metadata should reset if staker unstakes everything and stakes again
+
+*/
+
+var _ = Describe("msg_server_update_metadata.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -26,7 +37,7 @@ var _ = Describe("Update Metadata", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Get default metadata", func() {
+	It("Get the default metadata of a newly created staker", func() {
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
 
@@ -35,7 +46,7 @@ var _ = Describe("Update Metadata", Ordered, func() {
 		Expect(staker.Logo).To(BeEmpty())
 	})
 
-	It("Update metadata", func() {
+	It("Update metadata with real values of a newly created staker", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateMetadata{
 			Creator: i.STAKER_0,
@@ -52,7 +63,15 @@ var _ = Describe("Update Metadata", Ordered, func() {
 		Expect(staker.Logo).To(Equal("https://arweave.net/Tewyv2P5VEG8EJ6AUQORdqNTectY9hlOrWPK8wwo-aU"))
 	})
 
-	It("Reset metadata", func() {
+	It("Reset metadata to empty values", func() {
+		// ARRANGE
+		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateMetadata{
+			Creator: i.STAKER_0,
+			Moniker: "KYVE Node Runner",
+			Website: "https://kyve.network",
+			Logo:    "https://arweave.net/Tewyv2P5VEG8EJ6AUQORdqNTectY9hlOrWPK8wwo-aU",
+		})
+
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateMetadata{
 			Creator: i.STAKER_0,

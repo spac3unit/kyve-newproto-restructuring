@@ -9,7 +9,20 @@ import (
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Unstaking", Ordered, func() {
+/*
+
+TEST CASES - msg_server_unstake.go
+
+* Unstake 50 KYVE from a staker who has previously staked 100 KYVE
+* Try to unstake more KYVE than the staker has actually staked
+* Unstake full staking amount from a staker who has previously staked 100 KYVE
+* Unstake 25 KYVE while staker is already unbonding 25 KYVE from 100 KYVE in total
+* Unstake 90 KYVE while staker is already unbonding 25 KYVE although staker only
+staked 100 KYVE in total
+
+*/
+
+var _ = Describe("msg_server_unstake.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	initialBalance := s.GetBalanceFromAddress(i.STAKER_0)
@@ -29,7 +42,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Unstake 50 KYVE", func() {
+	It("Unstake 50 KYVE from a staker who has previously staked 100 KYVE", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.STAKER_0,
@@ -77,7 +90,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		Expect(staker.UnbondingAmount).To(BeZero())
 	})
 
-	It("Unstake more than staked", func() {
+	It("Try to unstake more KYVE than the staker has actually staked", func() {
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgUnstake{
 			Creator: i.STAKER_0,
@@ -89,7 +102,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		Expect(unstakingEntries).To(BeEmpty())
 	})
 
-	It("Unstake everything", func() {
+	It("Unstake full staking amount from a staker who has previously staked 100 KYVE", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.STAKER_0,
@@ -136,7 +149,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		Expect(found).To(BeFalse())
 	})
 
-	It("Unstake while already unbonding", func() {
+	It("Unstake 25 KYVE while staker is already unbonding 25 KYVE from 100 KYVE in total", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.STAKER_0,
@@ -182,7 +195,7 @@ var _ = Describe("Unstaking", Ordered, func() {
 		Expect(valaccounts).To(HaveLen(0))
 	})
 
-	It("Unstake more than staked while already unbonding", func() {
+	It("Unstake 90 KYVE while staker is already unbonding 25 KYVE although staker only staked 100 KYVE in total", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
 			Creator: i.STAKER_0,

@@ -9,7 +9,18 @@ import (
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Staking", Ordered, func() {
+/*
+
+TEST CASES - msg_server_stake.go
+
+* Create a new staker by staking 100 KYVE
+* Stake additional 50 KYVE to an existing staker
+* Try to stake with more KYVE than available in balance
+* Create a second staker by staking 150 KYVE
+
+*/
+
+var _ = Describe("msg_server_stake.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	initialBalance := s.GetBalanceFromAddress(i.STAKER_0)
@@ -23,7 +34,7 @@ var _ = Describe("Staking", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Create new staker with 100 KYVE", func() {
+	It("Create a new staker by staking 100 KYVE", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.STAKER_0,
@@ -52,7 +63,7 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(valaccounts).To(BeEmpty())
 	})
 
-	It("Stake additional 50 KYVE", func() {
+	It("Stake additional 50 KYVE to an existing staker", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.STAKER_0,
@@ -87,7 +98,7 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(valaccounts).To(HaveLen(0))
 	})
 
-	It("Stake with more than available balance", func() {
+	It("Try to stake with more KYVE than available in balance", func() {
 		// ACT
 		currentBalance := s.GetBalanceFromAddress(i.STAKER_0)
 
@@ -104,7 +115,7 @@ var _ = Describe("Staking", Ordered, func() {
 		Expect(found).To(BeFalse())
 	})
 
-	It("Create a second staker", func() {
+	It("Create a second staker by staking 150 KYVE", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.STAKER_0,

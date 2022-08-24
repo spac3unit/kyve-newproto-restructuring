@@ -9,7 +9,19 @@ import (
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Leave Pool", Ordered, func() {
+/*
+
+TEST CASES - msg_server_leave_pool.go
+
+* Leave a pool a staker has just joined as the first one
+* // TODO: leave a pool multiple other stakers have joined previously
+* Leave one of multiple pools a staker has previously joined
+* Try to leave a pool again
+* // TODO: try to leave a pool a staker has never joined
+
+*/
+
+var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -45,7 +57,7 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Leave a pool", func() {
+	It("Leave a pool a staker has just joined as the first one", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
 			Creator: i.STAKER_0,
@@ -98,7 +110,7 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		Expect(totalStakeOfPool).To(BeZero())
 	})
 
-	It("Try to leave pool again", func() {
+	It("Try to leave a pool again", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{
 			Creator: i.STAKER_0,
@@ -123,7 +135,7 @@ var _ = Describe("Leave Pool", Ordered, func() {
 		Expect(valaccountsOfStaker).To(BeEmpty())
 	})
 
-	It("Try to leave multiple pools", func() {
+	It("Try to leave one of multiple pools a staker has joined", func() {
 		// ARRANGE
 		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
 			Name: "Moontest",
