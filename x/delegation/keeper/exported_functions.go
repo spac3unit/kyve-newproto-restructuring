@@ -68,6 +68,8 @@ func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, pay
 // and transfers the amount to the Treasury.
 func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, slashType stakerstypes.SlashType) {
 
+	// TODO: check here is staker exists?
+
 	// Perform F1-slash and get slashed amount in nKYVE
 	slashedAmount := k.f1Slash(ctx, staker, k.stakersKeeper.GetSlashFraction(ctx, slashType))
 
