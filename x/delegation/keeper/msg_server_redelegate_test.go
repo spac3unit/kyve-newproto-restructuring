@@ -1,6 +1,8 @@
 package keeper_test
 
 import (
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
+	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -11,28 +13,64 @@ import (
 var _ = Describe("Delegation", Ordered, func() {
 	s := i.NewCleanChain()
 
-	BeforeAll(func() {
-		initPoolWithStakersAliceAndBob(&s)
+	BeforeEach(func() {
+		s = i.NewCleanChain()
+
+		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
+			Name: "Moontest",
+			Protocol: &pooltypes.Protocol{
+				Version:     "0.0.0",
+				Binaries:    "{}",
+				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
+			},
+			UpgradePlan: &pooltypes.UpgradePlan{},
+		})
+
+		s.CommitAfterSeconds(7)
+
+		_, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		Expect(poolFound).To(BeTrue())
+
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.ALICE,
+			Amount:  100 * i.KYVE,
+		})
+
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.BOB,
+			Amount:  100 * i.KYVE,
+		})
+
+		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
+		Expect(stakerFound).To(BeTrue())
+
+		_, stakerFound = s.App().StakersKeeper.GetStaker(s.Ctx(), i.BOB)
+		Expect(stakerFound).To(BeTrue())
+
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id:      0,
+			Amount:  50 * i.KYVE,
+		})
+
+		s.CommitAfterSeconds(7)
 	})
 
-	It("Delegate 10 KYVE to ALICE from DUMMY_0", func() {
-		dummy0BalanceBefore := s.GetBalanceFromAddress(i.DUMMY[0])
+	It("Redelegate 1 KYVE to Bob", func() {
 
+		// Arrange
 		s.RunTxDelegatorSuccess(&types.MsgDelegate{
 			Creator: i.DUMMY[0],
 			Staker:  i.ALICE,
 			Amount:  10 * i.KYVE,
 		})
-
-		dummy0BalanceAfter := s.GetBalanceFromAddress(i.DUMMY[0])
-		Expect(dummy0BalanceBefore).To(Equal(dummy0BalanceAfter + 10*i.KYVE))
-	})
-
-	It("Redelegate 1 KYVE to Bob", func() {
-
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
 
+		// Act
 		s.RunTxDelegatorSuccess(&types.MsgRedelegate{
 			Creator:    i.DUMMY[0],
 			FromStaker: i.ALICE,
@@ -41,6 +79,7 @@ var _ = Describe("Delegation", Ordered, func() {
 		})
 		s.CommitAfterSeconds(10)
 
+		// Assert
 		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		Expect(aliceDelegationBefore).To(Equal(aliceDelegationAfter + 1*i.KYVE))
 
@@ -48,20 +87,85 @@ var _ = Describe("Delegation", Ordered, func() {
 		Expect(bobDelegationBefore).To(Equal(bobDelegationAfter - 1*i.KYVE))
 	})
 
-	It("Redelegate without delegation", func() {
+	It("Redelegate more than delegated", func() {
 
-		charlieDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.CHARLIE)
+		// Arrange
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  10 * i.KYVE,
+		})
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
+		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
 
+		// Act
 		s.RunTxDelegatorError(&types.MsgRedelegate{
 			Creator:    i.DUMMY[0],
-			FromStaker: i.CHARLIE,
+			FromStaker: i.ALICE,
 			ToStaker:   i.BOB,
+			Amount:     11 * i.KYVE,
+		})
+		s.CommitAfterSeconds(10)
+
+		// Assert
+		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		Expect(aliceDelegationBefore).To(Equal(aliceDelegationAfter))
+
+		bobDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(bobDelegationBefore).To(Equal(bobDelegationAfter))
+	})
+
+	It("Redelegate without delegation", func() {
+
+		// Arrange
+		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(aliceDelegationBefore).To(BeZero())
+		Expect(bobDelegationBefore).To(BeZero())
+
+		// Act
+		s.RunTxDelegatorError(&types.MsgRedelegate{
+			Creator:    i.DUMMY[0],
+			FromStaker: i.ALICE,
+			ToStaker:   i.CHARLIE,
 			Amount:     1 * i.KYVE,
 		})
 
-		charlieDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.CHARLIE)
-		Expect(charlieDelegationBefore).To(Equal(charlieDelegationAfter))
+		// Assert
+		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		Expect(aliceDelegationBefore).To(Equal(aliceDelegationAfter))
+
+		bobDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(bobDelegationBefore).To(Equal(bobDelegationAfter))
+	})
+
+	It("Redelegate to non-existent staker", func() {
+
+		// Arrange
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  10 * i.KYVE,
+		})
+		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
+		Expect(bobDelegationBefore).To(BeZero())
+
+		// Act
+		s.RunTxDelegatorError(&types.MsgRedelegate{
+			Creator:    i.DUMMY[0],
+			FromStaker: i.ALICE,
+			ToStaker:   i.CHARLIE,
+			Amount:     1 * i.KYVE,
+		})
+
+		// Assert
+		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		Expect(aliceDelegationBefore).To(Equal(aliceDelegationAfter))
 
 		bobDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
 		Expect(bobDelegationBefore).To(Equal(bobDelegationAfter))
@@ -69,9 +173,19 @@ var _ = Describe("Delegation", Ordered, func() {
 
 	It("Exhaust all redelegation spells", func() {
 
+		// Arrange
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  10 * i.KYVE,
+		})
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
 
+		// Act
 		redelegationMessage := types.MsgRedelegate{
 			Creator:    i.DUMMY[0],
 			FromStaker: i.ALICE,
@@ -87,23 +201,35 @@ var _ = Describe("Delegation", Ordered, func() {
 		s.CommitAfterSeconds(10)
 		s.RunTxDelegatorSuccess(&redelegationMessage)
 		s.CommitAfterSeconds(10)
+		s.RunTxDelegatorSuccess(&redelegationMessage)
+		s.CommitAfterSeconds(10)
 
+		// Assert
 		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
-		Expect(aliceDelegationBefore).To(Equal(aliceDelegationAfter + 4*i.KYVE))
+		Expect(aliceDelegationAfter).To(Equal(5 * i.KYVE))
 
 		bobDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(bobDelegationBefore).To(Equal(bobDelegationAfter - 4*i.KYVE))
+		Expect(bobDelegationAfter).To(Equal(5 * i.KYVE))
 
+		// Expect to fail.
 		// Now all redelegation spells are exhausted
 		s.RunTxDelegatorError(&redelegationMessage)
 	})
 
 	It("Expire redelegation spells", func() {
 
-		s.CommitAfterSeconds(s.App().DelegationKeeper.RedelegationCooldown(s.Ctx()) - 50)
-		s.CommitAfterSeconds(1)
+		// Arrange
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  10 * i.KYVE,
+		})
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
+		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
 
-		// One redelegation available
 		redelegationMessage := types.MsgRedelegate{
 			Creator:    i.DUMMY[0],
 			FromStaker: i.ALICE,
@@ -112,17 +238,47 @@ var _ = Describe("Delegation", Ordered, func() {
 		}
 
 		s.RunTxDelegatorSuccess(&redelegationMessage)
+		s.CommitAfterSeconds(10)
+		s.RunTxDelegatorSuccess(&redelegationMessage)
+		s.CommitAfterSeconds(10)
+		s.RunTxDelegatorSuccess(&redelegationMessage)
+		s.CommitAfterSeconds(10)
+		s.RunTxDelegatorSuccess(&redelegationMessage)
+		s.CommitAfterSeconds(10)
+		s.RunTxDelegatorSuccess(&redelegationMessage)
+		s.CommitAfterSeconds(10)
 
+		// Act
+		s.CommitAfterSeconds(s.App().DelegationKeeper.RedelegationCooldown(s.Ctx()) - 50)
+		s.CommitAfterSeconds(1)
+
+		// One redelegation available
+		s.RunTxDelegatorSuccess(&redelegationMessage)
 		s.CommitAfterSeconds(1)
 
 		// Redelegations are now all used again
 		s.RunTxDelegatorError(&redelegationMessage)
 
+		// Act 2
+
 		// Expire next two spells
 		s.CommitAfterSeconds(25)
-
 		s.RunTxDelegatorSuccess(&redelegationMessage)
-		// No two delegation
+		// No two delegation within same block
+		s.RunTxDelegatorError(&redelegationMessage)
+		s.CommitAfterSeconds(1)
+		s.RunTxDelegatorSuccess(&redelegationMessage)
+		s.CommitAfterSeconds(1)
+
+		// Assert
+		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		Expect(aliceDelegationAfter).To(Equal(2 * i.KYVE))
+
+		bobDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
+		Expect(bobDelegationAfter).To(Equal(8 * i.KYVE))
+
+		// Expect to fail.
+		// Now all redelegation spells are exhausted
 		s.RunTxDelegatorError(&redelegationMessage)
 	})
 

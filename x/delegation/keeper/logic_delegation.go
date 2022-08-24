@@ -40,7 +40,7 @@ func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, deleg
 
 	// Transfer tokens from this module to sender.
 	if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward); err != nil {
-		util.PanicHalt(k.upgradeKeeper, ctx, "no money left in module")
+		util.PanicHalt(k.upgradeKeeper, ctx, "not enough money in module")
 	}
 
 	// Perform an internal re-delegation.

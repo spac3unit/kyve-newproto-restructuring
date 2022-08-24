@@ -20,6 +20,11 @@ func (k msgServer) Redelegate(goCtx context.Context, msg *types.MsgRedelegate) (
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrNotADelegator.Error())
 	}
 
+	// Check if destination staker exists
+	if !k.stakersKeeper.DoesStakerExist(ctx, msg.ToStaker) {
+		return nil, types.ErrStakerDoesNotExist
+	}
+
 	// Check if the sender is trying to undelegate more than he has delegated.
 	if msg.Amount > k.GetDelegationAmountOfDelegator(ctx, msg.FromStaker, msg.Creator) {
 		return nil, sdkErrors.Wrapf(sdkErrors.ErrInsufficientFunds, types.ErrNotEnoughDelegation.Error(), msg.Amount)

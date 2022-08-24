@@ -6,6 +6,9 @@ import (
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
+// consumeRedelegationSpell checks if the user has still redelegation spells
+// available. If so, one spell is used and set on a cooldown.
+// If all slots are currently on cooldown the function returns an error
 func (k Keeper) consumeRedelegationSpell(ctx sdk.Context, address string) error {
 	// Check if cooldowns are over,
 	// Remove all expired entries

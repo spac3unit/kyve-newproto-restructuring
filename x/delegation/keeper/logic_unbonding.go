@@ -38,16 +38,18 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 
 	// flag for computing every entry at the end of the queue which is due.
 	// start processing the end of the queue
-	for commissionChangePerformed := true; commissionChangePerformed; {
-		commissionChangePerformed = false
+	for continueProcessing := true; continueProcessing; {
+		continueProcessing = false
 
 		// Get end of queue
 		undelegationEntry, found := k.GetUndelegationQueueEntry(ctx, queueState.LowIndex+1)
 
-		removed := false
 		// Check if unbonding time is over
 		if !found {
-			removed = true
+			if queueState.LowIndex < queueState.HighIndex {
+				queueState.LowIndex += 1
+				continueProcessing = true
+			}
 		} else if undelegationEntry.CreationTime+k.UnbondingDelegationTime(ctx) < uint64(ctx.BlockTime().Unix()) {
 
 			// Perform undelegation and save undelegated amount to then transfer back to the user
@@ -66,19 +68,9 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 
 			k.RemoveUndelegationQueueEntry(ctx, &undelegationEntry)
 
-			// Update tailIndex (lowIndex) of queue
+			continueProcessing = true
 			queueState.LowIndex += 1
-			k.SetQueueState(ctx, queueState)
-			removed = true
 		}
-
-		if removed {
-			if queueState.LowIndex < queueState.HighIndex {
-				queueState.LowIndex += 1
-				commissionChangePerformed = true
-			}
-		}
-
 	}
 	k.SetQueueState(ctx, queueState)
 }

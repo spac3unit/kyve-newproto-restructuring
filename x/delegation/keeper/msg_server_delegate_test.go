@@ -13,7 +13,9 @@ import (
 var _ = Describe("Delegation", Ordered, func() {
 	s := i.NewCleanChain()
 
-	BeforeAll(func() {
+	BeforeEach(func() {
+		s = i.NewCleanChain()
+
 		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
 			Name: "Moontest",
 			Protocol: &pooltypes.Protocol{
@@ -34,19 +36,18 @@ var _ = Describe("Delegation", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			Creator: i.BOB,
+			Amount:  200 * i.KYVE,
+		})
+
 		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		Expect(stakerFound).To(BeTrue())
-
-		// Create Staker
-		s.RunTxStakersSuccess(&stakerstypes.MsgUnstake{
-			Creator: i.ALICE,
-			Amount:  50 * i.KYVE,
-		})
 
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
 			Id:      0,
-			Amount:  50,
+			Amount:  50 * i.KYVE,
 		})
 
 		s.CommitAfterSeconds(7)
@@ -54,34 +55,57 @@ var _ = Describe("Delegation", Ordered, func() {
 
 	It("Delegate 10 KYVE to ALICE", func() {
 
+		// Arrange
 		bobBalance := s.GetBalanceFromAddress(i.BOB)
 
+		// Act
 		s.RunTxDelegatorSuccess(&types.MsgDelegate{
 			Creator: i.BOB,
 			Staker:  i.ALICE,
 			Amount:  10 * i.KYVE,
 		})
 
+		// Assert
 		bobBalanceAfter := s.GetBalanceFromAddress(i.BOB)
-
 		Expect(bobBalanceAfter).To(Equal(bobBalance - 10*i.KYVE))
 
 		aliceDelegation := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
-
 		Expect(aliceDelegation).To(Equal(10 * i.KYVE))
+	})
+
+	It("Try delegating to non existent staker", func() {
+
+		// Arrange
+		bobBalance := s.GetBalanceFromAddress(i.BOB)
+
+		// Act
+		s.RunTxDelegatorError(&types.MsgDelegate{
+			Creator: i.BOB,
+			Staker:  i.CHARLIE,
+			Amount:  10 * i.KYVE,
+		})
+
+		// Assert
+		Expect(s.GetBalanceFromAddress(i.BOB)).To(Equal(bobBalance))
+
+		aliceDelegation := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		Expect(aliceDelegation).To(BeZero())
 	})
 
 	It("Delegate more than available", func() {
 
+		// Arrange
 		bobBalance := s.GetBalanceFromAddress(i.BOB)
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 
+		// Act
 		_, delegateErr := s.RunTxDelegator(&types.MsgDelegate{
 			Creator: i.BOB,
 			Staker:  i.ALICE,
 			Amount:  2000 * i.KYVE,
 		})
 
+		// Assert
 		Expect(delegateErr).ToNot(BeNil())
 
 		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
@@ -92,38 +116,83 @@ var _ = Describe("Delegation", Ordered, func() {
 	})
 
 	It("Payout delegators", func() {
-		s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 1*i.KYVE, pooltypes.ModuleName)
 
-		outstandingRewardsBefore := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
-		Expect(outstandingRewardsBefore).To(Equal(1 * i.KYVE))
+		// Arrange
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  100 * i.KYVE,
+		})
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[1],
+			Staker:  i.ALICE,
+			Amount:  200 * i.KYVE,
+		})
+		poolModuleBalance := s.GetBalanceFromModule(pooltypes.ModuleName)
+		Expect(poolModuleBalance).To(Equal(50 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(BeZero())
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(BeZero())
 
-		bobBalanceBefore := s.GetBalanceFromAddress(i.BOB)
+		// Act
+		success := s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 10*i.KYVE, pooltypes.ModuleName)
+		Expect(success).To(BeTrue())
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(3_333_333_333)))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(6_666_666_666)))
+
 		s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
-			Creator: i.BOB,
+			Creator: i.DUMMY[0],
 			Staker:  i.ALICE,
 		})
-		bobBalanceAfter := s.GetBalanceFromAddress(i.BOB)
 
-		Expect(bobBalanceAfter).To(Equal(bobBalanceBefore + 1*i.KYVE))
+		// Assert
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(0)))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(6_666_666_666)))
 
-		outstandingRewardsAfter := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
-		Expect(outstandingRewardsAfter).To(Equal(0 * i.TKYVE))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(uint64(903333333333)))
+		Expect(s.GetBalanceFromModule(pooltypes.ModuleName), 40*i.KYVE)
+		Expect(s.GetBalanceFromModule(types.ModuleName), uint64(6_666_666_666+1))
 	})
 
 	It("Don't pay out rewards twice", func() {
-		outstandingRewardsBefore := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
 
-		bobBalanceBefore := s.GetBalanceFromAddress(i.BOB)
+		// Arrange
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  100 * i.KYVE,
+		})
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[1],
+			Staker:  i.ALICE,
+			Amount:  200 * i.KYVE,
+		})
+		poolModuleBalance := s.GetBalanceFromModule(pooltypes.ModuleName)
+		Expect(poolModuleBalance).To(Equal(50 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(BeZero())
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(BeZero())
+
+		success := s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 10*i.KYVE, pooltypes.ModuleName)
+		Expect(success).To(BeTrue())
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(3_333_333_333)))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(6_666_666_666)))
+
+		// Act
 		s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
-			Creator: i.BOB,
+			Creator: i.DUMMY[0],
 			Staker:  i.ALICE,
 		})
-		bobBalanceAfter := s.GetBalanceFromAddress(i.BOB)
+		s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+		})
 
-		Expect(bobBalanceAfter).To(Equal(bobBalanceBefore))
+		// Assert
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(0)))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(6_666_666_666)))
 
-		outstandingRewardsAfter := s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.BOB)
-		Expect(outstandingRewardsAfter).To(Equal(outstandingRewardsBefore))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(uint64(903333333333)))
+		Expect(s.GetBalanceFromModule(pooltypes.ModuleName), 40*i.KYVE)
+		Expect(s.GetBalanceFromModule(types.ModuleName), uint64(6_666_666_666+1))
 	})
 
 })
