@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Bundles module integration tests", Ordered, func() {
+var _ = Describe("Bundles module timeout tests", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -85,7 +85,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		pool.UpgradePlan = &pooltypes.UpgradePlan{
 			Version:     "1.0.0",
 			Binaries:    "{}",
-			ScheduledAt: 100,
+			ScheduledAt: uint64(s.Ctx().BlockTime().Unix()),
 			Duration:    3600,
 		}
 
