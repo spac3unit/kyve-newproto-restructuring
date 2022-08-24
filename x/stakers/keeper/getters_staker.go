@@ -85,6 +85,7 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 	if found {
 		// if amount is smaller equal zero remove staker
 		if amount >= staker.Amount {
+			// TODO: https://kyvenetwork.atlassian.net/browse/CHAIN-182
 			k.removeStaker(ctx, staker)
 
 			// remove all valaccounts from pools and subtract stake
@@ -96,7 +97,7 @@ func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, am
 		} else {
 			staker.Amount -= amount
 
-			// TODO: verify isUnstake
+			// if staker is currently unbonding (isUnstake) the unbonding amount should also be decreased
 			if isUnstake {
 				staker.UnbondingAmount -= amount
 			}

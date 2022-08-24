@@ -51,3 +51,9 @@ message EventDefundPool {
   // amount ...
   uint64 amount = 3;
 }
+
+// EventPoolOutOfFunds is an event emitted when a pool has run out of funds
+message EventPoolOutOfFunds {
+  // pool_id is the unique ID of the pool.
+  uint64 pool_id = 1;
+}

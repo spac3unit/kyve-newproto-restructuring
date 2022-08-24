@@ -70,7 +70,13 @@ func (k msgServer) SubmitBundleProposal(
 			// drop bundle because pool ran out of funds
 			bundleProposal.CreatedAt = uint64(ctx.BlockTime().Unix())
 			k.SetBundleProposal(ctx, bundleProposal)
-			// TODO: emit event
+
+			// emit event which indicates that pool has run out of funds
+			if errEmit := ctx.EventManager().EmitTypedEvent(&pooltypes.EventPoolOutOfFunds{
+				PoolId: msg.PoolId,
+			}); errEmit != nil {
+				return nil, errEmit
+			}
 
 			return &types.MsgSubmitBundleProposalResponse{}, nil
 		}

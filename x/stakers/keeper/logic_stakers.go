@@ -112,19 +112,3 @@ func (k Keeper) AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stake
 
 	return nil
 }
-
-func (k Keeper) AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string) {
-	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
-
-	if found {
-		valaccount.Points = valaccount.Points + 1
-
-		if valaccount.Points >= k.MaxPoints(ctx) {
-			k.Slash(ctx, poolId, stakerAddress, types.SLASH_TYPE_TIMEOUT)
-			k.ResetPoints(ctx, poolId, stakerAddress)
-			// TODO kick user out of pool?
-		} else {
-			k.SetValaccount(ctx, valaccount)
-		}
-	}
-}

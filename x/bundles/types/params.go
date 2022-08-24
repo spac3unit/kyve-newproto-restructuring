@@ -23,6 +23,11 @@ var (
 	DefaultNetworkFee string = "0.01"
 )
 
+var (
+	KeyMaxPoints            = []byte("MaxPoints")
+	DefaultMaxPoints uint64 = 5
+)
+
 // ParamKeyTable the param key table for launch module
 func ParamKeyTable() paramtypes.KeyTable {
 	return paramtypes.NewKeyTable().RegisterParamSet(&Params{})
@@ -33,11 +38,13 @@ func NewParams(
 	uploadTimeout uint64,
 	storageCost uint64,
 	networkFee string,
+	maxPoints uint64,
 ) Params {
 	return Params{
 		UploadTimeout: uploadTimeout,
 		StorageCost:   storageCost,
 		NetworkFee:    networkFee,
+		MaxPoints:     maxPoints,
 	}
 }
 
@@ -47,6 +54,7 @@ func DefaultParams() Params {
 		DefaultUploadTimeout,
 		DefaultStorageCost,
 		DefaultNetworkFee,
+		DefaultMaxPoints,
 	)
 }
 
@@ -56,6 +64,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(KeyUploadTimeout, &p.UploadTimeout, util.ValidateUint64),
 		paramtypes.NewParamSetPair(KeyStorageCost, &p.StorageCost, util.ValidateUint64),
 		paramtypes.NewParamSetPair(KeyNetworkFee, &p.NetworkFee, util.ValidatePercentage),
+		paramtypes.NewParamSetPair(KeyMaxPoints, &p.MaxPoints, util.ValidateUint64),
 	}
 }
 
@@ -71,6 +80,10 @@ func (p Params) Validate() error {
 	}
 
 	if err := util.ValidatePercentage(p.NetworkFee); err != nil {
+		return err
+	}
+
+	if err := util.ValidateUint64(p.MaxPoints); err != nil {
 		return err
 	}
 
