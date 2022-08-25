@@ -20,7 +20,7 @@ type (
 
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
-		distrkeeper   types.DistrKeeper
+		distrKeeper   types.DistrKeeper
 		poolKeeper    types.PoolKeeper
 		upgradeKeeper types.UpgradeKeeper
 		stakersKeeper types.StakersKeeper
@@ -52,7 +52,7 @@ func NewKeeper(
 		paramstore:    ps,
 		accountKeeper: accountKeeper,
 		bankKeeper:    bankKeeper,
-		distrkeeper:   distrkeeper,
+		distrKeeper:   distrkeeper,
 		poolKeeper:    poolKeeper,
 		upgradeKeeper: upgradeKeeper,
 		stakersKeeper: stakersKeeper,

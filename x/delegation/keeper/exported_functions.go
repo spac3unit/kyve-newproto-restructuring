@@ -74,7 +74,7 @@ func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, slashType staker
 		slashedAmount := k.f1Slash(ctx, staker, k.stakersKeeper.GetSlashFraction(ctx, slashType))
 
 		// Transfer tokens to the Treasury
-		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, types.ModuleName, slashedAmount); err != nil {
+		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrKeeper, ctx, types.ModuleName, slashedAmount); err != nil {
 			util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
 		}
 	}

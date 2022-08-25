@@ -42,7 +42,7 @@ func (k Keeper) GetDelegationSlashEntry(
 	return val, true
 }
 
-// RemoveDelegationSlashEntry removes a entry for a given staker and index
+// RemoveDelegationSlashEntry removes an entry for a given staker and index
 func (k Keeper) RemoveDelegationSlashEntry(
 	ctx sdk.Context,
 	stakerAddress string,

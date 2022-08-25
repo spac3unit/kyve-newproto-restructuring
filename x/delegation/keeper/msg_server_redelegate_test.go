@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -10,26 +9,26 @@ import (
 	"github.com/KYVENetwork/chain/x/delegation/types"
 )
 
-var _ = Describe("Delegation", Ordered, func() {
+/*
+
+TEST CASES - msg_server_redelegate.go
+
+* Redelegate 1 KYVE to Bob
+* Redelegate more than delegated
+* Redelegate without delegation
+* Redelegate to non-existent staker
+* Exhaust all redelegation spells
+* Expire redelegation spells
+
+*/
+
+var _ = Describe("Delegation - Redelegation", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
 		s = i.NewCleanChain()
 
-		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
-			Name: "Moontest",
-			Protocol: &pooltypes.Protocol{
-				Version:     "0.0.0",
-				Binaries:    "{}",
-				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
-			},
-			UpgradePlan: &pooltypes.UpgradePlan{},
-		})
-
-		s.CommitAfterSeconds(7)
-
-		_, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		Expect(poolFound).To(BeTrue())
+		CreateFundedPool(&s)
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
@@ -47,13 +46,11 @@ var _ = Describe("Delegation", Ordered, func() {
 		_, stakerFound = s.App().StakersKeeper.GetStaker(s.Ctx(), i.BOB)
 		Expect(stakerFound).To(BeTrue())
 
-		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
-			Creator: i.ALICE,
-			Id:      0,
-			Amount:  50 * i.KYVE,
-		})
-
 		s.CommitAfterSeconds(7)
+	})
+
+	AfterEach(func() {
+		CheckAndContinueChainForOneMonth(&s)
 	})
 
 	It("Redelegate 1 KYVE to Bob", func() {

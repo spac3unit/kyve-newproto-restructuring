@@ -10,26 +10,25 @@ import (
 	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Delegation", Ordered, func() {
+/*
+
+TEST CASES - msg_server_delegate_test.go
+
+* Delegate 10 KYVE to ALICE
+* Try delegating to non-existent staker
+* Delegate more than available
+* Payout delegators
+* Don't pay out rewards twice
+
+*/
+
+var _ = Describe("Delegation - Delegation", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
 		s = i.NewCleanChain()
 
-		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
-			Name: "Moontest",
-			Protocol: &pooltypes.Protocol{
-				Version:     "0.0.0",
-				Binaries:    "{}",
-				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
-			},
-			UpgradePlan: &pooltypes.UpgradePlan{},
-		})
-
-		s.CommitAfterSeconds(7)
-
-		_, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		Expect(poolFound).To(BeTrue())
+		CreateFundedPool(&s)
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
 			Creator: i.ALICE,
@@ -44,13 +43,11 @@ var _ = Describe("Delegation", Ordered, func() {
 		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		Expect(stakerFound).To(BeTrue())
 
-		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
-			Creator: i.ALICE,
-			Id:      0,
-			Amount:  50 * i.KYVE,
-		})
-
 		s.CommitAfterSeconds(7)
+	})
+
+	AfterEach(func() {
+		CheckAndContinueChainForOneMonth(&s)
 	})
 
 	It("Delegate 10 KYVE to ALICE", func() {
@@ -73,7 +70,7 @@ var _ = Describe("Delegation", Ordered, func() {
 		Expect(aliceDelegation).To(Equal(10 * i.KYVE))
 	})
 
-	It("Try delegating to non existent staker", func() {
+	It("Try delegating to non-existent staker", func() {
 
 		// Arrange
 		bobBalance := s.GetBalanceFromAddress(i.BOB)
@@ -134,8 +131,8 @@ var _ = Describe("Delegation", Ordered, func() {
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(BeZero())
 
 		// Act
-		success := s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 10*i.KYVE, pooltypes.ModuleName)
-		Expect(success).To(BeTrue())
+		PayoutRewards(&s, i.ALICE, 10*i.KYVE)
+
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(3_333_333_333)))
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(6_666_666_666)))
 
@@ -171,8 +168,8 @@ var _ = Describe("Delegation", Ordered, func() {
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(BeZero())
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(BeZero())
 
-		success := s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 10*i.KYVE, pooltypes.ModuleName)
-		Expect(success).To(BeTrue())
+		PayoutRewards(&s, i.ALICE, 10*i.KYVE)
+
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(3_333_333_333)))
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(6_666_666_666)))
 
