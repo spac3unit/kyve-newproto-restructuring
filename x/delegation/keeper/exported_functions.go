@@ -68,15 +68,17 @@ func (k Keeper) PayoutRewards(ctx sdk.Context, staker string, amount uint64, pay
 // and transfers the amount to the Treasury.
 func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, slashType stakerstypes.SlashType) {
 
-	// TODO: check here is staker exists?
+	// Only slash if staker has delegators
+	if k.DoesDelegationDataExist(ctx, staker) {
+		// Perform F1-slash and get slashed amount in nKYVE
+		slashedAmount := k.f1Slash(ctx, staker, k.stakersKeeper.GetSlashFraction(ctx, slashType))
 
-	// Perform F1-slash and get slashed amount in nKYVE
-	slashedAmount := k.f1Slash(ctx, staker, k.stakersKeeper.GetSlashFraction(ctx, slashType))
-
-	// Transfer tokens to the Treasury
-	if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrkeeper, ctx, types.ModuleName, slashedAmount); err != nil {
-		util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
+		// Transfer tokens to the Treasury
+		if err := util.TransferFromModuleToTreasury(k.accountKeeper, k.distrKeeper, ctx, types.ModuleName, slashedAmount); err != nil {
+			util.PanicHalt(k.upgradeKeeper, ctx, "Not enough tokens in module")
+		}
 	}
+
 }
 
 // GetOutstandingRewards calculates the current rewards a delegator has collected for

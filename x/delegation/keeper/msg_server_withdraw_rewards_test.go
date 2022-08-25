@@ -10,58 +10,44 @@ import (
 	"github.com/KYVENetwork/chain/x/delegation/types"
 )
 
-var _ = Describe("Delegation", Ordered, func() {
+/*
+
+TEST CASES - msg_server_withdraw_rewards_test.go
+
+* Split rewards; test rounding
+* Withdraw from not delegator
+* Test invalid Payout
+
+TODO test withdraw with multiple slashes
+
+*/
+
+var _ = Describe("Delegation - Withdraw Rewards", Ordered, func() {
 	s := i.NewCleanChain()
 
-	BeforeAll(func() {
+	BeforeEach(func() {
 		s = i.NewCleanChain()
 
-		s.App().PoolKeeper.AppendPool(s.Ctx(), pooltypes.Pool{
-			Name: "Moontest",
-			Protocol: &pooltypes.Protocol{
-				Version:     "0.0.0",
-				Binaries:    "{}",
-				LastUpgrade: uint64(s.Ctx().BlockTime().Unix()),
-			},
-			UpgradePlan: &pooltypes.UpgradePlan{},
-		})
+		CreateFundedPool(&s)
 
-		s.CommitAfterSeconds(7)
-
-		_, poolFound := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		Expect(poolFound).To(BeTrue())
-
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
-			Creator: i.ALICE,
-			Amount:  100 * i.KYVE,
-		})
-
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
-			Creator: i.BOB,
-			Amount:  100 * i.KYVE,
-		})
+		// Stake
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{Creator: i.ALICE, Amount: 100 * i.KYVE})
+		s.RunTxStakersSuccess(&stakerstypes.MsgStake{Creator: i.BOB, Amount: 100 * i.KYVE})
 
 		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		Expect(stakerFound).To(BeTrue())
 
 		_, stakerFound = s.App().StakersKeeper.GetStaker(s.Ctx(), i.BOB)
 		Expect(stakerFound).To(BeTrue())
-
-		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
-			Creator: i.ALICE,
-			Id:      0,
-			Amount:  50 * i.KYVE,
-		})
-
-		s.CommitAfterSeconds(7)
 	})
 
-	It("Create three delegators", func() {
+	AfterEach(func() {
+		CheckAndContinueChainForOneMonth(&s)
+	})
 
-		dummyBalance0 := s.GetBalanceFromAddress(i.DUMMY[0])
-		dummyBalance1 := s.GetBalanceFromAddress(i.DUMMY[1])
-		dummyBalance2 := s.GetBalanceFromAddress(i.DUMMY[2])
+	It("Split rewards; test rounding", func() {
 
+		// Arrange
 		s.RunTxDelegatorSuccess(&types.MsgDelegate{
 			Creator: i.DUMMY[0],
 			Staker:  i.ALICE,
@@ -80,25 +66,17 @@ var _ = Describe("Delegation", Ordered, func() {
 			Amount:  10 * i.KYVE,
 		})
 
-		dummyBalance0After := s.GetBalanceFromAddress(i.DUMMY[0])
-		dummyBalance1After := s.GetBalanceFromAddress(i.DUMMY[1])
-		dummyBalance2After := s.GetBalanceFromAddress(i.DUMMY[2])
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(990 * i.KYVE))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[2])).To(Equal(990 * i.KYVE))
 
-		Expect(dummyBalance0After).To(Equal(dummyBalance0 - 10*i.KYVE))
-		Expect(dummyBalance1After).To(Equal(dummyBalance1 - 10*i.KYVE))
-		Expect(dummyBalance2After).To(Equal(dummyBalance2 - 10*i.KYVE))
-
-		aliceDelegation := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
-		Expect(aliceDelegation).To(Equal(30 * i.KYVE))
-	})
-
-	It("Split rewards; test rounding", func() {
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
 
 		delegationModuleBalanceBefore := s.GetBalanceFromModule(types.ModuleName)
 		poolModuleBalanceBefore := s.GetBalanceFromModule(pooltypes.ModuleName)
 
-		success := s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 20*i.KYVE, pooltypes.ModuleName)
-		Expect(success).To(BeTrue())
+		// Act
+		PayoutRewards(&s, i.ALICE, 20*i.KYVE)
 
 		delegationModuleBalanceAfter := s.GetBalanceFromModule(types.ModuleName)
 		poolModuleBalanceAfter := s.GetBalanceFromModule(pooltypes.ModuleName)
@@ -155,13 +133,12 @@ var _ = Describe("Delegation", Ordered, func() {
 	})
 
 	It("Test invalid Payout", func() {
-		success := s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 20000*i.KYVE, pooltypes.ModuleName)
+		forkedCtx, _ := s.Ctx().CacheContext()
+		success := s.App().DelegationKeeper.PayoutRewards(forkedCtx, i.ALICE, 20000*i.KYVE, pooltypes.ModuleName)
 		Expect(success).To(BeFalse())
 
 		success = s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.DUMMY[20], 0*i.KYVE, pooltypes.ModuleName)
 		Expect(success).To(BeFalse())
 	})
-
-	// TODO test withdraw with multiple slashes
 
 })

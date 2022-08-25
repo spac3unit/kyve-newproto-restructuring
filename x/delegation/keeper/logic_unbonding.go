@@ -6,7 +6,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// StartUnbondingDelegator ...
+// StartUnbondingDelegator creates a queue entry to schedule the unbonding.
+// After the DelegationTime is reached the actual unbonding will be performed
+// The actual unbonding is then performed by `func ProcessDelegatorUnbondingQueue(...)`
 func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegatorAddress string, amount uint64) {
 
 	// the queue is ordered by time
@@ -30,7 +32,10 @@ func (k Keeper) StartUnbondingDelegator(ctx sdk.Context, staker string, delegato
 	k.SetUndelegationQueueEntry(ctx, undelegationQueueEntry)
 }
 
-// ProcessDelegatorUnbondingQueue ...
+// ProcessDelegatorUnbondingQueue is called in the end block and
+// checks the queue for entries that have surpassed the unbonding time.
+// If the unbonding time is reached, the actual unbonding is performed
+// and the entry is removed from the queue.
 func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 
 	// Get Queue information
@@ -63,7 +68,7 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 				undelegationEntry.Delegator,
 				undelegatedAmount,
 			); err != nil {
-				return
+				util.PanicHalt(k.upgradeKeeper, ctx, "Not enough money in delegation module - logic_unbonding")
 			}
 
 			k.RemoveUndelegationQueueEntry(ctx, &undelegationEntry)

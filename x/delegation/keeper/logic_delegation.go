@@ -32,9 +32,6 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 // This method also transfers the rewards back to the given user.
 func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) (actualAmount uint64) {
 
-	//availableAmount := k.GetDelegationAmountOfDelegator(ctx, stakerAddress, delegatorAddress)
-	//unbondingAmount := util.MinUint64(availableAmount, amount)
-
 	// Withdraw all rewards for the sender.
 	reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
 

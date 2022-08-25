@@ -10,6 +10,17 @@ import (
 	i "github.com/KYVENetwork/chain/testutil/integration"
 )
 
+/*
+
+TEST CASES - logic_gov_bonding_test.go
+
+* Simple Staking
+* Multiple Staking
+* Multiple Staking + Delegation
+* Multiple Staking + Multiple Delegation
+
+*/
+
 var _ = Describe("Delegation Gov Logic", Ordered, func() {
 	s := i.NewCleanChain()
 	aliceAcc, _ := sdk.AccAddressFromBech32(i.ALICE)
@@ -20,6 +31,10 @@ var _ = Describe("Delegation Gov Logic", Ordered, func() {
 		s = i.NewCleanChain()
 
 		Expect(s.App().DelegationKeeper.TotalProtocolBonding(s.Ctx())).To(Equal(sdk.NewInt(0)))
+	})
+
+	AfterEach(func() {
+		CheckAndContinueChainForOneMonth(&s)
 	})
 
 	It("Simple Staking", func() {

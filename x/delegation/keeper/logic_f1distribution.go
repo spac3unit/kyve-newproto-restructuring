@@ -218,7 +218,7 @@ func (k Keeper) f1WithdrawRewards(ctx sdk.Context, stakerAddress string, delegat
 	k.RemoveDelegationEntry(ctx, stakerAddress, delegator.KIndex)
 	// Delegator now starts at the latest index.
 	delegator.KIndex = endIndex
-	delegator.InitialAmount = k.GetDelegationAmountOfDelegator(ctx, delegator.Staker, delegator.Delegator)
+	delegator.InitialAmount = k.f1GetCurrentDelegation(ctx, delegator.Staker, delegator.Delegator)
 	k.SetDelegator(ctx, delegator)
 
 	return reward.TruncateInt().Uint64()
@@ -242,12 +242,12 @@ func (k Keeper) f1IterateConstantDelegationPeriods(ctx sdk.Context, stakerAddres
 
 	prevIndex := minIndex
 	for _, slash := range slashes {
-		handler(prevIndex, slash.KIndex-1, delegatorBalance)
+		handler(prevIndex, slash.KIndex, delegatorBalance)
 		slashedAmount := delegatorBalance.MulTruncate(slash.Fraction)
 		delegatorBalance = delegatorBalance.Sub(slashedAmount)
 		prevIndex = slash.KIndex
 	}
-	handler(prevIndex, maxIndex-1, delegatorBalance)
+	handler(prevIndex, maxIndex, delegatorBalance)
 }
 
 // f1GetCurrentDelegation calculates the current delegation of a delegator.

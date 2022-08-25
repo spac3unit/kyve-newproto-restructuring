@@ -11,7 +11,7 @@ import (
 func CmdWithdrawRewards() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "withdraw_rewards [staker]",
-		Short: "Withdraw collected awards from staker",
+		Short: "Withdraw collected rewards from staker",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
