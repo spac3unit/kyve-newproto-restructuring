@@ -315,91 +315,92 @@ var _ = Describe("Undelegation", Ordered, func() {
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(12 * i.KYVE))
 	})
 
-	//It("Undelegate all after rewards and slashing and check state", func() {
-	//
-	//	slashes0 := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
-	//	_ = slashes0
-	//
-	//	// Assert
-	//	s.RunTxDelegatorSuccess(&types.MsgDelegate{
-	//		Creator: i.DUMMY[0],
-	//		Staker:  i.ALICE,
-	//		Amount:  10 * i.KYVE,
-	//	})
-	//	s.CommitAfterSeconds(10)
-	//	Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-	//	Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
-	//	Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
-	//
-	//	s.RunTxDelegatorSuccess(&types.MsgDelegate{
-	//		Creator: i.DUMMY[1],
-	//		Staker:  i.ALICE,
-	//		Amount:  20 * i.KYVE,
-	//	})
-	//	s.CommitAfterSeconds(10)
-	//	Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(980 * i.KYVE))
-	//	Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
-	//	Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(20 * i.KYVE))
-	//
-	//	// Payout rewards
-	//	s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 10*i.KYVE, pooltypes.ModuleName)
-	//
-	//	// Collect
-	//	s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
-	//		Creator: i.DUMMY[1],
-	//		Staker:  i.ALICE,
-	//	})
-	//
-	//	slashes1 := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
-	//	_ = slashes1
-	//
-	//	// Slash 10%
-	//	params := s.App().StakersKeeper.GetParams(s.Ctx())
-	//	params.UploadSlash = "0.1"
-	//	s.App().StakersKeeper.SetParams(s.Ctx(), params)
-	//	s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, stakerstypes.SLASH_TYPE_UPLOAD)
-	//
-	//	Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(9 * i.KYVE))
-	//	Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(18 * i.KYVE))
-	//
-	//	slashes2 := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
-	//	_ = slashes2
-	//
-	//	// Act
-	//	s.RunTxDelegatorSuccess(&types.MsgUndelegate{
-	//		Creator: i.DUMMY[0],
-	//		Staker:  i.ALICE,
-	//		Amount:  9 * i.KYVE,
-	//	})
-	//	s.CommitAfterSeconds(10)
-	//
-	//	s.RunTxDelegatorSuccess(&types.MsgUndelegate{
-	//		Creator: i.DUMMY[1],
-	//		Staker:  i.ALICE,
-	//		Amount:  18 * i.KYVE,
-	//	})
-	//	s.CommitAfterSeconds(10)
-	//
-	//	s.CommitAfterSeconds(s.App().DelegationKeeper.UnbondingDelegationTime(s.Ctx()) + 1)
-	//	s.CommitAfterSeconds(1)
-	//
-	//	b0 := s.GetBalanceFromAddress(i.DUMMY[0])
-	//	_ = b0
-	//	b1 := s.GetBalanceFromAddress(i.DUMMY[1])
-	//	_ = b1
-	//
-	//	delegationEntries := s.App().DelegationKeeper.GetAllDelegationEntries(s.Ctx())
-	//	_ = delegationEntries
-	//	delegators := s.App().DelegationKeeper.GetAllDelegators(s.Ctx())
-	//	_ = delegators
-	//	slashes := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
-	//	_ = slashes
-	//
-	//	//Expect(len(slashes)).To(Equal(len(delegationEntries)))
-	//	//Expect(delegators).To(HaveLen(0))
-	//})
+	It("Undelegate all after rewards and slashing and check state", func() {
 
-	// TODO test undelegate with multiple slashes
+		slashes0 := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
+		_ = slashes0
+
+		// Assert
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  10 * i.KYVE,
+		})
+		s.CommitAfterSeconds(10)
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
+
+		s.RunTxDelegatorSuccess(&types.MsgDelegate{
+			Creator: i.DUMMY[1],
+			Staker:  i.ALICE,
+			Amount:  20 * i.KYVE,
+		})
+		s.CommitAfterSeconds(10)
+		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(980 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(20 * i.KYVE))
+
+		// Payout rewards
+		s.App().DelegationKeeper.PayoutRewards(s.Ctx(), i.ALICE, 10*i.KYVE, pooltypes.ModuleName)
+
+		// Collect
+		s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
+			Creator: i.DUMMY[1],
+			Staker:  i.ALICE,
+		})
+
+		// Slash 10%
+		params := s.App().StakersKeeper.GetParams(s.Ctx())
+		params.UploadSlash = "0.1"
+		s.App().StakersKeeper.SetParams(s.Ctx(), params)
+		s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, stakerstypes.SLASH_TYPE_UPLOAD)
+
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(9 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(18 * i.KYVE))
+
+		slashes2 := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
+		_ = slashes2
+
+		// Act
+		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
+			Creator: i.DUMMY[0],
+			Staker:  i.ALICE,
+			Amount:  9 * i.KYVE,
+		})
+		s.CommitAfterSeconds(10)
+
+		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
+			Creator: i.DUMMY[1],
+			Staker:  i.ALICE,
+			Amount:  18 * i.KYVE,
+		})
+		s.CommitAfterSeconds(10)
+
+		s.CommitAfterSeconds(s.App().DelegationKeeper.UnbondingDelegationTime(s.Ctx()) + 1)
+		s.CommitAfterSeconds(1)
+
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(uint64(1002_333_333_333)))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(uint64(1004_666_666_666)))
+
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(BeZero())
+
+		delegationEntries := s.App().DelegationKeeper.GetAllDelegationEntries(s.Ctx())
+		delegators := s.App().DelegationKeeper.GetAllDelegators(s.Ctx())
+		slashes := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
+
+		// Only slash entries should be left
+		data, found := s.App().DelegationKeeper.GetDelegationData(s.Ctx(), i.ALICE)
+		println(found)
+		println(data.Staker)
+
+		Expect(len(slashes)).To(Equal(len(delegationEntries)))
+		Expect(delegators).To(HaveLen(0))
+	})
+
+	It("Undelegate with multiple slashes", func() {
+		// TODO test undelegate with multiple slashes
+	})
 
 	// TODO test rewards retrieval on undelegation
 
