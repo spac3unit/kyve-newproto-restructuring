@@ -10,7 +10,31 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Bundles module timeout tests", Ordered, func() {
+/*
+
+TEST CASES - logic_end_block_handle_upload_timeout.go
+
+* First staker who joins gets automatically chosen as next uploader
+* Next uploader gets removed due to pool upgrading
+* Next uploader gets removed due to pool being paused
+* Next uploader gets removed due to pool having no funds
+* Next uploader gets removed due to pool not reaching min stake
+* Staker is next uploader of genesis bundle and upload interval and timeout does not pass
+* Staker is next uploader of genesis bundle and upload timeout does not pass but upload interval passes
+* Staker is next uploader of genesis bundle and upload timeout does pass together with upload interval
+* Staker is next uploader of bundle proposal and upload interval does not pass
+* Staker is next uploader of bundle proposal and upload timeout does not pass
+* Staker is next uploader of bundle proposal and upload timeout passes
+* A bundle proposal with no quorum does not reach the upload interval
+* A bundle proposal with no quorum does reach the upload interval
+* A KYVE_NO_DATA_BUNDLE does not reach the upload interval
+* A KYVE_NO_DATA_BUNDLE does not reach the upload timeout
+* A KYVE_NO_DATA_BUNDLE does reach the upload timeout
+* TODO: next uploader should get removed due to upload interval but staker is not found
+
+*/
+
+var _ = Describe("logic_end_block_handle_upload_timeout.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -199,7 +223,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(50 * i.KYVE))
 	})
 
-	It("Staker is just next uploader and upload timeout does not pass", func() {
+	It("Staker is next uploader of genesis bundle and upload interval and timeout does not pass", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -223,7 +247,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Staker is just next uploader and upload timeout does not pass but upload interval passed", func() {
+	It("Staker is next uploader of genesis bundle and upload timeout does not pass but upload interval passes", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -248,7 +272,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Staker is just next uploader and upload timeout does pass together with upload interval", func() {
+	It("Staker is next uploader of genesis bundle and upload timeout does pass together with upload interval", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -282,7 +306,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(expectedBalance).To(Equal(nextUploader.Amount))
 	})
 
-	It("Next uploader is still set after not reaching the upload interval", func() {
+	It("Staker is next uploader of bundle proposal and upload interval does not pass", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -322,7 +346,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Next uploader is still set after not reaching the upload timeout", func() {
+	It("Staker is next uploader of bundle proposal and upload timeout does not pass", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -363,7 +387,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Next uploader receives timeout slash and gets removed after not uploading on bundle which reached quorum", func() {
+	It("Staker is next uploader of bundle proposal and upload timeout passes", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -413,7 +437,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(expectedBalance).To(Equal(nextUploader.Amount))
 	})
 
-	It("Bundle did not get dropped after not reaching the upload interval with a bundle with no quorum", func() {
+	It("A bundle proposal with no quorum does not reach the upload interval", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -464,7 +488,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Bundle did get dropped after reaching the upload interval with a bundle with no quorum", func() {
+	It("A bundle proposal with no quorum does reach the upload interval", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -526,7 +550,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Next uploader is still set after not reaching the upload interval with a KYVE_NO_DATA_BUNDLE", func() {
+	It("A KYVE_NO_DATA_BUNDLE does not reach the upload interval", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -577,7 +601,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Next uploader is still set after not reaching the upload interval with a KYVE_NO_DATA_BUNDLE", func() {
+	It("A KYVE_NO_DATA_BUNDLE does not reach the upload timeout", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -629,7 +653,7 @@ var _ = Describe("Bundles module timeout tests", Ordered, func() {
 		Expect(nextUploader.Amount).To(Equal(100 * i.KYVE))
 	})
 
-	It("Next uploader is still set after not reaching the upload interval with a KYVE_NO_DATA_BUNDLE", func() {
+	It("A KYVE_NO_DATA_BUNDLE does reach the upload timeout", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,

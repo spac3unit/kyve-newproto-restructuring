@@ -10,7 +10,22 @@ import (
 	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Vote Bundle Proposal", Ordered, func() {
+/*
+
+TEST CASES - msg_server_vote_bundle_proposal.go
+
+* Try to vote valid as the only voter on bundle proposal
+* Try to vote invalid as the only voter on bundle proposal
+* Try to vote abstain as the only voter on bundle proposal
+* Try to vote abstain on proposal again
+* Try to vote valid on proposal after abstain vote
+* Try to vote invalid on proposal after abstain vote
+* Try to vote unspecified on proposal
+* TODO: Try to vote as not the first voter on bundle proposal
+
+*/
+
+var _ = Describe("msg_server_vote_bundle_proposal.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -81,7 +96,7 @@ var _ = Describe("Vote Bundle Proposal", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Try to vote valid on proposal", func() {
+	It("Try to vote valid as the only voter on bundle proposal", func() {
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.VALADDRESS_1,
@@ -99,7 +114,7 @@ var _ = Describe("Vote Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.STAKER_1))
 	})
 
-	It("Try to vote invalid on proposal", func() {
+	It("Try to vote invalid as the only voter on bundle proposal", func() {
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.VALADDRESS_1,
@@ -117,7 +132,7 @@ var _ = Describe("Vote Bundle Proposal", Ordered, func() {
 		Expect(bundleProposal.VotersAbstain).NotTo(ContainElement(i.STAKER_1))
 	})
 
-	It("Try to vote abstain on proposal", func() {
+	It("Try to vote abstain as the only voter on bundle proposal", func() {
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.VALADDRESS_1,
