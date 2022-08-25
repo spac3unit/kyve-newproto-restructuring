@@ -10,7 +10,21 @@ import (
 	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
-var _ = Describe("Claim Uploader Role", Ordered, func() {
+/*
+
+TEST CASES - msg_server_claim_uploader_role.go
+
+* TODO: perform AssertPoolCanRun checks
+* Try to claim uploader role without pool being funded
+* Try to claim uploader role without being a staker
+* Try to claim uploader role if the next uploader is not set yet
+* Try to claim uploader role with non-existing valaccount
+* Try to claim uploader role with wrong valaccount / TODO: clearify "wrong" valaccount
+* TODO: claim uploader role if role is already claimed
+
+*/
+
+var _ = Describe("msg_server_claim_uploader_role.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -36,20 +50,20 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 	It("Try to claim uploader role without pool being funded", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 		})
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
-			Creator: i.BOB,
-			Staker:  i.ALICE,
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
 			PoolId:  0,
 		})
 
@@ -67,8 +81,8 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
-			Creator: i.BOB,
-			Staker:  i.ALICE,
+			Creator: i.VALADDRESS_1,
+			Staker:  i.STAKER_1,
 			PoolId:  0,
 		})
 
@@ -77,7 +91,7 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		Expect(found).To(BeFalse())
 	})
 
-	It("Try to claim uploader role", func() {
+	It("Try to claim uploader role if the next uploader is not set yet", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
@@ -85,20 +99,20 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 		})
 
 		// ACT
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
-			Creator: i.BOB,
-			Staker:  i.ALICE,
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
 			PoolId:  0,
 		})
 
@@ -106,7 +120,6 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		bundleProposal, found := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
 		Expect(found).To(BeTrue())
 
-		// TODO: assert other bundle proposal props
 		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
 		Expect(bundleProposal.StorageId).To(BeEmpty())
 		Expect(bundleProposal.Uploader).To(BeEmpty())
@@ -130,26 +143,20 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     0,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 		})
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
-			Creator: i.CHARLIE,
-			Staker:  i.ALICE,
-			PoolId:  0,
-		})
-
-		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
-			Creator: i.BOB,
-			Staker:  i.CHARLIE,
+			Creator: i.VALADDRESS_1,
+			Staker:  i.STAKER_0,
 			PoolId:  0,
 		})
 
@@ -176,20 +183,20 @@ var _ = Describe("Claim Uploader Role", Ordered, func() {
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgStake{
-			Creator: i.ALICE,
+			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
 		s.RunTxStakersSuccess(&stakertypes.MsgJoinPool{
-			Creator:    i.ALICE,
+			Creator:    i.STAKER_0,
 			PoolId:     1,
-			Valaddress: i.BOB,
+			Valaddress: i.VALADDRESS_0,
 		})
 
 		// ACT
 		s.RunTxBundlesError(&bundletypes.MsgClaimUploaderRole{
-			Creator: i.BOB,
-			Staker:  i.ALICE,
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
 			PoolId:  0,
 		})
 
