@@ -12,7 +12,18 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Can Validate Tests", Ordered, func() {
+/*
+
+TEST CASES - grpc_query_can_validate.go
+
+* Call can validate if pool does not exist
+* Call can validate if valaddress does not exist
+* Call can validate with a valaddress which belongs to another pool
+* Call can validate with a valid valaddress
+
+*/
+
+var _ = Describe("grpc_query_can_validate.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -65,7 +76,7 @@ var _ = Describe("Can Validate Tests", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Can validate should fail if pool does not exist", func() {
+	It("Call can validate if pool does not exist", func() {
 		// ACT
 		canValidate, err := s.App().QueryKeeper.CanValidate(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanValidateRequest{
 			PoolId:     2,
@@ -79,7 +90,7 @@ var _ = Describe("Can Validate Tests", Ordered, func() {
 		Expect(canValidate.Reason).To(Equal(sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), 2).Error()))
 	})
 
-	It("Can validate should fail if valaddress does not exist", func() {
+	It("Call can validate if valaddress does not exist", func() {
 		// ACT
 		canValidate, err := s.App().QueryKeeper.CanValidate(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanValidateRequest{
 			PoolId:     0,
@@ -93,7 +104,7 @@ var _ = Describe("Can Validate Tests", Ordered, func() {
 		Expect(canValidate.Reason).To(Equal("no valaccount found"))
 	})
 
-	It("Can validate should fail if valaddress belongs to another pool", func() {
+	It("Call can validate with a valaddress which belongs to another pool", func() {
 		// ACT
 		canValidate, err := s.App().QueryKeeper.CanValidate(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanValidateRequest{
 			PoolId:     0,
@@ -107,7 +118,7 @@ var _ = Describe("Can Validate Tests", Ordered, func() {
 		Expect(canValidate.Reason).To(Equal("no valaccount found"))
 	})
 
-	It("Can validate should succeed", func() {
+	It("Call can validate with a valid valaddress", func() {
 		// ACT
 		canValidate, err := s.App().QueryKeeper.CanValidate(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanValidateRequest{
 			PoolId:     0,

@@ -13,7 +13,27 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Can Vote Tests", Ordered, func() {
+/*
+
+TEST CASES - grpc_query_can_vote.go
+
+* Call can vote if pool does not exist
+* Call can vote if pool is currently upgrading
+* Call can vote if pool is paused
+* Call can vote if pool is out of funds
+* Call can vote if pool has not reached the minimum stake
+* Call can vote with a valaccount which does not exist
+* Call can vote if current bundle was dropped
+* Call can vote if current bundle was of type KYVE_NO_DATA_BUNDLE
+* Call can vote with a different storage id than the current one
+* Call can vote if voter has already voted valid
+* Call can vote if voter has already voted invalid
+* Call can vote if voter has already voted abstain
+* Call can vote on an active pool with a data bundle with valid args
+
+*/
+
+var _ = Describe("grpc_query_can_vote.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -85,7 +105,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Can vote should fail if pool does not exist", func() {
+	It("Call can vote if pool does not exist", func() {
 		// ACT
 		canVote, err := s.App().QueryKeeper.CanVote(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanVoteRequest{
 			PoolId:    1,
@@ -112,7 +132,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if pool is upgrading", func() {
+	It("Call can vote if pool is currently upgrading", func() {
 		// ARRANGE
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		pool.UpgradePlan = &pooltypes.UpgradePlan{
@@ -150,7 +170,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if pool is paused", func() {
+	It("Call can vote if pool is paused", func() {
 		// ARRANGE
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		pool.Paused = true
@@ -183,7 +203,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if pool is out of funds", func() {
+	It("Call can vote if pool is out of funds", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
 			Creator: i.ALICE,
@@ -217,7 +237,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if pool has not reached min stake", func() {
+	It("Call can vote if pool has not reached the minimum stake", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakertypes.MsgUnstake{
 			Creator: i.STAKER_0,
@@ -254,7 +274,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if valaccount is not authorized", func() {
+	It("Call can vote with a valaccount which does not exist", func() {
 		// ACT
 		canVote, err := s.App().QueryKeeper.CanVote(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanVoteRequest{
 			PoolId:    0,
@@ -281,7 +301,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if bundle was dropped", func() {
+	It("Call can vote if previous bundle was dropped", func() {
 		// ARRANGE
 		// wait for timeout so bundle gets dropped
 		s.CommitAfterSeconds(s.App().BundlesKeeper.UploadTimeout(s.Ctx()))
@@ -313,7 +333,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if bundle is of type no data bundle", func() {
+	It("Call can vote if previous bundle was of type KYVE_NO_DATA_BUNDLE", func() {
 		// ARRANGE
 		// wait for timeout so bundle gets dropped
 		s.CommitAfterSeconds(s.App().BundlesKeeper.UploadTimeout(s.Ctx()))
@@ -362,7 +382,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if storage id differs", func() {
+	It("Call can vote with a different storage id than the current one", func() {
 		// ACT
 		canVote, err := s.App().QueryKeeper.CanVote(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanVoteRequest{
 			PoolId:    0,
@@ -389,7 +409,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if voter has already voted valid", func() {
+	It("Call can vote if voter has already voted valid", func() {
 		// ARRANGE
 		_, txErr := s.RunTxBundles(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.VALADDRESS_1,
@@ -427,7 +447,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should fail if voter has already voted invalid", func() {
+	It("Call can vote if voter has already voted invalid", func() {
 		// ARRANGE
 		_, txErr := s.RunTxBundles(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.VALADDRESS_1,
@@ -465,7 +485,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canVote.Reason))
 	})
 
-	It("Can vote should be possible if voter voted abstain already", func() {
+	It("Call can vote if voter has already voted abstain", func() {
 		// ARRANGE
 		_, txErr := s.RunTxBundles(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.VALADDRESS_1,
@@ -502,7 +522,7 @@ var _ = Describe("Can Vote Tests", Ordered, func() {
 		Expect(txErr).To(BeNil())
 	})
 
-	It("Can vote should be possible", func() {
+	It("Call can vote on an active pool with a data bundle with valid args", func() {
 		// ACT
 		canVote, err := s.App().QueryKeeper.CanVote(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanVoteRequest{
 			PoolId:    0,

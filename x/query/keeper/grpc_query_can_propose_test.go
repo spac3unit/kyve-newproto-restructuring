@@ -13,7 +13,24 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Can Propose Tests", Ordered, func() {
+/*
+
+TEST CASES - grpc_query_can_propose.go
+
+* Call can propose if pool does not exist
+* Call can propose if pool is currently upgrading
+* Call can propose if pool is paused
+* Call can propose if pool is out of funds
+* Call can propose if pool has not reached the minimum stake
+* Call can propose with a valaccount which does not exist
+* Call can propose as a staker who is not the next uploader
+* Call can propose before the upload interval passed
+* Call can propose with an invalid from height
+* Call can propose on an active pool as the next uploader with valid args
+
+*/
+
+var _ = Describe("grpc_query_can_propose.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -95,7 +112,7 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Can propose should fail if pool does not exist", func() {
+	It("Call can propose if pool does not exist", func() {
 		// ACT
 		canPropose, err := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
 			PoolId:     1,
@@ -128,7 +145,7 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canPropose.Reason))
 	})
 
-	It("Can propose should fail if pool is upgrading", func() {
+	It("Call can propose if pool is currently upgrading", func() {
 		// ARRANGE
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		pool.UpgradePlan = &pooltypes.UpgradePlan{
@@ -172,7 +189,7 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canPropose.Reason))
 	})
 
-	It("Can propose should fail if pool is paused", func() {
+	It("Call can propose if pool is paused", func() {
 		// ARRANGE
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 		pool.Paused = true
@@ -211,7 +228,7 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canPropose.Reason))
 	})
 
-	It("Can propose should fail if pool is out of funds", func() {
+	It("Call can propose if pool is out of funds", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgDefundPool{
 			Creator: i.ALICE,
@@ -251,7 +268,7 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canPropose.Reason))
 	})
 
-	It("Can propose should fail if pool has not reached min stake", func() {
+	It("Call can propose if pool has not reached the minimum stake", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakertypes.MsgUnstake{
 			Creator: i.STAKER_0,
@@ -294,7 +311,7 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canPropose.Reason))
 	})
 
-	It("Can propose should fail if valaccount is not authorized", func() {
+	It("Call can propose with a valaccount which does not exist", func() {
 		// ACT
 		canPropose, err := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
 			PoolId:     0,
@@ -327,7 +344,47 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canPropose.Reason))
 	})
 
-	It("Can propose should fail if proposer is not designated uploader", func() {
+	It("Call can propose as a staker who is not the next uploader", func() {
+		// ACT
+		canPropose, err := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
+			PoolId:     0,
+			Staker:     i.STAKER_1,
+			Proposer:   i.VALADDRESS_1,
+			FromHeight: 100,
+		})
+
+		// ASSERT
+		Expect(err).To(BeNil())
+
+		Expect(canPropose.Possible).To(BeFalse())
+		Expect(canPropose.Reason).To(Equal(sdkErrors.Wrapf(bundletypes.ErrNotDesignatedUploader, "expected %v received %v", i.STAKER_0, i.STAKER_1).Error()))
+
+		_, txErr := s.RunTxBundles(&bundletypes.MsgSubmitBundleProposal{
+			Creator:    i.VALADDRESS_1,
+			Staker:     i.STAKER_1,
+			PoolId:     0,
+			StorageId:  "test_storage_id",
+			ByteSize:   100,
+			FromHeight: 100,
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value",
+			BundleHash: "test_hash",
+		})
+
+		Expect(txErr).NotTo(BeNil())
+		Expect(txErr.Error()).To(Equal(canPropose.Reason))
+	})
+
+	It("Call can propose before the upload interval passed", func() {
+		// ARRANGE
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+		// increase upload interval for upload timeout
+		pool.UploadInterval = 120
+
+		s.App().PoolKeeper.SetPool(s.Ctx(), pool)
+
 		// ACT
 		canPropose, err := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
 			PoolId:     0,
@@ -339,8 +396,10 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		// ASSERT
 		Expect(err).To(BeNil())
 
+		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
+
 		Expect(canPropose.Possible).To(BeFalse())
-		Expect(canPropose.Reason).To(Equal(sdkErrors.Wrapf(bundletypes.ErrNotDesignatedUploader, "expected %v received %v", i.STAKER_1, i.STAKER_0).Error()))
+		Expect(canPropose.Reason).To(Equal(sdkErrors.Wrapf(bundletypes.ErrUploadInterval, "expected %v < %v", s.Ctx().BlockTime().Unix(), bundleProposal.CreatedAt+pool.UploadInterval).Error()))
 
 		_, txErr := s.RunTxBundles(&bundletypes.MsgSubmitBundleProposal{
 			Creator:    i.VALADDRESS_0,
@@ -360,61 +419,19 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr.Error()).To(Equal(canPropose.Reason))
 	})
 
-	It("Can propose should fail if proposed before upload interval", func() {
-		// ARRANGE
-		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
-		// increase upload interval for upload timeout
-		pool.UploadInterval = 120
-
-		s.App().PoolKeeper.SetPool(s.Ctx(), pool)
-
-		// ACT
-		canPropose, err := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
-			PoolId:     0,
-			Staker:     i.STAKER_1,
-			Proposer:   i.VALADDRESS_1,
-			FromHeight: 100,
-		})
-
-		// ASSERT
-		Expect(err).To(BeNil())
-
-		bundleProposal, _ := s.App().BundlesKeeper.GetBundleProposal(s.Ctx(), 0)
-
-		Expect(canPropose.Possible).To(BeFalse())
-		Expect(canPropose.Reason).To(Equal(sdkErrors.Wrapf(bundletypes.ErrUploadInterval, "expected %v < %v", s.Ctx().BlockTime().Unix(), bundleProposal.CreatedAt+pool.UploadInterval).Error()))
-
-		_, txErr := s.RunTxBundles(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.VALADDRESS_1,
-			Staker:     i.STAKER_1,
-			PoolId:     0,
-			StorageId:  "test_storage_id",
-			ByteSize:   100,
-			FromHeight: 100,
-			ToHeight:   200,
-			FromKey:    "99",
-			ToKey:      "199",
-			ToValue:    "test_value",
-			BundleHash: "test_hash",
-		})
-
-		Expect(txErr).NotTo(BeNil())
-		Expect(txErr.Error()).To(Equal(canPropose.Reason))
-	})
-
-	It("Can propose should fail if invalid from_height", func() {
+	It("Call can propose with an invalid from height", func() {
 		// ACT
 		canPropose_1, err_1 := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
 			PoolId:     0,
-			Staker:     i.STAKER_1,
-			Proposer:   i.VALADDRESS_1,
+			Staker:     i.STAKER_0,
+			Proposer:   i.VALADDRESS_0,
 			FromHeight: 99,
 		})
 
 		canPropose_2, err_2 := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
 			PoolId:     0,
-			Staker:     i.STAKER_1,
-			Proposer:   i.VALADDRESS_1,
+			Staker:     i.STAKER_0,
+			Proposer:   i.VALADDRESS_0,
 			FromHeight: 101,
 		})
 
@@ -431,8 +448,8 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(canPropose_2.Reason).To(Equal(sdkErrors.Wrapf(types.ErrFromHeight, "expected %v received %v", bundleProposal.ToHeight, 101).Error()))
 
 		_, txErr_1 := s.RunTxBundles(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.VALADDRESS_1,
-			Staker:     i.STAKER_1,
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
 			PoolId:     0,
 			StorageId:  "test_storage_id",
 			ByteSize:   100,
@@ -448,8 +465,8 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr_1.Error()).To(Equal(canPropose_1.Reason))
 
 		_, txErr_2 := s.RunTxBundles(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.VALADDRESS_1,
-			Staker:     i.STAKER_1,
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
 			PoolId:     0,
 			StorageId:  "test_storage_id",
 			ByteSize:   100,
@@ -465,12 +482,12 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(txErr_2.Error()).To(Equal(canPropose_2.Reason))
 	})
 
-	It("Can propose should succeed", func() {
+	It("Call can propose on an active pool as the next uploader with valid args", func() {
 		// ACT
 		canPropose, err := s.App().QueryKeeper.CanPropose(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanProposeRequest{
 			PoolId:     0,
-			Staker:     i.STAKER_1,
-			Proposer:   i.VALADDRESS_1,
+			Staker:     i.STAKER_0,
+			Proposer:   i.VALADDRESS_0,
 			FromHeight: 100,
 		})
 
@@ -481,8 +498,8 @@ var _ = Describe("Can Propose Tests", Ordered, func() {
 		Expect(canPropose.Reason).To(BeEmpty())
 
 		_, txErr := s.RunTxBundles(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.VALADDRESS_1,
-			Staker:     i.STAKER_1,
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
 			PoolId:     0,
 			StorageId:  "test_storage_id",
 			ByteSize:   100,
