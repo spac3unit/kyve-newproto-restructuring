@@ -73,6 +73,8 @@ var _ = Describe("msg_server_unstake.go", Ordered, func() {
 
 		Expect(valaccounts).To(HaveLen(0))
 
+		s.PerformValidityChecks()
+
 		// wait for unbonding
 		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
 		s.CommitAfterSeconds(1)
@@ -98,6 +100,7 @@ var _ = Describe("msg_server_unstake.go", Ordered, func() {
 		})
 
 		// ASSERT
+		s.PerformValidityChecks()
 		unstakingEntries := s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
 		Expect(unstakingEntries).To(BeEmpty())
 	})
@@ -110,6 +113,7 @@ var _ = Describe("msg_server_unstake.go", Ordered, func() {
 		})
 
 		// ASSERT
+		s.PerformValidityChecks()
 		unstakingEntries := s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
 		balanceAfter := s.GetBalanceFromAddress(i.STAKER_0)
 
@@ -132,6 +136,7 @@ var _ = Describe("msg_server_unstake.go", Ordered, func() {
 		Expect(staker.Website).To(BeEmpty())
 
 		Expect(valaccounts).To(HaveLen(0))
+		s.PerformValidityChecks()
 
 		// wait for unbonding
 		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
@@ -166,6 +171,7 @@ var _ = Describe("msg_server_unstake.go", Ordered, func() {
 		})
 
 		// ASSERT
+		s.PerformValidityChecks()
 		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
 		Expect(unstakingEntries).To(HaveLen(2))
 
@@ -212,6 +218,7 @@ var _ = Describe("msg_server_unstake.go", Ordered, func() {
 		})
 
 		// ASSERT
+		s.PerformValidityChecks()
 		unstakingEntries = s.App().StakersKeeper.GetAllUnbondingStakeEntries(s.Ctx())
 		Expect(unstakingEntries).To(HaveLen(1))
 

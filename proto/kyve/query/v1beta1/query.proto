@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package kyve.query.v1beta1;
 
+import "kyve/pool/v1beta1/pool.proto";
+
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
 /*
@@ -35,6 +37,8 @@ message BasicPool {
   string logo = 4;
   // total_funds ...
   uint64 total_funds = 5;
+  // status ...
+  kyve.pool.v1beta1.PoolStatus status = 6;
 }
 
 message FullStaker {
@@ -83,7 +87,7 @@ message PoolMembership {
   BasicPool pool = 1;
   uint64 points = 2;
   bool isLeaving = 3;
-  string valaccount = 4;
+  string valaddress = 4;
 }
 
 

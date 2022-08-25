@@ -56,6 +56,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: "0.5",
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
@@ -75,6 +76,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: "0",
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
@@ -94,6 +96,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: "1",
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
@@ -113,6 +116,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: "teset",
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
@@ -125,6 +129,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: "-0.5",
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
@@ -137,6 +142,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: "2",
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
@@ -149,16 +155,19 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: "0.5",
 		})
+		s.PerformValidityChecks()
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
 			Commission: "0.2",
 		})
+		s.PerformValidityChecks()
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgUpdateCommission{
 			Creator:    i.STAKER_0,
 			Commission: "0.3",
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
@@ -188,6 +197,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 			Creator:    i.STAKER_0,
 			Commission: stakerstypes.DefaultCommission,
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)

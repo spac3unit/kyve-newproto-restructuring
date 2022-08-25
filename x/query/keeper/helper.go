@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -40,10 +41,11 @@ func (k Keeper) GetFullStaker(ctx sdk.Context, stakerAddress string) *types.Full
 				Runtime:    pool.Runtime,
 				Logo:       pool.Logo,
 				TotalFunds: pool.TotalFunds,
+				Status:     k.GetPoolStatus(ctx, &pool),
 			},
 			Points:     valaccount.Points,
 			IsLeaving:  valaccount.IsLeaving,
-			Valaccount: valaccount.Valaddress,
+			Valaddress: valaccount.Valaddress,
 		})
 	}
 
@@ -56,4 +58,26 @@ func (k Keeper) GetFullStaker(ctx sdk.Context, stakerAddress string) *types.Full
 		DelegatorCount:  delegationData.DelegatorCount,
 		Pools:           poolMemberships,
 	}
+}
+
+func (k Keeper) GetPoolStatus(ctx sdk.Context, pool *pooltypes.Pool) pooltypes.PoolStatus {
+
+	totalStake := k.stakerKeeper.GetTotalStake(ctx, pool.Id)
+	totalDelegation := k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id)
+
+	var poolStatus pooltypes.PoolStatus
+
+	if pool.UpgradePlan.ScheduledAt > 0 && uint64(ctx.BlockTime().Unix()) >= pool.UpgradePlan.ScheduledAt {
+		poolStatus = pooltypes.POOL_STATUS_UPGRADING
+	} else if pool.Paused {
+		poolStatus = pooltypes.POOL_STATUS_PAUSED
+	} else if totalStake+totalDelegation < pool.MinStake {
+		poolStatus = pooltypes.POOL_STATUS_NOT_ENOUGH_STAKE
+	} else if pool.TotalFunds == 0 {
+		poolStatus = pooltypes.POOL_STATUS_NO_FUNDS
+	} else {
+		poolStatus = pooltypes.POOL_STATUS_ACTIVE
+	}
+
+	return poolStatus
 }

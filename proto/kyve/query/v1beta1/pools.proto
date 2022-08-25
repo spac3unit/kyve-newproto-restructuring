@@ -59,8 +59,10 @@ message PoolResponse {
   repeated string stakers = 4;
   // total_stake ...
   uint64 total_stake = 5;
+  // total_delegation ...
+  uint64 total_delegation = 6;
   // status ...
-  kyve.pool.v1beta1.PoolStatus status = 6;
+  kyve.pool.v1beta1.PoolStatus status = 7;
 }
 
 // =========
