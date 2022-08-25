@@ -17,6 +17,7 @@ TEST CASES - msg_server_stake.go
 * Stake additional 50 KYVE to an existing staker
 * Try to stake with more KYVE than available in balance
 * Create a second staker by staking 150 KYVE
+* TODO: create a staker again after the staker unstaked everything
 
 */
 

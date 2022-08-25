@@ -17,9 +17,8 @@ TEST CASES - msg_server_unstake.go
 * Try to unstake more KYVE than the staker has actually staked
 * Unstake full staking amount from a staker who has previously staked 100 KYVE
 * Unstake 25 KYVE while staker is already unbonding 25 KYVE from 100 KYVE in total
-* Unstake 90 KYVE while staker is already unbonding 25 KYVE although staker only
-staked 100 KYVE in total
-TODO: full unstake with delegators
+* Unstake 90 KYVE while staker is already unbonding 25 KYVE although staker only staked 100 KYVE in total
+* TODO: full unstake with delegators
 
 */
 
