@@ -74,6 +74,7 @@ var _ = Describe("Delegation - Withdraw Rewards", Ordered, func() {
 
 		delegationModuleBalanceBefore := s.GetBalanceFromModule(types.ModuleName)
 		poolModuleBalanceBefore := s.GetBalanceFromModule(pooltypes.ModuleName)
+		s.PerformValidityChecks()
 
 		// Act
 		PayoutRewards(&s, i.ALICE, 20*i.KYVE)
@@ -114,6 +115,7 @@ var _ = Describe("Delegation - Withdraw Rewards", Ordered, func() {
 		balanceCharlieBefore := s.GetBalanceFromAddress(i.CHARLIE)
 		balanceAliceBefore := s.GetBalanceFromAddress(i.ALICE)
 		delegationBalance := s.GetBalanceFromModule(types.ModuleName)
+		s.PerformValidityChecks()
 
 		s.RunTxDelegatorError(&types.MsgWithdrawRewards{
 			Creator: i.CHARLIE,

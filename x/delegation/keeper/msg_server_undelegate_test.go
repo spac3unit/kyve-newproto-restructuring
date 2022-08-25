@@ -70,6 +70,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Act
 		res, err := s.RunTxDelegator(&types.MsgUndelegate{
@@ -96,6 +97,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
@@ -131,6 +133,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
@@ -161,6 +164,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
@@ -198,6 +202,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
@@ -231,6 +236,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
+		s.PerformValidityChecks()
 
 		s.RunTxDelegatorSuccess(&types.MsgDelegate{
 			Creator: i.DUMMY[1],
@@ -341,6 +347,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(980 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(20 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Payout rewards
 		PayoutRewards(&s, i.ALICE, 10*i.KYVE)
@@ -408,6 +415,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		params := s.App().StakersKeeper.GetParams(s.Ctx())
 		params.UploadSlash = "0.5"
 		s.App().StakersKeeper.SetParams(s.Ctx(), params)
+		s.PerformValidityChecks()
 
 		// Slash 50%
 		s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, stakerstypes.SLASH_TYPE_UPLOAD)
@@ -444,6 +452,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 			Staker:  i.ALICE,
 			Amount:  20 * i.KYVE,
 		})
+		s.PerformValidityChecks()
 
 		// Act
 		params := s.App().StakersKeeper.GetParams(s.Ctx())
@@ -484,6 +493,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 			Staker:  i.ALICE,
 			Amount:  20 * i.KYVE,
 		})
+		s.PerformValidityChecks()
 
 		// Act
 		params := s.App().StakersKeeper.GetParams(s.Ctx())

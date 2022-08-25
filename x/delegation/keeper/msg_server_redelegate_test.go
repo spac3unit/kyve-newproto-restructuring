@@ -77,6 +77,7 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		s.CommitAfterSeconds(10)
 
 		// Assert
+		CheckAndContinueChainForOneMonth(&s)
 		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		Expect(aliceDelegationBefore).To(Equal(aliceDelegationAfter + 1*i.KYVE))
 
@@ -97,6 +98,7 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
 		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
 		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorError(&types.MsgRedelegate{
@@ -122,6 +124,7 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
 		Expect(aliceDelegationBefore).To(BeZero())
 		Expect(bobDelegationBefore).To(BeZero())
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorError(&types.MsgRedelegate{
@@ -151,6 +154,7 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
 		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
 		Expect(bobDelegationBefore).To(BeZero())
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorError(&types.MsgRedelegate{
@@ -181,6 +185,7 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
 		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
 		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
+		s.PerformValidityChecks()
 
 		// Act
 		redelegationMessage := types.MsgRedelegate{
@@ -244,6 +249,7 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		s.CommitAfterSeconds(10)
 		s.RunTxDelegatorSuccess(&redelegationMessage)
 		s.CommitAfterSeconds(10)
+		s.PerformValidityChecks()
 
 		// Act
 		s.CommitAfterSeconds(s.App().DelegationKeeper.RedelegationCooldown(s.Ctx()) - 50)
@@ -255,6 +261,7 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 
 		// Redelegations are now all used again
 		s.RunTxDelegatorError(&redelegationMessage)
+		s.PerformValidityChecks()
 
 		// Act 2
 

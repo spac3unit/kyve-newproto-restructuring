@@ -24,6 +24,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetDelegationData(ctx, entry)
 	}
 
+	for _, entry := range genState.DelegationSlashList {
+		k.SetDelegationSlashEntry(ctx, entry)
+	}
+
 	for _, entry := range genState.UndelegationQueueEntryList {
 		k.SetUndelegationQueueEntry(ctx, entry)
 	}
@@ -47,6 +51,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.DelegationEntryList = k.GetAllDelegationEntries(ctx)
 
 	genesis.DelegationDataList = k.GetAllDelegationData(ctx)
+
+	genesis.DelegationSlashList = k.GetAllDelegationSlashEntries(ctx)
 
 	genesis.UndelegationQueueEntryList = k.GetAllUnbondingDelegationQueueEntries(ctx)
 

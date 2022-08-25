@@ -24,12 +24,15 @@ message GenesisState {
   // delegation_data_list ...
   repeated DelegationData delegation_data_list = 4 [(gogoproto.nullable) = false];
 
+  // delegation_slash_list ...
+  repeated DelegationSlash delegation_slash_list = 5 [(gogoproto.nullable) = false];
+
   // undelegation_queue_entry_list ...
-  repeated UndelegationQueueEntry undelegation_queue_entry_list = 5 [(gogoproto.nullable) = false];
+  repeated UndelegationQueueEntry undelegation_queue_entry_list = 6 [(gogoproto.nullable) = false];
 
   // queue_state_undelegation ...
-  QueueState queue_state_undelegation = 6 [(gogoproto.nullable) = false];
+  QueueState queue_state_undelegation = 7 [(gogoproto.nullable) = false];
 
   // redelegation_cooldown_list ...
-  repeated RedelegationCooldown redelegation_cooldown_list = 7 [(gogoproto.nullable) = false];
+  repeated RedelegationCooldown redelegation_cooldown_list = 8 [(gogoproto.nullable) = false];
 }

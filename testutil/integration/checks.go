@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"github.com/KYVENetwork/chain/x/delegation"
 	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	. "github.com/onsi/gomega"
@@ -27,6 +28,7 @@ func (suite *KeeperTestSuite) PerformValidityChecks() {
 	// verify delegation module
 	suite.VerifyDelegationQueries()
 	suite.VerifyDelegationModuleIntegrity()
+	suite.VerifyDelegationGenesisImportExport()
 }
 
 // ==================
@@ -355,4 +357,11 @@ func (suite *KeeperTestSuite) VerifyDelegationModuleIntegrity() {
 
 	// 10 should be enough for testing
 	Expect(difference <= 10).To(BeTrue())
+}
+
+func (suite *KeeperTestSuite) VerifyDelegationGenesisImportExport() {
+	genState := delegation.ExportGenesis(suite.Ctx(), suite.App().DelegationKeeper)
+	err := genState.Validate()
+	Expect(err).To(BeNil())
+	delegation.InitGenesis(suite.Ctx(), suite.App().DelegationKeeper, *genState)
 }

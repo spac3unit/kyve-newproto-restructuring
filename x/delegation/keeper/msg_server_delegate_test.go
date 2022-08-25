@@ -63,6 +63,7 @@ var _ = Describe("Delegation - Delegation", Ordered, func() {
 		})
 
 		// Assert
+		CheckAndContinueChainForOneMonth(&s)
 		bobBalanceAfter := s.GetBalanceFromAddress(i.BOB)
 		Expect(bobBalanceAfter).To(Equal(bobBalance - 10*i.KYVE))
 
@@ -74,6 +75,7 @@ var _ = Describe("Delegation - Delegation", Ordered, func() {
 
 		// Arrange
 		bobBalance := s.GetBalanceFromAddress(i.BOB)
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorError(&types.MsgDelegate{
@@ -94,6 +96,7 @@ var _ = Describe("Delegation - Delegation", Ordered, func() {
 		// Arrange
 		bobBalance := s.GetBalanceFromAddress(i.BOB)
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
+		s.PerformValidityChecks()
 
 		// Act
 		_, delegateErr := s.RunTxDelegator(&types.MsgDelegate{
@@ -129,6 +132,7 @@ var _ = Describe("Delegation - Delegation", Ordered, func() {
 		Expect(poolModuleBalance).To(Equal(50 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(BeZero())
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(BeZero())
+		s.PerformValidityChecks()
 
 		// Act
 		PayoutRewards(&s, i.ALICE, 10*i.KYVE)
@@ -172,6 +176,7 @@ var _ = Describe("Delegation - Delegation", Ordered, func() {
 
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(3_333_333_333)))
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(6_666_666_666)))
+		s.PerformValidityChecks()
 
 		// Act
 		s.RunTxDelegatorSuccess(&types.MsgWithdrawRewards{
