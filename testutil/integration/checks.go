@@ -4,6 +4,7 @@ import (
 	"github.com/KYVENetwork/chain/x/delegation"
 	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	querytypes "github.com/KYVENetwork/chain/x/query/types"
+	"github.com/KYVENetwork/chain/x/stakers"
 	. "github.com/onsi/gomega"
 
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
@@ -21,6 +22,7 @@ func (suite *KeeperTestSuite) PerformValidityChecks() {
 	suite.VerifyStakersModuleAssetsIntegrity()
 	suite.VerifyPoolTotalStake()
 	suite.VerifyStakersQueries()
+	suite.VerifyStakersGenesisImportExport()
 
 	// verify bundles module
 	suite.VerifyBundlesQueries()
@@ -193,6 +195,13 @@ func (suite *KeeperTestSuite) VerifyStakersQueries() {
 
 	Expect(unbondingQueryErr).To(BeNil())
 	Expect(unbondingState).To(ContainElements(unbondingQuery.Unbondings))
+}
+
+func (suite *KeeperTestSuite) VerifyStakersGenesisImportExport() {
+	genState := stakers.ExportGenesis(suite.Ctx(), suite.App().StakersKeeper)
+	err := genState.Validate()
+	Expect(err).To(BeNil())
+	stakers.InitGenesis(suite.Ctx(), suite.App().StakersKeeper, *genState)
 }
 
 // =====================

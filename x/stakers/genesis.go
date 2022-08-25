@@ -15,6 +15,13 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.AppendStaker(ctx, staker)
 	}
 
+	for _, entry := range genState.ValaccountList {
+		k.SetValaccount(ctx, entry)
+		staker, _ := k.GetStaker(ctx, entry.Staker)
+		k.AddToTotalStake(ctx, entry.PoolId, staker.Amount)
+		k.AddOneToCount(ctx, entry.PoolId)
+	}
+
 	for _, entry := range genState.CommissionChangeEntries {
 		k.SetCommissionChangeEntry(ctx, entry)
 	}
@@ -30,13 +37,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_UNSTAKING, genState.QueueStateUnstaking)
 	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_COMMISSION, genState.QueueStateCommission)
 	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_LEAVE, genState.QueueStateLeave)
-
-	for _, entry := range genState.ValaccountList {
-		k.SetValaccount(ctx, entry)
-		staker, _ := k.GetStaker(ctx, entry.Staker)
-		k.AddToTotalStake(ctx, entry.PoolId, staker.Amount)
-		k.AddOneToCount(ctx, entry.PoolId)
-	}
 }
 
 // ExportGenesis returns the capability module's exported genesis.
@@ -45,6 +45,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.StakerList = k.GetAllStakers(ctx)
+
+	genesis.ValaccountList = k.GetAllValaccounts(ctx)
 
 	genesis.CommissionChangeEntries = k.GetAllCommissionChangeEntries(ctx)
 
@@ -57,8 +59,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.QueueStateCommission = k.GetQueueState(ctx, types.QUEUE_IDENTIFIER_COMMISSION)
 
 	genesis.QueueStateLeave = k.GetQueueState(ctx, types.QUEUE_IDENTIFIER_LEAVE)
-
-	genesis.ValaccountList = k.GetAllValaccounts(ctx)
 
 	return genesis
 }

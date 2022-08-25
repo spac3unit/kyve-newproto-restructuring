@@ -5,9 +5,6 @@ import (
 	"github.com/KYVENetwork/chain/util"
 )
 
-// DefaultIndex is the default capability global index
-const DefaultIndex uint64 = 1
-
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
@@ -22,8 +19,7 @@ func DefaultGenesis() *GenesisState {
 	}
 }
 
-// Validate performs basic genesis state validation returning an error upon any
-// failure.
+// Validate performs basic genesis state validation returning an error upon any failure.
 func (gs GenesisState) Validate() error {
 
 	if err := gs.validateF1(); err != nil {
@@ -108,7 +104,7 @@ func (gs *GenesisState) validateUnbondingQueue() error {
 	for _, elem := range gs.UndelegationQueueEntryList {
 		index := string(UndelegationQueueKey(elem.Index))
 		if _, ok := unbondingMap[index]; ok {
-			return fmt.Errorf("duplicated k-index for delegation entry %v", elem)
+			return fmt.Errorf("duplicated index for unbonding entry %v", elem)
 		}
 		if elem.Index > gs.QueueStateUndelegation.HighIndex {
 			return fmt.Errorf("unbonding entry index too high: %v", elem)
