@@ -89,9 +89,9 @@ genesis:
     delegation:
       params:
         unbonding_delegation_time: 10
-      stakers:
-        params:
-          commission_change_time: 10
+    stakers:
+      params:
+        commission_change_time: 10
 validator:
   name: alice
   staked: "1000000000000000tkyve"
