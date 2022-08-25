@@ -13,27 +13,27 @@ option go_package = "github.com/KYVENetwork/chain/x/query/types";
 service QueryAccount {
   // AccountAssets returns an overview of the sum of all balances for a given user. e.g. balance, staking, funding, etc.
   rpc AccountAssets(QueryAccountAssetsRequest) returns (QueryAccountAssetsResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/account_assets/{address}";
+    option (google.api.http).get = "/kyve/query/v1beta1/account_assets/{address}";
   }
 
   // AccountStakingUnbondings ...
   rpc AccountStakingUnbondings(QueryAccountStakingUnbondingsRequest) returns (QueryAccountStakingUnbondingsResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/account_staking_unbondings/{address}";
+    option (google.api.http).get = "/kyve/query/v1beta1/account_staking_unbondings/{address}";
   }
 
   // AccountDelegationUnbondings ...
   rpc AccountDelegationUnbondings(QueryAccountDelegationUnbondingsRequest) returns (QueryAccountDelegationUnbondingsResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/account_delegation_unbondings/{address}";
+    option (google.api.http).get = "/kyve/query/v1beta1/account_delegation_unbondings/{address}";
   }
 
   // AccountFundedList returns all pools the given user has funded into.
   rpc AccountFundedList(QueryAccountFundedListRequest) returns (QueryAccountFundedListResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/account_funded_list/{address}";
+    option (google.api.http).get = "/kyve/query/v1beta1/account_funded_list/{address}";
   }
 
   // AccountRedelegation ...
   rpc AccountRedelegation(QueryAccountRedelegationRequest) returns (QueryAccountRedelegationResponse) {
-    option (google.api.http).get = "/kyve/registry/v1beta1/account_redelegation/{address}";
+    option (google.api.http).get = "/kyve/query/v1beta1/account_redelegation/{address}";
   }
 }
 

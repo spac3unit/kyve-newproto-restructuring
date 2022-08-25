@@ -605,15 +605,15 @@ func RegisterQueryAccountHandlerClient(ctx context.Context, mux *runtime.ServeMu
 }
 
 var (
-	pattern_QueryAccount_AccountAssets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "registry", "v1beta1", "account_assets", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryAccount_AccountAssets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "query", "v1beta1", "account_assets", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_QueryAccount_AccountStakingUnbondings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "registry", "v1beta1", "account_staking_unbondings", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryAccount_AccountStakingUnbondings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "query", "v1beta1", "account_staking_unbondings", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_QueryAccount_AccountDelegationUnbondings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "registry", "v1beta1", "account_delegation_unbondings", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryAccount_AccountDelegationUnbondings_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "query", "v1beta1", "account_delegation_unbondings", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_QueryAccount_AccountFundedList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "registry", "v1beta1", "account_funded_list", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryAccount_AccountFundedList_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "query", "v1beta1", "account_funded_list", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_QueryAccount_AccountRedelegation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "registry", "v1beta1", "account_redelegation", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryAccount_AccountRedelegation_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "query", "v1beta1", "account_redelegation", "address"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

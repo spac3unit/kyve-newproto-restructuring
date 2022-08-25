@@ -433,11 +433,11 @@ func RegisterQueryDelegationHandlerClient(ctx context.Context, mux *runtime.Serv
 }
 
 var (
-	pattern_QueryDelegation_Delegator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 3}, []string{"kyve", "delegation", "v1beta1", "delegator", "staker"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryDelegation_Delegator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 3}, []string{"kyve", "query", "v1beta1", "delegator", "staker"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_QueryDelegation_DelegatorsByStaker_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "delegation", "v1beta1", "delegators_by_staker", "staker"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryDelegation_DelegatorsByStaker_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "query", "v1beta1", "delegators_by_staker", "staker"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_QueryDelegation_StakersByDelegator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "delegation", "v1beta1", "stakers_by_delegator", "delegator"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_QueryDelegation_StakersByDelegator_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"kyve", "query", "v1beta1", "stakers_by_delegator", "delegator"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

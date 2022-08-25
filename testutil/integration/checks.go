@@ -1,6 +1,7 @@
 package integration
 
 import (
+	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	. "github.com/onsi/gomega"
 
@@ -25,6 +26,7 @@ func (suite *KeeperTestSuite) PerformValidityChecks() {
 
 	// verify delegation module
 	suite.VerifyDelegationQueries()
+	suite.VerifyDelegationModuleIntegrity()
 }
 
 // ==================
@@ -112,7 +114,6 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 
 			if stakerFound {
 				stakersByPoolState = append(stakersByPoolState, querytypes.StakerPoolResponse{
-					// TODO full staker check
 					Staker:     suite.App().QueryKeeper.GetFullStaker(suite.Ctx(), staker.Address),
 					Valaccount: valaccount,
 				})
@@ -309,6 +310,14 @@ func (suite *KeeperTestSuite) VerifyDelegationQueries() {
 		}
 	}
 
+	var stakersDelegators = make(map[string]map[string]delegationtypes.Delegator)
+	for _, d := range suite.App().DelegationKeeper.GetAllDelegators(suite.Ctx()) {
+		if stakersDelegators[d.Staker] == nil {
+			stakersDelegators[d.Staker] = map[string]delegationtypes.Delegator{}
+		}
+		stakersDelegators[d.Staker][d.Delegator] = d
+	}
+
 	for _, staker := range suite.App().StakersKeeper.GetAllStakers(suite.Ctx()) {
 		// Query: delegators_by_staker/{staker}
 		resDbS, errDbS := suite.App().QueryKeeper.DelegatorsByStaker(goCtx, &querytypes.QueryDelegatorsByStakerRequest{
@@ -321,10 +330,29 @@ func (suite *KeeperTestSuite) VerifyDelegationQueries() {
 		Expect(resDbS.TotalDelegatorCount).To(Equal(delegationData.DelegatorCount))
 		Expect(resDbS.TotalDelegation).To(Equal(suite.App().DelegationKeeper.GetDelegationAmount(suite.Ctx(), staker.Address)))
 
-		//for _, delegator := range resDbS.Delegators {
-		//	delegator.Delegator
-		//}
-		// TODO
+		for _, delegator := range resDbS.Delegators {
+			Expect(stakersDelegators[delegator.Staker][delegator.Delegator]).ToNot(BeNil())
+			Expect(delegator.DelegationAmount).To(Equal(suite.App().DelegationKeeper.GetDelegationAmountOfDelegator(suite.Ctx(), delegator.Staker, delegator.Delegator)))
+			Expect(delegator.CurrentReward).To(Equal(suite.App().DelegationKeeper.GetOutstandingRewards(suite.Ctx(), delegator.Staker, delegator.Delegator)))
+		}
 	}
 
+}
+
+func (suite *KeeperTestSuite) VerifyDelegationModuleIntegrity() {
+	expectedBalance := uint64(0)
+
+	for _, delegator := range suite.App().DelegationKeeper.GetAllDelegators(suite.Ctx()) {
+		expectedBalance += suite.App().DelegationKeeper.GetDelegationAmountOfDelegator(suite.Ctx(), delegator.Staker, delegator.Delegator)
+		expectedBalance += suite.App().DelegationKeeper.GetOutstandingRewards(suite.Ctx(), delegator.Staker, delegator.Delegator)
+	}
+
+	// Due to rounding errors the delegation module will get a very few nKYVE over the time.
+	// As long as it is guaranteed that it's always the user who gets paid out less in case of
+	// rounding, everything is fine.
+	difference := suite.GetBalanceFromModule(delegationtypes.ModuleName) - expectedBalance
+	Expect(difference >= 0).To(BeTrue())
+
+	// 10 should be enough for testing
+	Expect(difference <= 10).To(BeTrue())
 }
