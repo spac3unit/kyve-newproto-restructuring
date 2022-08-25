@@ -7,7 +7,20 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Pool module upgrade tests", Ordered, func() {
+/*
+
+TEST CASES - logic_end_block_handle_pool_upgrades.go
+
+* Schedule a pool upgrade in the past
+* Schedule a pool upgrade in the future
+* Schedule pool upgrade now and with no upgrade duration
+* // TODO: schedule pool upgrade with same version but different binaries
+* // TODO: Try to schedule pool upgrade with same binaries but different version
+* // TODO: Try to schedule pool upgrade with same version and same binaries
+
+*/
+
+var _ = Describe("logic_end_block_handle_pool_upgrades.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	BeforeEach(func() {
@@ -35,7 +48,7 @@ var _ = Describe("Pool module upgrade tests", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Schedule pool upgrade in the past", func() {
+	It("Schedule a pool upgrade in the past", func() {
 		// ARRANGE
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 
@@ -73,7 +86,7 @@ var _ = Describe("Pool module upgrade tests", Ordered, func() {
 		Expect(pool.UpgradePlan).To(Equal(&pooltypes.UpgradePlan{}))
 	})
 
-	It("Schedule pool upgrade in the future", func() {
+	It("Schedule a pool upgrade in the future", func() {
 		// ARRANGE
 		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
 

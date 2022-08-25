@@ -8,7 +8,21 @@ import (
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 )
 
-var _ = Describe("Fund Pool", Ordered, func() {
+/*
+
+TEST CASES - msg_server_fund_pool.go
+
+* Create funder by funding a pool with 100 $KYVE
+* Fund additional 50 $KYVE to an existing funder with 100 $KYVE
+* Try to fund more $KYVE than available in balance
+* Fund with a new funder less $KYVE than the existing one
+* Fund with a new funder more $KYVE than the existing one
+* Try to fund less $KYVE than the lowest funder with full funding slots
+* Try to fund more $KYVE than the lowest funder with full funding slots
+
+*/
+
+var _ = Describe("msg_server_fund_pool.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	initialBalance := s.GetBalanceFromAddress(i.ALICE)
@@ -33,7 +47,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Fund Pool with 100 $KYVE", func() {
+	It("Create funder by funding a pool with 100 $KYVE", func() {
 		// ACT
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
@@ -61,7 +75,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		Expect(pool.GetLowestFunder()).To(Equal(funder))
 	})
 
-	It("Fund additional 50 $KYVE", func() {
+	It("Fund additional 50 $KYVE to an existing funder with 100 $KYVE", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
@@ -96,7 +110,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		Expect(pool.GetLowestFunder()).To(Equal(funder))
 	})
 
-	It("Fund more than available balance", func() {
+	It("Try to fund more $KYVE than available in balance", func() {
 		// ACT
 		currentBalance := s.GetBalanceFromAddress(i.ALICE)
 
@@ -122,7 +136,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		Expect(pool.GetLowestFunder()).To(Equal(pooltypes.Funder{}))
 	})
 
-	It("Fund with new funder less than existing one", func() {
+	It("Fund with a new funder less $KYVE than the existing one", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
@@ -157,7 +171,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		Expect(pool.GetLowestFunder()).To(Equal(funder))
 	})
 
-	It("Fund new funder more than existing one", func() {
+	It("Fund with a new funder more $KYVE than the existing one", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
@@ -193,7 +207,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		Expect(pool.GetLowestFunder()).To(Equal(funderAlice))
 	})
 
-	It("Try to fund less than the lowest funder with full slots", func() {
+	It("Try to fund less $KYVE than the lowest funder with full funding slots", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
@@ -237,7 +251,7 @@ var _ = Describe("Fund Pool", Ordered, func() {
 		Expect(funderFound).To(BeFalse())
 	})
 
-	It("Try to fund more than the lowest funder with full slots", func() {
+	It("Try to fund more $KYVE than the lowest funder with full funding slots", func() {
 		// ARRANGE
 		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
 			Creator: i.ALICE,
