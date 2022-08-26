@@ -1,6 +1,7 @@
 package integration
 
 import (
+	"github.com/KYVENetwork/chain/x/bundles"
 	"github.com/KYVENetwork/chain/x/delegation"
 	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	"github.com/KYVENetwork/chain/x/pool"
@@ -28,6 +29,7 @@ func (suite *KeeperTestSuite) PerformValidityChecks() {
 
 	// verify bundles module
 	suite.VerifyBundlesQueries()
+	suite.VerifyBundlesGenesisImportExport()
 
 	// verify delegation module
 	suite.VerifyDelegationQueries()
@@ -261,6 +263,13 @@ func (suite *KeeperTestSuite) VerifyBundlesQueries() {
 			Expect(finalizedBundleQuery.FinalizedBundle).To(Equal(finalizedBundlesState[i]))
 		}
 	}
+}
+
+func (suite *KeeperTestSuite) VerifyBundlesGenesisImportExport() {
+	genState := bundles.ExportGenesis(suite.Ctx(), suite.App().BundlesKeeper)
+	err := genState.Validate()
+	Expect(err).To(BeNil())
+	bundles.InitGenesis(suite.Ctx(), suite.App().BundlesKeeper, *genState)
 }
 
 // ========================

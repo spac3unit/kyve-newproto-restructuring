@@ -1,11 +1,9 @@
 package types
 
 import (
-// this line is used by starport scaffolding # genesis/types/import
+	"fmt"
+	"sort"
 )
-
-// DefaultIndex is the default capability global index
-const DefaultIndex uint64 = 1
 
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
@@ -15,10 +13,45 @@ func DefaultGenesis() *GenesisState {
 	}
 }
 
-// Validate performs basic genesis state validation returning an error upon any
-// failure.
+// Validate performs basic genesis state validation returning an error upon any failure.
 func (gs GenesisState) Validate() error {
-	// this line is used by starport scaffolding # genesis/types/validate
+
+	// Bundle proposal
+	bundleProposalKey := make(map[string]struct{})
+
+	for _, elem := range gs.BundleProposalList {
+		index := string(BundleProposalKey(elem.PoolId))
+		if _, ok := bundleProposalKey[index]; ok {
+			return fmt.Errorf("duplicated pool-id for bundle proposal %v", elem)
+		}
+		bundleProposalKey[index] = struct{}{}
+	}
+
+	// Finalized bundles
+	finalizedBundleProposals := make(map[string]struct{})
+	previousIndexPerPool := make(map[uint64]uint64)
+
+	sort.Slice(gs.FinalizedBundleList, func(i, j int) bool {
+		if gs.FinalizedBundleList[i].Id < gs.FinalizedBundleList[j].Id {
+			return true
+		}
+		return false
+	})
+
+	// TODO test again with multiple bundles
+	for _, elem := range gs.FinalizedBundleList {
+		index := string(FinalizedBundleKey(elem.PoolId, elem.Id))
+		if _, ok := finalizedBundleProposals[index]; ok {
+			return fmt.Errorf("duplicated index for finalized bundle %v", elem)
+		}
+		finalizedBundleProposals[index] = struct{}{}
+
+		if previousIndexPerPool[elem.PoolId] == elem.Id {
+			previousIndexPerPool[elem.PoolId] += 1
+		} else {
+			return fmt.Errorf("missing finalized bundle %v", elem)
+		}
+	}
 
 	return gs.Params.Validate()
 }

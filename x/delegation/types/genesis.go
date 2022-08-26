@@ -73,7 +73,7 @@ func (gs *GenesisState) validateF1() error {
 	for _, elem := range gs.DelegationDataList {
 		index := string(DelegationDataKey(elem.Staker))
 		if _, ok := delegationDataMap[index]; ok {
-			return fmt.Errorf("duplicated k-index for delegation entry %v", elem)
+			return fmt.Errorf("duplicated index for delegation data %v", elem)
 		}
 		delegationDataMap[index] = struct{}{}
 	}
