@@ -199,6 +199,21 @@ func (suite *KeeperTestSuite) VerifyStakersQueries() {
 
 func (suite *KeeperTestSuite) VerifyStakersGenesisImportExport() {
 	genState := stakers.ExportGenesis(suite.Ctx(), suite.App().StakersKeeper)
+
+	// Delete all entries in Stakers Store
+	store := suite.Ctx().KVStore(suite.App().StakersKeeper.StoreKey())
+	iterator := store.Iterator(nil, nil)
+	keys := make([][]byte, 0)
+	for ; iterator.Valid(); iterator.Next() {
+		key := make([]byte, len(iterator.Key()))
+		copy(key, iterator.Key())
+		keys = append(keys, key)
+	}
+	iterator.Close()
+	for _, key := range keys {
+		store.Delete(key)
+	}
+
 	err := genState.Validate()
 	Expect(err).To(BeNil())
 	stakers.InitGenesis(suite.Ctx(), suite.App().StakersKeeper, *genState)
