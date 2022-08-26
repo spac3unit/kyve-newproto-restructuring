@@ -1,32 +1,38 @@
 package cli
 
 import (
+	"context"
 	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
+	"strconv"
 )
 
-func CmdAccountRedelegation() *cobra.Command {
+func CmdListStakersByPool() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "account-redelegation [address]",
-		Short: "Query account-redelegation cooldown entries",
+		Use:   "stakers-by-pool",
+		Short: "list all stakers",
 		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			reqAddress := args[0]
+		RunE: func(cmd *cobra.Command, args []string) error {
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 
-			queryClient := types.NewQueryAccountClient(clientCtx)
-
-			params := &types.QueryAccountRedelegationRequest{
-				Address: reqAddress,
+			id, err := strconv.ParseUint(args[0], 10, 64)
+			if err != nil {
+				return err
 			}
 
-			res, err := queryClient.AccountRedelegation(cmd.Context(), params)
+			queryClient := types.NewQueryStakersClient(clientCtx)
+
+			params := &types.QueryStakersByPoolRequest{
+				PoolId: id,
+			}
+
+			res, err := queryClient.StakersByPool(context.Background(), params)
 			if err != nil {
 				return err
 			}

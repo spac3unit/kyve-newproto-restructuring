@@ -14,8 +14,8 @@ var _ = strconv.Itoa(0)
 
 func CmdCanPropose() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "can-propose [id] [proposer]",
-		Short: "Query canPropose",
+		Use:   "can-propose [pool-id] [proposer] [from-height]",
+		Short: "Query if node can propose next bundle",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqId, err := cast.ToUint64E(args[0])

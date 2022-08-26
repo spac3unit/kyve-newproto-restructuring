@@ -1,15 +1,11 @@
 package cli
 
 import (
-	"strconv"
-
 	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 )
-
-var _ = strconv.Itoa(0)
 
 func CmdAccountAssets() *cobra.Command {
 	cmd := &cobra.Command{

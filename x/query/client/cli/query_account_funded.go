@@ -1,20 +1,16 @@
 package cli
 
 import (
-	"strconv"
-
 	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/spf13/cobra"
 )
 
-var _ = strconv.Itoa(0)
-
 func CmdAccountFundedList() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "account-funded-list [address]",
-		Short: "Query account-funded-list",
+		Short: "Query all pools the given address is currently funding",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqAddress := args[0]

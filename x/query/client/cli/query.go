@@ -24,15 +24,21 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
+	// Account
+	cmd.AddCommand(CmdAccountAssets())
+	cmd.AddCommand(CmdAccountFundedList())
+	cmd.AddCommand(CmdAccountDelegationUnbondings())
+	cmd.AddCommand(CmdAccountStakingUnbondings())
+	cmd.AddCommand(CmdAccountRedelegation())
+
 	// Pool
 	cmd.AddCommand(CmdShowPool())
 	cmd.AddCommand(CmdListPool())
 
-	cmd.AddCommand(CmdAccountAssets())
-	cmd.AddCommand(CmdAccountFundedList())
-	//cmd.AddCommand(CmdAccountDelegationUnbondings())
-	//cmd.AddCommand(CmdAccountStakingUnbondings())
-	cmd.AddCommand(CmdAccountRedelegation())
+	// Staking
+	cmd.AddCommand(CmdShowStaker())
+	cmd.AddCommand(CmdListStakers())
+	cmd.AddCommand(CmdListStakersByPool())
 
 	// DELEGATION
 	cmd.AddCommand(CmdDelegator())
@@ -40,10 +46,12 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdDelegatorsByPoolAndStaker())
 
 	// Bundles
-	cmd.AddCommand(CmdCanPropose())
-	cmd.AddCommand(CmdCanVote())
 	cmd.AddCommand(CmdShowFinalizedBundle())
 	cmd.AddCommand(CmdListFinalizedBundles())
+	cmd.AddCommand(CmdCanPropose())
+	cmd.AddCommand(CmdCanVote())
+	cmd.AddCommand(CmdCurrentVoteStatus())
+	cmd.AddCommand(CmdCanValidate())
 
 	return cmd
 }

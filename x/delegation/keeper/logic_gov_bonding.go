@@ -7,11 +7,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// TODO REMOVE LEGACY STUB
-func (k Keeper) IterateProtocolBonding(ctx sdk.Context, address sdk.AccAddress, fn func(poolId uint64, amount sdk.Int) (stop bool)) {
-
-}
-
 func (k Keeper) GetBondingOfAddress(ctx sdk.Context, address sdk.AccAddress) sdk.Int {
 
 	var amount uint64 = 0

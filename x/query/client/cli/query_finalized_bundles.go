@@ -12,8 +12,8 @@ import (
 
 func CmdListFinalizedBundles() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-proposal [pool_id]",
-		Short: "list all finalized bundles of pool id",
+		Use:   "finalized-bundles [pool_id]",
+		Short: "list all finalized bundles of pool given by pool_id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			poolId, err := cast.ToUint64E(args[0])
@@ -55,8 +55,8 @@ func CmdListFinalizedBundles() *cobra.Command {
 
 func CmdShowFinalizedBundle() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-proposal [pool_id] [bundle-id]",
-		Short: "shows a proposal",
+		Use:   "finalized-bundle [pool_id] [bundle-id]",
+		Short: "show the finalized bundle given by pool_id and bundle_id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			poolId, err := cast.ToUint64E(args[0])
