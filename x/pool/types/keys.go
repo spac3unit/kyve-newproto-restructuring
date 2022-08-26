@@ -1,6 +1,8 @@
 package types
 
-import "github.com/KYVENetwork/chain/util"
+import (
+	"github.com/KYVENetwork/chain/util"
+)
 
 const (
 	// ModuleName defines the module name
