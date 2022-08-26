@@ -22,10 +22,12 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// GovMsgCreatePool defines a SDK message for creating a pool.
-type GovMsgCreatePool struct {
+// CreatePoolProposal is a gov Content type for creating a pool.
+type CreatePoolProposal struct {
 	// title ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// description ...
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// name ...
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	// runtime ...
@@ -50,18 +52,18 @@ type GovMsgCreatePool struct {
 	Binaries string `protobuf:"bytes,13,opt,name=binaries,proto3" json:"binaries,omitempty"`
 }
 
-func (m *GovMsgCreatePool) Reset()         { *m = GovMsgCreatePool{} }
-func (m *GovMsgCreatePool) String() string { return proto.CompactTextString(m) }
-func (*GovMsgCreatePool) ProtoMessage()    {}
-func (*GovMsgCreatePool) Descriptor() ([]byte, []int) {
+func (m *CreatePoolProposal) Reset()         { *m = CreatePoolProposal{} }
+func (m *CreatePoolProposal) String() string { return proto.CompactTextString(m) }
+func (*CreatePoolProposal) ProtoMessage()    {}
+func (*CreatePoolProposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_adce52e9478669ec, []int{0}
 }
-func (m *GovMsgCreatePool) XXX_Unmarshal(b []byte) error {
+func (m *CreatePoolProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GovMsgCreatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreatePoolProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GovMsgCreatePool.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreatePoolProposal.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -71,118 +73,133 @@ func (m *GovMsgCreatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, er
 		return b[:n], nil
 	}
 }
-func (m *GovMsgCreatePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgCreatePool.Merge(m, src)
+func (m *CreatePoolProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreatePoolProposal.Merge(m, src)
 }
-func (m *GovMsgCreatePool) XXX_Size() int {
+func (m *CreatePoolProposal) XXX_Size() int {
 	return m.Size()
 }
-func (m *GovMsgCreatePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgCreatePool.DiscardUnknown(m)
+func (m *CreatePoolProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreatePoolProposal.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GovMsgCreatePool proto.InternalMessageInfo
+var xxx_messageInfo_CreatePoolProposal proto.InternalMessageInfo
 
-func (m *GovMsgCreatePool) GetCreator() string {
+func (m *CreatePoolProposal) GetTitle() string {
 	if m != nil {
-		return m.Creator
+		return m.Title
 	}
 	return ""
 }
 
-func (m *GovMsgCreatePool) GetName() string {
+func (m *CreatePoolProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *CreatePoolProposal) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *GovMsgCreatePool) GetRuntime() string {
+func (m *CreatePoolProposal) GetRuntime() string {
 	if m != nil {
 		return m.Runtime
 	}
 	return ""
 }
 
-func (m *GovMsgCreatePool) GetLogo() string {
+func (m *CreatePoolProposal) GetLogo() string {
 	if m != nil {
 		return m.Logo
 	}
 	return ""
 }
 
-func (m *GovMsgCreatePool) GetConfig() string {
+func (m *CreatePoolProposal) GetConfig() string {
 	if m != nil {
 		return m.Config
 	}
 	return ""
 }
 
-func (m *GovMsgCreatePool) GetStartKey() string {
+func (m *CreatePoolProposal) GetStartKey() string {
 	if m != nil {
 		return m.StartKey
 	}
 	return ""
 }
 
-func (m *GovMsgCreatePool) GetUploadInterval() uint64 {
+func (m *CreatePoolProposal) GetUploadInterval() uint64 {
 	if m != nil {
 		return m.UploadInterval
 	}
 	return 0
 }
 
-func (m *GovMsgCreatePool) GetOperatingCost() uint64 {
+func (m *CreatePoolProposal) GetOperatingCost() uint64 {
 	if m != nil {
 		return m.OperatingCost
 	}
 	return 0
 }
 
-func (m *GovMsgCreatePool) GetMinStake() uint64 {
+func (m *CreatePoolProposal) GetMinStake() uint64 {
 	if m != nil {
 		return m.MinStake
 	}
 	return 0
 }
 
-func (m *GovMsgCreatePool) GetMaxBundleSize() uint64 {
+func (m *CreatePoolProposal) GetMaxBundleSize() uint64 {
 	if m != nil {
 		return m.MaxBundleSize
 	}
 	return 0
 }
 
-func (m *GovMsgCreatePool) GetVersion() string {
+func (m *CreatePoolProposal) GetVersion() string {
 	if m != nil {
 		return m.Version
 	}
 	return ""
 }
 
-func (m *GovMsgCreatePool) GetBinaries() string {
+func (m *CreatePoolProposal) GetBinaries() string {
 	if m != nil {
 		return m.Binaries
 	}
 	return ""
 }
 
-// GovMsgCreatePoolResponse ...
-type GovMsgCreatePoolResponse struct {
+// UpdatePoolProposal is a gov Content type for updating a pool.
+type UpdatePoolProposal struct {
+	// title ...
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// description ...
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	// id ...
+	Id uint64 `protobuf:"varint,3,opt,name=id,proto3" json:"id,omitempty"`
+	// payload
+	Payload string `protobuf:"bytes,4,opt,name=payload,proto3" json:"payload,omitempty"`
 }
 
-func (m *GovMsgCreatePoolResponse) Reset()         { *m = GovMsgCreatePoolResponse{} }
-func (m *GovMsgCreatePoolResponse) String() string { return proto.CompactTextString(m) }
-func (*GovMsgCreatePoolResponse) ProtoMessage()    {}
-func (*GovMsgCreatePoolResponse) Descriptor() ([]byte, []int) {
+func (m *UpdatePoolProposal) Reset()         { *m = UpdatePoolProposal{} }
+func (m *UpdatePoolProposal) String() string { return proto.CompactTextString(m) }
+func (*UpdatePoolProposal) ProtoMessage()    {}
+func (*UpdatePoolProposal) Descriptor() ([]byte, []int) {
 	return fileDescriptor_adce52e9478669ec, []int{1}
 }
-func (m *GovMsgCreatePoolResponse) XXX_Unmarshal(b []byte) error {
+func (m *UpdatePoolProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GovMsgCreatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *UpdatePoolProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GovMsgCreatePoolResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_UpdatePoolProposal.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -192,139 +209,68 @@ func (m *GovMsgCreatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *GovMsgCreatePoolResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgCreatePoolResponse.Merge(m, src)
+func (m *UpdatePoolProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdatePoolProposal.Merge(m, src)
 }
-func (m *GovMsgCreatePoolResponse) XXX_Size() int {
+func (m *UpdatePoolProposal) XXX_Size() int {
 	return m.Size()
 }
-func (m *GovMsgCreatePoolResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgCreatePoolResponse.DiscardUnknown(m)
+func (m *UpdatePoolProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdatePoolProposal.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GovMsgCreatePoolResponse proto.InternalMessageInfo
+var xxx_messageInfo_UpdatePoolProposal proto.InternalMessageInfo
 
-// GovMsgUpdatePool is a gov Content type for updating a pool.
-type GovMsgUpdatePool struct {
-	// creator ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
-	// id ...
-	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-	// payload
-	Payload string `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
-}
-
-func (m *GovMsgUpdatePool) Reset()         { *m = GovMsgUpdatePool{} }
-func (m *GovMsgUpdatePool) String() string { return proto.CompactTextString(m) }
-func (*GovMsgUpdatePool) ProtoMessage()    {}
-func (*GovMsgUpdatePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{2}
-}
-func (m *GovMsgUpdatePool) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GovMsgUpdatePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GovMsgUpdatePool.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GovMsgUpdatePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgUpdatePool.Merge(m, src)
-}
-func (m *GovMsgUpdatePool) XXX_Size() int {
-	return m.Size()
-}
-func (m *GovMsgUpdatePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgUpdatePool.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GovMsgUpdatePool proto.InternalMessageInfo
-
-func (m *GovMsgUpdatePool) GetCreator() string {
+func (m *UpdatePoolProposal) GetTitle() string {
 	if m != nil {
-		return m.Creator
+		return m.Title
 	}
 	return ""
 }
 
-func (m *GovMsgUpdatePool) GetId() uint64 {
+func (m *UpdatePoolProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *UpdatePoolProposal) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *GovMsgUpdatePool) GetPayload() string {
+func (m *UpdatePoolProposal) GetPayload() string {
 	if m != nil {
 		return m.Payload
 	}
 	return ""
 }
 
-// GovMsgUpdatePoolResponse ...
-type GovMsgUpdatePoolResponse struct {
-}
-
-func (m *GovMsgUpdatePoolResponse) Reset()         { *m = GovMsgUpdatePoolResponse{} }
-func (m *GovMsgUpdatePoolResponse) String() string { return proto.CompactTextString(m) }
-func (*GovMsgUpdatePoolResponse) ProtoMessage()    {}
-func (*GovMsgUpdatePoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{3}
-}
-func (m *GovMsgUpdatePoolResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GovMsgUpdatePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GovMsgUpdatePoolResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GovMsgUpdatePoolResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgUpdatePoolResponse.Merge(m, src)
-}
-func (m *GovMsgUpdatePoolResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GovMsgUpdatePoolResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgUpdatePoolResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GovMsgUpdatePoolResponse proto.InternalMessageInfo
-
 // PausePoolProposal is a gov Content type for pausing a pool.
-type GovMsgPausePool struct {
+type PausePoolProposal struct {
 	// title ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// description ...
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// id ...
-	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	Id uint64 `protobuf:"varint,3,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *GovMsgPausePool) Reset()         { *m = GovMsgPausePool{} }
-func (m *GovMsgPausePool) String() string { return proto.CompactTextString(m) }
-func (*GovMsgPausePool) ProtoMessage()    {}
-func (*GovMsgPausePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{4}
+func (m *PausePoolProposal) Reset()         { *m = PausePoolProposal{} }
+func (m *PausePoolProposal) String() string { return proto.CompactTextString(m) }
+func (*PausePoolProposal) ProtoMessage()    {}
+func (*PausePoolProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_adce52e9478669ec, []int{2}
 }
-func (m *GovMsgPausePool) XXX_Unmarshal(b []byte) error {
+func (m *PausePoolProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GovMsgPausePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PausePoolProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GovMsgPausePool.Marshal(b, m, deterministic)
+		return xxx_messageInfo_PausePoolProposal.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -334,89 +280,61 @@ func (m *GovMsgPausePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *GovMsgPausePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgPausePool.Merge(m, src)
+func (m *PausePoolProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PausePoolProposal.Merge(m, src)
 }
-func (m *GovMsgPausePool) XXX_Size() int {
+func (m *PausePoolProposal) XXX_Size() int {
 	return m.Size()
 }
-func (m *GovMsgPausePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgPausePool.DiscardUnknown(m)
+func (m *PausePoolProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_PausePoolProposal.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GovMsgPausePool proto.InternalMessageInfo
+var xxx_messageInfo_PausePoolProposal proto.InternalMessageInfo
 
-func (m *GovMsgPausePool) GetCreator() string {
+func (m *PausePoolProposal) GetTitle() string {
 	if m != nil {
-		return m.Creator
+		return m.Title
 	}
 	return ""
 }
 
-func (m *GovMsgPausePool) GetId() uint64 {
+func (m *PausePoolProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *PausePoolProposal) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
-
-// GovMsgPausePoolResponse ...
-type GovMsgPausePoolResponse struct {
-}
-
-func (m *GovMsgPausePoolResponse) Reset()         { *m = GovMsgPausePoolResponse{} }
-func (m *GovMsgPausePoolResponse) String() string { return proto.CompactTextString(m) }
-func (*GovMsgPausePoolResponse) ProtoMessage()    {}
-func (*GovMsgPausePoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{5}
-}
-func (m *GovMsgPausePoolResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GovMsgPausePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GovMsgPausePoolResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GovMsgPausePoolResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgPausePoolResponse.Merge(m, src)
-}
-func (m *GovMsgPausePoolResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GovMsgPausePoolResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgPausePoolResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GovMsgPausePoolResponse proto.InternalMessageInfo
 
 // UnpausePoolProposal is a gov Content type for unpausing a pool.
-type GovMsgUnpausePool struct {
+type UnpausePoolProposal struct {
 	// title ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// description ...
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// id ...
-	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	Id uint64 `protobuf:"varint,3,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *GovMsgUnpausePool) Reset()         { *m = GovMsgUnpausePool{} }
-func (m *GovMsgUnpausePool) String() string { return proto.CompactTextString(m) }
-func (*GovMsgUnpausePool) ProtoMessage()    {}
-func (*GovMsgUnpausePool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{6}
+func (m *UnpausePoolProposal) Reset()         { *m = UnpausePoolProposal{} }
+func (m *UnpausePoolProposal) String() string { return proto.CompactTextString(m) }
+func (*UnpausePoolProposal) ProtoMessage()    {}
+func (*UnpausePoolProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_adce52e9478669ec, []int{3}
 }
-func (m *GovMsgUnpausePool) XXX_Unmarshal(b []byte) error {
+func (m *UnpausePoolProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GovMsgUnpausePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *UnpausePoolProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GovMsgUnpausePool.Marshal(b, m, deterministic)
+		return xxx_messageInfo_UnpausePoolProposal.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -426,97 +344,69 @@ func (m *GovMsgUnpausePool) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *GovMsgUnpausePool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgUnpausePool.Merge(m, src)
+func (m *UnpausePoolProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnpausePoolProposal.Merge(m, src)
 }
-func (m *GovMsgUnpausePool) XXX_Size() int {
+func (m *UnpausePoolProposal) XXX_Size() int {
 	return m.Size()
 }
-func (m *GovMsgUnpausePool) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgUnpausePool.DiscardUnknown(m)
+func (m *UnpausePoolProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnpausePoolProposal.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GovMsgUnpausePool proto.InternalMessageInfo
+var xxx_messageInfo_UnpausePoolProposal proto.InternalMessageInfo
 
-func (m *GovMsgUnpausePool) GetCreator() string {
+func (m *UnpausePoolProposal) GetTitle() string {
 	if m != nil {
-		return m.Creator
+		return m.Title
 	}
 	return ""
 }
 
-func (m *GovMsgUnpausePool) GetId() uint64 {
+func (m *UnpausePoolProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *UnpausePoolProposal) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-// GovMsgUnpausePoolResponse ...
-type GovMsgUnpausePoolResponse struct {
-}
-
-func (m *GovMsgUnpausePoolResponse) Reset()         { *m = GovMsgUnpausePoolResponse{} }
-func (m *GovMsgUnpausePoolResponse) String() string { return proto.CompactTextString(m) }
-func (*GovMsgUnpausePoolResponse) ProtoMessage()    {}
-func (*GovMsgUnpausePoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{7}
-}
-func (m *GovMsgUnpausePoolResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GovMsgUnpausePoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GovMsgUnpausePoolResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GovMsgUnpausePoolResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgUnpausePoolResponse.Merge(m, src)
-}
-func (m *GovMsgUnpausePoolResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GovMsgUnpausePoolResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgUnpausePoolResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GovMsgUnpausePoolResponse proto.InternalMessageInfo
-
 // SchedulePoolUpgradeProposal is a gov Content type for upgrading a pool by the runtime.
-type GovMsgPoolUpgrade struct {
-	// creator ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+type SchedulePoolUpgradeProposal struct {
+	// title ...
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// description ...
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// runtime ...
-	Runtime string `protobuf:"bytes,2,opt,name=runtime,proto3" json:"runtime,omitempty"`
+	Runtime string `protobuf:"bytes,3,opt,name=runtime,proto3" json:"runtime,omitempty"`
 	// version ...
-	Version string `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`
+	Version string `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`
 	// scheduled_at ...
-	ScheduledAt uint64 `protobuf:"varint,4,opt,name=scheduled_at,json=scheduledAt,proto3" json:"scheduled_at,omitempty"`
+	ScheduledAt uint64 `protobuf:"varint,5,opt,name=scheduled_at,json=scheduledAt,proto3" json:"scheduled_at,omitempty"`
 	// duration ...
-	Duration uint64 `protobuf:"varint,5,opt,name=duration,proto3" json:"duration,omitempty"`
+	Duration uint64 `protobuf:"varint,6,opt,name=duration,proto3" json:"duration,omitempty"`
 	// binaries ...
-	Binaries string `protobuf:"bytes,6,opt,name=binaries,proto3" json:"binaries,omitempty"`
+	Binaries string `protobuf:"bytes,7,opt,name=binaries,proto3" json:"binaries,omitempty"`
 }
 
-func (m *GovMsgPoolUpgrade) Reset()         { *m = GovMsgPoolUpgrade{} }
-func (m *GovMsgPoolUpgrade) String() string { return proto.CompactTextString(m) }
-func (*GovMsgPoolUpgrade) ProtoMessage()    {}
-func (*GovMsgPoolUpgrade) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{8}
+func (m *SchedulePoolUpgradeProposal) Reset()         { *m = SchedulePoolUpgradeProposal{} }
+func (m *SchedulePoolUpgradeProposal) String() string { return proto.CompactTextString(m) }
+func (*SchedulePoolUpgradeProposal) ProtoMessage()    {}
+func (*SchedulePoolUpgradeProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_adce52e9478669ec, []int{4}
 }
-func (m *GovMsgPoolUpgrade) XXX_Unmarshal(b []byte) error {
+func (m *SchedulePoolUpgradeProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GovMsgPoolUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SchedulePoolUpgradeProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GovMsgPoolUpgrade.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SchedulePoolUpgradeProposal.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -526,117 +416,89 @@ func (m *GovMsgPoolUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *GovMsgPoolUpgrade) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgPoolUpgrade.Merge(m, src)
+func (m *SchedulePoolUpgradeProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SchedulePoolUpgradeProposal.Merge(m, src)
 }
-func (m *GovMsgPoolUpgrade) XXX_Size() int {
+func (m *SchedulePoolUpgradeProposal) XXX_Size() int {
 	return m.Size()
 }
-func (m *GovMsgPoolUpgrade) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgPoolUpgrade.DiscardUnknown(m)
+func (m *SchedulePoolUpgradeProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_SchedulePoolUpgradeProposal.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GovMsgPoolUpgrade proto.InternalMessageInfo
+var xxx_messageInfo_SchedulePoolUpgradeProposal proto.InternalMessageInfo
 
-func (m *GovMsgPoolUpgrade) GetCreator() string {
+func (m *SchedulePoolUpgradeProposal) GetTitle() string {
 	if m != nil {
-		return m.Creator
+		return m.Title
 	}
 	return ""
 }
 
-func (m *GovMsgPoolUpgrade) GetRuntime() string {
+func (m *SchedulePoolUpgradeProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *SchedulePoolUpgradeProposal) GetRuntime() string {
 	if m != nil {
 		return m.Runtime
 	}
 	return ""
 }
 
-func (m *GovMsgPoolUpgrade) GetVersion() string {
+func (m *SchedulePoolUpgradeProposal) GetVersion() string {
 	if m != nil {
 		return m.Version
 	}
 	return ""
 }
 
-func (m *GovMsgPoolUpgrade) GetScheduledAt() uint64 {
+func (m *SchedulePoolUpgradeProposal) GetScheduledAt() uint64 {
 	if m != nil {
 		return m.ScheduledAt
 	}
 	return 0
 }
 
-func (m *GovMsgPoolUpgrade) GetDuration() uint64 {
+func (m *SchedulePoolUpgradeProposal) GetDuration() uint64 {
 	if m != nil {
 		return m.Duration
 	}
 	return 0
 }
 
-func (m *GovMsgPoolUpgrade) GetBinaries() string {
+func (m *SchedulePoolUpgradeProposal) GetBinaries() string {
 	if m != nil {
 		return m.Binaries
 	}
 	return ""
 }
 
-// GovMsgPoolUpgradeResponse ...
-type GovMsgPoolUpgradeResponse struct {
-}
-
-func (m *GovMsgPoolUpgradeResponse) Reset()         { *m = GovMsgPoolUpgradeResponse{} }
-func (m *GovMsgPoolUpgradeResponse) String() string { return proto.CompactTextString(m) }
-func (*GovMsgPoolUpgradeResponse) ProtoMessage()    {}
-func (*GovMsgPoolUpgradeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{9}
-}
-func (m *GovMsgPoolUpgradeResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GovMsgPoolUpgradeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GovMsgPoolUpgradeResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GovMsgPoolUpgradeResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgPoolUpgradeResponse.Merge(m, src)
-}
-func (m *GovMsgPoolUpgradeResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GovMsgPoolUpgradeResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgPoolUpgradeResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GovMsgPoolUpgradeResponse proto.InternalMessageInfo
-
 // CancelPoolUpgradeProposal is a gov Content type for cancelling a scheduled pool upgrade by the runtime.
-type GovMsgCancelPoolUpgrade struct {
+type CancelPoolUpgradeProposal struct {
 	// title ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// description ...
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// runtime ...
-	Runtime string `protobuf:"bytes,2,opt,name=runtime,proto3" json:"runtime,omitempty"`
+	Runtime string `protobuf:"bytes,3,opt,name=runtime,proto3" json:"runtime,omitempty"`
 }
 
-func (m *GovMsgCancelPoolUpgrade) Reset()         { *m = GovMsgCancelPoolUpgrade{} }
-func (m *GovMsgCancelPoolUpgrade) String() string { return proto.CompactTextString(m) }
-func (*GovMsgCancelPoolUpgrade) ProtoMessage()    {}
-func (*GovMsgCancelPoolUpgrade) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{10}
+func (m *CancelPoolUpgradeProposal) Reset()         { *m = CancelPoolUpgradeProposal{} }
+func (m *CancelPoolUpgradeProposal) String() string { return proto.CompactTextString(m) }
+func (*CancelPoolUpgradeProposal) ProtoMessage()    {}
+func (*CancelPoolUpgradeProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_adce52e9478669ec, []int{5}
 }
-func (m *GovMsgCancelPoolUpgrade) XXX_Unmarshal(b []byte) error {
+func (m *CancelPoolUpgradeProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GovMsgCancelPoolUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CancelPoolUpgradeProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GovMsgCancelPoolUpgrade.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CancelPoolUpgradeProposal.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -646,91 +508,63 @@ func (m *GovMsgCancelPoolUpgrade) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *GovMsgCancelPoolUpgrade) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgCancelPoolUpgrade.Merge(m, src)
+func (m *CancelPoolUpgradeProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CancelPoolUpgradeProposal.Merge(m, src)
 }
-func (m *GovMsgCancelPoolUpgrade) XXX_Size() int {
+func (m *CancelPoolUpgradeProposal) XXX_Size() int {
 	return m.Size()
 }
-func (m *GovMsgCancelPoolUpgrade) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgCancelPoolUpgrade.DiscardUnknown(m)
+func (m *CancelPoolUpgradeProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_CancelPoolUpgradeProposal.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GovMsgCancelPoolUpgrade proto.InternalMessageInfo
+var xxx_messageInfo_CancelPoolUpgradeProposal proto.InternalMessageInfo
 
-func (m *GovMsgCancelPoolUpgrade) GetCreator() string {
+func (m *CancelPoolUpgradeProposal) GetTitle() string {
 	if m != nil {
-		return m.Creator
+		return m.Title
 	}
 	return ""
 }
 
-func (m *GovMsgCancelPoolUpgrade) GetRuntime() string {
+func (m *CancelPoolUpgradeProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *CancelPoolUpgradeProposal) GetRuntime() string {
 	if m != nil {
 		return m.Runtime
 	}
 	return ""
 }
 
-// GovMsgCancelPoolUpgradeResponse ...
-type GovMsgCancelPoolUpgradeResponse struct {
-}
-
-func (m *GovMsgCancelPoolUpgradeResponse) Reset()         { *m = GovMsgCancelPoolUpgradeResponse{} }
-func (m *GovMsgCancelPoolUpgradeResponse) String() string { return proto.CompactTextString(m) }
-func (*GovMsgCancelPoolUpgradeResponse) ProtoMessage()    {}
-func (*GovMsgCancelPoolUpgradeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{11}
-}
-func (m *GovMsgCancelPoolUpgradeResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GovMsgCancelPoolUpgradeResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GovMsgCancelPoolUpgradeResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GovMsgCancelPoolUpgradeResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgCancelPoolUpgradeResponse.Merge(m, src)
-}
-func (m *GovMsgCancelPoolUpgradeResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GovMsgCancelPoolUpgradeResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgCancelPoolUpgradeResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GovMsgCancelPoolUpgradeResponse proto.InternalMessageInfo
-
-// GovMsgResetPool ...
-type GovMsgResetPool struct {
-	// creator ...
-	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
+// ResetPoolProposal is a gov Content type for cancelling a scheduled pool upgrade by the runtime.
+type ResetPoolProposal struct {
+	// title ...
+	Title string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	// description ...
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	// id ...
-	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+	Id uint64 `protobuf:"varint,3,opt,name=id,proto3" json:"id,omitempty"`
 	// bundle_id ...
-	BundleId uint64 `protobuf:"varint,3,opt,name=bundle_id,json=bundleId,proto3" json:"bundle_id,omitempty"`
+	BundleId uint64 `protobuf:"varint,4,opt,name=bundle_id,json=bundleId,proto3" json:"bundle_id,omitempty"`
 }
 
-func (m *GovMsgResetPool) Reset()         { *m = GovMsgResetPool{} }
-func (m *GovMsgResetPool) String() string { return proto.CompactTextString(m) }
-func (*GovMsgResetPool) ProtoMessage()    {}
-func (*GovMsgResetPool) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{12}
+func (m *ResetPoolProposal) Reset()         { *m = ResetPoolProposal{} }
+func (m *ResetPoolProposal) String() string { return proto.CompactTextString(m) }
+func (*ResetPoolProposal) ProtoMessage()    {}
+func (*ResetPoolProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_adce52e9478669ec, []int{6}
 }
-func (m *GovMsgResetPool) XXX_Unmarshal(b []byte) error {
+func (m *ResetPoolProposal) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GovMsgResetPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ResetPoolProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GovMsgResetPool.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ResetPoolProposal.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -740,137 +574,97 @@ func (m *GovMsgResetPool) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *GovMsgResetPool) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgResetPool.Merge(m, src)
+func (m *ResetPoolProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ResetPoolProposal.Merge(m, src)
 }
-func (m *GovMsgResetPool) XXX_Size() int {
+func (m *ResetPoolProposal) XXX_Size() int {
 	return m.Size()
 }
-func (m *GovMsgResetPool) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgResetPool.DiscardUnknown(m)
+func (m *ResetPoolProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_ResetPoolProposal.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GovMsgResetPool proto.InternalMessageInfo
+var xxx_messageInfo_ResetPoolProposal proto.InternalMessageInfo
 
-func (m *GovMsgResetPool) GetCreator() string {
+func (m *ResetPoolProposal) GetTitle() string {
 	if m != nil {
-		return m.Creator
+		return m.Title
 	}
 	return ""
 }
 
-func (m *GovMsgResetPool) GetId() uint64 {
+func (m *ResetPoolProposal) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *ResetPoolProposal) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *GovMsgResetPool) GetBundleId() uint64 {
+func (m *ResetPoolProposal) GetBundleId() uint64 {
 	if m != nil {
 		return m.BundleId
 	}
 	return 0
 }
 
-// GovMsgResetPoolResponse ...
-type GovMsgResetPoolResponse struct {
-}
-
-func (m *GovMsgResetPoolResponse) Reset()         { *m = GovMsgResetPoolResponse{} }
-func (m *GovMsgResetPoolResponse) String() string { return proto.CompactTextString(m) }
-func (*GovMsgResetPoolResponse) ProtoMessage()    {}
-func (*GovMsgResetPoolResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_adce52e9478669ec, []int{13}
-}
-func (m *GovMsgResetPoolResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *GovMsgResetPoolResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_GovMsgResetPoolResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *GovMsgResetPoolResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GovMsgResetPoolResponse.Merge(m, src)
-}
-func (m *GovMsgResetPoolResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *GovMsgResetPoolResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GovMsgResetPoolResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_GovMsgResetPoolResponse proto.InternalMessageInfo
-
 func init() {
-	proto.RegisterType((*GovMsgCreatePool)(nil), "kyve.pool.v1beta1.GovMsgCreatePool")
-	proto.RegisterType((*GovMsgCreatePoolResponse)(nil), "kyve.pool.v1beta1.GovMsgCreatePoolResponse")
-	proto.RegisterType((*GovMsgUpdatePool)(nil), "kyve.pool.v1beta1.GovMsgUpdatePool")
-	proto.RegisterType((*GovMsgUpdatePoolResponse)(nil), "kyve.pool.v1beta1.GovMsgUpdatePoolResponse")
-	proto.RegisterType((*GovMsgPausePool)(nil), "kyve.pool.v1beta1.GovMsgPausePool")
-	proto.RegisterType((*GovMsgPausePoolResponse)(nil), "kyve.pool.v1beta1.GovMsgPausePoolResponse")
-	proto.RegisterType((*GovMsgUnpausePool)(nil), "kyve.pool.v1beta1.GovMsgUnpausePool")
-	proto.RegisterType((*GovMsgUnpausePoolResponse)(nil), "kyve.pool.v1beta1.GovMsgUnpausePoolResponse")
-	proto.RegisterType((*GovMsgPoolUpgrade)(nil), "kyve.pool.v1beta1.GovMsgPoolUpgrade")
-	proto.RegisterType((*GovMsgPoolUpgradeResponse)(nil), "kyve.pool.v1beta1.GovMsgPoolUpgradeResponse")
-	proto.RegisterType((*GovMsgCancelPoolUpgrade)(nil), "kyve.pool.v1beta1.GovMsgCancelPoolUpgrade")
-	proto.RegisterType((*GovMsgCancelPoolUpgradeResponse)(nil), "kyve.pool.v1beta1.GovMsgCancelPoolUpgradeResponse")
-	proto.RegisterType((*GovMsgResetPool)(nil), "kyve.pool.v1beta1.GovMsgResetPool")
-	proto.RegisterType((*GovMsgResetPoolResponse)(nil), "kyve.pool.v1beta1.GovMsgResetPoolResponse")
+	proto.RegisterType((*CreatePoolProposal)(nil), "kyve.pool.v1beta1.CreatePoolProposal")
+	proto.RegisterType((*UpdatePoolProposal)(nil), "kyve.pool.v1beta1.UpdatePoolProposal")
+	proto.RegisterType((*PausePoolProposal)(nil), "kyve.pool.v1beta1.PausePoolProposal")
+	proto.RegisterType((*UnpausePoolProposal)(nil), "kyve.pool.v1beta1.UnpausePoolProposal")
+	proto.RegisterType((*SchedulePoolUpgradeProposal)(nil), "kyve.pool.v1beta1.SchedulePoolUpgradeProposal")
+	proto.RegisterType((*CancelPoolUpgradeProposal)(nil), "kyve.pool.v1beta1.CancelPoolUpgradeProposal")
+	proto.RegisterType((*ResetPoolProposal)(nil), "kyve.pool.v1beta1.ResetPoolProposal")
 }
 
 func init() { proto.RegisterFile("kyve/pool/v1beta1/gov.proto", fileDescriptor_adce52e9478669ec) }
 
 var fileDescriptor_adce52e9478669ec = []byte{
-	// 580 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0xcb, 0x6e, 0xd3, 0x40,
-	0x14, 0xad, 0x53, 0x93, 0x26, 0xd3, 0x17, 0xf5, 0x02, 0xa6, 0x8d, 0x64, 0xda, 0x48, 0x40, 0xd9,
-	0xc4, 0xaa, 0x58, 0x22, 0x16, 0x34, 0x42, 0xa8, 0xaa, 0x8a, 0x2a, 0x57, 0xad, 0x80, 0x8d, 0x35,
-	0xb1, 0x2f, 0xce, 0x28, 0xf6, 0x8c, 0xe5, 0x19, 0x9b, 0xa4, 0x5f, 0xc1, 0x07, 0xf1, 0x01, 0x2c,
-	0xbb, 0x64, 0x89, 0x92, 0x3d, 0xdf, 0x80, 0x66, 0xfc, 0x68, 0x12, 0x04, 0xa8, 0xb0, 0xf3, 0x39,
-	0xf7, 0xfa, 0x1c, 0xdf, 0xb9, 0xc7, 0x83, 0x3a, 0xa3, 0x49, 0x0e, 0x4e, 0xc2, 0x79, 0xe4, 0xe4,
-	0x47, 0x03, 0x90, 0xe4, 0xc8, 0x09, 0x79, 0xde, 0x4b, 0x52, 0x2e, 0xb9, 0xb5, 0xa3, 0x8a, 0x3d,
-	0x55, 0xec, 0x95, 0xc5, 0xee, 0x8f, 0x06, 0xba, 0xff, 0x86, 0xe7, 0x67, 0x22, 0xec, 0xa7, 0x40,
-	0x24, 0x9c, 0x73, 0x1e, 0x59, 0x18, 0xad, 0xf9, 0x0a, 0xf1, 0x14, 0x1b, 0xfb, 0xc6, 0x61, 0xdb,
-	0xad, 0xa0, 0x65, 0x21, 0x93, 0x91, 0x18, 0xf0, 0xaa, 0xa6, 0xf5, 0xb3, 0xea, 0x4e, 0x33, 0x26,
-	0x69, 0x0c, 0xd8, 0x2c, 0xba, 0x4b, 0xa8, 0xba, 0x23, 0x1e, 0x72, 0x7c, 0xaf, 0xe8, 0x56, 0xcf,
-	0xd6, 0x03, 0xd4, 0xf4, 0x39, 0xfb, 0x48, 0x43, 0xdc, 0xd4, 0x6c, 0x89, 0xac, 0x0e, 0x6a, 0x0b,
-	0x49, 0x52, 0xe9, 0x8d, 0x60, 0x82, 0xd7, 0x74, 0xa9, 0xa5, 0x89, 0x53, 0x98, 0x58, 0x4f, 0xd1,
-	0x76, 0x96, 0x44, 0x9c, 0x04, 0x1e, 0x65, 0x12, 0xd2, 0x9c, 0x44, 0xb8, 0xb5, 0x6f, 0x1c, 0x9a,
-	0xee, 0x56, 0x41, 0x9f, 0x94, 0xac, 0xf5, 0x18, 0x6d, 0xf1, 0x04, 0x52, 0x22, 0x29, 0x0b, 0x3d,
-	0x9f, 0x0b, 0x89, 0xdb, 0xba, 0x6f, 0xb3, 0x66, 0xfb, 0x5c, 0x48, 0x65, 0x16, 0x53, 0xe6, 0x09,
-	0x49, 0x46, 0x80, 0x91, 0xee, 0x68, 0xc5, 0x94, 0x5d, 0x28, 0x6c, 0x3d, 0x41, 0xdb, 0x31, 0x19,
-	0x7b, 0x83, 0x8c, 0x05, 0x11, 0x78, 0x82, 0x5e, 0x03, 0x5e, 0x2f, 0x44, 0x62, 0x32, 0x3e, 0xd6,
-	0xec, 0x05, 0xbd, 0xd6, 0x73, 0xe7, 0x90, 0x0a, 0xca, 0x19, 0xde, 0x28, 0xe6, 0x2e, 0xa1, 0xb5,
-	0x87, 0x5a, 0x03, 0xca, 0x48, 0x4a, 0x41, 0xe0, 0xcd, 0x62, 0x94, 0x0a, 0x77, 0xf7, 0x10, 0x5e,
-	0x3e, 0x6f, 0x17, 0x44, 0xc2, 0x99, 0x80, 0xee, 0x55, 0xb5, 0x8b, 0xcb, 0x24, 0xf8, 0xfb, 0x2e,
-	0xb6, 0x50, 0x83, 0x06, 0xb8, 0xa1, 0x3f, 0xad, 0x41, 0x03, 0xd5, 0x99, 0x90, 0x89, 0x3a, 0x8e,
-	0x72, 0x3d, 0x15, 0xbc, 0xf5, 0xbc, 0xd5, 0xad, 0x3d, 0x5f, 0xa0, 0xed, 0xa2, 0x76, 0x4e, 0x32,
-	0x71, 0x47, 0xcb, 0xee, 0x2e, 0x7a, 0xb8, 0xf4, 0x72, 0xad, 0xfb, 0x12, 0xed, 0x94, 0x9e, 0x2c,
-	0xf9, 0x07, 0xe5, 0x0e, 0xda, 0xfd, 0xe5, 0xf5, 0x5a, 0xfb, 0x8b, 0x51, 0x89, 0x2b, 0xfa, 0x32,
-	0x09, 0x53, 0x12, 0xc0, 0x1f, 0xc4, 0xe7, 0x12, 0xda, 0x58, 0x4c, 0xe8, 0xdc, 0x0e, 0x57, 0x17,
-	0x77, 0x78, 0x80, 0x36, 0x84, 0x3f, 0x84, 0x20, 0x8b, 0x20, 0xf0, 0x88, 0xd4, 0xd1, 0x36, 0xdd,
-	0xf5, 0x9a, 0x7b, 0x25, 0xd5, 0x9a, 0x83, 0x4c, 0xa5, 0x8a, 0x33, 0x1d, 0x71, 0xd3, 0xad, 0xf1,
-	0x42, 0x04, 0x9a, 0x4b, 0x11, 0xa8, 0x67, 0x9b, 0xfb, 0xfa, 0x7a, 0xb6, 0xb3, 0xea, 0x48, 0xfb,
-	0x84, 0xf9, 0x10, 0xfd, 0xe7, 0x80, 0xdd, 0x03, 0xf4, 0xe8, 0x37, 0x72, 0xb5, 0xe3, 0xbb, 0x2a,
-	0x01, 0x2e, 0x08, 0x90, 0x77, 0x0c, 0x5d, 0x07, 0xb5, 0xcb, 0x1f, 0x85, 0x16, 0xb1, 0x33, 0xdd,
-	0x56, 0x41, 0x9c, 0xcc, 0xc5, 0xa3, 0x56, 0xae, 0x4c, 0x8f, 0xfb, 0x5f, 0xa7, 0xb6, 0x71, 0x33,
-	0xb5, 0x8d, 0xef, 0x53, 0xdb, 0xf8, 0x3c, 0xb3, 0x57, 0x6e, 0x66, 0xf6, 0xca, 0xb7, 0x99, 0xbd,
-	0xf2, 0xe1, 0x59, 0x48, 0xe5, 0x30, 0x1b, 0xf4, 0x7c, 0x1e, 0x3b, 0xa7, 0xef, 0xaf, 0x5e, 0xbf,
-	0x05, 0xf9, 0x89, 0xa7, 0x23, 0xc7, 0x1f, 0x12, 0xca, 0x9c, 0x71, 0x71, 0xb7, 0xc9, 0x49, 0x02,
-	0x62, 0xd0, 0xd4, 0xd7, 0xda, 0xf3, 0x9f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xf5, 0x09, 0xd4, 0x3e,
-	0xf5, 0x04, 0x00, 0x00,
+	// 541 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0xdd, 0x6e, 0xd3, 0x30,
+	0x18, 0x5d, 0xb6, 0xac, 0x3f, 0xee, 0xd6, 0xa9, 0x06, 0x21, 0x43, 0xa5, 0xa8, 0x54, 0x02, 0xc6,
+	0x4d, 0xa3, 0x89, 0x27, 0x60, 0x15, 0x17, 0xd3, 0x24, 0x54, 0xa5, 0x2a, 0x12, 0x20, 0x14, 0xb9,
+	0xc9, 0x47, 0x6a, 0x35, 0xb1, 0x23, 0xdb, 0x09, 0xed, 0x1e, 0x02, 0xf1, 0x58, 0x5c, 0xee, 0x92,
+	0x4b, 0xd4, 0xf2, 0x20, 0x28, 0x4e, 0x5a, 0xb5, 0xdc, 0x42, 0xb9, 0xf3, 0x39, 0xe7, 0x93, 0x3f,
+	0x7f, 0x3e, 0xc7, 0x46, 0xdd, 0xf9, 0x32, 0x07, 0x37, 0x15, 0x22, 0x76, 0xf3, 0xab, 0x29, 0x68,
+	0x7a, 0xe5, 0x46, 0x22, 0x1f, 0xa4, 0x52, 0x68, 0x81, 0x3b, 0x85, 0x38, 0x28, 0xc4, 0x41, 0x25,
+	0xf6, 0xbf, 0x9e, 0x20, 0x3c, 0x94, 0x40, 0x35, 0x8c, 0x84, 0x88, 0x47, 0x52, 0xa4, 0x42, 0xd1,
+	0x18, 0x3f, 0x44, 0xa7, 0x9a, 0xe9, 0x18, 0x88, 0xd5, 0xb3, 0x2e, 0x9b, 0x5e, 0x09, 0x70, 0x0f,
+	0xb5, 0x42, 0x50, 0x81, 0x64, 0xa9, 0x66, 0x82, 0x93, 0x63, 0xa3, 0xed, 0x52, 0x18, 0x23, 0x9b,
+	0xd3, 0x04, 0xc8, 0x89, 0x91, 0xcc, 0x1a, 0x13, 0x54, 0x97, 0x19, 0xd7, 0x2c, 0x01, 0x62, 0x1b,
+	0x7a, 0x03, 0x8b, 0xea, 0x58, 0x44, 0x82, 0x9c, 0x96, 0xd5, 0xc5, 0x1a, 0x3f, 0x42, 0xb5, 0x40,
+	0xf0, 0xcf, 0x2c, 0x22, 0x35, 0xc3, 0x56, 0x08, 0x77, 0x51, 0x53, 0x69, 0x2a, 0xb5, 0x3f, 0x87,
+	0x25, 0xa9, 0x1b, 0xa9, 0x61, 0x88, 0x5b, 0x58, 0xe2, 0x17, 0xe8, 0x22, 0x4b, 0x63, 0x41, 0x43,
+	0x9f, 0x71, 0x0d, 0x32, 0xa7, 0x31, 0x69, 0xf4, 0xac, 0x4b, 0xdb, 0x6b, 0x97, 0xf4, 0x4d, 0xc5,
+	0xe2, 0x67, 0xa8, 0x2d, 0x52, 0x90, 0x54, 0x33, 0x1e, 0xf9, 0x81, 0x50, 0x9a, 0x34, 0x4d, 0xdd,
+	0xf9, 0x96, 0x1d, 0x0a, 0xa5, 0x8b, 0x66, 0x09, 0xe3, 0xbe, 0xd2, 0x74, 0x0e, 0x04, 0x99, 0x8a,
+	0x46, 0xc2, 0xf8, 0xb8, 0xc0, 0xf8, 0x39, 0xba, 0x48, 0xe8, 0xc2, 0x9f, 0x66, 0x3c, 0x8c, 0xc1,
+	0x57, 0xec, 0x0e, 0x48, 0xab, 0xdc, 0x24, 0xa1, 0x8b, 0x6b, 0xc3, 0x8e, 0xd9, 0x9d, 0x99, 0x3b,
+	0x07, 0xa9, 0x8a, 0x9b, 0x3a, 0x2b, 0xe7, 0xae, 0x20, 0x7e, 0x82, 0x1a, 0x53, 0xc6, 0xa9, 0x64,
+	0xa0, 0xc8, 0x79, 0x39, 0xca, 0x06, 0xf7, 0x73, 0x84, 0x27, 0x69, 0xf8, 0xaf, 0xfc, 0x68, 0xa3,
+	0x63, 0x16, 0x1a, 0x37, 0x6c, 0xef, 0x98, 0x85, 0xc5, 0x99, 0x52, 0xba, 0x2c, 0xae, 0x64, 0xe3,
+	0x45, 0x05, 0xfb, 0x1f, 0x51, 0x67, 0x44, 0x33, 0x75, 0x90, 0xb6, 0xfd, 0x4f, 0xe8, 0xc1, 0x84,
+	0xa7, 0x07, 0xdb, 0xfe, 0x97, 0x85, 0xba, 0xe3, 0x60, 0x06, 0x61, 0x16, 0x9b, 0x06, 0x93, 0x34,
+	0x92, 0x34, 0x84, 0xbf, 0xee, 0xb3, 0x93, 0xdc, 0x93, 0xfd, 0xe4, 0xee, 0x78, 0x6b, 0xef, 0x7b,
+	0xfb, 0x14, 0x9d, 0xa9, 0xea, 0x28, 0xa1, 0x4f, 0xb5, 0xc9, 0xb6, 0xed, 0xb5, 0xb6, 0xdc, 0x6b,
+	0x5d, 0xd8, 0x1f, 0x66, 0x45, 0xda, 0x04, 0x37, 0x21, 0xb7, 0xbd, 0x2d, 0xde, 0x8b, 0x46, 0xfd,
+	0x8f, 0x68, 0x24, 0xe8, 0xf1, 0x90, 0xf2, 0x00, 0xe2, 0xff, 0x32, 0x63, 0x7f, 0x81, 0x3a, 0x1e,
+	0x28, 0xd0, 0x07, 0x09, 0x62, 0x17, 0x35, 0xab, 0x07, 0xc4, 0xca, 0x28, 0xda, 0x5e, 0xa3, 0x24,
+	0x6e, 0xc2, 0xeb, 0xe1, 0xf7, 0x95, 0x63, 0xdd, 0xaf, 0x1c, 0xeb, 0xe7, 0xca, 0xb1, 0xbe, 0xad,
+	0x9d, 0xa3, 0xfb, 0xb5, 0x73, 0xf4, 0x63, 0xed, 0x1c, 0x7d, 0x78, 0x19, 0x31, 0x3d, 0xcb, 0xa6,
+	0x83, 0x40, 0x24, 0xee, 0xed, 0xfb, 0x77, 0x6f, 0xde, 0x82, 0xfe, 0x22, 0xe4, 0xdc, 0x0d, 0x66,
+	0x94, 0x71, 0x77, 0x51, 0x7e, 0x7c, 0x7a, 0x99, 0x82, 0x9a, 0xd6, 0xcc, 0x9f, 0xf7, 0xea, 0x77,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0x81, 0x08, 0x4a, 0x8f, 0x12, 0x05, 0x00, 0x00,
 }
 
-func (m *GovMsgCreatePool) Marshal() (dAtA []byte, err error) {
+func (m *CreatePoolProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -880,12 +674,12 @@ func (m *GovMsgCreatePool) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GovMsgCreatePool) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreatePoolProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GovMsgCreatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CreatePoolProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -959,17 +753,24 @@ func (m *GovMsgCreatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Title)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GovMsgCreatePoolResponse) Marshal() (dAtA []byte, err error) {
+func (m *UpdatePoolProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -979,35 +780,12 @@ func (m *GovMsgCreatePoolResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GovMsgCreatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *UpdatePoolProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GovMsgCreatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *GovMsgUpdatePool) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GovMsgUpdatePool) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GovMsgUpdatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *UpdatePoolProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1017,24 +795,31 @@ func (m *GovMsgUpdatePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Payload)
 		i = encodeVarintGov(dAtA, i, uint64(len(m.Payload)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x22
 	}
 	if m.Id != 0 {
 		i = encodeVarintGov(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x18
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Title)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GovMsgUpdatePoolResponse) Marshal() (dAtA []byte, err error) {
+func (m *PausePoolProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1044,35 +829,12 @@ func (m *GovMsgUpdatePoolResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GovMsgUpdatePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *PausePoolProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GovMsgUpdatePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *GovMsgPausePool) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GovMsgPausePool) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GovMsgPausePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *PausePoolProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1080,19 +842,26 @@ func (m *GovMsgPausePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Id != 0 {
 		i = encodeVarintGov(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x18
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Title)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GovMsgPausePoolResponse) Marshal() (dAtA []byte, err error) {
+func (m *UnpausePoolProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1102,35 +871,12 @@ func (m *GovMsgPausePoolResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GovMsgPausePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *UnpausePoolProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GovMsgPausePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *GovMsgUnpausePool) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GovMsgUnpausePool) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GovMsgUnpausePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *UnpausePoolProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1138,19 +884,26 @@ func (m *GovMsgUnpausePool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.Id != 0 {
 		i = encodeVarintGov(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x18
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Title)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GovMsgUnpausePoolResponse) Marshal() (dAtA []byte, err error) {
+func (m *SchedulePoolUpgradeProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1160,35 +913,12 @@ func (m *GovMsgUnpausePoolResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GovMsgUnpausePoolResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *SchedulePoolUpgradeProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GovMsgUnpausePoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *GovMsgPoolUpgrade) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GovMsgPoolUpgrade) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GovMsgPoolUpgrade) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SchedulePoolUpgradeProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1198,43 +928,50 @@ func (m *GovMsgPoolUpgrade) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Binaries)
 		i = encodeVarintGov(dAtA, i, uint64(len(m.Binaries)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x3a
 	}
 	if m.Duration != 0 {
 		i = encodeVarintGov(dAtA, i, uint64(m.Duration))
 		i--
-		dAtA[i] = 0x28
+		dAtA[i] = 0x30
 	}
 	if m.ScheduledAt != 0 {
 		i = encodeVarintGov(dAtA, i, uint64(m.ScheduledAt))
 		i--
-		dAtA[i] = 0x20
+		dAtA[i] = 0x28
 	}
 	if len(m.Version) > 0 {
 		i -= len(m.Version)
 		copy(dAtA[i:], m.Version)
 		i = encodeVarintGov(dAtA, i, uint64(len(m.Version)))
 		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Runtime) > 0 {
+		i -= len(m.Runtime)
+		copy(dAtA[i:], m.Runtime)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Runtime)))
+		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Runtime) > 0 {
-		i -= len(m.Runtime)
-		copy(dAtA[i:], m.Runtime)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Runtime)))
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Description)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Title)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GovMsgPoolUpgradeResponse) Marshal() (dAtA []byte, err error) {
+func (m *CancelPoolUpgradeProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1244,35 +981,12 @@ func (m *GovMsgPoolUpgradeResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GovMsgPoolUpgradeResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *CancelPoolUpgradeProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GovMsgPoolUpgradeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *GovMsgCancelPoolUpgrade) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GovMsgCancelPoolUpgrade) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GovMsgCancelPoolUpgrade) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CancelPoolUpgradeProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1282,19 +996,26 @@ func (m *GovMsgCancelPoolUpgrade) MarshalToSizedBuffer(dAtA []byte) (int, error)
 		copy(dAtA[i:], m.Runtime)
 		i = encodeVarintGov(dAtA, i, uint64(len(m.Runtime)))
 		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Description)))
+		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Title)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GovMsgCancelPoolUpgradeResponse) Marshal() (dAtA []byte, err error) {
+func (m *ResetPoolProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1304,35 +1025,12 @@ func (m *GovMsgCancelPoolUpgradeResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GovMsgCancelPoolUpgradeResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *ResetPoolProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GovMsgCancelPoolUpgradeResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	return len(dAtA) - i, nil
-}
-
-func (m *GovMsgResetPool) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GovMsgResetPool) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GovMsgResetPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ResetPoolProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1340,43 +1038,27 @@ func (m *GovMsgResetPool) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	if m.BundleId != 0 {
 		i = encodeVarintGov(dAtA, i, uint64(m.BundleId))
 		i--
-		dAtA[i] = 0x18
+		dAtA[i] = 0x20
 	}
 	if m.Id != 0 {
 		i = encodeVarintGov(dAtA, i, uint64(m.Id))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x18
 	}
-	if len(m.Creator) > 0 {
-		i -= len(m.Creator)
-		copy(dAtA[i:], m.Creator)
-		i = encodeVarintGov(dAtA, i, uint64(len(m.Creator)))
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Title) > 0 {
+		i -= len(m.Title)
+		copy(dAtA[i:], m.Title)
+		i = encodeVarintGov(dAtA, i, uint64(len(m.Title)))
 		i--
 		dAtA[i] = 0xa
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *GovMsgResetPoolResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GovMsgResetPoolResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *GovMsgResetPoolResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	return len(dAtA) - i, nil
 }
 
@@ -1391,13 +1073,17 @@ func encodeVarintGov(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GovMsgCreatePool) Size() (n int) {
+func (m *CreatePoolProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Creator)
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
+	}
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
@@ -1444,22 +1130,17 @@ func (m *GovMsgCreatePool) Size() (n int) {
 	return n
 }
 
-func (m *GovMsgCreatePoolResponse) Size() (n int) {
+func (m *UpdatePoolProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *GovMsgUpdatePool) Size() (n int) {
-	if m == nil {
-		return 0
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
 	}
-	var l int
-	_ = l
-	l = len(m.Creator)
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
@@ -1473,22 +1154,17 @@ func (m *GovMsgUpdatePool) Size() (n int) {
 	return n
 }
 
-func (m *GovMsgUpdatePoolResponse) Size() (n int) {
+func (m *PausePoolProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *GovMsgPausePool) Size() (n int) {
-	if m == nil {
-		return 0
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
 	}
-	var l int
-	_ = l
-	l = len(m.Creator)
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
@@ -1498,22 +1174,17 @@ func (m *GovMsgPausePool) Size() (n int) {
 	return n
 }
 
-func (m *GovMsgPausePoolResponse) Size() (n int) {
+func (m *UnpausePoolProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *GovMsgUnpausePool) Size() (n int) {
-	if m == nil {
-		return 0
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
 	}
-	var l int
-	_ = l
-	l = len(m.Creator)
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
@@ -1523,22 +1194,17 @@ func (m *GovMsgUnpausePool) Size() (n int) {
 	return n
 }
 
-func (m *GovMsgUnpausePoolResponse) Size() (n int) {
+func (m *SchedulePoolUpgradeProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *GovMsgPoolUpgrade) Size() (n int) {
-	if m == nil {
-		return 0
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
 	}
-	var l int
-	_ = l
-	l = len(m.Creator)
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
@@ -1563,22 +1229,17 @@ func (m *GovMsgPoolUpgrade) Size() (n int) {
 	return n
 }
 
-func (m *GovMsgPoolUpgradeResponse) Size() (n int) {
+func (m *CancelPoolUpgradeProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *GovMsgCancelPoolUpgrade) Size() (n int) {
-	if m == nil {
-		return 0
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
 	}
-	var l int
-	_ = l
-	l = len(m.Creator)
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
@@ -1589,22 +1250,17 @@ func (m *GovMsgCancelPoolUpgrade) Size() (n int) {
 	return n
 }
 
-func (m *GovMsgCancelPoolUpgradeResponse) Size() (n int) {
+func (m *ResetPoolProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	return n
-}
-
-func (m *GovMsgResetPool) Size() (n int) {
-	if m == nil {
-		return 0
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovGov(uint64(l))
 	}
-	var l int
-	_ = l
-	l = len(m.Creator)
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovGov(uint64(l))
 	}
@@ -1617,22 +1273,13 @@ func (m *GovMsgResetPool) Size() (n int) {
 	return n
 }
 
-func (m *GovMsgResetPoolResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	return n
-}
-
 func sovGov(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
 func sozGov(x uint64) (n int) {
 	return sovGov(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GovMsgCreatePool) Unmarshal(dAtA []byte) error {
+func (m *CreatePoolProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1655,15 +1302,15 @@ func (m *GovMsgCreatePool) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgCreatePool: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreatePoolProposal: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgCreatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreatePoolProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1691,7 +1338,39 @@ func (m *GovMsgCreatePool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -2014,7 +1693,7 @@ func (m *GovMsgCreatePool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GovMsgCreatePoolResponse) Unmarshal(dAtA []byte) error {
+func (m *UpdatePoolProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2037,65 +1716,15 @@ func (m *GovMsgCreatePoolResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgCreatePoolResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: UpdatePoolProposal: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgCreatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGov(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGov
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GovMsgUpdatePool) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGov
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgUpdatePool: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgUpdatePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: UpdatePoolProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2123,9 +1752,41 @@ func (m *GovMsgUpdatePool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -2144,7 +1805,7 @@ func (m *GovMsgUpdatePool) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Payload", wireType)
 			}
@@ -2197,7 +1858,7 @@ func (m *GovMsgUpdatePool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GovMsgUpdatePoolResponse) Unmarshal(dAtA []byte) error {
+func (m *PausePoolProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2220,65 +1881,15 @@ func (m *GovMsgUpdatePoolResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgUpdatePoolResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: PausePoolProposal: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgUpdatePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGov(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGov
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GovMsgPausePool) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGov
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgPausePool: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgPausePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: PausePoolProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2306,9 +1917,41 @@ func (m *GovMsgPausePool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -2348,7 +1991,7 @@ func (m *GovMsgPausePool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GovMsgPausePoolResponse) Unmarshal(dAtA []byte) error {
+func (m *UnpausePoolProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2371,65 +2014,15 @@ func (m *GovMsgPausePoolResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgPausePoolResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: UnpausePoolProposal: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgPausePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGov(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGov
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GovMsgUnpausePool) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGov
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgUnpausePool: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgUnpausePool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: UnpausePoolProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2457,9 +2050,41 @@ func (m *GovMsgUnpausePool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -2499,7 +2124,7 @@ func (m *GovMsgUnpausePool) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GovMsgUnpausePoolResponse) Unmarshal(dAtA []byte) error {
+func (m *SchedulePoolUpgradeProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2522,65 +2147,15 @@ func (m *GovMsgUnpausePoolResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgUnpausePoolResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: SchedulePoolUpgradeProposal: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgUnpausePoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGov(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGov
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GovMsgPoolUpgrade) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGov
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgPoolUpgrade: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgPoolUpgrade: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SchedulePoolUpgradeProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2608,9 +2183,41 @@ func (m *GovMsgPoolUpgrade) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Runtime", wireType)
 			}
@@ -2642,7 +2249,7 @@ func (m *GovMsgPoolUpgrade) Unmarshal(dAtA []byte) error {
 			}
 			m.Runtime = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Version", wireType)
 			}
@@ -2674,7 +2281,7 @@ func (m *GovMsgPoolUpgrade) Unmarshal(dAtA []byte) error {
 			}
 			m.Version = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ScheduledAt", wireType)
 			}
@@ -2693,7 +2300,7 @@ func (m *GovMsgPoolUpgrade) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 5:
+		case 6:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Duration", wireType)
 			}
@@ -2712,7 +2319,7 @@ func (m *GovMsgPoolUpgrade) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 6:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Binaries", wireType)
 			}
@@ -2765,7 +2372,7 @@ func (m *GovMsgPoolUpgrade) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GovMsgPoolUpgradeResponse) Unmarshal(dAtA []byte) error {
+func (m *CancelPoolUpgradeProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2788,65 +2395,15 @@ func (m *GovMsgPoolUpgradeResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgPoolUpgradeResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: CancelPoolUpgradeProposal: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgPoolUpgradeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGov(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGov
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GovMsgCancelPoolUpgrade) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGov
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgCancelPoolUpgrade: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgCancelPoolUpgrade: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CancelPoolUpgradeProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2874,9 +2431,41 @@ func (m *GovMsgCancelPoolUpgrade) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Runtime", wireType)
 			}
@@ -2929,7 +2518,7 @@ func (m *GovMsgCancelPoolUpgrade) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GovMsgCancelPoolUpgradeResponse) Unmarshal(dAtA []byte) error {
+func (m *ResetPoolProposal) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2952,65 +2541,15 @@ func (m *GovMsgCancelPoolUpgradeResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgCancelPoolUpgradeResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: ResetPoolProposal: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgCancelPoolUpgradeResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGov(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGov
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GovMsgResetPool) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGov
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgResetPool: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgResetPool: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ResetPoolProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Creator", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3038,9 +2577,41 @@ func (m *GovMsgResetPool) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Creator = string(dAtA[iNdEx:postIndex])
+			m.Title = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGov
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGov
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGov
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
@@ -3059,7 +2630,7 @@ func (m *GovMsgResetPool) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		case 3:
+		case 4:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field BundleId", wireType)
 			}
@@ -3078,56 +2649,6 @@ func (m *GovMsgResetPool) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipGov(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthGov
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GovMsgResetPoolResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowGov
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GovMsgResetPoolResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GovMsgResetPoolResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGov(dAtA[iNdEx:])

@@ -1,24 +1,21 @@
 package keeper
 
 import (
-	"context"
 	"encoding/json"
 	"github.com/KYVENetwork/chain/x/pool/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func (k msgServer) CreatePool(goCtx context.Context, p *types.GovMsgCreatePool) (*types.GovMsgCreatePoolResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) CreatePool(ctx sdk.Context, p *types.CreatePoolProposal) error {
 	// Validate config json
 	if !json.Valid([]byte(p.Config)) {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), p.Config)
+		return sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), p.Config)
 	}
 
 	// Validate binaries json
 	if !json.Valid([]byte(p.Binaries)) {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), p.Binaries)
+		return sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), p.Binaries)
 	}
 
 	k.AppendPool(ctx, types.Pool{
@@ -53,18 +50,16 @@ func (k msgServer) CreatePool(goCtx context.Context, p *types.GovMsgCreatePool) 
 		Version:        p.Version,
 		Binaries:       p.Binaries,
 	}); errEmit != nil {
-		return nil, errEmit
+		return errEmit
 	}
 
-	return &types.GovMsgCreatePoolResponse{}, nil
+	return nil
 }
 
-func (k msgServer) UpdatePool(goCtx context.Context, p *types.GovMsgUpdatePool) (*types.GovMsgUpdatePoolResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) UpdatePool(ctx sdk.Context, p *types.UpdatePoolProposal) error {
 	pool, found := k.GetPool(ctx, p.Id)
 	if !found {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
+		return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
 	}
 
 	type Update struct {
@@ -81,7 +76,7 @@ func (k msgServer) UpdatePool(goCtx context.Context, p *types.GovMsgUpdatePool) 
 	var update Update
 
 	if err := json.Unmarshal([]byte(p.Payload), &update); err != nil {
-		return nil, err
+		return err
 	}
 
 	if update.Name != nil {
@@ -100,7 +95,7 @@ func (k msgServer) UpdatePool(goCtx context.Context, p *types.GovMsgUpdatePool) 
 		if json.Valid([]byte(*update.Config)) {
 			pool.Config = *update.Config
 		} else {
-			return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), *update.Config)
+			return sdkErrors.Wrapf(sdkErrors.ErrLogic, types.ErrInvalidJson.Error(), *update.Config)
 		}
 	}
 
@@ -122,57 +117,51 @@ func (k msgServer) UpdatePool(goCtx context.Context, p *types.GovMsgUpdatePool) 
 
 	k.SetPool(ctx, pool)
 
-	return &types.GovMsgUpdatePoolResponse{}, nil
+	return nil
 }
 
-func (k msgServer) PausePool(goCtx context.Context, p *types.GovMsgPausePool) (*types.GovMsgPausePoolResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) PausePool(ctx sdk.Context, p *types.PausePoolProposal) error {
 	// Attempt to fetch the pool, throw an error if not found.
 	pool, found := k.GetPool(ctx, p.Id)
 	if !found {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
+		return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
 	}
 
 	// Throw an error if the pool is already paused.
 	if pool.Paused {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, "Pool is already paused.")
+		return sdkErrors.Wrapf(sdkErrors.ErrLogic, "Pool is already paused.")
 	}
 
 	// Pause the pool and return.
 	pool.Paused = true
 	k.SetPool(ctx, pool)
 
-	return &types.GovMsgPausePoolResponse{}, nil
+	return nil
 }
 
-func (k msgServer) UnpausePool(goCtx context.Context, p *types.GovMsgUnpausePool) (*types.GovMsgUnpausePoolResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) UnpausePool(ctx sdk.Context, p *types.UnpausePoolProposal) error {
 	// Attempt to fetch the pool, throw an error if not found.
 	pool, found := k.GetPool(ctx, p.Id)
 	if !found {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
+		return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
 	}
 
 	// Throw an error if the pool is already unpaused.
 	if !pool.Paused {
-		return nil, sdkErrors.Wrapf(sdkErrors.ErrLogic, "Pool is already unpaused.")
+		return sdkErrors.Wrapf(sdkErrors.ErrLogic, "Pool is already unpaused.")
 	}
 
 	// Unpause the pool and return.
 	pool.Paused = false
 	k.SetPool(ctx, pool)
 
-	return &types.GovMsgUnpausePoolResponse{}, nil
+	return nil
 }
 
-func (k msgServer) PoolUpgrade(goCtx context.Context, p *types.GovMsgPoolUpgrade) (*types.GovMsgPoolUpgradeResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) UpgradePool(ctx sdk.Context, p *types.SchedulePoolUpgradeProposal) error {
 	// Check if upgrade version and binaries are not empty
 	if p.Version == "" || p.Binaries == "" {
-		return nil, types.ErrInvalidArgs
+		return types.ErrInvalidArgs
 	}
 
 	var scheduledAt uint64
@@ -208,12 +197,10 @@ func (k msgServer) PoolUpgrade(goCtx context.Context, p *types.GovMsgPoolUpgrade
 		k.SetPool(ctx, pool)
 	}
 
-	return &types.GovMsgPoolUpgradeResponse{}, nil
+	return nil
 }
 
-func (k msgServer) CancelPoolUpgrade(goCtx context.Context, p *types.GovMsgCancelPoolUpgrade) (*types.GovMsgCancelPoolUpgradeResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
+func (k Keeper) CancelPoolUpgrade(ctx sdk.Context, p *types.CancelPoolUpgradeProposal) error {
 	// go through every pool and cancel the upgrade
 	for _, pool := range k.GetAllPools(ctx) {
 		// Skip if runtime does not match
@@ -233,62 +220,5 @@ func (k msgServer) CancelPoolUpgrade(goCtx context.Context, p *types.GovMsgCance
 		k.SetPool(ctx, pool)
 	}
 
-	return &types.GovMsgCancelPoolUpgradeResponse{}, nil
+	return nil
 }
-
-// TODO move to bundles module?
-//func handleResetPoolProposal(ctx sdk.Context, k keeper.Keeper, p *types.ResetPoolProposal) error {
-//	// Attempt to fetch the pool, throw an error if not found.
-//	pool, found := k.GetPool(ctx, p.Id)
-//	if !found {
-//		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrPoolNotFound.Error(), p.Id)
-//	}
-//
-//	// Check if proposal can be found with bundle id
-//	_, foundProposal := k.GetProposalByPoolIdAndBundleId(ctx, p.Id, p.BundleId)
-//	if !foundProposal {
-//		return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrProposalNotFound.Error(), p.Id, p.BundleId)
-//	}
-//
-//	fmt.Println("proposals")
-//
-//	// Delete all proposals created after reset proposal
-//	for _, proposal := range k.GetProposalsByPoolIdSinceBundleId(ctx, p.Id, p.BundleId) {
-//		fmt.Printf("%v\n", proposal)
-//		k.RemoveProposal(ctx, proposal)
-//	}
-//
-//	// Reset pool to latest bundle
-//	if p.BundleId == 0 {
-//		// if reset pool id is zero reset pool to "genesis state"
-//		pool.CurrentHeight = 0
-//		pool.TotalBundles = 0
-//		pool.CurrentKey = ""
-//		pool.CurrentValue = ""
-//		pool.BundleProposal = &types.BundleProposal{
-//			NextUploader: pool.BundleProposal.NextUploader,
-//			CreatedAt:    uint64(ctx.BlockTime().Unix()),
-//		}
-//	} else {
-//		// Check if reset proposal can be found with bundle id
-//		resetProposal, foundResetProposal := k.GetProposalByPoolIdAndBundleId(ctx, p.Id, p.BundleId-1)
-//		if !foundResetProposal {
-//			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, types.ErrProposalNotFound.Error(), p.Id, p.BundleId-1)
-//		}
-//
-//		// reset pool to previous valid bundle
-//		pool.CurrentHeight = resetProposal.ToHeight
-//		pool.TotalBundles = p.BundleId
-//		pool.CurrentKey = resetProposal.Key
-//		pool.CurrentValue = resetProposal.Value
-//		pool.BundleProposal = &types.BundleProposal{
-//			NextUploader: pool.BundleProposal.NextUploader,
-//			CreatedAt:    uint64(ctx.BlockTime().Unix()),
-//		}
-//	}
-//
-//	// Update the pool
-//	k.SetPool(ctx, pool)
-//
-//	return nil
-//}

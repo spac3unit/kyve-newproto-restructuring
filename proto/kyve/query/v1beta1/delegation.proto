@@ -11,7 +11,6 @@ option go_package = "github.com/KYVENetwork/chain/x/query/types";
 
 // QueryDelegation contains all rpc requests related to direct delegation data
 service QueryDelegation {
-
   // Delegator returns delegation information for a specific delegator of a specific staker.
   rpc Delegator(QueryDelegatorRequest) returns (QueryDelegatorResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/delegator/{staker}/{delegator}";

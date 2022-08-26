@@ -239,33 +239,25 @@ func init() {
 func init() { proto.RegisterFile("kyve/pool/v1beta1/tx.proto", fileDescriptor_20ddefdf83388ddc) }
 
 var fileDescriptor_20ddefdf83388ddc = []byte{
-	// 411 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x94, 0xdd, 0x8a, 0xda, 0x40,
-	0x14, 0xc7, 0x8d, 0x16, 0x5b, 0x8f, 0xb4, 0x60, 0x8a, 0x6d, 0x98, 0x42, 0x90, 0xb4, 0x14, 0xfb,
-	0x41, 0x82, 0xf6, 0x0d, 0x6a, 0x3f, 0x2e, 0x4a, 0x5a, 0x1b, 0xb0, 0xf4, 0x03, 0x0a, 0x63, 0x32,
-	0x1b, 0x83, 0x9a, 0x09, 0x99, 0x49, 0x56, 0x9f, 0x61, 0x6f, 0xf6, 0xb1, 0xf6, 0xd2, 0xcb, 0xbd,
-	0x5c, 0xf4, 0x45, 0x96, 0xa8, 0x49, 0x66, 0x51, 0xa3, 0x17, 0x7b, 0x79, 0xe6, 0xfc, 0xce, 0xef,
-	0x3f, 0x73, 0x2e, 0x06, 0xd0, 0x78, 0x1e, 0x13, 0x23, 0xa0, 0x74, 0x62, 0xc4, 0x9d, 0x21, 0xe1,
-	0xb8, 0x63, 0xf0, 0x99, 0x1e, 0x84, 0x94, 0x53, 0xb9, 0x91, 0xf4, 0xf4, 0xa4, 0xa7, 0x6f, 0x7b,
-	0xe8, 0xc5, 0x2e, 0xee, 0xd2, 0x78, 0xc3, 0x6b, 0x3f, 0xa0, 0x6e, 0x32, 0xf7, 0x4b, 0xe4, 0x3b,
-	0x7d, 0x4a, 0x27, 0xb2, 0x02, 0x0f, 0xed, 0x90, 0x60, 0x4e, 0x43, 0x45, 0x6a, 0x49, 0xed, 0x9a,
-	0x95, 0x96, 0xf2, 0x13, 0x28, 0x7b, 0x8e, 0x52, 0x6e, 0x49, 0xed, 0x07, 0x56, 0xd9, 0x73, 0xe4,
-	0x67, 0x50, 0xc5, 0x53, 0x1a, 0xf9, 0x5c, 0xa9, 0xac, 0xcf, 0xb6, 0x95, 0xd6, 0x84, 0xa7, 0x82,
-	0xd0, 0x22, 0x2c, 0xa0, 0x3e, 0x23, 0xda, 0x4f, 0x78, 0x6c, 0x32, 0xf7, 0x13, 0x39, 0xbb, 0xbf,
-	0xa4, 0xe7, 0xd0, 0xbc, 0xa3, 0x4c, 0xb3, 0xba, 0x17, 0x55, 0xa8, 0x98, 0xcc, 0x95, 0x2d, 0x78,
-	0x94, 0x3d, 0x4c, 0xd5, 0x77, 0x16, 0xa3, 0x0b, 0xf7, 0x44, 0xaf, 0x8b, 0xfb, 0xa9, 0x5b, 0xfe,
-	0x0d, 0x20, 0x3c, 0xa2, 0xb5, 0x7f, 0x2a, 0x27, 0x50, 0xfb, 0x18, 0x91, 0x99, 0xff, 0x03, 0xf4,
-	0x92, 0x0d, 0x90, 0xb5, 0xf9, 0xe5, 0x9e, 0xb9, 0xaf, 0x34, 0x36, 0x99, 0x9b, 0x43, 0xe8, 0xdd,
-	0x09, 0x90, 0xe8, 0x1f, 0x04, 0xce, 0x71, 0x7f, 0x0e, 0x15, 0xf8, 0x73, 0x28, 0xf3, 0xff, 0x83,
-	0x5a, 0x1f, 0x47, 0x6c, 0xa3, 0xd7, 0x0e, 0x4e, 0x66, 0x0c, 0x7a, 0x7b, 0x9c, 0xc9, 0xe4, 0x18,
-	0xea, 0x03, 0x3f, 0xc8, 0xf4, 0xaf, 0x0e, 0x5f, 0x2c, 0xa7, 0xd0, 0xfb, 0x53, 0x28, 0x31, 0x22,
-	0xa9, 0x07, 0x81, 0x1b, 0x62, 0x87, 0x14, 0x44, 0x08, 0x54, 0x41, 0x84, 0x40, 0x65, 0x11, 0x0c,
-	0x1a, 0x3d, 0xec, 0xdb, 0x64, 0x22, 0x06, 0x1d, 0x5e, 0xc3, 0x0e, 0x8b, 0xba, 0xa7, 0xb3, 0x69,
-	0xe8, 0xc7, 0xde, 0xd5, 0x52, 0x95, 0x16, 0x4b, 0x55, 0xba, 0x59, 0xaa, 0xd2, 0xe5, 0x4a, 0x2d,
-	0x2d, 0x56, 0x6a, 0xe9, 0x7a, 0xa5, 0x96, 0xfe, 0xbe, 0x71, 0x3d, 0x3e, 0x8a, 0x86, 0xba, 0x4d,
-	0xa7, 0xc6, 0xb7, 0x3f, 0xbf, 0x3e, 0x7f, 0x27, 0xfc, 0x9c, 0x86, 0x63, 0xc3, 0x1e, 0x61, 0xcf,
-	0x37, 0x66, 0x9b, 0x2f, 0x83, 0xcf, 0x03, 0xc2, 0x86, 0xd5, 0xf5, 0x6f, 0xf1, 0xe1, 0x36, 0x00,
-	0x00, 0xff, 0xff, 0x11, 0x80, 0xe6, 0x90, 0x7b, 0x04, 0x00, 0x00,
+	// 281 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xca, 0xae, 0x2c, 0x4b,
+	0xd5, 0x2f, 0xc8, 0xcf, 0xcf, 0xd1, 0x2f, 0x33, 0x4c, 0x4a, 0x2d, 0x49, 0x34, 0xd4, 0x2f, 0xa9,
+	0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x04, 0xc9, 0xe9, 0x81, 0xe4, 0xf4, 0xa0, 0x72,
+	0x4a, 0xfe, 0x5c, 0xdc, 0xbe, 0xc5, 0xe9, 0x6e, 0xa5, 0x79, 0x29, 0x01, 0xf9, 0xf9, 0x39, 0x42,
+	0x12, 0x5c, 0xec, 0xc9, 0x45, 0xa9, 0x89, 0x25, 0xf9, 0x45, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x9c,
+	0x41, 0x30, 0xae, 0x10, 0x1f, 0x17, 0x53, 0x66, 0x8a, 0x04, 0x93, 0x02, 0xa3, 0x06, 0x4b, 0x10,
+	0x53, 0x66, 0x8a, 0x90, 0x18, 0x17, 0x5b, 0x62, 0x6e, 0x7e, 0x69, 0x5e, 0x89, 0x04, 0x33, 0x58,
+	0x0c, 0xca, 0x53, 0x12, 0xe5, 0x12, 0x46, 0x32, 0x30, 0x28, 0xb5, 0xb8, 0x20, 0x3f, 0xaf, 0x38,
+	0x55, 0x29, 0x90, 0x8b, 0xd7, 0xb7, 0x38, 0xdd, 0x25, 0x35, 0x8d, 0x7a, 0x36, 0x89, 0x73, 0x89,
+	0xa2, 0x18, 0x09, 0xb3, 0xcb, 0x68, 0x33, 0x23, 0x17, 0xb3, 0x6f, 0x71, 0xba, 0x50, 0x10, 0x17,
+	0x07, 0xdc, 0x63, 0x72, 0x7a, 0x18, 0x7e, 0xd7, 0x43, 0x72, 0xa7, 0x94, 0x1a, 0x7e, 0x79, 0x98,
+	0xd9, 0x42, 0x11, 0x5c, 0x5c, 0x48, 0x9e, 0x50, 0xc0, 0xae, 0x0b, 0xa1, 0x42, 0x4a, 0x83, 0x90,
+	0x0a, 0x98, 0xc9, 0x4e, 0xce, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91,
+	0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5,
+	0x99, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0xef, 0x1d, 0x19, 0xe6, 0xea,
+	0x97, 0x5a, 0x52, 0x9e, 0x5f, 0x94, 0xad, 0x9f, 0x9c, 0x91, 0x98, 0x99, 0xa7, 0x5f, 0x01, 0x89,
+	0xec, 0x92, 0xca, 0x82, 0xd4, 0xe2, 0x24, 0x36, 0x70, 0x44, 0x1b, 0x03, 0x02, 0x00, 0x00, 0xff,
+	0xff, 0xef, 0x14, 0x7c, 0xd9, 0x06, 0x02, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -284,18 +276,6 @@ type MsgClient interface {
 	FundPool(ctx context.Context, in *MsgFundPool, opts ...grpc.CallOption) (*MsgFundPoolResponse, error)
 	// DefundPool ...
 	DefundPool(ctx context.Context, in *MsgDefundPool, opts ...grpc.CallOption) (*MsgDefundPoolResponse, error)
-	// CreatePool ...
-	CreatePool(ctx context.Context, in *GovMsgCreatePool, opts ...grpc.CallOption) (*GovMsgCreatePoolResponse, error)
-	// UpdatePool ...
-	UpdatePool(ctx context.Context, in *GovMsgUpdatePool, opts ...grpc.CallOption) (*GovMsgUpdatePoolResponse, error)
-	// PausePool ...
-	PausePool(ctx context.Context, in *GovMsgPausePool, opts ...grpc.CallOption) (*GovMsgPausePoolResponse, error)
-	// UpdatePool ...
-	UnpausePool(ctx context.Context, in *GovMsgUnpausePool, opts ...grpc.CallOption) (*GovMsgUnpausePoolResponse, error)
-	// UpdatePool ...
-	PoolUpgrade(ctx context.Context, in *GovMsgPoolUpgrade, opts ...grpc.CallOption) (*GovMsgPoolUpgradeResponse, error)
-	// UpdatePool ...
-	CancelPoolUpgrade(ctx context.Context, in *GovMsgCancelPoolUpgrade, opts ...grpc.CallOption) (*GovMsgCancelPoolUpgradeResponse, error)
 }
 
 type msgClient struct {
@@ -324,78 +304,12 @@ func (c *msgClient) DefundPool(ctx context.Context, in *MsgDefundPool, opts ...g
 	return out, nil
 }
 
-func (c *msgClient) CreatePool(ctx context.Context, in *GovMsgCreatePool, opts ...grpc.CallOption) (*GovMsgCreatePoolResponse, error) {
-	out := new(GovMsgCreatePoolResponse)
-	err := c.cc.Invoke(ctx, "/kyve.pool.v1beta1.Msg/CreatePool", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) UpdatePool(ctx context.Context, in *GovMsgUpdatePool, opts ...grpc.CallOption) (*GovMsgUpdatePoolResponse, error) {
-	out := new(GovMsgUpdatePoolResponse)
-	err := c.cc.Invoke(ctx, "/kyve.pool.v1beta1.Msg/UpdatePool", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) PausePool(ctx context.Context, in *GovMsgPausePool, opts ...grpc.CallOption) (*GovMsgPausePoolResponse, error) {
-	out := new(GovMsgPausePoolResponse)
-	err := c.cc.Invoke(ctx, "/kyve.pool.v1beta1.Msg/PausePool", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) UnpausePool(ctx context.Context, in *GovMsgUnpausePool, opts ...grpc.CallOption) (*GovMsgUnpausePoolResponse, error) {
-	out := new(GovMsgUnpausePoolResponse)
-	err := c.cc.Invoke(ctx, "/kyve.pool.v1beta1.Msg/UnpausePool", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) PoolUpgrade(ctx context.Context, in *GovMsgPoolUpgrade, opts ...grpc.CallOption) (*GovMsgPoolUpgradeResponse, error) {
-	out := new(GovMsgPoolUpgradeResponse)
-	err := c.cc.Invoke(ctx, "/kyve.pool.v1beta1.Msg/PoolUpgrade", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *msgClient) CancelPoolUpgrade(ctx context.Context, in *GovMsgCancelPoolUpgrade, opts ...grpc.CallOption) (*GovMsgCancelPoolUpgradeResponse, error) {
-	out := new(GovMsgCancelPoolUpgradeResponse)
-	err := c.cc.Invoke(ctx, "/kyve.pool.v1beta1.Msg/CancelPoolUpgrade", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// FundPool ...
 	FundPool(context.Context, *MsgFundPool) (*MsgFundPoolResponse, error)
 	// DefundPool ...
 	DefundPool(context.Context, *MsgDefundPool) (*MsgDefundPoolResponse, error)
-	// CreatePool ...
-	CreatePool(context.Context, *GovMsgCreatePool) (*GovMsgCreatePoolResponse, error)
-	// UpdatePool ...
-	UpdatePool(context.Context, *GovMsgUpdatePool) (*GovMsgUpdatePoolResponse, error)
-	// PausePool ...
-	PausePool(context.Context, *GovMsgPausePool) (*GovMsgPausePoolResponse, error)
-	// UpdatePool ...
-	UnpausePool(context.Context, *GovMsgUnpausePool) (*GovMsgUnpausePoolResponse, error)
-	// UpdatePool ...
-	PoolUpgrade(context.Context, *GovMsgPoolUpgrade) (*GovMsgPoolUpgradeResponse, error)
-	// UpdatePool ...
-	CancelPoolUpgrade(context.Context, *GovMsgCancelPoolUpgrade) (*GovMsgCancelPoolUpgradeResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -407,24 +321,6 @@ func (*UnimplementedMsgServer) FundPool(ctx context.Context, req *MsgFundPool) (
 }
 func (*UnimplementedMsgServer) DefundPool(ctx context.Context, req *MsgDefundPool) (*MsgDefundPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DefundPool not implemented")
-}
-func (*UnimplementedMsgServer) CreatePool(ctx context.Context, req *GovMsgCreatePool) (*GovMsgCreatePoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreatePool not implemented")
-}
-func (*UnimplementedMsgServer) UpdatePool(ctx context.Context, req *GovMsgUpdatePool) (*GovMsgUpdatePoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePool not implemented")
-}
-func (*UnimplementedMsgServer) PausePool(ctx context.Context, req *GovMsgPausePool) (*GovMsgPausePoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PausePool not implemented")
-}
-func (*UnimplementedMsgServer) UnpausePool(ctx context.Context, req *GovMsgUnpausePool) (*GovMsgUnpausePoolResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UnpausePool not implemented")
-}
-func (*UnimplementedMsgServer) PoolUpgrade(ctx context.Context, req *GovMsgPoolUpgrade) (*GovMsgPoolUpgradeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PoolUpgrade not implemented")
-}
-func (*UnimplementedMsgServer) CancelPoolUpgrade(ctx context.Context, req *GovMsgCancelPoolUpgrade) (*GovMsgCancelPoolUpgradeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CancelPoolUpgrade not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -467,114 +363,6 @@ func _Msg_DefundPool_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_CreatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GovMsgCreatePool)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).CreatePool(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.pool.v1beta1.Msg/CreatePool",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CreatePool(ctx, req.(*GovMsgCreatePool))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_UpdatePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GovMsgUpdatePool)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UpdatePool(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.pool.v1beta1.Msg/UpdatePool",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UpdatePool(ctx, req.(*GovMsgUpdatePool))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_PausePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GovMsgPausePool)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).PausePool(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.pool.v1beta1.Msg/PausePool",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).PausePool(ctx, req.(*GovMsgPausePool))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_UnpausePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GovMsgUnpausePool)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).UnpausePool(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.pool.v1beta1.Msg/UnpausePool",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).UnpausePool(ctx, req.(*GovMsgUnpausePool))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_PoolUpgrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GovMsgPoolUpgrade)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).PoolUpgrade(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.pool.v1beta1.Msg/PoolUpgrade",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).PoolUpgrade(ctx, req.(*GovMsgPoolUpgrade))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Msg_CancelPoolUpgrade_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GovMsgCancelPoolUpgrade)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).CancelPoolUpgrade(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.pool.v1beta1.Msg/CancelPoolUpgrade",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).CancelPoolUpgrade(ctx, req.(*GovMsgCancelPoolUpgrade))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "kyve.pool.v1beta1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -586,30 +374,6 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DefundPool",
 			Handler:    _Msg_DefundPool_Handler,
-		},
-		{
-			MethodName: "CreatePool",
-			Handler:    _Msg_CreatePool_Handler,
-		},
-		{
-			MethodName: "UpdatePool",
-			Handler:    _Msg_UpdatePool_Handler,
-		},
-		{
-			MethodName: "PausePool",
-			Handler:    _Msg_PausePool_Handler,
-		},
-		{
-			MethodName: "UnpausePool",
-			Handler:    _Msg_UnpausePool_Handler,
-		},
-		{
-			MethodName: "PoolUpgrade",
-			Handler:    _Msg_PoolUpgrade_Handler,
-		},
-		{
-			MethodName: "CancelPoolUpgrade",
-			Handler:    _Msg_CancelPoolUpgrade_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
