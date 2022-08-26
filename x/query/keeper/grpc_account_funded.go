@@ -26,8 +26,10 @@ func (k Keeper) AccountFundedList(goCtx context.Context, req *types.QueryAccount
 				Runtime:    pool.Runtime,
 				Logo:       pool.Logo,
 				TotalFunds: pool.TotalFunds,
+				Status:     k.GetPoolStatus(ctx, &pool),
 			},
 		})
+
 	}
 
 	return &types.QueryAccountFundedListResponse{
