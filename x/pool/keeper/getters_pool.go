@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/KYVENetwork/chain/x/pool/types"
-	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
@@ -50,7 +49,7 @@ func (k Keeper) AppendPool(
 
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PoolKey)
 	appendedValue := k.cdc.MustMarshal(&pool)
-	store.Set(GetPoolIDBytes(pool.Id), appendedValue)
+	store.Set(types.PoolKeyPrefix(pool.Id), appendedValue)
 
 	// Update pool count
 	k.SetPoolCount(ctx, count+1)
@@ -62,13 +61,13 @@ func (k Keeper) AppendPool(
 func (k Keeper) SetPool(ctx sdk.Context, pool types.Pool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PoolKey)
 	b := k.cdc.MustMarshal(&pool)
-	store.Set(GetPoolIDBytes(pool.Id), b)
+	store.Set(types.PoolKeyPrefix(pool.Id), b)
 }
 
 // GetPool returns a pool from its id
 func (k Keeper) GetPool(ctx sdk.Context, id uint64) (val types.Pool, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PoolKey)
-	b := store.Get(GetPoolIDBytes(id))
+	b := store.Get(types.PoolKeyPrefix(id))
 	if b == nil {
 		return val, false
 	}
@@ -79,7 +78,7 @@ func (k Keeper) GetPool(ctx sdk.Context, id uint64) (val types.Pool, found bool)
 // RemovePool removes a pool from the store
 func (k Keeper) RemovePool(ctx sdk.Context, id uint64) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PoolKey)
-	store.Delete(GetPoolIDBytes(id))
+	store.Delete(types.PoolKeyPrefix(id))
 }
 
 // GetAllPools returns all pools
@@ -104,7 +103,7 @@ func (k Keeper) GetPaginatedPoolsQuery(ctx sdk.Context, pagination *query.PageRe
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PoolKey)
 
 	pageRes, err := query.FilteredPaginate(store, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var pool pooltypes.Pool
+		var pool types.Pool
 		if err := k.cdc.Unmarshal(value, &pool); err != nil {
 			return false, err
 		}
@@ -134,13 +133,6 @@ func (k Keeper) GetPaginatedPoolsQuery(ctx sdk.Context, pagination *query.PageRe
 	if err != nil {
 		return nil, nil, status.Error(codes.Internal, err.Error())
 	}
-	
-	return pools, pageRes, nil
-}
 
-// GetPoolIDBytes returns the byte representation of the ID
-func GetPoolIDBytes(id uint64) []byte {
-	bz := make([]byte, 8)
-	binary.BigEndian.PutUint64(bz, id)
-	return bz
+	return pools, pageRes, nil
 }

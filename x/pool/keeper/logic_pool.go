@@ -19,7 +19,7 @@ func (k Keeper) GetPoolWithError(ctx sdk.Context, poolId uint64) (types.Pool, er
 // AssertPoolExists ...
 func (k Keeper) AssertPoolExists(ctx sdk.Context, poolId uint64) error {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PoolKey)
-	if store.Has(GetPoolIDBytes(poolId)) {
+	if store.Has(types.PoolKeyPrefix(poolId)) {
 		return nil
 	}
 	return sdkErrors.Wrapf(sdkErrors.ErrNotFound, types.ErrPoolNotFound.Error(), poolId)

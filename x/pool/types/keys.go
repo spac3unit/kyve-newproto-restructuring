@@ -1,5 +1,7 @@
 package types
 
+import "github.com/KYVENetwork/chain/util"
+
 const (
 	// ModuleName defines the module name
 	ModuleName = "pool"
@@ -26,6 +28,6 @@ var (
 	PoolCountKey = []byte{2}
 )
 
-func KeyPrefix(p string) []byte {
-	return []byte(p)
+func PoolKeyPrefix(poolId uint64) []byte {
+	return util.GetByteKey(poolId)
 }
