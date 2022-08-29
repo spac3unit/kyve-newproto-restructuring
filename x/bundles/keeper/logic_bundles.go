@@ -114,8 +114,14 @@ func (k Keeper) AssertCanPropose(ctx sdk.Context, poolId uint64, staker string, 
 	}
 
 	// Check if from_height matches
-	if bundleProposal.ToHeight != fromHeight {
-		return sdkErrors.Wrapf(types.ErrFromHeight, "expected %v received %v", bundleProposal.ToHeight, fromHeight)
+	if bundleProposal.ToHeight == 0 {
+		if pool.CurrentHeight != fromHeight {
+			return sdkErrors.Wrapf(types.ErrFromHeight, "expected %v received %v", pool.CurrentHeight, fromHeight)
+		}
+	} else {
+		if bundleProposal.ToHeight != fromHeight {
+			return sdkErrors.Wrapf(types.ErrFromHeight, "expected %v received %v", bundleProposal.ToHeight, fromHeight)
+		}
 	}
 
 	return nil

@@ -27,6 +27,7 @@ TEST CASES - grpc_query_can_propose.go
 * Call can propose before the upload interval passed
 * Call can propose with an invalid from height
 * Call can propose on an active pool as the next uploader with valid args
+* TODO: Call can propose when previous bundle was dropped
 
 */
 
