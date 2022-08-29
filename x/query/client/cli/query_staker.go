@@ -2,28 +2,18 @@ package cli
 
 import (
 	"context"
-	"strconv"
-
 	"github.com/KYVENetwork/chain/x/query/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 )
 
-func CmdListPool() *cobra.Command {
+func CmdListStakers() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pools",
-		Short: "list all pools",
-		Args:  cobra.ExactArgs(3),
+		Use:   "stakers",
+		Short: "list all stakers",
+		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			reqSearch := args[0]
-			reqRuntime := args[1]
-
-			reqPaused, err := cast.ToBoolE(args[2])
-			if err != nil {
-				return err
-			}
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -35,16 +25,13 @@ func CmdListPool() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryPoolClient(clientCtx)
+			queryClient := types.NewQueryStakersClient(clientCtx)
 
-			params := &types.QueryPoolsRequest{
+			params := &types.QueryStakersRequest{
 				Pagination: pageReq,
-				Search:     reqSearch,
-				Runtime:    reqRuntime,
-				Paused:     reqPaused,
 			}
 
-			res, err := queryClient.Pools(context.Background(), params)
+			res, err := queryClient.Stakers(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -59,10 +46,10 @@ func CmdListPool() *cobra.Command {
 	return cmd
 }
 
-func CmdShowPool() *cobra.Command {
+func CmdShowStaker() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "pool [id]",
-		Short: "shows a pool",
+		Use:   "staker [address]",
+		Short: "shows all necessary information for staker",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -70,18 +57,13 @@ func CmdShowPool() *cobra.Command {
 				return err
 			}
 
-			queryClient := types.NewQueryPoolClient(clientCtx)
+			queryClient := types.NewQueryStakersClient(clientCtx)
 
-			id, err := strconv.ParseUint(args[0], 10, 64)
-			if err != nil {
-				return err
+			params := &types.QueryStakerRequest{
+				Address: args[0],
 			}
 
-			params := &types.QueryPoolRequest{
-				Id: id,
-			}
-
-			res, err := queryClient.Pool(context.Background(), params)
+			res, err := queryClient.Staker(context.Background(), params)
 			if err != nil {
 				return err
 			}

@@ -5,9 +5,8 @@ package kyve.query.v1beta1;
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "kyve/stakers/v1beta1/stakers.proto";
 import "kyve/query/v1beta1/query.proto";
-
+import "kyve/stakers/v1beta1/stakers.proto";
 
 option go_package = "github.com/KYVENetwork/chain/x/query/types";
 

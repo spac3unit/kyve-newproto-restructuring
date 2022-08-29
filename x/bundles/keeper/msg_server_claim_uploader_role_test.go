@@ -123,7 +123,7 @@ var _ = Describe("msg_server_claim_uploader_role.go", Ordered, func() {
 		Expect(bundleProposal.PoolId).To(Equal(uint64(0)))
 		Expect(bundleProposal.StorageId).To(BeEmpty())
 		Expect(bundleProposal.Uploader).To(BeEmpty())
-		Expect(bundleProposal.NextUploader).To(Equal(i.ALICE))
+		Expect(bundleProposal.NextUploader).To(Equal(i.STAKER_0))
 		Expect(bundleProposal.ByteSize).To(BeZero())
 		Expect(bundleProposal.ToHeight).To(BeZero())
 		Expect(bundleProposal.ToKey).To(BeEmpty())

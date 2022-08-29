@@ -14,7 +14,7 @@ var _ = strconv.Itoa(0)
 func CmdDelegator() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "delegator [staker] [delegator]",
-		Short: "Query delegator for staker",
+		Short: "Query delegator of staker",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqStaker := args[0]

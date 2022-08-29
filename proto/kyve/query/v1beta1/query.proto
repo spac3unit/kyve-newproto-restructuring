@@ -24,7 +24,6 @@ option go_package = "github.com/KYVENetwork/chain/x/query/types";
 // BasicPool contains the necessary properties need for a pool
 // to be displayed in the UI
 message BasicPool {
-
   // id is the ID of the pool
   uint64 id = 1;
 
@@ -82,7 +81,6 @@ message FullStaker {
 
 // StakerMetadata contains static information for a staker
 message StakerMetadata {
-
   // commission is the percentage of the rewards that will
   // get transferred to the staker before the remaining
   // rewards are split across all delegators
@@ -109,7 +107,6 @@ message StakerMetadata {
 // CommissionChangeEntry shows when the old commission
 // of a staker will change to the new commission
 message CommissionChangeEntry {
-
   // commission is the new commission that will
   // become active once the change-time is over
   string commission = 1;
@@ -122,7 +119,6 @@ message CommissionChangeEntry {
 // PoolMembership shows in which pool the staker
 // is participating
 message PoolMembership {
-
   // pool contains useful information about the pool
   BasicPool pool = 1;
 
@@ -141,8 +137,4 @@ message PoolMembership {
   // and submit bundles. If the server gets compromised
   // the staker can just change the valaddress.
   string valaddress = 4;
-
 }
-
-
-

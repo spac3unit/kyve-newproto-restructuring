@@ -63,6 +63,7 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 			Creator: i.STAKER_0,
 			PoolId:  0,
 		})
+		s.PerformValidityChecks()
 
 		// ASSERT
 		valaccountsOfStaker := s.App().StakersKeeper.GetValaccountsFromStaker(s.Ctx(), i.STAKER_0)
@@ -89,7 +90,8 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
 		Expect(totalStakeOfPool).To(Equal(staker.Amount))
 
-		//s.PerformValidityChecks() TODO fails; probably import/export not working correctly
+		s.PerformValidityChecks()
+
 		// wait for leave pool
 		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
 		s.CommitAfterSeconds(1)
@@ -117,6 +119,7 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 			Creator: i.STAKER_0,
 			PoolId:  0,
 		})
+		s.PerformValidityChecks()
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgLeavePool{
@@ -153,6 +156,7 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 			PoolId:     1,
 			Valaddress: i.VALADDRESS_1,
 		})
+		s.PerformValidityChecks()
 
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgLeavePool{

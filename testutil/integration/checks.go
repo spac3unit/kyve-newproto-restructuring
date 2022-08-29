@@ -1,8 +1,10 @@
 package integration
 
 import (
+	"github.com/KYVENetwork/chain/x/bundles"
 	"github.com/KYVENetwork/chain/x/delegation"
 	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
+	"github.com/KYVENetwork/chain/x/pool"
 	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	"github.com/KYVENetwork/chain/x/stakers"
 	. "github.com/onsi/gomega"
@@ -17,6 +19,7 @@ func (suite *KeeperTestSuite) PerformValidityChecks() {
 	suite.VerifyPoolModuleAssetsIntegrity()
 	suite.VerifyPoolTotalFunds()
 	suite.VerifyPoolQueries()
+	suite.VerifyPoolGenesisImportExport()
 
 	// verify stakers module
 	suite.VerifyStakersModuleAssetsIntegrity()
@@ -26,6 +29,7 @@ func (suite *KeeperTestSuite) PerformValidityChecks() {
 
 	// verify bundles module
 	suite.VerifyBundlesQueries()
+	suite.VerifyBundlesGenesisImportExport()
 
 	// verify delegation module
 	suite.VerifyDelegationQueries()
@@ -137,6 +141,18 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 	}
 }
 
+func (suite *KeeperTestSuite) VerifyPoolGenesisImportExport() {
+	genState := pool.ExportGenesis(suite.Ctx(), suite.App().PoolKeeper)
+
+	// Delete all entries in Pool Store
+	store := suite.Ctx().KVStore(suite.App().PoolKeeper.StoreKey())
+	suite.deleteStore(store)
+
+	err := genState.Validate()
+	Expect(err).To(BeNil())
+	pool.InitGenesis(suite.Ctx(), suite.App().PoolKeeper, *genState)
+}
+
 // =====================
 // stakers module checks
 // =====================
@@ -199,6 +215,21 @@ func (suite *KeeperTestSuite) VerifyStakersQueries() {
 
 func (suite *KeeperTestSuite) VerifyStakersGenesisImportExport() {
 	genState := stakers.ExportGenesis(suite.Ctx(), suite.App().StakersKeeper)
+
+	// Delete all entries in Stakers Store
+	store := suite.Ctx().KVStore(suite.App().StakersKeeper.StoreKey())
+	iterator := store.Iterator(nil, nil)
+	keys := make([][]byte, 0)
+	for ; iterator.Valid(); iterator.Next() {
+		key := make([]byte, len(iterator.Key()))
+		copy(key, iterator.Key())
+		keys = append(keys, key)
+	}
+	iterator.Close()
+	for _, key := range keys {
+		store.Delete(key)
+	}
+
 	err := genState.Validate()
 	Expect(err).To(BeNil())
 	stakers.InitGenesis(suite.Ctx(), suite.App().StakersKeeper, *genState)
@@ -234,62 +265,16 @@ func (suite *KeeperTestSuite) VerifyBundlesQueries() {
 	}
 }
 
+func (suite *KeeperTestSuite) VerifyBundlesGenesisImportExport() {
+	genState := bundles.ExportGenesis(suite.Ctx(), suite.App().BundlesKeeper)
+	err := genState.Validate()
+	Expect(err).To(BeNil())
+	bundles.InitGenesis(suite.Ctx(), suite.App().BundlesKeeper, *genState)
+}
+
 // ========================
 // delegation module checks
 // ========================
-
-func (suite *KeeperTestSuite) verifyFullStaker(fullStaker querytypes.FullStaker, stakerAddress string) {
-	Expect(fullStaker.Address).To(Equal(stakerAddress))
-
-	staker, found := suite.App().StakersKeeper.GetStaker(suite.Ctx(), stakerAddress)
-	Expect(found).To(BeTrue())
-	Expect(fullStaker.Amount).To(Equal(staker.Amount))
-	Expect(fullStaker.UnbondingAmount).To(Equal(staker.UnbondingAmount))
-	Expect(fullStaker.Metadata.Logo).To(Equal(staker.Logo))
-	Expect(fullStaker.Metadata.Website).To(Equal(staker.Website))
-	Expect(fullStaker.Metadata.Commission).To(Equal(staker.Commission))
-	Expect(fullStaker.Metadata.Moniker).To(Equal(staker.Moniker))
-
-	pendingCommissionChange, found := suite.App().StakersKeeper.GetCommissionChangeEntryByIndex2(suite.Ctx(), stakerAddress)
-	if found {
-		Expect(fullStaker.Metadata.PendingCommissionChange.Commission).To(Equal(pendingCommissionChange.Commission))
-		Expect(fullStaker.Metadata.PendingCommissionChange.CreationDate).To(Equal(pendingCommissionChange.CreationDate))
-	} else {
-		Expect(fullStaker.Metadata.PendingCommissionChange).To(BeNil())
-	}
-
-	delegationData, _ := suite.App().DelegationKeeper.GetDelegationData(suite.Ctx(), stakerAddress)
-	Expect(fullStaker.DelegatorCount).To(Equal(delegationData.DelegatorCount))
-
-	Expect(fullStaker.TotalDelegation).To(Equal(suite.App().DelegationKeeper.GetDelegationAmount(suite.Ctx(), stakerAddress)))
-
-	poolIds := make(map[uint64]bool)
-
-	for _, poolMembership := range fullStaker.Pools {
-		poolIds[poolMembership.Pool.Id] = true
-		valaccount, found := suite.App().StakersKeeper.GetValaccount(suite.Ctx(), poolMembership.Pool.Id, stakerAddress)
-		Expect(found).To(BeTrue())
-
-		Expect(poolMembership.Valaddress).To(Equal(valaccount.Valaddress))
-		Expect(poolMembership.IsLeaving).To(Equal(valaccount.IsLeaving))
-		Expect(poolMembership.Points).To(Equal(valaccount.Points))
-
-		pool, found := suite.App().PoolKeeper.GetPool(suite.Ctx(), valaccount.PoolId)
-		Expect(found).To(BeTrue())
-		Expect(poolMembership.Pool.Id).To(Equal(pool.Id))
-		Expect(poolMembership.Pool.Logo).To(Equal(pool.Logo))
-		Expect(poolMembership.Pool.TotalFunds).To(Equal(pool.TotalFunds))
-		Expect(poolMembership.Pool.Name).To(Equal(pool.Name))
-		Expect(poolMembership.Pool.Runtime).To(Equal(pool.Runtime))
-		Expect(poolMembership.Pool.Status).To(Equal(suite.App().QueryKeeper.GetPoolStatus(suite.Ctx(), &pool)))
-	}
-
-	// Reverse check the pool memberships
-	for _, valaccount := range suite.App().StakersKeeper.GetValaccountsFromStaker(suite.Ctx(), stakerAddress) {
-		Expect(poolIds[valaccount.PoolId]).To(BeTrue())
-	}
-
-}
 
 func (suite *KeeperTestSuite) VerifyDelegationQueries() {
 
@@ -373,4 +358,75 @@ func (suite *KeeperTestSuite) VerifyDelegationGenesisImportExport() {
 	err := genState.Validate()
 	Expect(err).To(BeNil())
 	delegation.InitGenesis(suite.Ctx(), suite.App().DelegationKeeper, *genState)
+}
+
+// ========================
+// helpers
+// ========================
+
+func (suite *KeeperTestSuite) verifyFullStaker(fullStaker querytypes.FullStaker, stakerAddress string) {
+	Expect(fullStaker.Address).To(Equal(stakerAddress))
+
+	staker, found := suite.App().StakersKeeper.GetStaker(suite.Ctx(), stakerAddress)
+	Expect(found).To(BeTrue())
+	Expect(fullStaker.Amount).To(Equal(staker.Amount))
+	Expect(fullStaker.UnbondingAmount).To(Equal(staker.UnbondingAmount))
+	Expect(fullStaker.Metadata.Logo).To(Equal(staker.Logo))
+	Expect(fullStaker.Metadata.Website).To(Equal(staker.Website))
+	Expect(fullStaker.Metadata.Commission).To(Equal(staker.Commission))
+	Expect(fullStaker.Metadata.Moniker).To(Equal(staker.Moniker))
+
+	pendingCommissionChange, found := suite.App().StakersKeeper.GetCommissionChangeEntryByIndex2(suite.Ctx(), stakerAddress)
+	if found {
+		Expect(fullStaker.Metadata.PendingCommissionChange.Commission).To(Equal(pendingCommissionChange.Commission))
+		Expect(fullStaker.Metadata.PendingCommissionChange.CreationDate).To(Equal(pendingCommissionChange.CreationDate))
+	} else {
+		Expect(fullStaker.Metadata.PendingCommissionChange).To(BeNil())
+	}
+
+	delegationData, _ := suite.App().DelegationKeeper.GetDelegationData(suite.Ctx(), stakerAddress)
+	Expect(fullStaker.DelegatorCount).To(Equal(delegationData.DelegatorCount))
+
+	Expect(fullStaker.TotalDelegation).To(Equal(suite.App().DelegationKeeper.GetDelegationAmount(suite.Ctx(), stakerAddress)))
+
+	poolIds := make(map[uint64]bool)
+
+	for _, poolMembership := range fullStaker.Pools {
+		poolIds[poolMembership.Pool.Id] = true
+		valaccount, found := suite.App().StakersKeeper.GetValaccount(suite.Ctx(), poolMembership.Pool.Id, stakerAddress)
+		Expect(found).To(BeTrue())
+
+		Expect(poolMembership.Valaddress).To(Equal(valaccount.Valaddress))
+		Expect(poolMembership.IsLeaving).To(Equal(valaccount.IsLeaving))
+		Expect(poolMembership.Points).To(Equal(valaccount.Points))
+
+		pool, found := suite.App().PoolKeeper.GetPool(suite.Ctx(), valaccount.PoolId)
+		Expect(found).To(BeTrue())
+		Expect(poolMembership.Pool.Id).To(Equal(pool.Id))
+		Expect(poolMembership.Pool.Logo).To(Equal(pool.Logo))
+		Expect(poolMembership.Pool.TotalFunds).To(Equal(pool.TotalFunds))
+		Expect(poolMembership.Pool.Name).To(Equal(pool.Name))
+		Expect(poolMembership.Pool.Runtime).To(Equal(pool.Runtime))
+		Expect(poolMembership.Pool.Status).To(Equal(suite.App().QueryKeeper.GetPoolStatus(suite.Ctx(), &pool)))
+	}
+
+	// Reverse check the pool memberships
+	for _, valaccount := range suite.App().StakersKeeper.GetValaccountsFromStaker(suite.Ctx(), stakerAddress) {
+		Expect(poolIds[valaccount.PoolId]).To(BeTrue())
+	}
+
+}
+
+func (suite *KeeperTestSuite) deleteStore(store sdk.KVStore) {
+	iterator := store.Iterator(nil, nil)
+	keys := make([][]byte, 0)
+	for ; iterator.Valid(); iterator.Next() {
+		key := make([]byte, len(iterator.Key()))
+		copy(key, iterator.Key())
+		keys = append(keys, key)
+	}
+	iterator.Close()
+	for _, key := range keys {
+		store.Delete(key)
+	}
 }

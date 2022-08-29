@@ -12,18 +12,16 @@ import (
 
 var _ = strconv.Itoa(0)
 
-func CmdCanVote() *cobra.Command {
+func CmdCanValidate() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "can-vote [pool_id] [storage-id] [voter]",
-		Short: "Query if the current voter can vote on the current proposal",
-		Args:  cobra.ExactArgs(3),
+		Use:   "can-validate [pool_id] [valaddress]",
+		Short: "Query if current valaddress can vote in pool",
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			reqId, err := cast.ToUint64E(args[0])
 			if err != nil {
 				return err
 			}
-			reqStorageId := args[1]
-			reqVoter := args[2]
 
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
@@ -32,14 +30,12 @@ func CmdCanVote() *cobra.Command {
 
 			queryClient := types.NewQueryBundlesClient(clientCtx)
 
-			params := &types.QueryCanVoteRequest{
-
-				PoolId:    reqId,
-				StorageId: reqStorageId,
-				Voter:     reqVoter,
+			params := &types.QueryCanValidateRequest{
+				PoolId:     reqId,
+				Valaddress: args[1],
 			}
 
-			res, err := queryClient.CanVote(cmd.Context(), params)
+			res, err := queryClient.CanValidate(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

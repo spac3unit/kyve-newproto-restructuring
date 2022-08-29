@@ -5,6 +5,7 @@ import (
 )
 
 func TestGetParams(t *testing.T) {
+	// TODO do param tests?
 	//k, ctx := testkeeper.PoolKeeper(t)
 	//params := types.DefaultParams()
 	//
