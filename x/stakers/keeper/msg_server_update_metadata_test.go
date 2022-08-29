@@ -16,6 +16,7 @@ TEST CASES - msg_server_update_metadata.go
 * Update metadata with real values of a newly created staker
 * Reset metadata to empty values
 * // TODO: metadata should reset if staker unstakes everything and stakes again
+* Exceed max length
 
 */
 
@@ -86,5 +87,49 @@ var _ = Describe("msg_server_update_metadata.go", Ordered, func() {
 		Expect(staker.Moniker).To(BeEmpty())
 		Expect(staker.Website).To(BeEmpty())
 		Expect(staker.Logo).To(BeEmpty())
+	})
+
+	It("One below max length", func() {
+
+		// ARRANGE
+		var stringStillAllowed string
+		for i := 0; i < 255; i++ {
+			stringStillAllowed += "."
+		}
+
+		// ACT
+		msg := stakerstypes.MsgUpdateMetadata{
+			Creator: i.STAKER_0,
+			Moniker: stringStillAllowed,
+			Website: stringStillAllowed,
+			Logo:    stringStillAllowed,
+		}
+		err := msg.ValidateBasic()
+
+		// ASSERT
+		Expect(err).To(BeNil())
+	})
+
+	// stringTooLong := stringStillAllowed + "."
+	It("Exceed max length", func() {
+
+		// ARRANGE
+		var stringTooLong string
+		for i := 0; i < 256; i++ {
+			stringTooLong += "."
+		}
+
+		// ACT
+		msg := stakerstypes.MsgUpdateMetadata{
+			Creator: i.STAKER_0,
+			Moniker: stringTooLong,
+			Website: stringTooLong,
+			Logo:    stringTooLong,
+		}
+		err := msg.ValidateBasic()
+
+		// ASSERT
+		Expect(err).ToNot(BeNil())
+
 	})
 })
