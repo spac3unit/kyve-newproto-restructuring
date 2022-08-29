@@ -39,7 +39,7 @@ func (k Keeper) AssertPoolCanRun(ctx sdk.Context, poolId uint64) error {
 	}
 
 	// Error if min stake is not reached
-	if k.stakerKeeper.GetTotalStake(ctx, pool.Id)+k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) < pool.MinStake {
+	if k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) < pool.MinStake {
 		return types.ErrMinStakeNotReached
 	}
 
@@ -259,7 +259,6 @@ func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 			points := k.stakerKeeper.AddPoint(ctx, poolId, staker)
 
 			if points >= k.MaxPoints(ctx) {
-				k.stakerKeeper.Slash(ctx, poolId, staker, stakermoduletypes.SLASH_TYPE_TIMEOUT)
 				k.delegationKeeper.SlashDelegators(ctx, staker, stakermoduletypes.SLASH_TYPE_TIMEOUT)
 
 				k.stakerKeeper.ResetPoints(ctx, poolId, staker)
@@ -420,12 +419,11 @@ func (k Keeper) chooseNextUploaderFromSelectedStakers(ctx sdk.Context, poolId ui
 	}
 
 	for _, s := range addresses {
-		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, s)
 		delegation := k.delegationKeeper.GetDelegationAmount(ctx, s)
 
 		_candidates = append(_candidates, RandomChoiceCandidate{
 			Account: s,
-			Amount:  stake + delegation,
+			Amount:  delegation,
 		})
 	}
 
@@ -446,27 +444,23 @@ func (k Keeper) GetVoteDistribution(ctx sdk.Context, poolId uint64) (voteDistrib
 
 	// get $KYVE voted for valid
 	for _, voter := range bundleProposal.VotersValid {
-		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
 		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
-		voteDistribution.Valid += stake + delegation
+		voteDistribution.Valid += delegation
 	}
 
 	// get $KYVE voted for invalid
 	for _, voter := range bundleProposal.VotersInvalid {
-		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
 		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
-		voteDistribution.Invalid += stake + delegation
+		voteDistribution.Invalid += delegation
 	}
 
 	// get $KYVE voted for abstain
 	for _, voter := range bundleProposal.VotersAbstain {
-		stake := k.stakerKeeper.GetStakeInPool(ctx, poolId, voter)
 		delegation := k.delegationKeeper.GetDelegationAmount(ctx, voter)
-		voteDistribution.Abstain += stake + delegation
+		voteDistribution.Abstain += delegation
 	}
 
-	voteDistribution.Total = k.stakerKeeper.GetTotalStake(ctx, poolId)
-	voteDistribution.Total += k.delegationKeeper.GetDelegationOfPool(ctx, poolId)
+	voteDistribution.Total = k.delegationKeeper.GetDelegationOfPool(ctx, poolId)
 
 	if voteDistribution.Valid*2 > voteDistribution.Total {
 		voteDistribution.Status = types.BUNDLE_STATUS_VALID

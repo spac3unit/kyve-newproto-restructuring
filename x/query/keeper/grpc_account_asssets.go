@@ -35,7 +35,7 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 	// ==========================================
 
 	staker, _ := k.stakerKeeper.GetStaker(ctx, req.Address)
-	response.ProtocolStaking = staker.Amount
+	response.ProtocolStaking = k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, req.Address, req.Address)
 	response.ProtocolStakingUnbonding = staker.UnbondingAmount
 
 	// ================================================

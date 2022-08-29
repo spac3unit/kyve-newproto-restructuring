@@ -6,10 +6,8 @@ option go_package = "github.com/KYVENetwork/chain/x/stakers/types";
 
 // Msg defines the Msg service.
 service Msg {
-  // StakePool ...
-  rpc Stake(MsgStake) returns (MsgStakeResponse);
-  // UnstakePool ...
-  rpc Unstake(MsgUnstake) returns (MsgUnstakeResponse);
+  // CreateStaker ...
+  rpc CreateStaker(MsgCreateStaker) returns (MsgCreateStakerResponse);
   // UpdateMetadata ...
   rpc UpdateMetadata(MsgUpdateMetadata) returns (MsgUpdateMetadataResponse);
   // UpdateCommission ...
@@ -21,7 +19,7 @@ service Msg {
 }
 
 // MsgStakePool defines a SDK message for staking in a pool.
-message MsgStake {
+message MsgCreateStaker {
   // creator ...
   string creator = 1;
   // amount ...
@@ -29,18 +27,7 @@ message MsgStake {
 }
 
 // MsgStakePoolResponse defines the Msg/StakePool response type.
-message MsgStakeResponse {}
-
-// MsgUnstakePool defines a SDK message for unstaking from a pool.
-message MsgUnstake {
-  // creator ...
-  string creator = 1;
-  // amount ...
-  uint64 amount = 2;
-}
-
-// MsgUnstakePoolResponse defines the Msg/UnstakePool response type.
-message MsgUnstakeResponse {}
+message MsgCreateStakerResponse {}
 
 // MsgUpdateMetadata defines a SDK message for claiming the uploader role.
 message MsgUpdateMetadata {

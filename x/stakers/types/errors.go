@@ -13,6 +13,7 @@ var (
 	ErrAlreadyLeftPool         = sdkerrors.Register(ModuleName, 1107, "already left pool")
 	ValaddressAlreadyUsed      = sdkerrors.Register(ModuleName, 1108, "valaddress already used")
 	ErrStringMaxLengthExceeded = sdkerrors.Register(ModuleName, 1109, "String length exceeded: %d vs %d")
+	ErrStakerAlreadyCreated    = sdkerrors.Register(ModuleName, 1110, "Staker already created")
 
 	ErrInvalidCommission          = sdkerrors.Register(ModuleName, 1116, "invalid commission %v")
 	ErrPoolLeaveAlreadyInProgress = sdkerrors.Register(ModuleName, 1117, "Pool leave is already in progress")

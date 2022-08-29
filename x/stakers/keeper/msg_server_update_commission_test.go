@@ -34,7 +34,7 @@ var _ = Describe("msg_server_update_commission.go", Ordered, func() {
 		s = i.NewCleanChain()
 
 		// create staker
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})

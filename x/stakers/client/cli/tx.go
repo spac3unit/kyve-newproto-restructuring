@@ -18,8 +18,7 @@ func GetTxCmd() *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(CmdStake())
-	cmd.AddCommand(CmdUnstake())
+	cmd.AddCommand(CmdCreateStaker())
 	cmd.AddCommand(CmdJoinPool())
 	cmd.AddCommand(CmdLeavePool())
 	cmd.AddCommand(CmdUpdateCommission())

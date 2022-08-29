@@ -52,7 +52,7 @@ var _ = Describe("grpc_query_can_propose.go", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -64,7 +64,7 @@ var _ = Describe("grpc_query_can_propose.go", Ordered, func() {
 			Amount:     0,
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_1,
 			Amount:  100 * i.KYVE,
 		})

@@ -31,8 +31,8 @@ var _ = Describe("Delegation - Withdraw Rewards", Ordered, func() {
 		CreateFundedPool(&s)
 
 		// Stake
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{Creator: i.ALICE, Amount: 100 * i.KYVE})
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{Creator: i.BOB, Amount: 100 * i.KYVE})
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{Creator: i.ALICE, Amount: 100 * i.KYVE})
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{Creator: i.BOB, Amount: 100 * i.KYVE})
 
 		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		Expect(stakerFound).To(BeTrue())

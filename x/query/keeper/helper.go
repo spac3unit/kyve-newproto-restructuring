@@ -52,7 +52,7 @@ func (k Keeper) GetFullStaker(ctx sdk.Context, stakerAddress string) *types.Full
 	return &types.FullStaker{
 		Address:         staker.Address,
 		Metadata:        &stakerMetadata,
-		Amount:          staker.Amount,
+		Amount:          k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, stakerAddress, stakerAddress),
 		UnbondingAmount: staker.UnbondingAmount,
 		TotalDelegation: k.delegationKeeper.GetDelegationAmount(ctx, staker.Address),
 		DelegatorCount:  delegationData.DelegatorCount,
@@ -62,7 +62,6 @@ func (k Keeper) GetFullStaker(ctx sdk.Context, stakerAddress string) *types.Full
 
 func (k Keeper) GetPoolStatus(ctx sdk.Context, pool *pooltypes.Pool) pooltypes.PoolStatus {
 
-	totalStake := k.stakerKeeper.GetTotalStake(ctx, pool.Id)
 	totalDelegation := k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id)
 
 	var poolStatus pooltypes.PoolStatus
@@ -71,7 +70,7 @@ func (k Keeper) GetPoolStatus(ctx sdk.Context, pool *pooltypes.Pool) pooltypes.P
 		poolStatus = pooltypes.POOL_STATUS_UPGRADING
 	} else if pool.Paused {
 		poolStatus = pooltypes.POOL_STATUS_PAUSED
-	} else if totalStake+totalDelegation < pool.MinStake {
+	} else if totalDelegation < pool.MinStake {
 		poolStatus = pooltypes.POOL_STATUS_NOT_ENOUGH_STAKE
 	} else if pool.TotalFunds == 0 {
 		poolStatus = pooltypes.POOL_STATUS_NO_FUNDS

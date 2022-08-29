@@ -37,12 +37,12 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 
 		CreateFundedPool(&s)
 
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  100 * i.KYVE,
 		})

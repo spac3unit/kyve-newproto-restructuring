@@ -40,7 +40,7 @@ var _ = Describe("Delegation Gov Logic", Ordered, func() {
 	It("Simple Staking", func() {
 
 		// Arrange
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})
@@ -56,12 +56,12 @@ var _ = Describe("Delegation Gov Logic", Ordered, func() {
 		Expect(s.App().DelegationKeeper.TotalProtocolBonding(s.Ctx())).To(Equal(sdk.NewInt(0)))
 
 		// Arrange
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  50 * i.KYVE,
 		})
@@ -77,12 +77,12 @@ var _ = Describe("Delegation Gov Logic", Ordered, func() {
 		Expect(s.App().DelegationKeeper.TotalProtocolBonding(s.Ctx())).To(Equal(sdk.NewInt(0)))
 
 		// Arrange
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  50 * i.KYVE,
 		})
@@ -104,12 +104,12 @@ var _ = Describe("Delegation Gov Logic", Ordered, func() {
 		Expect(s.App().DelegationKeeper.TotalProtocolBonding(s.Ctx())).To(Equal(sdk.NewInt(0)))
 
 		// Arrange
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  50 * i.KYVE,
 		})

@@ -35,10 +35,10 @@ type PoolKeeper interface {
 }
 
 type StakerKeeper interface {
-	GetTotalStake(ctx sdk.Context, poolId uint64) uint64
+	//GetTotalStake(ctx sdk.Context, poolId uint64) uint64
 	GetAllStakerAddressesOfPool(ctx sdk.Context, poolId uint64) (stakers []string)
-	GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress string) uint64
-	Slash(ctx sdk.Context, poolId uint64, stakerAddress string, slashType stakertypes.SlashType) (slashedAmount uint64)
+	//GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress string) uint64
+	//Slash(ctx sdk.Context, poolId uint64, stakerAddress string, slashType stakertypes.SlashType) (slashedAmount uint64)
 	GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec
 
 	GetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) uint64

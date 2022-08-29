@@ -40,7 +40,7 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 		})
 
 		// create staker
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -84,11 +84,11 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
-		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
+		totalStakeOfPool := s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
-		Expect(totalStakeOfPool).To(Equal(staker.Amount))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(totalStakeOfPool))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(totalStakeOfPool))
 
 		s.PerformValidityChecks()
 
@@ -108,8 +108,7 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(BeEmpty())
 
-		totalStakeOfPool = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
-
+		totalStakeOfPool = s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)
 		Expect(totalStakeOfPool).To(BeZero())
 	})
 
@@ -183,11 +182,11 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
-		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 1)
-
+		totalStakeOfPool := s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 1)
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
-		Expect(totalStakeOfPool).To(Equal(staker.Amount))
+
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(totalStakeOfPool))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(totalStakeOfPool))
 
 		// wait for leave pool
 		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
@@ -205,8 +204,7 @@ var _ = Describe("msg_server_leave_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(BeEmpty())
 
-		totalStakeOfPool = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 1)
-
+		totalStakeOfPool = s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 1)
 		Expect(totalStakeOfPool).To(BeZero())
 	})
 })

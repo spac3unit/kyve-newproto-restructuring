@@ -10,7 +10,6 @@ import (
 	. "github.com/onsi/gomega"
 
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
-	stakerstypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -91,14 +90,12 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 	for i := range poolsState {
 		bundleProposalState, _ := suite.App().BundlesKeeper.GetBundleProposal(suite.Ctx(), poolsState[i].Id)
 		stakersState := suite.App().StakersKeeper.GetAllStakerAddressesOfPool(suite.Ctx(), poolsState[i].Id)
-		totalStakeState := suite.App().StakersKeeper.GetTotalStake(suite.Ctx(), poolsState[i].Id)
 		totalDelegationState := suite.App().DelegationKeeper.GetDelegationOfPool(suite.Ctx(), poolsState[i].Id)
 
 		Expect(poolsQuery[i].Id).To(Equal(poolsState[i].Id))
 		Expect(*poolsQuery[i].Data).To(Equal(poolsState[i]))
 		Expect(*poolsQuery[i].BundleProposal).To(Equal(bundleProposalState))
 		Expect(poolsQuery[i].Stakers).To(Equal(stakersState))
-		Expect(poolsQuery[i].TotalStake).To(Equal(totalStakeState))
 		Expect(poolsQuery[i].TotalDelegation).To(Equal(totalDelegationState))
 
 		// test pool by id
@@ -110,8 +107,8 @@ func (suite *KeeperTestSuite) VerifyPoolQueries() {
 		Expect(poolByIdQuery.Pool.Id).To(Equal(poolsState[i].Id))
 		Expect(*poolByIdQuery.Pool.Data).To(Equal(poolsState[i]))
 		Expect(*poolByIdQuery.Pool.BundleProposal).To(Equal(bundleProposalState))
-		Expect(poolsQuery[i].Stakers).To(Equal(stakersState))
-		Expect(poolByIdQuery.Pool.TotalStake).To(Equal(totalStakeState))
+		Expect(poolByIdQuery.Pool.Stakers).To(Equal(stakersState))
+		Expect(poolByIdQuery.Pool.TotalDelegation).To(Equal(totalDelegationState))
 
 		// test stakers by pool
 		valaccounts := suite.App().StakersKeeper.GetAllValaccountsOfPool(suite.Ctx(), poolsState[i].Id)
@@ -158,30 +155,26 @@ func (suite *KeeperTestSuite) VerifyPoolGenesisImportExport() {
 // =====================
 
 func (suite *KeeperTestSuite) VerifyStakersModuleAssetsIntegrity() {
-	expectedBalance := uint64(0)
-	actualBalance := uint64(0)
-
-	for _, staker := range suite.App().StakersKeeper.GetAllStakers(suite.Ctx()) {
-		expectedBalance += staker.Amount
-	}
-
-	moduleAcc := suite.App().AccountKeeper.GetModuleAccount(suite.Ctx(), stakerstypes.ModuleName).GetAddress()
-	actualBalance = suite.App().BankKeeper.GetBalance(suite.Ctx(), moduleAcc, "tkyve").Amount.Uint64()
-
-	Expect(actualBalance).To(Equal(expectedBalance))
+	//expectedBalance := uint64(0)
+	//actualBalance := uint64(0)
+	//
+	//for _, staker := range suite.App().StakersKeeper.GetAllStakers(suite.Ctx()) {
+	//	expectedBalance += suite.App().DelegationKeeper
+	//}
+	//
+	//moduleAcc := suite.App().AccountKeeper.GetModuleAccount(suite.Ctx(), stakerstypes.ModuleName).GetAddress()
+	//actualBalance = suite.App().BankKeeper.GetBalance(suite.Ctx(), moduleAcc, "tkyve").Amount.Uint64()
+	//
+	//Expect(actualBalance).To(Equal(expectedBalance))
 }
 
 func (suite *KeeperTestSuite) VerifyPoolTotalStake() {
 	for _, pool := range suite.App().PoolKeeper.GetAllPools(suite.Ctx()) {
 		expectedBalance := uint64(0)
-		actualBalance := suite.App().StakersKeeper.GetTotalStake(suite.Ctx(), pool.Id)
+		actualBalance := suite.App().DelegationKeeper.GetDelegationOfPool(suite.Ctx(), pool.Id)
 
 		for _, stakerAddress := range suite.App().StakersKeeper.GetAllStakerAddressesOfPool(suite.Ctx(), pool.Id) {
-			staker, stakerFound := suite.App().StakersKeeper.GetStaker(suite.Ctx(), stakerAddress)
-
-			if stakerFound {
-				expectedBalance += staker.Amount
-			}
+			expectedBalance += suite.App().DelegationKeeper.GetDelegationAmount(suite.Ctx(), stakerAddress)
 		}
 
 		Expect(actualBalance).To(Equal(expectedBalance))
@@ -369,7 +362,7 @@ func (suite *KeeperTestSuite) verifyFullStaker(fullStaker querytypes.FullStaker,
 
 	staker, found := suite.App().StakersKeeper.GetStaker(suite.Ctx(), stakerAddress)
 	Expect(found).To(BeTrue())
-	Expect(fullStaker.Amount).To(Equal(staker.Amount))
+	Expect(fullStaker.Amount).To(Equal(suite.App().DelegationKeeper.GetDelegationAmountOfDelegator(suite.Ctx(), stakerAddress, stakerAddress)))
 	Expect(fullStaker.UnbondingAmount).To(Equal(staker.UnbondingAmount))
 	Expect(fullStaker.Metadata.Logo).To(Equal(staker.Logo))
 	Expect(fullStaker.Metadata.Website).To(Equal(staker.Website))

@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CmdStake() *cobra.Command {
+func CmdCreateStaker() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "stake [amount]",
-		Short: "Broadcast message stake",
+		Use:   "create-staker [amount]",
+		Short: "Broadcast message create-staker",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 
@@ -26,7 +26,7 @@ func CmdStake() *cobra.Command {
 				return err
 			}
 
-			msg := types.MsgStake{
+			msg := types.MsgCreateStaker{
 				Creator: clientCtx.GetFromAddress().String(),
 				Amount:  argAmount,
 			}

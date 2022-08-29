@@ -34,16 +34,13 @@ func (k Keeper) UpdateStakerCommission(ctx sdk.Context, address string, commissi
 // AddValaccountToPool adds a valaccount to a pool.
 // If valaccount already belongs to pool, nothing happens.
 func (k Keeper) AddValaccountToPool(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) {
-	staker, found := k.GetStaker(ctx, stakerAddress)
-
-	if found {
+	if k.DoesStakerExist(ctx, stakerAddress) {
 		if !k.DoesValaccountExist(ctx, poolId, stakerAddress) {
 			k.SetValaccount(ctx, types.Valaccount{
 				PoolId:     poolId,
 				Staker:     stakerAddress,
 				Valaddress: valaddress,
 			})
-			k.AddToTotalStake(ctx, poolId, staker.Amount)
 			k.AddOneToCount(ctx, poolId)
 		}
 	}
@@ -60,55 +57,6 @@ func (k Keeper) RemoveValaccountFromPool(ctx sdk.Context, poolId uint64, stakerA
 		// remove valaccount from pool
 		k.removeValaccount(ctx, valaccount)
 		k.subtractOneFromCount(ctx, poolId)
-		staker, _ := k.GetStaker(ctx, stakerAddress)
-		k.subtractFromTotalStake(ctx, poolId, staker.Amount)
-	}
-}
-
-// AddAmountToStaker adds the given amount to an already existing staker
-// It also checks the status of the staker and adjust the corresponding pool stake.
-func (k Keeper) AddAmountToStaker(ctx sdk.Context, stakerAddress string, amount uint64) {
-	staker, found := k.GetStaker(ctx, stakerAddress)
-	if found {
-		staker.Amount += amount
-
-		for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
-			k.AddToTotalStake(ctx, valaccount.PoolId, amount)
-		}
-
-		k.setStaker(ctx, staker)
-	}
-}
-
-func (k Keeper) RemoveAmountFromStaker(ctx sdk.Context, stakerAddress string, amount uint64, isUnstake bool) {
-	staker, found := k.GetStaker(ctx, stakerAddress)
-	if found {
-		// if amount is smaller equal zero remove staker
-		if amount >= staker.Amount {
-			// TODO: https://kyvenetwork.atlassian.net/browse/CHAIN-182
-			k.removeStaker(ctx, staker)
-
-			// remove all valaccounts from pools and subtract stake
-			for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
-				k.removeValaccount(ctx, *valaccount)
-				k.subtractOneFromCount(ctx, valaccount.PoolId)
-				k.subtractFromTotalStake(ctx, valaccount.PoolId, staker.Amount)
-			}
-		} else {
-			staker.Amount -= amount
-
-			// if staker is currently unbonding (isUnstake) the unbonding amount should also be decreased
-			if isUnstake {
-				staker.UnbondingAmount -= amount
-			}
-
-			// subtract stake of pools
-			for _, valaccount := range k.GetValaccountsFromStaker(ctx, stakerAddress) {
-				k.subtractFromTotalStake(ctx, valaccount.PoolId, amount)
-			}
-
-			k.setStaker(ctx, staker)
-		}
 	}
 }
 
@@ -228,16 +176,6 @@ func (k Keeper) AddOneToCount(ctx sdk.Context, poolId uint64) {
 func (k Keeper) subtractOneFromCount(ctx sdk.Context, poolId uint64) {
 	count := k.getStat(ctx, poolId, types.STAKER_STATS_COUNT)
 	k.setStat(ctx, poolId, types.STAKER_STATS_COUNT, count-1)
-}
-
-func (k Keeper) AddToTotalStake(ctx sdk.Context, poolId uint64, amount uint64) {
-	stake := k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE)
-	k.setStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE, stake+amount)
-}
-
-func (k Keeper) subtractFromTotalStake(ctx sdk.Context, poolId uint64, amount uint64) {
-	stake := k.getStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE)
-	k.setStat(ctx, poolId, types.STAKER_STATS_TOTAL_STAKE, stake-amount)
 }
 
 // getStat get the total number of pool

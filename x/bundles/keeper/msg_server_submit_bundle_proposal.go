@@ -104,7 +104,6 @@ func (k msgServer) SubmitBundleProposal(
 
 		// slash stakers who voted incorrectly
 		for _, voter := range bundleProposal.VotersInvalid {
-			k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakertypes.SLASH_TYPE_VOTE)
 			k.delegationKeeper.SlashDelegators(ctx, voter, stakertypes.SLASH_TYPE_VOTE)
 		}
 
@@ -122,10 +121,8 @@ func (k msgServer) SubmitBundleProposal(
 		// slash stakers who voted incorrectly - uploader receives upload slash
 		for _, voter := range bundleProposal.VotersValid {
 			if voter == bundleProposal.Uploader {
-				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakertypes.SLASH_TYPE_UPLOAD)
 				k.delegationKeeper.SlashDelegators(ctx, voter, stakertypes.SLASH_TYPE_VOTE)
 			} else {
-				k.stakerKeeper.Slash(ctx, msg.PoolId, voter, stakertypes.SLASH_TYPE_VOTE)
 				k.delegationKeeper.SlashDelegators(ctx, voter, stakertypes.SLASH_TYPE_VOTE)
 			}
 		}

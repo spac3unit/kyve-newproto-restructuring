@@ -37,7 +37,7 @@ func (k msgServer) JoinPool(goCtx context.Context, msg *types.MsgJoinPool) (*typ
 		}
 	}
 
-	errFreeSlot := k.ensureFreeSlot(ctx, msg.PoolId, staker.Amount)
+	errFreeSlot := k.ensureFreeSlot(ctx, msg.PoolId, staker.Address)
 	if errFreeSlot != nil {
 		return nil, errFreeSlot
 	}

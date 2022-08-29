@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -14,8 +15,8 @@ import (
 TEST CASES - msg_server_stake.go
 
 * Create a new staker by staking 100 KYVE
-* Stake additional 50 KYVE to an existing staker
-* Try to stake with more KYVE than available in balance
+* Do an additional 50 KYVE self delegation
+* Try to create staker with more KYVE than available in balance
 * Create a second staker by staking 150 KYVE
 * TODO: create a staker again after the staker unstaked everything
 
@@ -37,7 +38,7 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 
 	It("Create a new staker by staking 100 KYVE", func() {
 		// ACT
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -53,7 +54,8 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(initialBalance - balanceAfter).To(Equal(100 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.STAKER_0))
-		Expect(staker.Amount).To(Equal(100 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(100 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(100 * i.KYVE))
 		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
@@ -64,16 +66,17 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(valaccounts).To(BeEmpty())
 	})
 
-	It("Stake additional 50 KYVE to an existing staker", func() {
+	It("Do an additional 50 KYVE self delegation", func() {
 		// ARRANGE
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
 		// ACT
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxDelegatorSuccess(&delegationtypes.MsgDelegate{
 			Creator: i.STAKER_0,
+			Staker:  i.STAKER_0,
 			Amount:  50 * i.KYVE,
 		})
 
@@ -88,7 +91,9 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(initialBalance - balanceAfter).To(Equal(150 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.STAKER_0))
-		Expect(staker.Amount).To(Equal(150 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(150 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(150 * i.KYVE))
+
 		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
@@ -99,11 +104,11 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(valaccounts).To(HaveLen(0))
 	})
 
-	It("Try to stake with more KYVE than available in balance", func() {
+	It("Try to create staker with more KYVE than available in balance", func() {
 		// ACT
 		currentBalance := s.GetBalanceFromAddress(i.STAKER_0)
 
-		s.RunTxStakersError(&stakerstypes.MsgStake{
+		s.RunTxStakersError(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  currentBalance + 1,
 		})
@@ -118,13 +123,13 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 
 	It("Create a second staker by staking 150 KYVE", func() {
 		// ARRANGE
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
 
 		// ACT
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  150 * i.KYVE,
 		})
@@ -140,7 +145,10 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(initialBalance - balanceAfter).To(Equal(150 * i.KYVE))
 
 		Expect(staker.Address).To(Equal(i.BOB))
-		Expect(staker.Amount).To(Equal(150 * i.KYVE))
+
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)).To(Equal(150 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.BOB, i.BOB)).To(Equal(150 * i.KYVE))
+
 		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 

@@ -17,8 +17,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 
 	for _, entry := range genState.ValaccountList {
 		k.SetValaccount(ctx, entry)
-		staker, _ := k.GetStaker(ctx, entry.Staker)
-		k.AddToTotalStake(ctx, entry.PoolId, staker.Amount)
 		k.AddOneToCount(ctx, entry.PoolId)
 	}
 

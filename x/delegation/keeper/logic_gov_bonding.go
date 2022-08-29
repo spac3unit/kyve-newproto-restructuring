@@ -11,9 +11,6 @@ func (k Keeper) GetBondingOfAddress(ctx sdk.Context, address sdk.AccAddress) sdk
 
 	var amount uint64 = 0
 
-	staker, _ := k.stakersKeeper.GetStaker(ctx, address.String())
-	amount += staker.Amount
-
 	delegatorStore := prefix.NewStore(ctx.KVStore(k.storeKey), util.GetByteKey(types.DelegatorKeyPrefixIndex2, address.String()))
 	delegatorIterator := sdk.KVStorePrefixIterator(delegatorStore, nil)
 	defer delegatorIterator.Close()
@@ -32,11 +29,6 @@ func (k Keeper) TotalProtocolBonding(ctx sdk.Context) sdk.Int {
 	// TODO consider aggregated variable
 	for _, data := range k.GetAllDelegationData(ctx) {
 		total += data.TotalDelegation
-	}
-
-	// TODO consider aggregated variable
-	for _, staker := range k.stakersKeeper.GetAllStakers(ctx) {
-		total += staker.Amount
 	}
 
 	return sdk.NewIntFromUint64(total)

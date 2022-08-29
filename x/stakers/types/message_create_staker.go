@@ -5,19 +5,19 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const TypeMsgStake = "stake"
+const TypeMsgCreateStaker = "create_staker"
 
-var _ sdk.Msg = &MsgStake{}
+var _ sdk.Msg = &MsgCreateStaker{}
 
-func (msg *MsgStake) Route() string {
+func (msg *MsgCreateStaker) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgStake) Type() string {
-	return TypeMsgStake
+func (msg *MsgCreateStaker) Type() string {
+	return TypeMsgCreateStaker
 }
 
-func (msg *MsgStake) GetSigners() []sdk.AccAddress {
+func (msg *MsgCreateStaker) GetSigners() []sdk.AccAddress {
 	creator, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		panic(err)
@@ -25,12 +25,12 @@ func (msg *MsgStake) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{creator}
 }
 
-func (msg *MsgStake) GetSignBytes() []byte {
+func (msg *MsgCreateStaker) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgStake) ValidateBasic() error {
+func (msg *MsgCreateStaker) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

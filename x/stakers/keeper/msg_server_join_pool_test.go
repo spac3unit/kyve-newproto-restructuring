@@ -17,7 +17,7 @@ TEST CASES - msg_server_join_pool.go
 * Test if a newly created staker is participating in no pools yet
 * Join the first pool as the first staker to a newly created pool
 * // TODO: join a pool where other stakers have already joined
-* Stake more KYVE after joining a pool
+* Self-Delegate more KYVE after joining a pool
 * Try to join the same pool with the same valaddress again
 * Try to join the same pool with a different valaddress
 * Try to join another pool with the same valaddress again
@@ -55,7 +55,7 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 		})
 
 		// create staker
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -108,14 +108,14 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
-		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
+		totalStakeOfPool := s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
-		Expect(totalStakeOfPool).To(Equal(staker.Amount))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(totalStakeOfPool))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(totalStakeOfPool))
 	})
 
-	It("Stake more KYVE after joining a pool", func() {
+	It("Self-Delegate more KYVE after joining a pool", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgJoinPool{
 			Creator:    i.STAKER_0,
@@ -124,12 +124,13 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 			Amount:     100 * i.KYVE,
 		})
 
-		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
+		totalStakeOfPool := s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
 
 		// ACT
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxDelegatorSuccess(&delegationtypes.MsgDelegate{
 			Creator: i.STAKER_0,
+			Staker:  i.STAKER_0,
 			Amount:  50 * i.KYVE,
 		})
 
@@ -152,11 +153,12 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
-		totalStakeOfPool = s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
+		totalStakeOfPool = s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)
 
 		Expect(totalStakeOfPool).To(Equal(150 * i.KYVE))
-		Expect(totalStakeOfPool).To(Equal(staker.Amount))
+
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(totalStakeOfPool))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(totalStakeOfPool))
 	})
 
 	It("Try to join the same pool with the same valaddress again", func() {
@@ -302,11 +304,11 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
-		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
-
+		totalStakeOfPool := s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
-		Expect(totalStakeOfPool).To(Equal(staker.Amount))
+
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(totalStakeOfPool))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(totalStakeOfPool))
 	})
 
 	It("Join a pool with a valaddress which does not exist on chain yet and send 0 funds", func() {
@@ -343,11 +345,11 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 
 		Expect(valaccountsOfPool).To(HaveLen(1))
 
-		staker, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), i.STAKER_0)
-		totalStakeOfPool := s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)
-
+		totalStakeOfPool := s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)
 		Expect(totalStakeOfPool).To(Equal(100 * i.KYVE))
-		Expect(totalStakeOfPool).To(Equal(staker.Amount))
+
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(totalStakeOfPool))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(totalStakeOfPool))
 	})
 
 	It("Join a pool with an invalid valaddress", func() {
@@ -393,7 +395,7 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 		})
 
 		for k := 0; k < 49; k++ {
-			s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 				Creator: i.DUMMY[k],
 				Amount:  150 * i.KYVE,
 			})
@@ -406,9 +408,9 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 		}
 
 		// STAKER_0 is lowest staker and all stakers are full now.
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
 
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  150 * i.KYVE,
 		})
@@ -422,7 +424,7 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 		})
 
 		// Assert
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 150) * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)).To(Equal((150*49 + 150) * i.KYVE))
 		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).ToNot(ContainElement(i.STAKER_0))
 	})
 
@@ -438,7 +440,7 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 		})
 
 		for k := 0; k < 49; k++ {
-			s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+			s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 				Creator: i.DUMMY[k],
 				Amount:  150 * i.KYVE,
 			})
@@ -451,9 +453,9 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 		}
 
 		// Alice is lowest staker and all stakers are full now.
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
 
-		s.RunTxStakersSuccess(&stakerstypes.MsgStake{
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  150 * i.KYVE,
 		})
@@ -462,7 +464,7 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 			Creator: i.ALICE,
 			Staker:  i.STAKER_0,
 			Amount:  150 * i.KYVE,
-		}) // Alice has now 250 delegation
+		}) // Staker0 has now 250 delegation
 
 		// ACT
 		s.RunTxStakersError(&stakerstypes.MsgJoinPool{
@@ -473,7 +475,7 @@ var _ = Describe("msg_server_join_pool.go", Ordered, func() {
 		})
 
 		// ASSERT
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal((150*49 + 100) * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)).To(Equal((150*49 + 250) * i.KYVE))
 		Expect(s.App().StakersKeeper.GetAllStakerAddressesOfPool(s.Ctx(), 0)).To(ContainElement(i.STAKER_0))
 	})
 })
