@@ -131,6 +131,11 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 	pool, _ := k.poolKeeper.GetPool(ctx, msg.PoolId)
 
 	currentHeight := bundleProposal.ToHeight
+
+	if currentHeight == 0 {
+		currentHeight = pool.CurrentHeight
+	}
+
 	currentKey := bundleProposal.ToKey
 
 	// Validate storage id

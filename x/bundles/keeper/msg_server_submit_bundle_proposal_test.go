@@ -10,6 +10,8 @@ import (
 	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
 )
 
+// TODO: test when previous bundle got dropped
+
 var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 	s := i.NewCleanChain()
 
