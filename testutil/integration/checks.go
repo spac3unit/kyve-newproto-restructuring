@@ -362,8 +362,8 @@ func (suite *KeeperTestSuite) verifyFullStaker(fullStaker querytypes.FullStaker,
 
 	staker, found := suite.App().StakersKeeper.GetStaker(suite.Ctx(), stakerAddress)
 	Expect(found).To(BeTrue())
-	Expect(fullStaker.Amount).To(Equal(suite.App().DelegationKeeper.GetDelegationAmountOfDelegator(suite.Ctx(), stakerAddress, stakerAddress)))
-	Expect(fullStaker.UnbondingAmount).To(Equal(staker.UnbondingAmount))
+	Expect(fullStaker.SelfDelegation).To(Equal(suite.App().DelegationKeeper.GetDelegationAmountOfDelegator(suite.Ctx(), stakerAddress, stakerAddress)))
+	Expect(fullStaker.UnbondingAmount).To(Equal(uint64(0))) // TODO
 	Expect(fullStaker.Metadata.Logo).To(Equal(staker.Logo))
 	Expect(fullStaker.Metadata.Website).To(Equal(staker.Website))
 	Expect(fullStaker.Metadata.Commission).To(Equal(staker.Commission))

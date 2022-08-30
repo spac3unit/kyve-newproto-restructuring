@@ -56,7 +56,6 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(staker.Address).To(Equal(i.STAKER_0))
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(100 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(100 * i.KYVE))
-		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
 		Expect(staker.Moniker).To(BeEmpty())
@@ -94,7 +93,6 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.STAKER_0)).To(Equal(150 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(150 * i.KYVE))
 
-		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
 		Expect(staker.Moniker).To(BeEmpty())
@@ -149,7 +147,6 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)).To(Equal(150 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.BOB, i.BOB)).To(Equal(150 * i.KYVE))
 
-		Expect(staker.UnbondingAmount).To(BeZero())
 		Expect(staker.Commission).To(Equal(types.DefaultCommission))
 
 		Expect(staker.Moniker).To(BeEmpty())

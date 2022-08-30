@@ -35,11 +35,9 @@ type PoolKeeper interface {
 }
 
 type StakerKeeper interface {
-	//GetTotalStake(ctx sdk.Context, poolId uint64) uint64
 	GetAllStakerAddressesOfPool(ctx sdk.Context, poolId uint64) (stakers []string)
-	//GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress string) uint64
-	//Slash(ctx sdk.Context, poolId uint64, stakerAddress string, slashType stakertypes.SlashType) (slashedAmount uint64)
 	GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec
+	AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error
 
 	GetPoints(ctx sdk.Context, poolId uint64, stakerAddress string) uint64
 	AddPoint(ctx sdk.Context, poolId uint64, stakerAddress string) uint64
@@ -49,8 +47,6 @@ type StakerKeeper interface {
 
 	// TODO replace exported mutation from getters file
 	RemoveValaccountFromPool(ctx sdk.Context, poolId uint64, stakerAddress string)
-
-	AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error
 }
 
 type DelegationKeeper interface {

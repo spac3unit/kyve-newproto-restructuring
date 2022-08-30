@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -27,17 +28,6 @@ func (k Keeper) GetAllStakerAddressesOfPool(ctx sdk.Context, poolId uint64) (sta
 	return
 }
 
-// GetStakeInPool returns the amount of the staker if the staker is currently
-// participating in the given pool. If the staker is not in that pool
-// the function returns zero as the current stake for that staker is zero.
-//func (k Keeper) GetStakeInPool(ctx sdk.Context, poolId uint64, stakerAddress string) uint64 {
-//	if k.DoesValaccountExist(ctx, poolId, stakerAddress) {
-//		staker, _ := k.GetStaker(ctx, stakerAddress)
-//		return staker.Amount
-//	}
-//	return 0
-//}
-
 // GetCommission returns the commission of a staker as a parsed sdk.Dec
 func (k Keeper) GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec {
 	staker, _ := k.GetStaker(ctx, stakerAddress)
@@ -46,4 +36,31 @@ func (k Keeper) GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec {
 		// TODO -> log error to metrics
 	}
 	return uploaderCommission
+}
+
+func (k Keeper) GetSlashFraction(ctx sdk.Context, slashType types.SlashType) (slashAmountRatio sdk.Dec) {
+	// Retrieve slash fraction from params
+	switch slashType {
+	case types.SLASH_TYPE_TIMEOUT:
+		slashAmountRatio, _ = sdk.NewDecFromStr(k.TimeoutSlash(ctx))
+	case types.SLASH_TYPE_VOTE:
+		slashAmountRatio, _ = sdk.NewDecFromStr(k.VoteSlash(ctx))
+	case types.SLASH_TYPE_UPLOAD:
+		slashAmountRatio, _ = sdk.NewDecFromStr(k.UploadSlash(ctx))
+	}
+	return
+}
+
+func (k Keeper) AssertValaccountAuthorized(ctx sdk.Context, poolId uint64, stakerAddress string, valaddress string) error {
+	valaccount, found := k.GetValaccount(ctx, poolId, stakerAddress)
+
+	if !found {
+		return types.ErrValaccountUnauthorized
+	}
+
+	if valaccount.Valaddress != valaddress {
+		return types.ErrValaccountUnauthorized
+	}
+
+	return nil
 }

@@ -56,10 +56,11 @@ message FullStaker {
   // metadata as logo, moniker, etc.
   StakerMetadata metadata = 2;
 
-  // amount the staker has staked
-  uint64 amount = 3;
+  // amount the staker has delegated to himself
+  uint64 self_delegation = 3;
 
   // unbonding_amount is the amount the staker is currently unbonding
+  // from the self-delegation.
   // This amount can be larger than `amount` when the staker
   // got slashed during unbonding. However, at the end of
   // the unbonding period this amount is double checked with the

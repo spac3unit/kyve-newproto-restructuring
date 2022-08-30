@@ -52,8 +52,8 @@ func (k Keeper) GetFullStaker(ctx sdk.Context, stakerAddress string) *types.Full
 	return &types.FullStaker{
 		Address:         staker.Address,
 		Metadata:        &stakerMetadata,
-		Amount:          k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, stakerAddress, stakerAddress),
-		UnbondingAmount: staker.UnbondingAmount,
+		SelfDelegation:  k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, stakerAddress, stakerAddress),
+		UnbondingAmount: 0, // TODO
 		TotalDelegation: k.delegationKeeper.GetDelegationAmount(ctx, staker.Address),
 		DelegatorCount:  delegationData.DelegatorCount,
 		Pools:           poolMemberships,

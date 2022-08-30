@@ -15,19 +15,7 @@ func DefaultGenesis() *GenesisState {
 func (gs GenesisState) Validate() error {
 
 	// Staker
-	stakerMap := make(map[string]struct{})
 	stakerLeaving := make(map[string]bool)
-	stakerUnbondings := make(map[string]uint64)
-
-	for _, elem := range gs.StakerList {
-
-		index := string(StakerKey(elem.Address))
-		if _, ok := stakerMap[index]; ok {
-			return fmt.Errorf("duplicated index for staker %v", elem)
-		}
-		stakerMap[index] = struct{}{}
-		stakerUnbondings[elem.Address] = elem.UnbondingAmount
-	}
 
 	// Valaccounts
 	valaccountMap := make(map[string]struct{})
@@ -72,15 +60,8 @@ func (gs GenesisState) Validate() error {
 		if elem.Index < gs.QueueStateUnstaking.LowIndex {
 			return fmt.Errorf("unbonding stake entry index too low: %v", elem)
 		}
-		stakerUnbondings[elem.Staker] -= elem.Amount
 
 		unbondingStakeEntry[index] = struct{}{}
-	}
-
-	for staker, unbondingAmount := range stakerUnbondings {
-		if unbondingAmount != 0 {
-			return fmt.Errorf("unbonding amount mismatch: %v", staker)
-		}
 	}
 
 	// Leave Pool

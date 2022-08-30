@@ -32,6 +32,9 @@ TODO joinA slash joinB slash -> remaining delegation
 var _ = Describe("Delegation - Undelegation", Ordered, func() {
 	s := i.NewCleanChain()
 
+	aliceSelfDelegation := 100 * i.KYVE
+	bobSelfDelegation := 100 * i.KYVE
+
 	BeforeEach(func() {
 		s = i.NewCleanChain()
 
@@ -39,12 +42,12 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.ALICE,
-			Amount:  100 * i.KYVE,
+			Amount:  aliceSelfDelegation,
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
-			Amount:  100 * i.KYVE,
+			Amount:  bobSelfDelegation,
 		})
 
 		_, aliceFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
@@ -69,7 +72,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 			Amount:  10 * i.KYVE,
 		})
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		s.PerformValidityChecks()
 
 		// Act
@@ -82,7 +85,8 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		// Assert
 		Expect(res).To(BeNil())
 		Expect(err).ToNot(BeNil())
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetAllUnbondingDelegationQueueEntriesOfDelegator(s.Ctx(), i.DUMMY[0])).To(BeEmpty())
 	})
 
@@ -95,7 +99,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 			Amount:  10 * i.KYVE,
 		})
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 		s.PerformValidityChecks()
 
@@ -111,7 +115,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 
 		//Delegation amount stays the same (due to unbonding)
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 
 		unbondingEntries := s.App().DelegationKeeper.GetAllUnbondingDelegationQueueEntriesOfDelegator(s.Ctx(), i.DUMMY[0])
@@ -131,7 +135,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 			Amount:  10 * i.KYVE,
 		})
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 		s.PerformValidityChecks()
 
@@ -146,7 +150,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 
 		// Assert
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(995 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(5 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 5*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(5 * i.KYVE))
 
 		unbondingEntries := s.App().DelegationKeeper.GetAllUnbondingDelegationQueueEntriesOfDelegator(s.Ctx(), i.DUMMY[0])
@@ -162,7 +166,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 			Amount:  10 * i.KYVE,
 		})
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 		s.PerformValidityChecks()
 
@@ -184,7 +188,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		// Assert
 		// Unbonding should have had no effect
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(0 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(0 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.BOB, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 
@@ -200,7 +204,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 			Amount:  10 * i.KYVE,
 		})
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 		s.PerformValidityChecks()
 
@@ -234,7 +238,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 		s.CommitAfterSeconds(10)
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 		s.PerformValidityChecks()
 
@@ -245,7 +249,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 		s.CommitAfterSeconds(10)
 		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(980 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 30*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(20 * i.KYVE))
 
 		// Act
@@ -286,7 +290,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 		s.CommitAfterSeconds(10)
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 
 		s.RunTxDelegatorSuccess(&types.MsgDelegate{
@@ -296,7 +300,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 		s.CommitAfterSeconds(10)
 		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(980 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 30*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(20 * i.KYVE))
 
 		// Act
@@ -335,7 +339,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 		s.CommitAfterSeconds(10)
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(10 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 10*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(10 * i.KYVE))
 
 		s.RunTxDelegatorSuccess(&types.MsgDelegate{
@@ -345,11 +349,14 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 		s.CommitAfterSeconds(10)
 		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(980 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 30*i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(20 * i.KYVE))
 		s.PerformValidityChecks()
 
 		// Payout rewards
+		// Alice: 100   100/130 * 10 * 1e9 = 7_692_307_692
+		// Dummy0: 10   10/130 * 10 * 1e9 = 769_230_769
+		// Dummy1: 20   20/130 * 10 * 1e9 = 1_538_461_538
 		PayoutRewards(&s, i.ALICE, 10*i.KYVE)
 
 		// Collect
@@ -366,9 +373,6 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(9 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(18 * i.KYVE))
-
-		slashes2 := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
-		_ = slashes2
 
 		// Act
 		s.RunTxDelegatorSuccess(&types.MsgUndelegate{
@@ -389,18 +393,18 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		s.CommitAfterSeconds(1)
 
 		// Assert
-		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(uint64(1002_333_333_333)))
-		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(uint64(1004_666_666_666)))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(999*i.KYVE + uint64(769_230_769)))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(998*i.KYVE + uint64(1_538_461_538)))
 
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(BeZero())
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(uint64(float64(aliceSelfDelegation) * 0.9)))
 
 		delegationEntries := s.App().DelegationKeeper.GetAllDelegationEntries(s.Ctx())
 		delegators := s.App().DelegationKeeper.GetAllDelegators(s.Ctx())
 		slashes := s.App().DelegationKeeper.GetAllDelegationSlashEntries(s.Ctx())
 
-		// Only slash entries should be left
-		Expect(len(slashes)).To(Equal(len(delegationEntries)))
-		Expect(delegators).To(HaveLen(0))
+		Expect(len(slashes)).To(Equal(1))
+		Expect(len(delegationEntries)).To(Equal(4))
+		Expect(delegators).To(HaveLen(2))
 	})
 
 	It("JoinA, Slash, JoinB, PayoutReward", func() {
@@ -427,16 +431,19 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		})
 
 		// Dummy0: 5$KYVE Dummy1: 20$KYVE
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(25 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal((50 + 25) * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(5 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(20 * i.KYVE))
 
 		// Act
+		// Alice: 50    50 / 75 * 10 * 1e9 = 6_666_666_666
+		// Dummy0: 5    5 / 75 * 10 * 1e9 = 666_666_666
+		// Dummy1: 20   20 / 75 * 10 * 1e9 = 2_666_666_666
 		PayoutRewards(&s, i.ALICE, 10*i.KYVE)
 
 		// Assert
-		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(2 * i.KYVE))
-		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(8 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(666_666_666)))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(2_666_666_666)))
 	})
 
 	It("Slash twice", func() {
@@ -464,7 +471,7 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, stakerstypes.SLASH_TYPE_UPLOAD)
 
 		// Assert
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(uint64(2_500_000_000 + 5_000_000_000)))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(25*i.KYVE + uint64(2_500_000_000+5_000_000_000)))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(Equal(uint64(2_500_000_000)))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(Equal(uint64(5_000_000_000)))
 	})
@@ -502,18 +509,21 @@ var _ = Describe("Delegation - Undelegation", Ordered, func() {
 		s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, stakerstypes.SLASH_TYPE_UPLOAD)
 		s.App().DelegationKeeper.SlashDelegators(s.Ctx(), i.ALICE, stakerstypes.SLASH_TYPE_UPLOAD)
 
+		// Alice: 25    25 / 32.5 * 1e10 = 7_692_307_692
+		// Dummy0: 2.5  2.5 / 32.5 * 1e10 = 769_230_769
+		// Dummy1: 5    5 / 32.5 * 1e10 = 1_538_461_538
 		PayoutRewards(&s, i.ALICE, 10*i.KYVE)
 
 		s.CommitAfterSeconds(s.App().DelegationKeeper.UnbondingDelegationTime(s.Ctx()) + 1)
 		s.CommitAfterSeconds(1)
 
 		// Assert
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(BeZero())
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(25 * i.KYVE))
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[0])).To(BeZero())
 		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.DUMMY[1])).To(BeZero())
 
-		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(uint64(1000e9 - 7_500_000_000 + 3_333_333_333)))
-		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(uint64(1000e9 - 15_000_000_000 + 6_666_666_666)))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(uint64(1000e9 - 7_500_000_000 + 769_230_769)))
+		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(uint64(1000e9 - 15_000_000_000 + 1_538_461_538)))
 	})
 
 })
