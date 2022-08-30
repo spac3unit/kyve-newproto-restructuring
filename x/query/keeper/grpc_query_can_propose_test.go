@@ -3,6 +3,7 @@ package keeper_test
 import (
 	i "github.com/KYVENetwork/chain/testutil/integration"
 	bundletypes "github.com/KYVENetwork/chain/x/bundles/types"
+	delegationtypes "github.com/KYVENetwork/chain/x/delegation/types"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	"github.com/KYVENetwork/chain/x/registry/types"
@@ -271,13 +272,14 @@ var _ = Describe("grpc_query_can_propose.go", Ordered, func() {
 
 	It("Call can propose if pool has not reached the minimum stake", func() {
 		// ARRANGE
-		s.RunTxStakersSuccess(&stakertypes.MsgUnstake{
+		s.RunTxDelegatorSuccess(&delegationtypes.MsgUndelegate{
 			Creator: i.STAKER_0,
+			Staker:  i.STAKER_0,
 			Amount:  50 * i.KYVE,
 		})
 
 		// wait for unbonding
-		s.CommitAfterSeconds(s.App().StakersKeeper.UnbondingStakingTime(s.Ctx()))
+		s.CommitAfterSeconds(s.App().DelegationKeeper.UnbondingDelegationTime(s.Ctx()))
 		s.CommitAfterSeconds(1)
 
 		// ACT

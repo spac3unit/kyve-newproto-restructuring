@@ -39,7 +39,7 @@ var _ = Describe("Submit Bundle Proposal", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})

@@ -38,7 +38,7 @@ var _ = Describe("grpc_query_can_validate.go", Ordered, func() {
 			UpgradePlan:    &pooltypes.UpgradePlan{},
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -59,7 +59,7 @@ var _ = Describe("grpc_query_can_validate.go", Ordered, func() {
 			UpgradePlan:    &pooltypes.UpgradePlan{},
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_1,
 			Amount:  100 * i.KYVE,
 		})

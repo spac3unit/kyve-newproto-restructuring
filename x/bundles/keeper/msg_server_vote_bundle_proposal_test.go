@@ -49,7 +49,7 @@ var _ = Describe("msg_server_vote_bundle_proposal.go", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -80,7 +80,7 @@ var _ = Describe("msg_server_vote_bundle_proposal.go", Ordered, func() {
 			BundleHash: "test_hash",
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_1,
 			Amount:  100 * i.KYVE,
 		})

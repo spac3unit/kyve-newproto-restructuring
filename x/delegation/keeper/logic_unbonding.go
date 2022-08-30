@@ -55,7 +55,7 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 				queueState.LowIndex += 1
 				continueProcessing = true
 			}
-		} else if undelegationEntry.CreationTime+k.UnbondingDelegationTime(ctx) < uint64(ctx.BlockTime().Unix()) {
+		} else if undelegationEntry.CreationTime+k.UnbondingDelegationTime(ctx) <= uint64(ctx.BlockTime().Unix()) {
 
 			// Perform undelegation and save undelegated amount to then transfer back to the user
 			undelegatedAmount := k.performUndelegation(ctx, undelegationEntry.Staker, undelegationEntry.Delegator, undelegationEntry.Amount)

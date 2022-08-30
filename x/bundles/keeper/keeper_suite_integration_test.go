@@ -42,7 +42,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.ALICE,
 			Amount:  100 * i.KYVE,
 		})
@@ -160,7 +160,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		treasuryReward := uint64(sdk.NewDec(int64(totalReward)).Mul(networkFee).RoundInt64())
 		uploaderReward := totalReward - treasuryReward
 
-		Expect(balanceStaker).To(Equal(initialBalanceAlice + uploaderReward))
+		Expect(balanceStaker + s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.ALICE, i.ALICE)).To(Equal(initialBalanceAlice + uploaderReward))
 
 		// check pool funds
 		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
@@ -172,7 +172,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 	PIt("Produce valid bundles with two nodes", func() {
 		// ARRANGE
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  100 * i.KYVE,
 		})
@@ -302,7 +302,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 	PIt("Produce invalid bundles with two nodes", func() {
 		// ARRANGE
 		// stake a bit more than first node so >50% is reached
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  200 * i.KYVE,
 		})
@@ -397,14 +397,14 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 		Expect(balanceStaker).To(Equal(initialBalanceAlice))
 
-		staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
+		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
 		Expect(stakerFound).To(BeTrue())
 
 		// Upload Slash
 		fraction, _ := sdk.NewDecFromStr(s.App().StakersKeeper.UploadSlash(s.Ctx()))
 		expectedBalance := sdk.NewDec(int64(100 * i.KYVE)).Mul(sdk.NewDec(1).Sub(fraction)).TruncateInt().Uint64()
-		Expect(staker.Amount).To(Equal(expectedBalance))
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(200*i.KYVE + expectedBalance))
+		Expect(s.App().DelegationKeeper.GetDelegationAmountOfDelegator(s.Ctx(), i.ALICE, i.ALICE)).To(Equal(expectedBalance))
+		Expect(s.App().DelegationKeeper.GetDelegationOfPool(s.Ctx(), 0)).To(Equal(200*i.KYVE + expectedBalance))
 
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
@@ -421,7 +421,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 	PIt("Produce dropped bundle because nodes do not vote", func() {
 		// ARRANGE
 		// stake a bit more than first node so >50% is reached
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  200 * i.KYVE,
 		})
@@ -496,11 +496,11 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 		Expect(balanceStaker).To(Equal(initialBalanceAlice))
 
-		staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
-		Expect(stakerFound).To(BeTrue())
-
-		Expect(staker.Amount).To(Equal(100 * i.KYVE))
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300 * i.KYVE))
+		//staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
+		//Expect(stakerFound).To(BeTrue()) TODO
+		//
+		//Expect(staker.Amount).To(Equal(100 * i.KYVE))
+		//Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300 * i.KYVE))
 
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)
@@ -530,7 +530,7 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 		initialBalanceAlice := s.GetBalanceFromAddress(i.ALICE)
 
 		// stake a bit more than first node so >50% is reached
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.BOB,
 			Amount:  200 * i.KYVE,
 		})
@@ -625,11 +625,11 @@ var _ = Describe("Bundles module integration tests", Ordered, func() {
 
 		Expect(balanceStaker).To(Equal(initialBalanceAlice))
 
-		staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
-		Expect(stakerFound).To(BeTrue())
+		//staker, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
+		//Expect(stakerFound).To(BeTrue())
 
-		Expect(staker.Amount).To(Equal(100 * i.KYVE))
-		Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300 * i.KYVE))
+		//Expect(staker.Amount).To(Equal(100 * i.KYVE)) TODO
+		//Expect(s.App().StakersKeeper.GetTotalStake(s.Ctx(), 0)).To(Equal(300 * i.KYVE))
 
 		// check voter status
 		valaccountVoter, _ := s.App().StakersKeeper.GetValaccount(s.Ctx(), 0, i.BOB)

@@ -49,7 +49,7 @@ var _ = Describe("msg_server_claim_uploader_role.go", Ordered, func() {
 
 	It("Try to claim uploader role without pool being funded", func() {
 		// ARRANGE
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -98,7 +98,7 @@ var _ = Describe("msg_server_claim_uploader_role.go", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -142,7 +142,7 @@ var _ = Describe("msg_server_claim_uploader_role.go", Ordered, func() {
 			Amount:  100 * i.KYVE,
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
@@ -182,7 +182,7 @@ var _ = Describe("msg_server_claim_uploader_role.go", Ordered, func() {
 			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
-		s.RunTxStakersSuccess(&stakertypes.MsgStake{
+		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
 		})
