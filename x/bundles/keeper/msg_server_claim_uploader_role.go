@@ -27,6 +27,8 @@ func (k msgServer) ClaimUploaderRole(
 
 	bundleProposal, found := k.GetBundleProposal(ctx, msg.PoolId)
 
+	// If the pool was newly created no bundle proposal exists yet.
+	// There is one bundle proposal per pool.
 	if !found {
 		bundleProposal.PoolId = msg.PoolId
 	}

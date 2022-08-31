@@ -25,6 +25,9 @@ TEST CASES - msg_server_redelegate.go
 var _ = Describe("Delegation - Redelegation", Ordered, func() {
 	s := i.NewCleanChain()
 
+	aliceSelfDelegation := 100 * i.KYVE
+	bobSelfDelegation := 100 * i.KYVE
+
 	BeforeEach(func() {
 		s = i.NewCleanChain()
 
@@ -32,12 +35,12 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.ALICE,
-			Amount:  100 * i.KYVE,
+			Amount:  aliceSelfDelegation,
 		})
 
 		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.BOB,
-			Amount:  100 * i.KYVE,
+			Amount:  bobSelfDelegation,
 		})
 
 		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
@@ -64,8 +67,8 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
-		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
+		Expect(aliceDelegationBefore).To(Equal(aliceSelfDelegation + 10*i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(bobSelfDelegation))
 
 		// Act
 		s.RunTxDelegatorSuccess(&types.MsgRedelegate{
@@ -96,8 +99,8 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
-		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
+		Expect(aliceDelegationBefore).To(Equal(aliceSelfDelegation + 10*i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(bobSelfDelegation))
 		s.PerformValidityChecks()
 
 		// Act
@@ -122,8 +125,8 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		// Arrange
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(aliceDelegationBefore).To(BeZero())
-		Expect(bobDelegationBefore).To(BeZero())
+		Expect(aliceDelegationBefore).To(Equal(aliceSelfDelegation))
+		Expect(bobDelegationBefore).To(Equal(bobSelfDelegation))
 		s.PerformValidityChecks()
 
 		// Act
@@ -152,8 +155,8 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		})
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
-		Expect(bobDelegationBefore).To(BeZero())
+		Expect(aliceDelegationBefore).To(Equal(aliceSelfDelegation + 10*i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(bobSelfDelegation))
 		s.PerformValidityChecks()
 
 		// Act
@@ -183,8 +186,8 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
-		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
+		Expect(aliceDelegationBefore).To(Equal(aliceSelfDelegation + 10*i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(bobSelfDelegation))
 		s.PerformValidityChecks()
 
 		// Act
@@ -208,10 +211,10 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 
 		// Assert
 		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
-		Expect(aliceDelegationAfter).To(Equal(5 * i.KYVE))
+		Expect(aliceDelegationAfter).To(Equal(aliceSelfDelegation + 5*i.KYVE))
 
 		bobDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(bobDelegationAfter).To(Equal(5 * i.KYVE))
+		Expect(bobDelegationAfter).To(Equal(bobSelfDelegation + 5*i.KYVE))
 
 		// Expect to fail.
 		// Now all redelegation spells are exhausted
@@ -229,8 +232,8 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[0])).To(Equal(990 * i.KYVE))
 		aliceDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
 		bobDelegationBefore := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(aliceDelegationBefore).To(Equal(10 * i.KYVE))
-		Expect(bobDelegationBefore).To(Equal(0 * i.KYVE))
+		Expect(aliceDelegationBefore).To(Equal(aliceSelfDelegation + 10*i.KYVE))
+		Expect(bobDelegationBefore).To(Equal(bobSelfDelegation))
 
 		redelegationMessage := types.MsgRedelegate{
 			Creator:    i.DUMMY[0],
@@ -276,10 +279,10 @@ var _ = Describe("Delegation - Redelegation", Ordered, func() {
 
 		// Assert
 		aliceDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)
-		Expect(aliceDelegationAfter).To(Equal(2 * i.KYVE))
+		Expect(aliceDelegationAfter).To(Equal(aliceSelfDelegation + 2*i.KYVE))
 
 		bobDelegationAfter := s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.BOB)
-		Expect(bobDelegationAfter).To(Equal(8 * i.KYVE))
+		Expect(bobDelegationAfter).To(Equal(bobSelfDelegation + 8*i.KYVE))
 
 		// Expect to fail.
 		// Now all redelegation spells are exhausted

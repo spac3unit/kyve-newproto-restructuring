@@ -25,14 +25,17 @@ TODO test withdraw with multiple slashes
 var _ = Describe("Delegation - Withdraw Rewards", Ordered, func() {
 	s := i.NewCleanChain()
 
+	aliceSelfDelegation := 0 * i.KYVE
+	bobSelfDelegation := 0 * i.KYVE
+
 	BeforeEach(func() {
 		s = i.NewCleanChain()
 
 		CreateFundedPool(&s)
 
 		// Stake
-		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{Creator: i.ALICE, Amount: 100 * i.KYVE})
-		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{Creator: i.BOB, Amount: 100 * i.KYVE})
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{Creator: i.ALICE, Amount: aliceSelfDelegation})
+		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{Creator: i.BOB, Amount: bobSelfDelegation})
 
 		_, stakerFound := s.App().StakersKeeper.GetStaker(s.Ctx(), i.ALICE)
 		Expect(stakerFound).To(BeTrue())
@@ -70,13 +73,16 @@ var _ = Describe("Delegation - Withdraw Rewards", Ordered, func() {
 		Expect(s.GetBalanceFromAddress(i.DUMMY[1])).To(Equal(990 * i.KYVE))
 		Expect(s.GetBalanceFromAddress(i.DUMMY[2])).To(Equal(990 * i.KYVE))
 
-		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(30 * i.KYVE))
+		Expect(s.App().DelegationKeeper.GetDelegationAmount(s.Ctx(), i.ALICE)).To(Equal(aliceSelfDelegation + 30*i.KYVE))
 
 		delegationModuleBalanceBefore := s.GetBalanceFromModule(types.ModuleName)
 		poolModuleBalanceBefore := s.GetBalanceFromModule(pooltypes.ModuleName)
 		s.PerformValidityChecks()
 
 		// Act
+		// Alice: 100
+		// Dummy0: 10
+		// Dummy1: 0
 		PayoutRewards(&s, i.ALICE, 20*i.KYVE)
 
 		delegationModuleBalanceAfter := s.GetBalanceFromModule(types.ModuleName)
