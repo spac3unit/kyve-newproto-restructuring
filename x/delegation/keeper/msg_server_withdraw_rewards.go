@@ -29,5 +29,14 @@ func (k msgServer) WithdrawRewards(goCtx context.Context, msg *types.MsgWithdraw
 		return nil, err
 	}
 
+	// Emit a delegation event.
+	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventWithdrawRewards{
+		Address:  msg.Creator,
+		FromNode: msg.Staker,
+		Amount:   reward,
+	}); errEmit != nil {
+		return nil, errEmit
+	}
+
 	return &types.MsgWithdrawRewardsResponse{}, nil
 }
