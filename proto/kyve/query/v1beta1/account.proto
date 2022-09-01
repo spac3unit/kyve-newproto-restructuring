@@ -166,5 +166,16 @@ message QueryAccountRedelegationRequest {
 // QueryAccountDelegationListRequest is the response type for the Query/AccountDelegationList RPC method.
 message QueryAccountRedelegationResponse {
   // redelegation_cooldown_entries ...
-  repeated uint64 redelegation_cooldown_entries = 1 [(gogoproto.nullable) = false];
+  repeated RedelegationEntry redelegation_cooldown_entries = 1 [(gogoproto.nullable) = false];
+
+  // availableSlots ...
+  uint64 availableSlots = 2;
+}
+
+// RedelegationEntry ...
+message RedelegationEntry {
+  // creation_date ...
+  uint64 creation_date = 1;
+  // finish_date ...
+  uint64 finish_date = 2;
 }

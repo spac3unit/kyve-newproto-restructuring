@@ -66,3 +66,17 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 func (k Keeper) StoreKey() sdk.StoreKey {
 	return k.storeKey
 }
+
+var memStoreInitialized = false
+
+func (k Keeper) InitMemStore(ctx sdk.Context) {
+	if !memStoreInitialized {
+
+		// Update mem index
+		for _, entry := range k.GetAllDelegationData(ctx) {
+			k.SetStakerIndex(ctx, entry.Staker)
+		}
+
+		memStoreInitialized = true
+	}
+}

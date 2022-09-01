@@ -14,7 +14,24 @@ func (k Keeper) AccountRedelegation(goCtx context.Context, req *types.QueryAccou
 	}
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
+	var redelegationEntries []types.RedelegationEntry
+	usedSlots := uint64(0)
+
+	for _, creationDate := range k.delegationKeeper.GetRedelegationCooldownEntries(ctx, req.Address) {
+
+		finishDate := creationDate + k.delegationKeeper.RedelegationCooldown(ctx)
+
+		if finishDate >= uint64(ctx.BlockTime().Unix()) {
+			redelegationEntries = append(redelegationEntries, types.RedelegationEntry{
+				CreationDate: creationDate,
+				FinishDate:   finishDate,
+			})
+			usedSlots += 1
+		}
+	}
+
 	return &types.QueryAccountRedelegationResponse{
-		RedelegationCooldownEntries: k.delegationKeeper.GetRedelegationCooldownEntries(ctx, req.Address),
+		RedelegationCooldownEntries: redelegationEntries,
+		AvailableSlots:              k.delegationKeeper.RedelegationMaxAmount(ctx) - usedSlots,
 	}, nil
 }
