@@ -70,6 +70,11 @@ func (k Keeper) SlashDelegators(ctx sdk.Context, staker string, slashType staker
 
 	// Only slash if staker has delegators
 	if k.DoesDelegationDataExist(ctx, staker) {
+
+		// Update in-memory staker index for efficient queries
+		k.RemoveStakerIndex(ctx, staker)
+		defer k.SetStakerIndex(ctx, staker)
+
 		// Perform F1-slash and get slashed amount in nKYVE
 		slashedAmount := k.f1Slash(ctx, staker, k.stakersKeeper.GetSlashFraction(ctx, slashType))
 

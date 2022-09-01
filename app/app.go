@@ -248,7 +248,7 @@ func NewApp(
 
 	keys := sdk.NewKVStoreKeys(KVStoreKeys()...)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
-	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
+	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, delegationmoduletypes.MemStoreKey)
 
 	app := &App{
 		BaseApp:           bApp,
@@ -339,7 +339,7 @@ func NewApp(
 	app.PoolKeeper = *poolmodulekeeper.NewKeeper(
 		appCodec,
 		keys[poolmoduletypes.StoreKey],
-		keys[poolmoduletypes.MemStoreKey],
+		memKeys[poolmoduletypes.MemStoreKey],
 		app.GetSubspace(poolmoduletypes.ModuleName),
 
 		app.AccountKeeper,
@@ -351,7 +351,7 @@ func NewApp(
 	app.StakersKeeper = *stakersmodulekeeper.NewKeeper(
 		appCodec,
 		keys[stakersmoduletypes.StoreKey],
-		keys[stakersmoduletypes.MemStoreKey],
+		memKeys[stakersmoduletypes.MemStoreKey],
 		app.GetSubspace(stakersmoduletypes.ModuleName),
 
 		app.AccountKeeper,
@@ -364,7 +364,7 @@ func NewApp(
 	app.DelegationKeeper = *delegationmodulekeeper.NewKeeper(
 		appCodec,
 		keys[delegationmoduletypes.StoreKey],
-		keys[delegationmoduletypes.MemStoreKey],
+		memKeys[delegationmoduletypes.MemStoreKey],
 		app.GetSubspace(delegationmoduletypes.ModuleName),
 
 		app.AccountKeeper,

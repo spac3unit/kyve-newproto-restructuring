@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	stakermoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
-
 	"github.com/KYVENetwork/chain/x/query/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -19,8 +17,8 @@ func (k Keeper) Stakers(c context.Context, req *types.QueryStakersRequest) (*typ
 	ctx := sdk.UnwrapSDKContext(c)
 
 	data := make([]types.FullStaker, 0)
-	pageRes, err := k.stakerKeeper.GetPaginatedStakerQuery(ctx, req.Pagination, func(staker stakermoduletypes.Staker) {
-		data = append(data, *k.GetFullStaker(ctx, staker.Address))
+	pageRes, err := k.delegationKeeper.GetPaginatedStakersByDelegation(ctx, req.Pagination, func(address string) {
+		data = append(data, *k.GetFullStaker(ctx, address))
 	})
 	if err != nil {
 		return nil, err

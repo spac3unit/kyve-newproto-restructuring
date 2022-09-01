@@ -10,6 +10,10 @@ import (
 // Warning: does not transfer the amount (only the rewards)
 func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) {
 
+	// Update in-memory staker index for efficient queries
+	k.RemoveStakerIndex(ctx, stakerAddress)
+	defer k.SetStakerIndex(ctx, stakerAddress)
+
 	if k.DoesDelegatorExist(ctx, stakerAddress, delegatorAddress) {
 		// If the sender is already a delegator, first perform an undelegation, before then delegating.
 		reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
@@ -31,6 +35,10 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 // If the amount is greater than the available amount, only the available amount will be undelegated.
 // This method also transfers the rewards back to the given user.
 func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, delegatorAddress string, amount uint64) (actualAmount uint64) {
+
+	// Update in-memory staker index for efficient queries
+	k.RemoveStakerIndex(ctx, stakerAddress)
+	defer k.SetStakerIndex(ctx, stakerAddress)
 
 	// Withdraw all rewards for the sender.
 	reward := k.f1WithdrawRewards(ctx, stakerAddress, delegatorAddress)
