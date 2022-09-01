@@ -38,6 +38,11 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetRedelegationCooldown(ctx, entry)
 	}
 
+	// Update mem index
+	for _, entry := range genState.DelegationDataList {
+		k.SetStakerIndex(ctx, entry.Staker)
+	}
+
 }
 
 // ExportGenesis returns the capability module's exported genesis.

@@ -7,18 +7,19 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"math"
 )
 
 func (k Keeper) SetStakerIndex(ctx sdk.Context, staker string) {
 	amount := k.GetDelegationAmount(ctx, staker)
 	store := prefix.NewStore(ctx.KVStore(k.memKey), types.StakerIndexKeyPrefix)
-	store.Set(types.StakerIndexKey(amount, staker), []byte{0})
+	store.Set(types.StakerIndexKey(math.MaxUint64-amount, staker), []byte{0})
 }
 
 func (k Keeper) RemoveStakerIndex(ctx sdk.Context, staker string) {
 	amount := k.GetDelegationAmount(ctx, staker)
 	store := prefix.NewStore(ctx.KVStore(k.memKey), types.StakerIndexKeyPrefix)
-	store.Delete(types.StakerIndexKey(amount, staker))
+	store.Delete(types.StakerIndexKey(math.MaxUint64-amount, staker))
 }
 
 func (k Keeper) GetPaginatedStakersByDelegation(ctx sdk.Context, pagination *query.PageRequest, accumulator func(staker string)) (*query.PageResponse, error) {
