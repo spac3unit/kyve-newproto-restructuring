@@ -47,7 +47,7 @@ func (k Keeper) GetValaccountsFromStaker(ctx sdk.Context, stakerAddress string) 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		poolId := binary.BigEndian.Uint64(iterator.Key()[44 : 44+8])
+		poolId := binary.BigEndian.Uint64(iterator.Key()[43 : 43+8])
 		valaccount, valaccountFound := k.GetValaccount(ctx, poolId, stakerAddress)
 
 		if valaccountFound {
