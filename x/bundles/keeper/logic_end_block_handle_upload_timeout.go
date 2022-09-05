@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strings"
-
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	stakersmoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,7 +29,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		}
 
 		// Check if bundle needs to be dropped
-		if bundleProposal.StorageId != "" && !strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
+		if bundleProposal.StorageId != "" {
 			// check if the quorum was actually reached
 			voteDistribution := k.GetVoteDistribution(ctx, pool.Id)
 

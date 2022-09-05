@@ -2,16 +2,14 @@ package keeper
 
 import (
 	"github.com/KYVENetwork/chain/util"
-	"math"
-	"math/rand"
-	"sort"
-	"strings"
-
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	poolmoduletypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakermoduletypes "github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"math"
+	"math/rand"
+	"sort"
 )
 
 // AssertPoolCanRun checks whether the given pool fulfils all
@@ -62,11 +60,6 @@ func (k Keeper) AssertCanVote(ctx sdk.Context, poolId uint64, staker string, vot
 	// Check if dropped bundle
 	if bundleProposal.StorageId == "" {
 		return types.ErrBundleDropped
-	}
-
-	// Check if no data bundle
-	if strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
-		return types.ErrNoDataBundle
 	}
 
 	// Check if tx matches current bundleProposal
@@ -158,48 +151,25 @@ func (k Keeper) validateSubmitBundleArgs(ctx sdk.Context, bundleProposal *types.
 		return types.ErrFromKey
 	}
 
-	// check if bundle is of type no data bundle
-	if strings.HasPrefix(msg.StorageId, types.KYVE_NO_DATA_BUNDLE) {
-		// Validate bundle args
-		if msg.ToHeight != currentHeight || msg.ByteSize != 0 {
-			return types.ErrInvalidArgs
-		}
+	// Validate height and byte size
+	if msg.ToHeight <= currentHeight || msg.ByteSize == 0 {
+		return types.ErrInvalidArgs
+	}
 
-		// Validate key values
-		if msg.ToKey != "" || msg.ToValue != "" {
-			return types.ErrInvalidArgs
-		}
+	// Validate key values
+	if msg.ToKey == "" || msg.ToValue == "" {
+		return types.ErrInvalidArgs
+	}
 
-		// Validate bundle hash
-		if msg.BundleHash != "" {
-			return types.ErrInvalidArgs
-		}
-	} else {
-		if msg.ToHeight <= currentHeight || msg.ByteSize == 0 {
-			return types.ErrInvalidArgs
-		}
-
-		// Validate key values
-		if msg.ToKey == "" || msg.ToValue == "" {
-			return types.ErrInvalidArgs
-		}
-
-		// Validate bundle hash
-		if msg.BundleHash == "" {
-			return types.ErrInvalidArgs
-		}
+	// Validate bundle hash
+	if msg.BundleHash == "" {
+		return types.ErrInvalidArgs
 	}
 
 	return nil
 }
 
 func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal, msg *types.MsgSubmitBundleProposal, nextUploader string) error {
-	validVoters := make([]string, 0)
-
-	if !strings.HasPrefix(msg.StorageId, types.KYVE_NO_DATA_BUNDLE) {
-		validVoters = append(validVoters, msg.Staker)
-	}
-
 	bundleProposal = types.BundleProposal{
 		PoolId:       msg.PoolId,
 		Uploader:     msg.Staker,
@@ -208,7 +178,7 @@ func (k Keeper) registerBundleProposalFromUploader(ctx sdk.Context, pool poolmod
 		ByteSize:     msg.ByteSize,
 		ToHeight:     msg.ToHeight,
 		CreatedAt:    uint64(ctx.BlockTime().Unix()),
-		VotersValid:  validVoters,
+		VotersValid:  append(make([]string, 0), msg.Staker),
 		ToKey:        msg.ToKey,
 		ToValue:      msg.ToValue,
 		BundleHash:   msg.BundleHash,
