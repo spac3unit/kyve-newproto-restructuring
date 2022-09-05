@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/stakers/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -33,7 +34,7 @@ func (k Keeper) GetCommission(ctx sdk.Context, stakerAddress string) sdk.Dec {
 	staker, _ := k.GetStaker(ctx, stakerAddress)
 	uploaderCommission, err := sdk.NewDecFromStr(staker.Commission)
 	if err != nil {
-		// TODO -> log error to metrics
+		util.LogFatalLogicError("Commission not parsable", err.Error(), staker.Commission)
 	}
 	return uploaderCommission
 }

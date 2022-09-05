@@ -37,3 +37,7 @@ func PanicHalt(upgradeKeeper UpgradeKeeper, ctx sdk.Context, message string) {
 		panic("Emergency Halt failed: " + message)
 	}
 }
+
+func LogFatalLogicError(message ...string) {
+	// TODO submit to external logging system
+}

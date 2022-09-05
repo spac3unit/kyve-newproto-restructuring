@@ -257,7 +257,7 @@ func (k Keeper) calculatePayouts(ctx sdk.Context, poolId uint64) (bundleReward t
 
 	networkFee, err := sdk.NewDecFromStr(k.NetworkFee(ctx))
 	if err != nil {
-		// TODO -> External Logging Tool Solution (Prometheus)
+		util.LogFatalLogicError("Network Fee unparasable", err.Error(), k.NetworkFee(ctx))
 	}
 	// Add fee to treasury
 	bundleReward.Treasury = uint64(sdk.NewDec(int64(bundleReward.Total)).Mul(networkFee).RoundInt64())

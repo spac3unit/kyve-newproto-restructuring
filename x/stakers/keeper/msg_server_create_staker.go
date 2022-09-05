@@ -9,13 +9,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// CreateStaker handles the logic of an SDK message that allows protocol nodes to stake
-// If no staker object exists, a new staker will be created.
-// Otherwise, the amount will be added to the existing staker
+// CreateStaker handles the logic of an SDK message that allows protocol nodes to create
+// a staker with an initial self delegation.
 // Every user can create a staker object with some stake. However,
-// only if stake + delegation is large enough to join a pool the staker
+// only if self_delegation + delegation is large enough to join a pool the staker
 // is able to participate in the protocol
-// TODO check comment
 func (k msgServer) CreateStaker(goCtx context.Context, msg *types.MsgCreateStaker) (*types.MsgCreateStakerResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -40,7 +38,6 @@ func (k msgServer) CreateStaker(goCtx context.Context, msg *types.MsgCreateStake
 		return nil, err
 	}
 
-	// TODO Emit Staker Created Event
 	if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventCreateStaker{
 		Address: msg.Creator,
 		Amount:  msg.Amount,
