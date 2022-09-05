@@ -27,7 +27,7 @@ func (k Keeper) GetPaginatedStakersByDelegation(ctx sdk.Context, pagination *que
 
 	pageRes, err := query.FilteredPaginate(store, pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
-			address := string(key[9 : 9+43])
+			address := string(key[8 : 8+43])
 			accumulator(address)
 		}
 		return true, nil

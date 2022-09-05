@@ -248,7 +248,7 @@ func NewApp(
 
 	keys := sdk.NewKVStoreKeys(KVStoreKeys()...)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
-	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, delegationmoduletypes.MemStoreKey)
+	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, delegationmoduletypes.MemStoreKey, bundlesmoduletypes.MemStoreKey)
 
 	app := &App{
 		BaseApp:           bApp,
@@ -380,7 +380,7 @@ func NewApp(
 	app.BundlesKeeper = *bundlesmodulekeeper.NewKeeper(
 		appCodec,
 		keys[bundlesmoduletypes.StoreKey],
-		keys[bundlesmoduletypes.MemStoreKey],
+		memKeys[bundlesmoduletypes.MemStoreKey],
 		app.GetSubspace(bundlesmoduletypes.ModuleName),
 
 		app.AccountKeeper,

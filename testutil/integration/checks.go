@@ -7,6 +7,7 @@ import (
 	"github.com/KYVENetwork/chain/x/pool"
 	querytypes "github.com/KYVENetwork/chain/x/query/types"
 	"github.com/KYVENetwork/chain/x/stakers"
+	"github.com/cosmos/cosmos-sdk/types/query"
 	. "github.com/onsi/gomega"
 
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
@@ -183,20 +184,30 @@ func (suite *KeeperTestSuite) VerifyPoolTotalStake() {
 
 func (suite *KeeperTestSuite) VerifyStakersQueries() {
 	stakersState := suite.App().StakersKeeper.GetAllStakers(suite.Ctx())
-	stakersQuery, stakersQueryErr := suite.App().QueryKeeper.Stakers(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryStakersRequest{})
+	stakersQuery, stakersQueryErr := suite.App().QueryKeeper.Stakers(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryStakersRequest{
+		Pagination: &query.PageRequest{
+			Limit: 1000,
+		},
+	})
+
+	stakersMap := make(map[string]querytypes.FullStaker, 0)
+	for _, staker := range stakersQuery.Stakers {
+		stakersMap[staker.Address] = staker
+	}
 
 	Expect(stakersQueryErr).To(BeNil())
 	Expect(stakersQuery.Stakers).To(HaveLen(len(stakersState)))
 
 	for i := range stakersState {
-		suite.verifyFullStaker(stakersQuery.Stakers[i], stakersState[i].Address)
+		address := stakersState[i].Address
+		suite.verifyFullStaker(stakersMap[address], address)
 
 		stakerByAddressQuery, stakersByAddressQueryErr := suite.App().QueryKeeper.Staker(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryStakerRequest{
-			Address: stakersState[i].Address,
+			Address: address,
 		})
 
 		Expect(stakersByAddressQueryErr).To(BeNil())
-		suite.verifyFullStaker(stakerByAddressQuery.Staker, stakersState[i].Address)
+		suite.verifyFullStaker(stakerByAddressQuery.Staker, address)
 	}
 
 	unbondingState := suite.App().StakersKeeper.GetAllUnbondingStakeEntries(suite.Ctx())

@@ -65,3 +65,17 @@ func NewKeeper(
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+var memStoreInitialized = false
+
+func (k Keeper) InitMemStore(ctx sdk.Context) {
+	if !memStoreInitialized {
+
+		// Update mem index
+		for _, entry := range k.GetAllFinalizedBundles(ctx) {
+			k.SetFinalizedBundleIndexes(ctx, entry)
+		}
+
+		memStoreInitialized = true
+	}
+}

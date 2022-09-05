@@ -141,6 +141,304 @@ func (m *QueryFinalizedBundlesResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+// QueryFinalizedBundleRequest is the request type for the Query/Staker RPC method.
+type QueryFinalizedBundleRequest struct {
+	// pool_id ...
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	// id ...
+	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
+}
+
+func (m *QueryFinalizedBundleRequest) Reset()         { *m = QueryFinalizedBundleRequest{} }
+func (m *QueryFinalizedBundleRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryFinalizedBundleRequest) ProtoMessage()    {}
+func (*QueryFinalizedBundleRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b49b126c38ac815c, []int{2}
+}
+func (m *QueryFinalizedBundleRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryFinalizedBundleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryFinalizedBundleRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryFinalizedBundleRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryFinalizedBundleRequest.Merge(m, src)
+}
+func (m *QueryFinalizedBundleRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryFinalizedBundleRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryFinalizedBundleRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryFinalizedBundleRequest proto.InternalMessageInfo
+
+func (m *QueryFinalizedBundleRequest) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *QueryFinalizedBundleRequest) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+// QueryFinalizedBundleResponse is the response type for the Query/Staker RPC method.
+type QueryFinalizedBundleResponse struct {
+	// finalized_bundle ...
+	FinalizedBundle types.FinalizedBundle `protobuf:"bytes,1,opt,name=finalized_bundle,json=finalizedBundle,proto3" json:"finalized_bundle"`
+}
+
+func (m *QueryFinalizedBundleResponse) Reset()         { *m = QueryFinalizedBundleResponse{} }
+func (m *QueryFinalizedBundleResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryFinalizedBundleResponse) ProtoMessage()    {}
+func (*QueryFinalizedBundleResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b49b126c38ac815c, []int{3}
+}
+func (m *QueryFinalizedBundleResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryFinalizedBundleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryFinalizedBundleResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryFinalizedBundleResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryFinalizedBundleResponse.Merge(m, src)
+}
+func (m *QueryFinalizedBundleResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryFinalizedBundleResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryFinalizedBundleResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryFinalizedBundleResponse proto.InternalMessageInfo
+
+func (m *QueryFinalizedBundleResponse) GetFinalizedBundle() types.FinalizedBundle {
+	if m != nil {
+		return m.FinalizedBundle
+	}
+	return types.FinalizedBundle{}
+}
+
+// QueryFinalizedBundleRequest is the request type for the Query/Staker RPC method.
+type QueryFinalizedBundleByStorageIdRequest struct {
+	// pool_id ...
+	StorageId string `protobuf:"bytes,1,opt,name=storage_id,json=storageId,proto3" json:"storage_id,omitempty"`
+}
+
+func (m *QueryFinalizedBundleByStorageIdRequest) Reset() {
+	*m = QueryFinalizedBundleByStorageIdRequest{}
+}
+func (m *QueryFinalizedBundleByStorageIdRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryFinalizedBundleByStorageIdRequest) ProtoMessage()    {}
+func (*QueryFinalizedBundleByStorageIdRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b49b126c38ac815c, []int{4}
+}
+func (m *QueryFinalizedBundleByStorageIdRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryFinalizedBundleByStorageIdRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryFinalizedBundleByStorageIdRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryFinalizedBundleByStorageIdRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryFinalizedBundleByStorageIdRequest.Merge(m, src)
+}
+func (m *QueryFinalizedBundleByStorageIdRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryFinalizedBundleByStorageIdRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryFinalizedBundleByStorageIdRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryFinalizedBundleByStorageIdRequest proto.InternalMessageInfo
+
+func (m *QueryFinalizedBundleByStorageIdRequest) GetStorageId() string {
+	if m != nil {
+		return m.StorageId
+	}
+	return ""
+}
+
+// QueryFinalizedBundleResponse is the response type for the Query/Staker RPC method.
+type QueryFinalizedBundleByStorageIdResponse struct {
+	// finalized_bundle ...
+	FinalizedBundle types.FinalizedBundle `protobuf:"bytes,1,opt,name=finalized_bundle,json=finalizedBundle,proto3" json:"finalized_bundle"`
+}
+
+func (m *QueryFinalizedBundleByStorageIdResponse) Reset() {
+	*m = QueryFinalizedBundleByStorageIdResponse{}
+}
+func (m *QueryFinalizedBundleByStorageIdResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryFinalizedBundleByStorageIdResponse) ProtoMessage()    {}
+func (*QueryFinalizedBundleByStorageIdResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b49b126c38ac815c, []int{5}
+}
+func (m *QueryFinalizedBundleByStorageIdResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryFinalizedBundleByStorageIdResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryFinalizedBundleByStorageIdResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryFinalizedBundleByStorageIdResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryFinalizedBundleByStorageIdResponse.Merge(m, src)
+}
+func (m *QueryFinalizedBundleByStorageIdResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryFinalizedBundleByStorageIdResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryFinalizedBundleByStorageIdResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryFinalizedBundleByStorageIdResponse proto.InternalMessageInfo
+
+func (m *QueryFinalizedBundleByStorageIdResponse) GetFinalizedBundle() types.FinalizedBundle {
+	if m != nil {
+		return m.FinalizedBundle
+	}
+	return types.FinalizedBundle{}
+}
+
+// QueryFinalizedBundleRequest is the request type for the Query/Staker RPC method.
+type QueryFinalizedBundlesByHeightRequest struct {
+	// pool_id ...
+	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
+	// id ...
+	Height uint64 `protobuf:"varint,2,opt,name=height,proto3" json:"height,omitempty"`
+}
+
+func (m *QueryFinalizedBundlesByHeightRequest) Reset()         { *m = QueryFinalizedBundlesByHeightRequest{} }
+func (m *QueryFinalizedBundlesByHeightRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryFinalizedBundlesByHeightRequest) ProtoMessage()    {}
+func (*QueryFinalizedBundlesByHeightRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b49b126c38ac815c, []int{6}
+}
+func (m *QueryFinalizedBundlesByHeightRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryFinalizedBundlesByHeightRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryFinalizedBundlesByHeightRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryFinalizedBundlesByHeightRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryFinalizedBundlesByHeightRequest.Merge(m, src)
+}
+func (m *QueryFinalizedBundlesByHeightRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryFinalizedBundlesByHeightRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryFinalizedBundlesByHeightRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryFinalizedBundlesByHeightRequest proto.InternalMessageInfo
+
+func (m *QueryFinalizedBundlesByHeightRequest) GetPoolId() uint64 {
+	if m != nil {
+		return m.PoolId
+	}
+	return 0
+}
+
+func (m *QueryFinalizedBundlesByHeightRequest) GetHeight() uint64 {
+	if m != nil {
+		return m.Height
+	}
+	return 0
+}
+
+// QueryFinalizedBundleResponse is the response type for the Query/Staker RPC method.
+type QueryFinalizedBundlesByHeightResponse struct {
+	// finalized_bundle ...
+	FinalizedBundle types.FinalizedBundle `protobuf:"bytes,1,opt,name=finalized_bundle,json=finalizedBundle,proto3" json:"finalized_bundle"`
+}
+
+func (m *QueryFinalizedBundlesByHeightResponse) Reset()         { *m = QueryFinalizedBundlesByHeightResponse{} }
+func (m *QueryFinalizedBundlesByHeightResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryFinalizedBundlesByHeightResponse) ProtoMessage()    {}
+func (*QueryFinalizedBundlesByHeightResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b49b126c38ac815c, []int{7}
+}
+func (m *QueryFinalizedBundlesByHeightResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryFinalizedBundlesByHeightResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryFinalizedBundlesByHeightResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryFinalizedBundlesByHeightResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryFinalizedBundlesByHeightResponse.Merge(m, src)
+}
+func (m *QueryFinalizedBundlesByHeightResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryFinalizedBundlesByHeightResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryFinalizedBundlesByHeightResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryFinalizedBundlesByHeightResponse proto.InternalMessageInfo
+
+func (m *QueryFinalizedBundlesByHeightResponse) GetFinalizedBundle() types.FinalizedBundle {
+	if m != nil {
+		return m.FinalizedBundle
+	}
+	return types.FinalizedBundle{}
+}
+
 // QueryCurrentVoteStatusRequest is the request type for the Query/Staker RPC method.
 type QueryCurrentVoteStatusRequest struct {
 	// pool_id ...
@@ -151,7 +449,7 @@ func (m *QueryCurrentVoteStatusRequest) Reset()         { *m = QueryCurrentVoteS
 func (m *QueryCurrentVoteStatusRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryCurrentVoteStatusRequest) ProtoMessage()    {}
 func (*QueryCurrentVoteStatusRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{2}
+	return fileDescriptor_b49b126c38ac815c, []int{8}
 }
 func (m *QueryCurrentVoteStatusRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -203,7 +501,7 @@ func (m *QueryCurrentVoteStatusResponse) Reset()         { *m = QueryCurrentVote
 func (m *QueryCurrentVoteStatusResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryCurrentVoteStatusResponse) ProtoMessage()    {}
 func (*QueryCurrentVoteStatusResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{3}
+	return fileDescriptor_b49b126c38ac815c, []int{9}
 }
 func (m *QueryCurrentVoteStatusResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -260,107 +558,6 @@ func (m *QueryCurrentVoteStatusResponse) GetTotal() uint64 {
 	return 0
 }
 
-// QueryFinalizedBundleRequest is the request type for the Query/Staker RPC method.
-type QueryFinalizedBundleRequest struct {
-	// pool_id ...
-	PoolId uint64 `protobuf:"varint,1,opt,name=pool_id,json=poolId,proto3" json:"pool_id,omitempty"`
-	// id ...
-	Id uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
-}
-
-func (m *QueryFinalizedBundleRequest) Reset()         { *m = QueryFinalizedBundleRequest{} }
-func (m *QueryFinalizedBundleRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryFinalizedBundleRequest) ProtoMessage()    {}
-func (*QueryFinalizedBundleRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{4}
-}
-func (m *QueryFinalizedBundleRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryFinalizedBundleRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryFinalizedBundleRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryFinalizedBundleRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFinalizedBundleRequest.Merge(m, src)
-}
-func (m *QueryFinalizedBundleRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryFinalizedBundleRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFinalizedBundleRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryFinalizedBundleRequest proto.InternalMessageInfo
-
-func (m *QueryFinalizedBundleRequest) GetPoolId() uint64 {
-	if m != nil {
-		return m.PoolId
-	}
-	return 0
-}
-
-func (m *QueryFinalizedBundleRequest) GetId() uint64 {
-	if m != nil {
-		return m.Id
-	}
-	return 0
-}
-
-// QueryFinalizedBundleResponse is the response type for the Query/Staker RPC method.
-type QueryFinalizedBundleResponse struct {
-	// finalized_bundle ...
-	FinalizedBundle types.FinalizedBundle `protobuf:"bytes,1,opt,name=finalized_bundle,json=finalizedBundle,proto3" json:"finalized_bundle"`
-}
-
-func (m *QueryFinalizedBundleResponse) Reset()         { *m = QueryFinalizedBundleResponse{} }
-func (m *QueryFinalizedBundleResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryFinalizedBundleResponse) ProtoMessage()    {}
-func (*QueryFinalizedBundleResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{5}
-}
-func (m *QueryFinalizedBundleResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryFinalizedBundleResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryFinalizedBundleResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryFinalizedBundleResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryFinalizedBundleResponse.Merge(m, src)
-}
-func (m *QueryFinalizedBundleResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryFinalizedBundleResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryFinalizedBundleResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryFinalizedBundleResponse proto.InternalMessageInfo
-
-func (m *QueryFinalizedBundleResponse) GetFinalizedBundle() types.FinalizedBundle {
-	if m != nil {
-		return m.FinalizedBundle
-	}
-	return types.FinalizedBundle{}
-}
-
 // QueryCanProposeRequest is the request type for the Query/CanPropose RPC method.
 type QueryCanValidateRequest struct {
 	// pool_id defines the unique ID of the pool.
@@ -373,7 +570,7 @@ func (m *QueryCanValidateRequest) Reset()         { *m = QueryCanValidateRequest
 func (m *QueryCanValidateRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryCanValidateRequest) ProtoMessage()    {}
 func (*QueryCanValidateRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{6}
+	return fileDescriptor_b49b126c38ac815c, []int{10}
 }
 func (m *QueryCanValidateRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -428,7 +625,7 @@ func (m *QueryCanValidateResponse) Reset()         { *m = QueryCanValidateRespon
 func (m *QueryCanValidateResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryCanValidateResponse) ProtoMessage()    {}
 func (*QueryCanValidateResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{7}
+	return fileDescriptor_b49b126c38ac815c, []int{11}
 }
 func (m *QueryCanValidateResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -487,7 +684,7 @@ func (m *QueryCanProposeRequest) Reset()         { *m = QueryCanProposeRequest{}
 func (m *QueryCanProposeRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryCanProposeRequest) ProtoMessage()    {}
 func (*QueryCanProposeRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{8}
+	return fileDescriptor_b49b126c38ac815c, []int{12}
 }
 func (m *QueryCanProposeRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -556,7 +753,7 @@ func (m *QueryCanProposeResponse) Reset()         { *m = QueryCanProposeResponse
 func (m *QueryCanProposeResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryCanProposeResponse) ProtoMessage()    {}
 func (*QueryCanProposeResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{9}
+	return fileDescriptor_b49b126c38ac815c, []int{13}
 }
 func (m *QueryCanProposeResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -615,7 +812,7 @@ func (m *QueryCanVoteRequest) Reset()         { *m = QueryCanVoteRequest{} }
 func (m *QueryCanVoteRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryCanVoteRequest) ProtoMessage()    {}
 func (*QueryCanVoteRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{10}
+	return fileDescriptor_b49b126c38ac815c, []int{14}
 }
 func (m *QueryCanVoteRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -684,7 +881,7 @@ func (m *QueryCanVoteResponse) Reset()         { *m = QueryCanVoteResponse{} }
 func (m *QueryCanVoteResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryCanVoteResponse) ProtoMessage()    {}
 func (*QueryCanVoteResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b49b126c38ac815c, []int{11}
+	return fileDescriptor_b49b126c38ac815c, []int{15}
 }
 func (m *QueryCanVoteResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -730,10 +927,14 @@ func (m *QueryCanVoteResponse) GetReason() string {
 func init() {
 	proto.RegisterType((*QueryFinalizedBundlesRequest)(nil), "kyve.query.v1beta1.QueryFinalizedBundlesRequest")
 	proto.RegisterType((*QueryFinalizedBundlesResponse)(nil), "kyve.query.v1beta1.QueryFinalizedBundlesResponse")
-	proto.RegisterType((*QueryCurrentVoteStatusRequest)(nil), "kyve.query.v1beta1.QueryCurrentVoteStatusRequest")
-	proto.RegisterType((*QueryCurrentVoteStatusResponse)(nil), "kyve.query.v1beta1.QueryCurrentVoteStatusResponse")
 	proto.RegisterType((*QueryFinalizedBundleRequest)(nil), "kyve.query.v1beta1.QueryFinalizedBundleRequest")
 	proto.RegisterType((*QueryFinalizedBundleResponse)(nil), "kyve.query.v1beta1.QueryFinalizedBundleResponse")
+	proto.RegisterType((*QueryFinalizedBundleByStorageIdRequest)(nil), "kyve.query.v1beta1.QueryFinalizedBundleByStorageIdRequest")
+	proto.RegisterType((*QueryFinalizedBundleByStorageIdResponse)(nil), "kyve.query.v1beta1.QueryFinalizedBundleByStorageIdResponse")
+	proto.RegisterType((*QueryFinalizedBundlesByHeightRequest)(nil), "kyve.query.v1beta1.QueryFinalizedBundlesByHeightRequest")
+	proto.RegisterType((*QueryFinalizedBundlesByHeightResponse)(nil), "kyve.query.v1beta1.QueryFinalizedBundlesByHeightResponse")
+	proto.RegisterType((*QueryCurrentVoteStatusRequest)(nil), "kyve.query.v1beta1.QueryCurrentVoteStatusRequest")
+	proto.RegisterType((*QueryCurrentVoteStatusResponse)(nil), "kyve.query.v1beta1.QueryCurrentVoteStatusResponse")
 	proto.RegisterType((*QueryCanValidateRequest)(nil), "kyve.query.v1beta1.QueryCanValidateRequest")
 	proto.RegisterType((*QueryCanValidateResponse)(nil), "kyve.query.v1beta1.QueryCanValidateResponse")
 	proto.RegisterType((*QueryCanProposeRequest)(nil), "kyve.query.v1beta1.QueryCanProposeRequest")
@@ -745,63 +946,71 @@ func init() {
 func init() { proto.RegisterFile("kyve/query/v1beta1/bundles.proto", fileDescriptor_b49b126c38ac815c) }
 
 var fileDescriptor_b49b126c38ac815c = []byte{
-	// 890 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x96, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xc7, 0x33, 0x6e, 0xc8, 0x8f, 0x17, 0x44, 0xd3, 0x21, 0x4a, 0xad, 0xa5, 0xdd, 0x46, 0x2b,
-	0x41, 0xa3, 0x14, 0xed, 0xd4, 0x8e, 0x50, 0xa9, 0x38, 0x20, 0x85, 0x62, 0x28, 0xa5, 0x55, 0xd9,
-	0x4a, 0x16, 0x70, 0xb1, 0xc6, 0xde, 0xc9, 0x7a, 0x15, 0x67, 0x67, 0xbb, 0x33, 0x36, 0x04, 0xcb,
-	0x02, 0x71, 0xe0, 0x8c, 0xc4, 0x5f, 0x01, 0x27, 0x38, 0x70, 0xe1, 0x08, 0x97, 0x1e, 0x2b, 0x71,
-	0xe1, 0x84, 0x50, 0xc2, 0x1f, 0x82, 0x76, 0x66, 0x76, 0xbd, 0xfe, 0x15, 0x3b, 0xe5, 0xe6, 0x37,
-	0x33, 0xef, 0xbd, 0xcf, 0xf7, 0xcd, 0xec, 0x37, 0x81, 0x9d, 0xa3, 0x93, 0x1e, 0x23, 0x4f, 0xbb,
-	0x2c, 0x39, 0x21, 0xbd, 0x4a, 0x93, 0x49, 0x5a, 0x21, 0xcd, 0x6e, 0xe4, 0x77, 0x98, 0x70, 0xe3,
-	0x84, 0x4b, 0x8e, 0x71, 0x7a, 0xc2, 0x55, 0x27, 0x5c, 0x73, 0xc2, 0xda, 0x6b, 0x71, 0x71, 0xcc,
-	0x05, 0x69, 0x52, 0x31, 0x9e, 0x1c, 0xd3, 0x20, 0x8c, 0xa8, 0x0c, 0x79, 0xa4, 0xf3, 0xad, 0xad,
-	0x80, 0x07, 0x5c, 0xfd, 0x24, 0xe9, 0x2f, 0xb3, 0x7a, 0x2d, 0xe0, 0x3c, 0xe8, 0x30, 0x42, 0xe3,
-	0x90, 0xd0, 0x28, 0xe2, 0x52, 0xa5, 0x98, 0x9e, 0x96, 0xa3, 0xa8, 0x0c, 0xc7, 0x74, 0x2e, 0xe7,
-	0x6b, 0xb8, 0xf6, 0x49, 0xda, 0xb9, 0x16, 0x46, 0xb4, 0x13, 0x7e, 0xc5, 0xfc, 0x03, 0xbd, 0xed,
-	0xb1, 0xa7, 0x5d, 0x26, 0x24, 0xae, 0x01, 0x0c, 0x59, 0xca, 0x68, 0x07, 0xed, 0x6e, 0x54, 0xdf,
-	0x70, 0x35, 0xb8, 0x9b, 0x82, 0x8f, 0x6a, 0x72, 0x1f, 0xd3, 0x80, 0x99, 0x5c, 0xaf, 0x90, 0x89,
-	0xaf, 0xc2, 0x6a, 0xcc, 0x79, 0xa7, 0x11, 0xfa, 0xe5, 0xd2, 0x0e, 0xda, 0x5d, 0xf6, 0x56, 0xd2,
-	0xf0, 0xbe, 0xef, 0xfc, 0x8e, 0xe0, 0xfa, 0x0c, 0x02, 0x11, 0xf3, 0x48, 0x30, 0xfc, 0x29, 0x5c,
-	0x39, 0xcc, 0xf6, 0x1a, 0x86, 0xbe, 0x8c, 0x76, 0x2e, 0xed, 0x6e, 0x54, 0x5f, 0x77, 0xd5, 0x58,
-	0x33, 0x49, 0x19, 0xc4, 0x58, 0xa9, 0x83, 0xe5, 0x67, 0x7f, 0xdf, 0x58, 0xf2, 0x36, 0x0f, 0xc7,
-	0x3a, 0xe0, 0x0f, 0x46, 0xc4, 0x95, 0x94, 0xb8, 0x9b, 0x73, 0xc5, 0x69, 0xac, 0xa2, 0x3a, 0xe7,
-	0x6d, 0xa3, 0xe1, 0xbd, 0x6e, 0x92, 0xb0, 0x48, 0xd6, 0xb9, 0x64, 0x4f, 0x24, 0x95, 0xdd, 0x7c,
-	0x8c, 0x05, 0xf9, 0x68, 0x44, 0xfe, 0x37, 0x08, 0xec, 0x59, 0xa9, 0x46, 0xff, 0x16, 0xbc, 0xd4,
-	0xa3, 0x9d, 0x3c, 0x53, 0x07, 0xb8, 0x0c, 0xab, 0x61, 0xa4, 0xd7, 0xf5, 0x40, 0xb3, 0x30, 0xdd,
-	0xa1, 0x4d, 0x21, 0x69, 0x18, 0x95, 0x2f, 0xe9, 0x1d, 0x13, 0xa6, 0x95, 0x24, 0x97, 0xb4, 0x53,
-	0x5e, 0xd6, 0x95, 0x54, 0xe0, 0xd4, 0xe0, 0xb5, 0x69, 0x17, 0x30, 0x0f, 0x1d, 0xbf, 0x02, 0xa5,
-	0xbc, 0x79, 0x29, 0xf4, 0x9d, 0xde, 0xf4, 0xa7, 0x94, 0xeb, 0xa8, 0xc3, 0xe6, 0xf8, 0x3d, 0x9a,
-	0x07, 0x75, 0xa1, 0x6b, 0xbc, 0x3c, 0x76, 0x8d, 0x8e, 0x07, 0x57, 0xf5, 0x04, 0x69, 0x54, 0x4f,
-	0x07, 0x40, 0xe5, 0x7c, 0x76, 0x1b, 0xa0, 0x47, 0x3b, 0xd4, 0xf7, 0x13, 0x26, 0x84, 0xd2, 0xb0,
-	0xee, 0x15, 0x56, 0x9c, 0x47, 0x50, 0x9e, 0xac, 0x69, 0x74, 0x58, 0xb0, 0x16, 0x73, 0x21, 0xc2,
-	0xa6, 0xe1, 0x5f, 0xf3, 0xf2, 0x18, 0x6f, 0xc3, 0x4a, 0xc2, 0xa8, 0x30, 0xaf, 0x69, 0xdd, 0x33,
-	0x91, 0xf3, 0x1d, 0x82, 0xed, 0xac, 0xe0, 0xe3, 0x84, 0xc7, 0x5c, 0xcc, 0x67, 0xdc, 0x86, 0x15,
-	0x21, 0xe9, 0x11, 0x4b, 0xb2, 0x5a, 0x3a, 0x52, 0xfd, 0x75, 0x89, 0x44, 0x5d, 0xf0, 0xba, 0x97,
-	0xc7, 0xf8, 0x06, 0x6c, 0x1c, 0x26, 0xfc, 0xb8, 0xd1, 0x66, 0x61, 0xd0, 0x96, 0xe6, 0x9e, 0x21,
-	0x5d, 0xfa, 0x50, 0xad, 0x38, 0x0f, 0x87, 0xc3, 0xca, 0x39, 0xfe, 0x87, 0xae, 0x3e, 0xbc, 0x9a,
-	0xcf, 0x89, 0xcb, 0x17, 0xd7, 0x94, 0xbe, 0x71, 0x2e, 0x73, 0x41, 0x3a, 0xc0, 0xd7, 0x01, 0x84,
-	0xe4, 0x09, 0x0d, 0x58, 0x5a, 0x69, 0x59, 0x6d, 0xad, 0x9b, 0x95, 0xfb, 0xbe, 0xf3, 0x11, 0x6c,
-	0x8d, 0x36, 0x7f, 0x71, 0x21, 0xd5, 0x3f, 0xd6, 0xe0, 0x65, 0x55, 0x2c, 0xf3, 0x86, 0x9f, 0x11,
-	0x6c, 0x8e, 0x5b, 0x12, 0xbe, 0xed, 0x4e, 0xda, 0xb8, 0x7b, 0x9e, 0x7f, 0x5a, 0x95, 0x0b, 0x64,
-	0x68, 0x7c, 0xe7, 0xce, 0xb7, 0x7f, 0xfe, 0xfb, 0x43, 0xa9, 0x82, 0x09, 0x99, 0xf2, 0x57, 0x65,
-	0xc2, 0x09, 0x49, 0xdf, 0x4c, 0x7a, 0x80, 0x7f, 0x41, 0x70, 0x79, 0xac, 0x2a, 0x26, 0x8b, 0xf6,
-	0xcf, 0x80, 0x6f, 0x2f, 0x9e, 0x60, 0x78, 0xdf, 0x51, 0xbc, 0x6f, 0xe1, 0xfd, 0x45, 0x78, 0x87,
-	0xb8, 0xa4, 0x9f, 0x32, 0xff, 0x8a, 0xe0, 0xca, 0x84, 0xf5, 0xe1, 0xd9, 0x53, 0x9b, 0xe5, 0xb0,
-	0x56, 0xf5, 0x22, 0x29, 0x86, 0xfc, 0xae, 0x22, 0xdf, 0xc7, 0x95, 0x69, 0xe4, 0x2d, 0x9d, 0xd6,
-	0x48, 0x9f, 0x62, 0x43, 0xa8, 0xc4, 0xc2, 0xac, 0x7f, 0x44, 0xb0, 0x51, 0x30, 0x07, 0x7c, 0x6b,
-	0x76, 0xfb, 0x09, 0x5b, 0xb2, 0xde, 0x5c, 0xec, 0xb0, 0xa1, 0x7c, 0x57, 0x51, 0xde, 0xc5, 0x77,
-	0xa6, 0x52, 0xd2, 0xa8, 0xd1, 0x33, 0x19, 0xc5, 0xd9, 0x0e, 0xbd, 0x6c, 0x80, 0x7f, 0x43, 0x00,
-	0xc3, 0xef, 0x1d, 0xef, 0x9d, 0xd7, 0x7d, 0xd4, 0x9c, 0xac, 0x5b, 0x0b, 0x9d, 0x35, 0xa0, 0x4f,
-	0x14, 0xe8, 0x43, 0xfc, 0x60, 0x16, 0xa8, 0xb1, 0xa9, 0x22, 0xa7, 0xfe, 0xfe, 0x07, 0xa4, 0x9f,
-	0x59, 0xd8, 0x80, 0xf4, 0x0b, 0x0e, 0x36, 0xc0, 0x3f, 0x21, 0x58, 0x35, 0x1f, 0x38, 0xbe, 0x79,
-	0xee, 0xdc, 0x86, 0xfe, 0x63, 0xed, 0xce, 0x3f, 0x68, 0x98, 0x3f, 0x56, 0xcc, 0x35, 0x7c, 0x6f,
-	0xe6, 0x70, 0xb9, 0x9c, 0x0e, 0xac, 0x2c, 0x4a, 0x2d, 0x64, 0x0e, 0x35, 0x38, 0xb8, 0xf7, 0xec,
-	0xd4, 0x46, 0xcf, 0x4f, 0x6d, 0xf4, 0xcf, 0xa9, 0x8d, 0xbe, 0x3f, 0xb3, 0x97, 0x9e, 0x9f, 0xd9,
-	0x4b, 0x7f, 0x9d, 0xd9, 0x4b, 0x9f, 0xef, 0x05, 0xa1, 0x6c, 0x77, 0x9b, 0x6e, 0x8b, 0x1f, 0x93,
-	0x07, 0x9f, 0xd5, 0xdf, 0x7f, 0xc4, 0xe4, 0x17, 0x3c, 0x39, 0x22, 0xad, 0x36, 0x0d, 0x23, 0xf2,
-	0xa5, 0x69, 0x2c, 0x4f, 0x62, 0x26, 0x9a, 0x2b, 0xea, 0x5f, 0xb3, 0xfd, 0xff, 0x02, 0x00, 0x00,
-	0xff, 0xff, 0x81, 0xe0, 0x86, 0x96, 0x56, 0x0a, 0x00, 0x00,
+	// 1020 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0xcf, 0x6f, 0x1b, 0x45,
+	0x14, 0xce, 0xa4, 0x21, 0xa9, 0x5f, 0x2a, 0x9a, 0x0e, 0x51, 0x6b, 0x2d, 0xad, 0x1b, 0xad, 0x68,
+	0x13, 0xa5, 0x68, 0xa7, 0x4e, 0x84, 0xda, 0xd0, 0x43, 0x55, 0xb7, 0x24, 0x84, 0xd2, 0xaa, 0x6c,
+	0xa4, 0xf0, 0xe3, 0x62, 0x8d, 0xe3, 0x89, 0xb3, 0x8a, 0xb3, 0xe3, 0xee, 0x8c, 0x0d, 0xc6, 0xb2,
+	0x4a, 0x39, 0x70, 0x46, 0xe2, 0xaf, 0x80, 0x13, 0x1c, 0xb8, 0x70, 0xe4, 0xd4, 0x63, 0x25, 0x2e,
+	0x88, 0x43, 0x85, 0x12, 0xfe, 0x10, 0xb4, 0x33, 0xb3, 0xf6, 0x7a, 0xed, 0x8d, 0x37, 0xa9, 0x7a,
+	0xf3, 0x9b, 0x7d, 0x3f, 0xbe, 0xef, 0x9b, 0x37, 0xef, 0xc9, 0xb0, 0xb0, 0xdf, 0x6e, 0x31, 0xf2,
+	0xb4, 0xc9, 0x82, 0x36, 0x69, 0x15, 0x2b, 0x4c, 0xd2, 0x22, 0xa9, 0x34, 0xfd, 0x6a, 0x9d, 0x09,
+	0xa7, 0x11, 0x70, 0xc9, 0x31, 0x0e, 0x3d, 0x1c, 0xe5, 0xe1, 0x18, 0x0f, 0x6b, 0x79, 0x87, 0x8b,
+	0x03, 0x2e, 0x48, 0x85, 0x8a, 0x64, 0x70, 0x83, 0xd6, 0x3c, 0x9f, 0x4a, 0x8f, 0xfb, 0x3a, 0xde,
+	0x9a, 0xaf, 0xf1, 0x1a, 0x57, 0x3f, 0x49, 0xf8, 0xcb, 0x9c, 0x5e, 0xae, 0x71, 0x5e, 0xab, 0x33,
+	0x42, 0x1b, 0x1e, 0xa1, 0xbe, 0xcf, 0xa5, 0x0a, 0x31, 0x35, 0x2d, 0x5b, 0xa1, 0x32, 0x38, 0x46,
+	0xe3, 0xb2, 0x9f, 0xc1, 0xe5, 0xcf, 0xc2, 0xca, 0xeb, 0x9e, 0x4f, 0xeb, 0xde, 0xb7, 0xac, 0x5a,
+	0xd2, 0x9f, 0x5d, 0xf6, 0xb4, 0xc9, 0x84, 0xc4, 0xeb, 0x00, 0x7d, 0x2c, 0x79, 0xb4, 0x80, 0x96,
+	0x66, 0x57, 0xae, 0x3b, 0x1a, 0xb8, 0x13, 0x02, 0x1f, 0xe4, 0xe4, 0x3c, 0xa1, 0x35, 0x66, 0x62,
+	0xdd, 0x58, 0x24, 0xbe, 0x04, 0x33, 0x0d, 0xce, 0xeb, 0x65, 0xaf, 0x9a, 0x9f, 0x5c, 0x40, 0x4b,
+	0x53, 0xee, 0x74, 0x68, 0x6e, 0x56, 0xed, 0x3f, 0x11, 0x5c, 0x49, 0x41, 0x20, 0x1a, 0xdc, 0x17,
+	0x0c, 0x7f, 0x01, 0x17, 0x76, 0xa3, 0x6f, 0x65, 0x83, 0x3e, 0x8f, 0x16, 0xce, 0x2c, 0xcd, 0xae,
+	0x5c, 0x73, 0x94, 0xac, 0x11, 0xa5, 0x08, 0x44, 0x22, 0x55, 0x69, 0xea, 0xc5, 0xab, 0xab, 0x13,
+	0xee, 0xdc, 0x6e, 0xa2, 0x02, 0xde, 0x18, 0x20, 0x37, 0xa9, 0xc8, 0x2d, 0x8e, 0x25, 0xa7, 0x61,
+	0xc5, 0xd9, 0xd9, 0xeb, 0xf0, 0xee, 0x28, 0x0e, 0x91, 0x88, 0x31, 0xf2, 0x28, 0x4e, 0x1e, 0xbf,
+	0x0d, 0x93, 0x3d, 0x41, 0x26, 0xbd, 0xaa, 0xdd, 0x1a, 0x7d, 0x1b, 0x3d, 0x29, 0xb6, 0x61, 0x2e,
+	0x29, 0x85, 0xb9, 0x93, 0x13, 0x29, 0x71, 0x3e, 0xa1, 0x84, 0xbd, 0x01, 0xd7, 0x47, 0xd5, 0x2d,
+	0xb5, 0xb7, 0x24, 0x0f, 0x68, 0x8d, 0x6d, 0x56, 0x23, 0x2a, 0x57, 0x00, 0x84, 0x3e, 0x8b, 0xd8,
+	0xe4, 0xdc, 0x9c, 0x88, 0xbc, 0xec, 0xe7, 0x08, 0x16, 0xc7, 0x66, 0x7a, 0xc3, 0x64, 0x3e, 0x87,
+	0xf7, 0x46, 0x36, 0x54, 0xa9, 0xfd, 0x31, 0xf3, 0x6a, 0x7b, 0x72, 0xec, 0xad, 0x5c, 0x84, 0xe9,
+	0x3d, 0xe5, 0x19, 0xb5, 0xaa, 0xb6, 0xec, 0x67, 0x70, 0x6d, 0x4c, 0xe2, 0x37, 0xcc, 0xec, 0xb6,
+	0x79, 0x2a, 0xf7, 0x9b, 0x41, 0xc0, 0x7c, 0xb9, 0xcd, 0x25, 0xdb, 0x92, 0x54, 0x36, 0xc5, 0x38,
+	0x4a, 0xf6, 0x77, 0x08, 0x0a, 0x69, 0xa1, 0x06, 0xf4, 0x3c, 0xbc, 0xd5, 0xa2, 0xf5, 0x5e, 0xa4,
+	0x36, 0x70, 0x1e, 0x66, 0x3c, 0x5f, 0x9f, 0x6b, 0x31, 0x22, 0x33, 0xfc, 0x42, 0x2b, 0x42, 0x52,
+	0xcf, 0xcf, 0x9f, 0xd1, 0x5f, 0x8c, 0x19, 0x66, 0x92, 0x5c, 0xd2, 0x7a, 0x7e, 0x4a, 0x67, 0x52,
+	0x86, 0xed, 0xc2, 0x25, 0x8d, 0x80, 0xfa, 0xdb, 0x61, 0x02, 0x2a, 0xc7, 0xbf, 0x8f, 0x02, 0x40,
+	0x8b, 0xd6, 0x69, 0xb5, 0x1a, 0x30, 0x21, 0x14, 0x80, 0x9c, 0x1b, 0x3b, 0xb1, 0x1f, 0x43, 0x7e,
+	0x38, 0xa7, 0xe1, 0x63, 0xc1, 0xd9, 0x06, 0x17, 0xc2, 0xab, 0x18, 0xf1, 0xcf, 0xba, 0x3d, 0x3b,
+	0xbc, 0xe1, 0x80, 0x51, 0x61, 0x1e, 0x7d, 0xce, 0x35, 0x96, 0xfd, 0x03, 0x82, 0x8b, 0x51, 0xc2,
+	0x27, 0x01, 0x6f, 0x70, 0xc1, 0xb2, 0x74, 0x8b, 0x90, 0x74, 0x9f, 0x05, 0x51, 0x2e, 0x6d, 0xa9,
+	0xfa, 0x3a, 0x45, 0xa0, 0x04, 0xca, 0xb9, 0x3d, 0x1b, 0x5f, 0x85, 0xd9, 0xdd, 0x80, 0x1f, 0x94,
+	0x4d, 0x9b, 0x69, 0x9d, 0x20, 0x3c, 0xd2, 0x9d, 0x64, 0x3f, 0xea, 0x8b, 0xd5, 0xc3, 0xf1, 0x1a,
+	0xbc, 0x3a, 0xf0, 0x4e, 0x4f, 0x27, 0x2e, 0x4f, 0xcf, 0x29, 0xec, 0x11, 0x2e, 0x7b, 0x84, 0xb4,
+	0x91, 0x98, 0x09, 0x53, 0xc9, 0x99, 0xf0, 0x09, 0xcc, 0x0f, 0x16, 0x3f, 0x3d, 0x91, 0x95, 0xe7,
+	0xe7, 0xe0, 0x9c, 0x4a, 0x16, 0x8d, 0xf0, 0x5f, 0x11, 0xcc, 0x25, 0xdf, 0x23, 0xbe, 0xe9, 0x0c,
+	0x6f, 0x5b, 0xe7, 0xb8, 0x35, 0x67, 0x15, 0x4f, 0x10, 0xa1, 0xe1, 0xdb, 0xb7, 0xbe, 0xff, 0xeb,
+	0xbf, 0x9f, 0x26, 0x8b, 0x98, 0x90, 0x11, 0xcb, 0x7f, 0x68, 0x61, 0x91, 0x8e, 0x51, 0xba, 0x8b,
+	0x7f, 0x43, 0x70, 0x3e, 0x91, 0x15, 0x93, 0xac, 0xf5, 0x23, 0xc0, 0x37, 0xb3, 0x07, 0x18, 0xbc,
+	0x77, 0x14, 0xde, 0x0f, 0xf0, 0x6a, 0x16, 0xbc, 0x7d, 0xb8, 0xa4, 0x13, 0x62, 0x7e, 0x85, 0xc0,
+	0x4a, 0x1f, 0xe9, 0xf8, 0xc3, 0xac, 0x68, 0x86, 0x37, 0x8a, 0x75, 0xe7, 0x54, 0xb1, 0x86, 0xd4,
+	0x86, 0x22, 0x75, 0x0f, 0xdf, 0xcd, 0x42, 0xaa, 0x5c, 0x69, 0x97, 0xfb, 0x8d, 0x4a, 0x3a, 0xfd,
+	0xdf, 0x5d, 0xfc, 0x0f, 0x82, 0x7c, 0xda, 0x5c, 0xc7, 0xb7, 0x33, 0x77, 0x47, 0x62, 0xc7, 0x58,
+	0x6b, 0xa7, 0x88, 0x34, 0xd4, 0x36, 0x15, 0xb5, 0xfb, 0xf8, 0x5e, 0x56, 0x6a, 0x7a, 0x98, 0xc4,
+	0x6f, 0x4e, 0x9f, 0x74, 0xf1, 0xef, 0x08, 0x2e, 0x0c, 0x0d, 0x7e, 0x9c, 0xde, 0xf3, 0x69, 0xfb,
+	0xc5, 0x5a, 0x39, 0x49, 0x88, 0xe1, 0xb1, 0xa6, 0x78, 0xac, 0xe2, 0xe2, 0x28, 0x1e, 0x3b, 0x3a,
+	0xac, 0x1c, 0x0e, 0x92, 0xb2, 0x50, 0x81, 0xb1, 0x97, 0xf2, 0x33, 0x82, 0xd9, 0xd8, 0x68, 0xc7,
+	0x37, 0xd2, 0xcb, 0x0f, 0x2d, 0x15, 0xeb, 0xfd, 0x6c, 0xce, 0x06, 0xe5, 0x5d, 0x85, 0x72, 0x0d,
+	0xdf, 0x1a, 0x89, 0x92, 0xfa, 0xe5, 0x96, 0x89, 0x88, 0xeb, 0xdb, 0xdf, 0x44, 0x5d, 0xfc, 0x07,
+	0x02, 0xe8, 0x4f, 0x6b, 0xbc, 0x7c, 0x5c, 0xf5, 0xc1, 0xd5, 0x62, 0xdd, 0xc8, 0xe4, 0x6b, 0x80,
+	0x6e, 0x29, 0xa0, 0x8f, 0xf0, 0xc3, 0x34, 0xa0, 0x66, 0xc9, 0xc4, 0x71, 0xea, 0xe9, 0xdd, 0x25,
+	0x9d, 0x68, 0x01, 0x75, 0x49, 0x27, 0xb6, 0x7f, 0xba, 0xf8, 0x17, 0x04, 0x33, 0x66, 0x3c, 0xe3,
+	0xc5, 0x63, 0x75, 0xeb, 0x6f, 0x0f, 0x6b, 0x69, 0xbc, 0xa3, 0xc1, 0xfc, 0xa9, 0xc2, 0xbc, 0x8e,
+	0x1f, 0xa4, 0x8a, 0xcb, 0xe5, 0x68, 0xc0, 0x6a, 0xc1, 0x74, 0x07, 0x9e, 0x6a, 0xe9, 0xc1, 0x8b,
+	0xc3, 0x02, 0x7a, 0x79, 0x58, 0x40, 0xff, 0x1e, 0x16, 0xd0, 0x8f, 0x47, 0x85, 0x89, 0x97, 0x47,
+	0x85, 0x89, 0xbf, 0x8f, 0x0a, 0x13, 0x5f, 0x2d, 0xd7, 0x3c, 0xb9, 0xd7, 0xac, 0x38, 0x3b, 0xfc,
+	0x80, 0x3c, 0xfc, 0x72, 0xfb, 0xa3, 0xc7, 0x4c, 0x7e, 0xcd, 0x83, 0x7d, 0xb2, 0xb3, 0x47, 0x3d,
+	0x9f, 0x7c, 0x63, 0x0a, 0xcb, 0x76, 0x83, 0x89, 0xca, 0xb4, 0xfa, 0xff, 0xb3, 0xfa, 0x7f, 0x00,
+	0x00, 0x00, 0xff, 0xff, 0x98, 0x99, 0x17, 0xba, 0xbb, 0x0d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -820,6 +1029,10 @@ type QueryBundlesClient interface {
 	FinalizedBundles(ctx context.Context, in *QueryFinalizedBundlesRequest, opts ...grpc.CallOption) (*QueryFinalizedBundlesResponse, error)
 	// FinalizedBundle ...
 	FinalizedBundle(ctx context.Context, in *QueryFinalizedBundleRequest, opts ...grpc.CallOption) (*QueryFinalizedBundleResponse, error)
+	// StorageID -> single
+	FinalizedBundleByStorageId(ctx context.Context, in *QueryFinalizedBundleByStorageIdRequest, opts ...grpc.CallOption) (*QueryFinalizedBundleByStorageIdResponse, error)
+	// Queries the bundle which contains the data given height
+	FinalizedBundlesByHeight(ctx context.Context, in *QueryFinalizedBundlesByHeightRequest, opts ...grpc.CallOption) (*QueryFinalizedBundlesByHeightResponse, error)
 	// CurrentVoteStatus ...
 	CurrentVoteStatus(ctx context.Context, in *QueryCurrentVoteStatusRequest, opts ...grpc.CallOption) (*QueryCurrentVoteStatusResponse, error)
 	// CanValidate ...
@@ -850,6 +1063,24 @@ func (c *queryBundlesClient) FinalizedBundles(ctx context.Context, in *QueryFina
 func (c *queryBundlesClient) FinalizedBundle(ctx context.Context, in *QueryFinalizedBundleRequest, opts ...grpc.CallOption) (*QueryFinalizedBundleResponse, error) {
 	out := new(QueryFinalizedBundleResponse)
 	err := c.cc.Invoke(ctx, "/kyve.query.v1beta1.QueryBundles/FinalizedBundle", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryBundlesClient) FinalizedBundleByStorageId(ctx context.Context, in *QueryFinalizedBundleByStorageIdRequest, opts ...grpc.CallOption) (*QueryFinalizedBundleByStorageIdResponse, error) {
+	out := new(QueryFinalizedBundleByStorageIdResponse)
+	err := c.cc.Invoke(ctx, "/kyve.query.v1beta1.QueryBundles/FinalizedBundleByStorageId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryBundlesClient) FinalizedBundlesByHeight(ctx context.Context, in *QueryFinalizedBundlesByHeightRequest, opts ...grpc.CallOption) (*QueryFinalizedBundlesByHeightResponse, error) {
+	out := new(QueryFinalizedBundlesByHeightResponse)
+	err := c.cc.Invoke(ctx, "/kyve.query.v1beta1.QueryBundles/FinalizedBundlesByHeight", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -898,6 +1129,10 @@ type QueryBundlesServer interface {
 	FinalizedBundles(context.Context, *QueryFinalizedBundlesRequest) (*QueryFinalizedBundlesResponse, error)
 	// FinalizedBundle ...
 	FinalizedBundle(context.Context, *QueryFinalizedBundleRequest) (*QueryFinalizedBundleResponse, error)
+	// StorageID -> single
+	FinalizedBundleByStorageId(context.Context, *QueryFinalizedBundleByStorageIdRequest) (*QueryFinalizedBundleByStorageIdResponse, error)
+	// Queries the bundle which contains the data given height
+	FinalizedBundlesByHeight(context.Context, *QueryFinalizedBundlesByHeightRequest) (*QueryFinalizedBundlesByHeightResponse, error)
 	// CurrentVoteStatus ...
 	CurrentVoteStatus(context.Context, *QueryCurrentVoteStatusRequest) (*QueryCurrentVoteStatusResponse, error)
 	// CanValidate ...
@@ -917,6 +1152,12 @@ func (*UnimplementedQueryBundlesServer) FinalizedBundles(ctx context.Context, re
 }
 func (*UnimplementedQueryBundlesServer) FinalizedBundle(ctx context.Context, req *QueryFinalizedBundleRequest) (*QueryFinalizedBundleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FinalizedBundle not implemented")
+}
+func (*UnimplementedQueryBundlesServer) FinalizedBundleByStorageId(ctx context.Context, req *QueryFinalizedBundleByStorageIdRequest) (*QueryFinalizedBundleByStorageIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FinalizedBundleByStorageId not implemented")
+}
+func (*UnimplementedQueryBundlesServer) FinalizedBundlesByHeight(ctx context.Context, req *QueryFinalizedBundlesByHeightRequest) (*QueryFinalizedBundlesByHeightResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FinalizedBundlesByHeight not implemented")
 }
 func (*UnimplementedQueryBundlesServer) CurrentVoteStatus(ctx context.Context, req *QueryCurrentVoteStatusRequest) (*QueryCurrentVoteStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CurrentVoteStatus not implemented")
@@ -967,6 +1208,42 @@ func _QueryBundles_FinalizedBundle_Handler(srv interface{}, ctx context.Context,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryBundlesServer).FinalizedBundle(ctx, req.(*QueryFinalizedBundleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _QueryBundles_FinalizedBundleByStorageId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryFinalizedBundleByStorageIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryBundlesServer).FinalizedBundleByStorageId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kyve.query.v1beta1.QueryBundles/FinalizedBundleByStorageId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryBundlesServer).FinalizedBundleByStorageId(ctx, req.(*QueryFinalizedBundleByStorageIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _QueryBundles_FinalizedBundlesByHeight_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryFinalizedBundlesByHeightRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryBundlesServer).FinalizedBundlesByHeight(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/kyve.query.v1beta1.QueryBundles/FinalizedBundlesByHeight",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryBundlesServer).FinalizedBundlesByHeight(ctx, req.(*QueryFinalizedBundlesByHeightRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1054,6 +1331,14 @@ var _QueryBundles_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FinalizedBundle",
 			Handler:    _QueryBundles_FinalizedBundle_Handler,
+		},
+		{
+			MethodName: "FinalizedBundleByStorageId",
+			Handler:    _QueryBundles_FinalizedBundleByStorageId_Handler,
+		},
+		{
+			MethodName: "FinalizedBundlesByHeight",
+			Handler:    _QueryBundles_FinalizedBundlesByHeight_Handler,
 		},
 		{
 			MethodName: "CurrentVoteStatus",
@@ -1165,6 +1450,201 @@ func (m *QueryFinalizedBundlesResponse) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryFinalizedBundleRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryFinalizedBundleRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryFinalizedBundleRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Id != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Id))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryFinalizedBundleResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryFinalizedBundleResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryFinalizedBundleResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.FinalizedBundle.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintBundles(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryFinalizedBundleByStorageIdRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryFinalizedBundleByStorageIdRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryFinalizedBundleByStorageIdRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.StorageId) > 0 {
+		i -= len(m.StorageId)
+		copy(dAtA[i:], m.StorageId)
+		i = encodeVarintBundles(dAtA, i, uint64(len(m.StorageId)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryFinalizedBundleByStorageIdResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryFinalizedBundleByStorageIdResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryFinalizedBundleByStorageIdResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.FinalizedBundle.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintBundles(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryFinalizedBundlesByHeightRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryFinalizedBundlesByHeightRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryFinalizedBundlesByHeightRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Height != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.Height))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.PoolId != 0 {
+		i = encodeVarintBundles(dAtA, i, uint64(m.PoolId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryFinalizedBundlesByHeightResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryFinalizedBundlesByHeightResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryFinalizedBundlesByHeightResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.FinalizedBundle.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintBundles(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
 func (m *QueryCurrentVoteStatusRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1233,72 +1713,6 @@ func (m *QueryCurrentVoteStatusResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 		i--
 		dAtA[i] = 0x8
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryFinalizedBundleRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryFinalizedBundleRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryFinalizedBundleRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Id != 0 {
-		i = encodeVarintBundles(dAtA, i, uint64(m.Id))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.PoolId != 0 {
-		i = encodeVarintBundles(dAtA, i, uint64(m.PoolId))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryFinalizedBundleResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryFinalizedBundleResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryFinalizedBundleResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	{
-		size, err := m.FinalizedBundle.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintBundles(dAtA, i, uint64(size))
-	}
-	i--
-	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
 
@@ -1599,6 +2013,82 @@ func (m *QueryFinalizedBundlesResponse) Size() (n int) {
 	return n
 }
 
+func (m *QueryFinalizedBundleRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovBundles(uint64(m.PoolId))
+	}
+	if m.Id != 0 {
+		n += 1 + sovBundles(uint64(m.Id))
+	}
+	return n
+}
+
+func (m *QueryFinalizedBundleResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.FinalizedBundle.Size()
+	n += 1 + l + sovBundles(uint64(l))
+	return n
+}
+
+func (m *QueryFinalizedBundleByStorageIdRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.StorageId)
+	if l > 0 {
+		n += 1 + l + sovBundles(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryFinalizedBundleByStorageIdResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.FinalizedBundle.Size()
+	n += 1 + l + sovBundles(uint64(l))
+	return n
+}
+
+func (m *QueryFinalizedBundlesByHeightRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.PoolId != 0 {
+		n += 1 + sovBundles(uint64(m.PoolId))
+	}
+	if m.Height != 0 {
+		n += 1 + sovBundles(uint64(m.Height))
+	}
+	return n
+}
+
+func (m *QueryFinalizedBundlesByHeightResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.FinalizedBundle.Size()
+	n += 1 + l + sovBundles(uint64(l))
+	return n
+}
+
 func (m *QueryCurrentVoteStatusRequest) Size() (n int) {
 	if m == nil {
 		return 0
@@ -1629,32 +2119,6 @@ func (m *QueryCurrentVoteStatusResponse) Size() (n int) {
 	if m.Total != 0 {
 		n += 1 + sovBundles(uint64(m.Total))
 	}
-	return n
-}
-
-func (m *QueryFinalizedBundleRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.PoolId != 0 {
-		n += 1 + sovBundles(uint64(m.PoolId))
-	}
-	if m.Id != 0 {
-		n += 1 + sovBundles(uint64(m.Id))
-	}
-	return n
-}
-
-func (m *QueryFinalizedBundleResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = m.FinalizedBundle.Size()
-	n += 1 + l + sovBundles(uint64(l))
 	return n
 }
 
@@ -2000,6 +2464,513 @@ func (m *QueryFinalizedBundlesResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *QueryFinalizedBundleRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryFinalizedBundleRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryFinalizedBundleRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			m.Id = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Id |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryFinalizedBundleResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryFinalizedBundleResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryFinalizedBundleResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FinalizedBundle", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.FinalizedBundle.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryFinalizedBundleByStorageIdRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryFinalizedBundleByStorageIdRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryFinalizedBundleByStorageIdRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field StorageId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.StorageId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryFinalizedBundleByStorageIdResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryFinalizedBundleByStorageIdResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryFinalizedBundleByStorageIdResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FinalizedBundle", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.FinalizedBundle.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryFinalizedBundlesByHeightRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryFinalizedBundlesByHeightRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryFinalizedBundlesByHeightRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
+			}
+			m.PoolId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.PoolId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Height", wireType)
+			}
+			m.Height = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Height |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryFinalizedBundlesByHeightResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowBundles
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryFinalizedBundlesByHeightResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryFinalizedBundlesByHeightResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FinalizedBundle", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowBundles
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthBundles
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.FinalizedBundle.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipBundles(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthBundles
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *QueryCurrentVoteStatusRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2174,177 +3145,6 @@ func (m *QueryCurrentVoteStatusResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBundles(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthBundles
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryFinalizedBundleRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBundles
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFinalizedBundleRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFinalizedBundleRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PoolId", wireType)
-			}
-			m.PoolId = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.PoolId |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			m.Id = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipBundles(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthBundles
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryFinalizedBundleResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowBundles
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryFinalizedBundleResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryFinalizedBundleResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field FinalizedBundle", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowBundles
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthBundles
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthBundles
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if err := m.FinalizedBundle.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipBundles(dAtA[iNdEx:])
