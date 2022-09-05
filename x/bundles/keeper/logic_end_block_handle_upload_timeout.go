@@ -74,11 +74,15 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 		}
 
 		// We now know that the pool is active and the upload timeout has been reached.
-		// Now we slash and remove the current next_uploader and select a new one.
 
-		k.delegationKeeper.SlashDelegators(ctx, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
+		// Now we slash and remove the current next_uploader
+		// (if he is still participating in the pool) and select a new one.
+		_, foundNextUploader := k.stakerKeeper.GetValaccount(ctx, pool.Id, bundleProposal.NextUploader)
 
-		k.stakerKeeper.RemoveValaccountFromPool(ctx, pool.Id, bundleProposal.NextUploader)
+		if foundNextUploader {
+			k.delegationKeeper.SlashDelegators(ctx, bundleProposal.NextUploader, stakersmoduletypes.SLASH_TYPE_TIMEOUT)
+			k.stakerKeeper.RemoveValaccountFromPool(ctx, pool.Id, bundleProposal.NextUploader)
+		}
 
 		// Update bundle proposal
 		bundleProposal.NextUploader = k.chooseNextUploaderFromAllStakers(ctx, pool.Id)

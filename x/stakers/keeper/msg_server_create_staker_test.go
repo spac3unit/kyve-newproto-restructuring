@@ -12,17 +12,17 @@ import (
 
 /*
 
-TEST CASES - msg_server_stake.go
+TEST CASES - msg_server_create_staker.go
 
-* Create a new staker by staking 100 KYVE
-* Do an additional 50 KYVE self delegation
-* Try to create staker with more KYVE than available in balance
-* Create a second staker by staking 150 KYVE
+* Create a first new staker and delegate 100 $KYVE
+* Do an additional 50 $KYVE self delegation after staker has already delegated 100 $KYVE
+* Try to create staker with more $KYVE than available in balance
+* Create a second staker by staking 150 $KYVE
 * TODO: create a staker again after the staker unstaked everything
 
 */
 
-var _ = Describe("msg_server_stake.go", Ordered, func() {
+var _ = Describe("msg_server_create_staker.go", Ordered, func() {
 	s := i.NewCleanChain()
 
 	initialBalance := s.GetBalanceFromAddress(i.STAKER_0)
@@ -36,7 +36,7 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	It("Create a new staker by staking 100 KYVE", func() {
+	It("Create a first new staker and delegate 100 $KYVE", func() {
 		// ACT
 		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
@@ -65,7 +65,7 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(valaccounts).To(BeEmpty())
 	})
 
-	It("Do an additional 50 KYVE self delegation", func() {
+	It("Do an additional 50 $KYVE self delegation after staker has already delegated 100 $KYVE", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
@@ -102,7 +102,7 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(valaccounts).To(HaveLen(0))
 	})
 
-	It("Try to create staker with more KYVE than available in balance", func() {
+	It("Try to create staker with more $KYVE than available in balance", func() {
 		// ACT
 		currentBalance := s.GetBalanceFromAddress(i.STAKER_0)
 
@@ -119,7 +119,7 @@ var _ = Describe("msg_server_stake.go", Ordered, func() {
 		Expect(found).To(BeFalse())
 	})
 
-	It("Create a second staker by staking 150 KYVE", func() {
+	It("Create a second staker by staking 150 $KYVE", func() {
 		// ARRANGE
 		s.RunTxStakersSuccess(&stakerstypes.MsgCreateStaker{
 			Creator: i.STAKER_0,

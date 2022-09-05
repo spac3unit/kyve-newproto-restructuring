@@ -23,24 +23,18 @@ func (k msgServer) SkipUploaderRole(
 	k.stakerKeeper.ResetPoints(ctx, msg.PoolId, msg.Staker)
 
 	// Get next uploader from stakers voted
-	voters := make([]string, 0)
+	stakers := make([]string, 0)
 	nextUploader := ""
 
-	// exclude the staker who skips the uploader
-	for _, voter := range bundleProposal.VotersValid {
-		if voter != msg.Staker {
-			voters = append(voters, voter)
+	// exclude the staker who skips the uploader role
+	for _, staker := range k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, msg.PoolId) {
+		if staker != msg.Staker {
+			stakers = append(stakers, staker)
 		}
 	}
 
-	for _, voter := range bundleProposal.VotersInvalid {
-		if voter != msg.Staker {
-			voters = append(voters, voter)
-		}
-	}
-
-	if len(voters) > 0 {
-		nextUploader = k.chooseNextUploaderFromSelectedStakers(ctx, msg.PoolId, voters)
+	if len(stakers) > 0 {
+		nextUploader = k.chooseNextUploaderFromSelectedStakers(ctx, msg.PoolId, stakers)
 	} else {
 		nextUploader = k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
 	}

@@ -46,6 +46,7 @@ type StakerKeeper interface {
 	DoesStakerExist(ctx sdk.Context, staker string) bool
 
 	// TODO replace exported mutation from getters file
+	GetValaccount(ctx sdk.Context, poolId uint64, stakerAddress string) (val stakertypes.Valaccount, found bool)
 	RemoveValaccountFromPool(ctx sdk.Context, poolId uint64, stakerAddress string)
 }
 
