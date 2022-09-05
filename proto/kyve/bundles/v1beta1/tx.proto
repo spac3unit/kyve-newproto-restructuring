@@ -16,6 +16,8 @@ service Msg {
   rpc VoteBundleProposal(MsgVoteBundleProposal) returns (MsgVoteBundleProposalResponse);
   // ClaimUploaderRole ...
   rpc ClaimUploaderRole(MsgClaimUploaderRole) returns (MsgClaimUploaderRoleResponse);
+  // SkipUploaderRole ...
+  rpc SkipUploaderRole(MsgSkipUploaderRole) returns (MsgSkipUploaderRoleResponse);
 }
 
 // MsgSubmitBundleProposal defines a SDK message for submitting a bundle proposal.
@@ -90,3 +92,18 @@ message MsgClaimUploaderRole {
 
 // MsgClaimUploaderRoleResponse defines the Msg/ClaimUploaderRole response type.
 message MsgClaimUploaderRoleResponse {}
+
+// MsgSubmitBundleProposal defines a SDK message for submitting a bundle proposal.
+message MsgSkipUploaderRole {
+  // creator ...
+  string creator = 1;
+  // staker ...
+  string staker = 2;
+  // pool_id ...
+  uint64 pool_id = 3;
+  // from_height ...
+  uint64 from_height = 4;
+}
+
+// MsgSubmitBundleProposalResponse defines the Msg/SubmitBundleProposal response type.
+message MsgSkipUploaderRoleResponse {}

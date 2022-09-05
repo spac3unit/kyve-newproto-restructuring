@@ -25,7 +25,6 @@ TEST CASES - grpc_query_can_vote.go
 * Call can vote if pool has not reached the minimum stake
 * Call can vote with a valaccount which does not exist
 * Call can vote if current bundle was dropped
-* Call can vote if current bundle was of type KYVE_NO_DATA_BUNDLE
 * Call can vote with a different storage id than the current one
 * Call can vote if voter has already voted valid
 * Call can vote if voter has already voted invalid
@@ -322,55 +321,6 @@ var _ = Describe("grpc_query_can_vote.go", Ordered, func() {
 
 		Expect(canVote.Possible).To(BeFalse())
 		Expect(canVote.Reason).To(Equal(bundletypes.ErrBundleDropped.Error()))
-
-		_, txErr := s.RunTxBundles(&bundletypes.MsgVoteBundleProposal{
-			Creator:   i.VALADDRESS_1,
-			Staker:    i.STAKER_1,
-			PoolId:    0,
-			StorageId: "test_storage_id",
-			Vote:      bundletypes.VOTE_TYPE_YES,
-		})
-
-		Expect(txErr).NotTo(BeNil())
-		Expect(txErr.Error()).To(Equal(canVote.Reason))
-	})
-
-	It("Call can vote if previous bundle was of type KYVE_NO_DATA_BUNDLE", func() {
-		// ARRANGE
-		// wait for timeout so bundle gets dropped
-		s.CommitAfterSeconds(s.App().BundlesKeeper.UploadTimeout(s.Ctx()))
-		s.CommitAfterSeconds(1)
-
-		// wait for upload interval
-		s.CommitAfterSeconds(60)
-
-		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
-			Creator:    i.VALADDRESS_0,
-			Staker:     i.STAKER_0,
-			PoolId:     0,
-			StorageId:  "KYVE_NO_DATA_BUNDLE_0_1661245871",
-			ByteSize:   0,
-			FromHeight: 0,
-			ToHeight:   0,
-			FromKey:    "",
-			ToKey:      "",
-			ToValue:    "",
-			BundleHash: "",
-		})
-
-		// ACT
-		canVote, err := s.App().QueryKeeper.CanVote(sdk.WrapSDKContext(s.Ctx()), &querytypes.QueryCanVoteRequest{
-			PoolId:    0,
-			Staker:    i.STAKER_1,
-			Voter:     i.VALADDRESS_1,
-			StorageId: "test_storage_id",
-		})
-
-		// ASSERT
-		Expect(err).To(BeNil())
-
-		Expect(canVote.Possible).To(BeFalse())
-		Expect(canVote.Reason).To(Equal(bundletypes.ErrNoDataBundle.Error()))
 
 		_, txErr := s.RunTxBundles(&bundletypes.MsgVoteBundleProposal{
 			Creator:   i.VALADDRESS_1,

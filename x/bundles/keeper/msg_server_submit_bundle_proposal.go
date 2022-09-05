@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"context"
-	"strings"
-
 	"github.com/KYVENetwork/chain/util"
 	"github.com/KYVENetwork/chain/x/bundles/types"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
@@ -32,8 +30,8 @@ func (k msgServer) SubmitBundleProposal(
 	// reset points of uploader as node has proven to be active
 	k.stakerKeeper.ResetPoints(ctx, msg.PoolId, msg.Staker)
 
-	// If bundle was dropped or is of type KYVE_NO_DATA_BUNDLE just register new bundle.
-	if bundleProposal.StorageId == "" || strings.HasPrefix(bundleProposal.StorageId, types.KYVE_NO_DATA_BUNDLE) {
+	// If bundle was dropped just register the new bundle.
+	if bundleProposal.StorageId == "" {
 		nextUploader := k.chooseNextUploaderFromAllStakers(ctx, msg.PoolId)
 
 		if err := k.registerBundleProposalFromUploader(ctx, pool, bundleProposal, msg, nextUploader); err != nil {
