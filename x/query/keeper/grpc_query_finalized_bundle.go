@@ -38,3 +38,29 @@ func (k Keeper) FinalizedBundle(c context.Context, req *types.QueryFinalizedBund
 
 	return &types.QueryFinalizedBundleResponse{FinalizedBundle: finalizedBundle}, nil
 }
+
+func (k Keeper) FinalizedBundleByStorageId(goCtx context.Context, req *types.QueryFinalizedBundleByStorageIdRequest) (*types.QueryFinalizedBundleByStorageIdResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	finalizedBundle, found := k.bundleKeeper.GetFinalizedBundleByStorageId(ctx, req.StorageId)
+	if !found {
+		return nil, sdkerrors.ErrKeyNotFound
+	}
+
+	return &types.QueryFinalizedBundleByStorageIdResponse{FinalizedBundle: finalizedBundle}, nil
+}
+
+func (k Keeper) FinalizedBundlesByHeight(goCtx context.Context, req *types.QueryFinalizedBundlesByHeightRequest) (*types.QueryFinalizedBundlesByHeightResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	finalizedBundle, found := k.bundleKeeper.GetFinalizedBundleByHeight(ctx, req.PoolId, req.Height)
+	if !found {
+		return nil, sdkerrors.ErrKeyNotFound
+	}
+
+	return &types.QueryFinalizedBundlesByHeightResponse{FinalizedBundle: finalizedBundle}, nil
+}
