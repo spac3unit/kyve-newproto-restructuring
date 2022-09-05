@@ -16,11 +16,6 @@ service QueryAccount {
     option (google.api.http).get = "/kyve/query/v1beta1/account_assets/{address}";
   }
 
-  // AccountStakingUnbondings ...
-  rpc AccountStakingUnbondings(QueryAccountStakingUnbondingsRequest) returns (QueryAccountStakingUnbondingsResponse) {
-    option (google.api.http).get = "/kyve/query/v1beta1/account_staking_unbondings/{address}";
-  }
-
   // AccountDelegationUnbondings ...
   rpc AccountDelegationUnbondings(QueryAccountDelegationUnbondingsRequest) returns (QueryAccountDelegationUnbondingsResponse) {
     option (google.api.http).get = "/kyve/query/v1beta1/account_delegation_unbondings/{address}";
@@ -37,6 +32,7 @@ service QueryAccount {
   }
 }
 
+
 // ========================
 // account_assets/{address}
 // ========================
@@ -52,9 +48,9 @@ message QueryAccountAssetsResponse {
   // balance ...
   uint64 balance = 1;
   // protocol_staking ...
-  uint64 protocol_staking = 2;
+  uint64 protocol_self_delegation = 2;
   // protocol_staking_unbonding
-  uint64 protocol_staking_unbonding = 3;
+  uint64 protocol_self_delegation_unbonding = 3;
   // protocol_delegation ...
   uint64 protocol_delegation = 4;
   // protocol_delegation_unbonding
@@ -65,35 +61,6 @@ message QueryAccountAssetsResponse {
   uint64 protocol_funding = 7;
 }
 
-// ====================================
-// account_staking_unbondings/{address}
-// ====================================
-
-// QueryAccountFundedListRequest ...
-message QueryAccountStakingUnbondingsRequest {
-  // pagination defines an optional pagination for the request.
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-  // address ...
-  string address = 2;
-}
-
-// QueryAccountAssetsResponse is the response type for the Query/AccountAssets RPC method.
-message QueryAccountStakingUnbondingsResponse {
-  // balance ...
-  repeated StakingUnbonding unbondings = 1 [(gogoproto.nullable) = false];
-  // staker
-  FullStaker staker = 3;
-  // pagination defines the pagination in the response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryAccountAssetsResponse is the response type for the Query/AccountAssets RPC method.
-message StakingUnbonding {
-  // amount
-  uint64 amount = 1;
-  // creation_time
-  int64 creation_time = 2;
-}
 
 // =======================================
 // account_delegation_unbondings/{address}
@@ -125,6 +92,7 @@ message DelegationUnbonding {
   FullStaker staker = 3;
 }
 
+
 // =============================
 // account_funded_list/{address}
 // =============================
@@ -152,6 +120,7 @@ message Funded {
   // pool ...
   BasicPool pool = 2;
 }
+
 
 // ==============================
 // account_redelegation/{address}

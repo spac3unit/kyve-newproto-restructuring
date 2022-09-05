@@ -21,7 +21,10 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	response := types.QueryAccountAssetsResponse{}
+	response := types.QueryAccountAssetsResponse{
+		ProtocolSelfDelegation:          0,
+		ProtocolSelfDelegationUnbonding: 0,
+	}
 
 	// =======
 	// Balance
@@ -30,12 +33,11 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 	balance := k.bankKeeper.GetBalance(ctx, account, "tkyve")
 	response.Balance = balance.Amount.Uint64()
 
-	// ==========================================
-	// ProtocolStaking + ProtocolStakingUnbonding
-	// ==========================================
+	// ======================
+	// ProtocolSelfDelegation
+	// ======================
 
-	response.ProtocolStaking = k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, req.Address, req.Address)
-	response.ProtocolStakingUnbonding = 0 // TODO
+	response.ProtocolSelfDelegation = k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, req.Address, req.Address)
 
 	// ================================================
 	// ProtocolDelegation + ProtocolDelegationUnbonding
@@ -56,13 +58,16 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 		response.ProtocolRewards += k.delegationKeeper.GetOutstandingRewards(ctx, staker, req.Address)
 	}
 
-	// ====================
-	// Delegation Unbonding
-	// ====================
+	// ======================================================
+	// Delegation Unbonding + ProtocolSelfDelegationUnbonding
+	// ======================================================
 
 	// Iterate all UnbondingDelegation entries to get total delegation unbonding amount
 	for _, entry := range k.delegationKeeper.GetAllUnbondingDelegationQueueEntriesOfDelegator(ctx, req.Address) {
 		response.ProtocolDelegationUnbonding += entry.Amount
+		if entry.Staker == req.Address {
+			response.ProtocolSelfDelegationUnbonding += entry.Amount
+		}
 	}
 
 	// ===============

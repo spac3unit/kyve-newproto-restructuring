@@ -210,11 +210,6 @@ func (suite *KeeperTestSuite) VerifyStakersQueries() {
 		suite.verifyFullStaker(stakerByAddressQuery.Staker, address)
 	}
 
-	unbondingState := suite.App().StakersKeeper.GetAllUnbondingStakeEntries(suite.Ctx())
-	unbondingQuery, unbondingQueryErr := suite.App().QueryKeeper.AccountStakingUnbondings(sdk.WrapSDKContext(suite.Ctx()), &querytypes.QueryAccountStakingUnbondingsRequest{})
-
-	Expect(unbondingQueryErr).To(BeNil())
-	Expect(unbondingState).To(ContainElements(unbondingQuery.Unbondings))
 }
 
 func (suite *KeeperTestSuite) VerifyStakersGenesisImportExport() {
@@ -374,7 +369,15 @@ func (suite *KeeperTestSuite) verifyFullStaker(fullStaker querytypes.FullStaker,
 	staker, found := suite.App().StakersKeeper.GetStaker(suite.Ctx(), stakerAddress)
 	Expect(found).To(BeTrue())
 	Expect(fullStaker.SelfDelegation).To(Equal(suite.App().DelegationKeeper.GetDelegationAmountOfDelegator(suite.Ctx(), stakerAddress, stakerAddress)))
-	Expect(fullStaker.UnbondingAmount).To(Equal(uint64(0))) // TODO
+
+	selfDelegationUnbonding := uint64(0)
+	for _, entry := range suite.App().DelegationKeeper.GetAllUnbondingDelegationQueueEntriesOfDelegator(suite.Ctx(), fullStaker.Address) {
+		if entry.Staker == stakerAddress {
+			selfDelegationUnbonding += entry.Amount
+		}
+	}
+
+	Expect(fullStaker.SelfDelegationUnbonding).To(Equal(selfDelegationUnbonding))
 	Expect(fullStaker.Metadata.Logo).To(Equal(staker.Logo))
 	Expect(fullStaker.Metadata.Website).To(Equal(staker.Website))
 	Expect(fullStaker.Metadata.Commission).To(Equal(staker.Commission))

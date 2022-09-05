@@ -65,7 +65,7 @@ message FullStaker {
   // got slashed during unbonding. However, at the end of
   // the unbonding period this amount is double checked with the
   // remaining amount.
-  uint64 unbonding_amount = 4;
+  uint64 self_delegation_unbonding = 4;
 
   // total_delegation returns the sum of all $KYVE users
   // have delegated to this staker

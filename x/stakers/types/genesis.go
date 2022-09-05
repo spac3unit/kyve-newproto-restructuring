@@ -46,24 +46,6 @@ func (gs GenesisState) Validate() error {
 		commissionChangeMap[index] = struct{}{}
 	}
 
-	// Unbonding Stake
-	unbondingStakeEntry := make(map[string]struct{})
-
-	for _, elem := range gs.UnbondingStakeEntries {
-		index := string(UnbondingStakeEntryKey(elem.Index))
-		if _, ok := unbondingStakeEntry[index]; ok {
-			return fmt.Errorf("duplicated index for unbonding stake entry %v", elem)
-		}
-		if elem.Index > gs.QueueStateUnstaking.HighIndex {
-			return fmt.Errorf("unbonding stake entry index too high: %v", elem)
-		}
-		if elem.Index < gs.QueueStateUnstaking.LowIndex {
-			return fmt.Errorf("unbonding stake entry index too low: %v", elem)
-		}
-
-		unbondingStakeEntry[index] = struct{}{}
-	}
-
 	// Leave Pool
 	leavePoolMap := make(map[string]struct{})
 

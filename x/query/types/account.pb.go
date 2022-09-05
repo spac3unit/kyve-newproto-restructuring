@@ -81,9 +81,9 @@ type QueryAccountAssetsResponse struct {
 	// balance ...
 	Balance uint64 `protobuf:"varint,1,opt,name=balance,proto3" json:"balance,omitempty"`
 	// protocol_staking ...
-	ProtocolStaking uint64 `protobuf:"varint,2,opt,name=protocol_staking,json=protocolStaking,proto3" json:"protocol_staking,omitempty"`
+	ProtocolSelfDelegation uint64 `protobuf:"varint,2,opt,name=protocol_self_delegation,json=protocolSelfDelegation,proto3" json:"protocol_self_delegation,omitempty"`
 	// protocol_staking_unbonding
-	ProtocolStakingUnbonding uint64 `protobuf:"varint,3,opt,name=protocol_staking_unbonding,json=protocolStakingUnbonding,proto3" json:"protocol_staking_unbonding,omitempty"`
+	ProtocolSelfDelegationUnbonding uint64 `protobuf:"varint,3,opt,name=protocol_self_delegation_unbonding,json=protocolSelfDelegationUnbonding,proto3" json:"protocol_self_delegation_unbonding,omitempty"`
 	// protocol_delegation ...
 	ProtocolDelegation uint64 `protobuf:"varint,4,opt,name=protocol_delegation,json=protocolDelegation,proto3" json:"protocol_delegation,omitempty"`
 	// protocol_delegation_unbonding
@@ -134,16 +134,16 @@ func (m *QueryAccountAssetsResponse) GetBalance() uint64 {
 	return 0
 }
 
-func (m *QueryAccountAssetsResponse) GetProtocolStaking() uint64 {
+func (m *QueryAccountAssetsResponse) GetProtocolSelfDelegation() uint64 {
 	if m != nil {
-		return m.ProtocolStaking
+		return m.ProtocolSelfDelegation
 	}
 	return 0
 }
 
-func (m *QueryAccountAssetsResponse) GetProtocolStakingUnbonding() uint64 {
+func (m *QueryAccountAssetsResponse) GetProtocolSelfDelegationUnbonding() uint64 {
 	if m != nil {
-		return m.ProtocolStakingUnbonding
+		return m.ProtocolSelfDelegationUnbonding
 	}
 	return 0
 }
@@ -177,180 +177,6 @@ func (m *QueryAccountAssetsResponse) GetProtocolFunding() uint64 {
 }
 
 // QueryAccountFundedListRequest ...
-type QueryAccountStakingUnbondingsRequest struct {
-	// pagination defines an optional pagination for the request.
-	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	// address ...
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-}
-
-func (m *QueryAccountStakingUnbondingsRequest) Reset()         { *m = QueryAccountStakingUnbondingsRequest{} }
-func (m *QueryAccountStakingUnbondingsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAccountStakingUnbondingsRequest) ProtoMessage()    {}
-func (*QueryAccountStakingUnbondingsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{2}
-}
-func (m *QueryAccountStakingUnbondingsRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryAccountStakingUnbondingsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryAccountStakingUnbondingsRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryAccountStakingUnbondingsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAccountStakingUnbondingsRequest.Merge(m, src)
-}
-func (m *QueryAccountStakingUnbondingsRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryAccountStakingUnbondingsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAccountStakingUnbondingsRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryAccountStakingUnbondingsRequest proto.InternalMessageInfo
-
-func (m *QueryAccountStakingUnbondingsRequest) GetPagination() *query.PageRequest {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
-}
-
-func (m *QueryAccountStakingUnbondingsRequest) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-// QueryAccountAssetsResponse is the response type for the Query/AccountAssets RPC method.
-type QueryAccountStakingUnbondingsResponse struct {
-	// balance ...
-	Unbondings []StakingUnbonding `protobuf:"bytes,1,rep,name=unbondings,proto3" json:"unbondings"`
-	// staker
-	Staker *FullStaker `protobuf:"bytes,3,opt,name=staker,proto3" json:"staker,omitempty"`
-	// pagination defines the pagination in the response.
-	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
-}
-
-func (m *QueryAccountStakingUnbondingsResponse) Reset()         { *m = QueryAccountStakingUnbondingsResponse{} }
-func (m *QueryAccountStakingUnbondingsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAccountStakingUnbondingsResponse) ProtoMessage()    {}
-func (*QueryAccountStakingUnbondingsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{3}
-}
-func (m *QueryAccountStakingUnbondingsResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryAccountStakingUnbondingsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryAccountStakingUnbondingsResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryAccountStakingUnbondingsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAccountStakingUnbondingsResponse.Merge(m, src)
-}
-func (m *QueryAccountStakingUnbondingsResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryAccountStakingUnbondingsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAccountStakingUnbondingsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryAccountStakingUnbondingsResponse proto.InternalMessageInfo
-
-func (m *QueryAccountStakingUnbondingsResponse) GetUnbondings() []StakingUnbonding {
-	if m != nil {
-		return m.Unbondings
-	}
-	return nil
-}
-
-func (m *QueryAccountStakingUnbondingsResponse) GetStaker() *FullStaker {
-	if m != nil {
-		return m.Staker
-	}
-	return nil
-}
-
-func (m *QueryAccountStakingUnbondingsResponse) GetPagination() *query.PageResponse {
-	if m != nil {
-		return m.Pagination
-	}
-	return nil
-}
-
-// QueryAccountAssetsResponse is the response type for the Query/AccountAssets RPC method.
-type StakingUnbonding struct {
-	// amount
-	Amount uint64 `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`
-	// creation_time
-	CreationTime int64 `protobuf:"varint,2,opt,name=creation_time,json=creationTime,proto3" json:"creation_time,omitempty"`
-}
-
-func (m *StakingUnbonding) Reset()         { *m = StakingUnbonding{} }
-func (m *StakingUnbonding) String() string { return proto.CompactTextString(m) }
-func (*StakingUnbonding) ProtoMessage()    {}
-func (*StakingUnbonding) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{4}
-}
-func (m *StakingUnbonding) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *StakingUnbonding) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_StakingUnbonding.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *StakingUnbonding) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_StakingUnbonding.Merge(m, src)
-}
-func (m *StakingUnbonding) XXX_Size() int {
-	return m.Size()
-}
-func (m *StakingUnbonding) XXX_DiscardUnknown() {
-	xxx_messageInfo_StakingUnbonding.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_StakingUnbonding proto.InternalMessageInfo
-
-func (m *StakingUnbonding) GetAmount() uint64 {
-	if m != nil {
-		return m.Amount
-	}
-	return 0
-}
-
-func (m *StakingUnbonding) GetCreationTime() int64 {
-	if m != nil {
-		return m.CreationTime
-	}
-	return 0
-}
-
-// QueryAccountFundedListRequest ...
 type QueryAccountDelegationUnbondingsRequest struct {
 	// pagination defines an optional pagination for the request.
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -364,7 +190,7 @@ func (m *QueryAccountDelegationUnbondingsRequest) Reset() {
 func (m *QueryAccountDelegationUnbondingsRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountDelegationUnbondingsRequest) ProtoMessage()    {}
 func (*QueryAccountDelegationUnbondingsRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{5}
+	return fileDescriptor_51ca316755261aec, []int{2}
 }
 func (m *QueryAccountDelegationUnbondingsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -421,7 +247,7 @@ func (m *QueryAccountDelegationUnbondingsResponse) Reset() {
 func (m *QueryAccountDelegationUnbondingsResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountDelegationUnbondingsResponse) ProtoMessage()    {}
 func (*QueryAccountDelegationUnbondingsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{6}
+	return fileDescriptor_51ca316755261aec, []int{3}
 }
 func (m *QueryAccountDelegationUnbondingsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -478,7 +304,7 @@ func (m *DelegationUnbonding) Reset()         { *m = DelegationUnbonding{} }
 func (m *DelegationUnbonding) String() string { return proto.CompactTextString(m) }
 func (*DelegationUnbonding) ProtoMessage()    {}
 func (*DelegationUnbonding) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{7}
+	return fileDescriptor_51ca316755261aec, []int{4}
 }
 func (m *DelegationUnbonding) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -538,7 +364,7 @@ func (m *QueryAccountFundedListRequest) Reset()         { *m = QueryAccountFunde
 func (m *QueryAccountFundedListRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountFundedListRequest) ProtoMessage()    {}
 func (*QueryAccountFundedListRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{8}
+	return fileDescriptor_51ca316755261aec, []int{5}
 }
 func (m *QueryAccountFundedListRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -584,7 +410,7 @@ func (m *QueryAccountFundedListResponse) Reset()         { *m = QueryAccountFund
 func (m *QueryAccountFundedListResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountFundedListResponse) ProtoMessage()    {}
 func (*QueryAccountFundedListResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{9}
+	return fileDescriptor_51ca316755261aec, []int{6}
 }
 func (m *QueryAccountFundedListResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -632,7 +458,7 @@ func (m *Funded) Reset()         { *m = Funded{} }
 func (m *Funded) String() string { return proto.CompactTextString(m) }
 func (*Funded) ProtoMessage()    {}
 func (*Funded) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{10}
+	return fileDescriptor_51ca316755261aec, []int{7}
 }
 func (m *Funded) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -685,7 +511,7 @@ func (m *QueryAccountRedelegationRequest) Reset()         { *m = QueryAccountRed
 func (m *QueryAccountRedelegationRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountRedelegationRequest) ProtoMessage()    {}
 func (*QueryAccountRedelegationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{11}
+	return fileDescriptor_51ca316755261aec, []int{8}
 }
 func (m *QueryAccountRedelegationRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -733,7 +559,7 @@ func (m *QueryAccountRedelegationResponse) Reset()         { *m = QueryAccountRe
 func (m *QueryAccountRedelegationResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryAccountRedelegationResponse) ProtoMessage()    {}
 func (*QueryAccountRedelegationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{12}
+	return fileDescriptor_51ca316755261aec, []int{9}
 }
 func (m *QueryAccountRedelegationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -788,7 +614,7 @@ func (m *RedelegationEntry) Reset()         { *m = RedelegationEntry{} }
 func (m *RedelegationEntry) String() string { return proto.CompactTextString(m) }
 func (*RedelegationEntry) ProtoMessage()    {}
 func (*RedelegationEntry) Descriptor() ([]byte, []int) {
-	return fileDescriptor_51ca316755261aec, []int{13}
+	return fileDescriptor_51ca316755261aec, []int{10}
 }
 func (m *RedelegationEntry) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -834,9 +660,6 @@ func (m *RedelegationEntry) GetFinishDate() uint64 {
 func init() {
 	proto.RegisterType((*QueryAccountAssetsRequest)(nil), "kyve.query.v1beta1.QueryAccountAssetsRequest")
 	proto.RegisterType((*QueryAccountAssetsResponse)(nil), "kyve.query.v1beta1.QueryAccountAssetsResponse")
-	proto.RegisterType((*QueryAccountStakingUnbondingsRequest)(nil), "kyve.query.v1beta1.QueryAccountStakingUnbondingsRequest")
-	proto.RegisterType((*QueryAccountStakingUnbondingsResponse)(nil), "kyve.query.v1beta1.QueryAccountStakingUnbondingsResponse")
-	proto.RegisterType((*StakingUnbonding)(nil), "kyve.query.v1beta1.StakingUnbonding")
 	proto.RegisterType((*QueryAccountDelegationUnbondingsRequest)(nil), "kyve.query.v1beta1.QueryAccountDelegationUnbondingsRequest")
 	proto.RegisterType((*QueryAccountDelegationUnbondingsResponse)(nil), "kyve.query.v1beta1.QueryAccountDelegationUnbondingsResponse")
 	proto.RegisterType((*DelegationUnbonding)(nil), "kyve.query.v1beta1.DelegationUnbonding")
@@ -851,68 +674,63 @@ func init() {
 func init() { proto.RegisterFile("kyve/query/v1beta1/account.proto", fileDescriptor_51ca316755261aec) }
 
 var fileDescriptor_51ca316755261aec = []byte{
-	// 974 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0x4f, 0x6f, 0x1b, 0x45,
-	0x14, 0xcf, 0x3a, 0xc6, 0x11, 0x2f, 0x2d, 0xb4, 0x13, 0x84, 0xcc, 0x86, 0x6c, 0xa2, 0xa5, 0x6d,
-	0x42, 0x05, 0xbb, 0xb2, 0x13, 0x50, 0xd2, 0x14, 0x89, 0xa6, 0x49, 0x90, 0xf8, 0x5b, 0x36, 0x80,
-	0xd4, 0x5e, 0xac, 0xf1, 0x7a, 0xb2, 0x59, 0x65, 0xbd, 0xe3, 0xee, 0x8c, 0x13, 0x22, 0xc4, 0x85,
-	0x13, 0x82, 0x0b, 0x12, 0x5f, 0x81, 0xaf, 0xc0, 0x09, 0x4e, 0x9c, 0x7a, 0x2c, 0xe2, 0xc2, 0x05,
-	0x54, 0x25, 0x9c, 0x38, 0xf3, 0x01, 0xd0, 0xce, 0x8e, 0xed, 0x59, 0x7b, 0xec, 0x25, 0x11, 0xea,
-	0x6d, 0xe7, 0xcd, 0xfb, 0xbd, 0x79, 0xbf, 0xf7, 0x7e, 0xfb, 0x66, 0x60, 0xe9, 0xf0, 0xe4, 0x88,
-	0xb8, 0x0f, 0xbb, 0x24, 0x39, 0x71, 0x8f, 0x6a, 0x4d, 0xc2, 0x71, 0xcd, 0xc5, 0xbe, 0x4f, 0xbb,
-	0x31, 0x77, 0x3a, 0x09, 0xe5, 0x14, 0xa1, 0xd4, 0xc3, 0x11, 0x1e, 0x8e, 0xf4, 0x30, 0x6f, 0xfa,
-	0x94, 0xb5, 0x29, 0x73, 0x9b, 0x98, 0x0d, 0x83, 0x3b, 0x38, 0x08, 0x63, 0xcc, 0x43, 0x1a, 0x67,
-	0x78, 0xf3, 0x85, 0x80, 0x06, 0x54, 0x7c, 0xba, 0xe9, 0x97, 0xb4, 0xbe, 0x1c, 0x50, 0x1a, 0x44,
-	0xc4, 0xc5, 0x9d, 0xd0, 0xc5, 0x71, 0x4c, 0xb9, 0x80, 0x30, 0xb9, 0x6b, 0x69, 0xb2, 0xca, 0x32,
-	0x10, 0xfb, 0xf6, 0x1b, 0xf0, 0xd2, 0xc7, 0xe9, 0xf2, 0x4e, 0x96, 0xe9, 0x1d, 0xc6, 0x08, 0x67,
-	0x1e, 0x79, 0xd8, 0x25, 0x8c, 0xa3, 0x2a, 0xcc, 0xe0, 0x56, 0x2b, 0x21, 0x8c, 0x55, 0x8d, 0x25,
-	0x63, 0xe5, 0x59, 0xaf, 0xb7, 0xb4, 0xff, 0x2e, 0x81, 0xa9, 0xc3, 0xb1, 0x0e, 0x8d, 0x19, 0x49,
-	0x81, 0x4d, 0x1c, 0xe1, 0xd8, 0x27, 0x02, 0x58, 0xf6, 0x7a, 0x4b, 0xf4, 0x2a, 0x5c, 0x11, 0x07,
-	0xfb, 0x34, 0x6a, 0x30, 0x8e, 0x0f, 0xc3, 0x38, 0xa8, 0x96, 0x84, 0xcb, 0xf3, 0x3d, 0xfb, 0x5e,
-	0x66, 0x46, 0xb7, 0xc1, 0x1c, 0x76, 0x6d, 0x74, 0xe3, 0x26, 0x8d, 0x5b, 0x29, 0x68, 0x5a, 0x80,
-	0xaa, 0x43, 0xa0, 0x4f, 0x7b, 0xfb, 0xc8, 0x85, 0xb9, 0x3e, 0xba, 0x45, 0x22, 0x12, 0x88, 0xb2,
-	0x54, 0xcb, 0x02, 0x86, 0x7a, 0x5b, 0xdb, 0xfd, 0x1d, 0xb4, 0x05, 0x0b, 0x1a, 0x80, 0x72, 0xe2,
-	0x33, 0x02, 0x3a, 0x3f, 0x0a, 0x1d, 0x1c, 0xaa, 0xb2, 0x4b, 0xc8, 0x31, 0x4e, 0x5a, 0xac, 0x5a,
-	0xc9, 0xb3, 0xf3, 0x32, 0x73, 0xce, 0x75, 0xbf, 0x9b, 0x9d, 0x30, 0x93, 0x77, 0xdd, 0xcd, 0xcc,
-	0xf6, 0xd7, 0x06, 0x5c, 0x53, 0x8b, 0x3d, 0xcc, 0xb5, 0xdf, 0xaf, 0x5d, 0x80, 0x81, 0x68, 0x44,
-	0xe5, 0x67, 0xeb, 0x37, 0x9c, 0x4c, 0x61, 0x4e, 0xaa, 0xb0, 0xbc, 0xf8, 0x9c, 0x7b, 0x38, 0x20,
-	0x12, 0xeb, 0x29, 0x48, 0xb5, 0xef, 0xa5, 0x7c, 0xdf, 0xff, 0x31, 0xe0, 0x7a, 0x41, 0x2a, 0x52,
-	0x02, 0xef, 0x02, 0xf4, 0x4b, 0x97, 0xca, 0x67, 0x7a, 0x65, 0xb6, 0x7e, 0xcd, 0x19, 0xfd, 0x03,
-	0x9c, 0xe1, 0x10, 0x5b, 0xe5, 0x47, 0x7f, 0x2e, 0x4e, 0x79, 0x0a, 0x1a, 0xbd, 0x09, 0x95, 0x54,
-	0x00, 0x24, 0x11, 0x5d, 0x9f, 0xad, 0x5b, 0xba, 0x38, 0xbb, 0xdd, 0x48, 0xa8, 0x80, 0x24, 0x9e,
-	0xf4, 0x46, 0xef, 0xe4, 0xea, 0x51, 0x12, 0xd8, 0xe5, 0xc2, 0x7a, 0x64, 0x04, 0xd4, 0x82, 0xd8,
-	0x1f, 0xc1, 0x95, 0x11, 0x81, 0xbd, 0x08, 0x15, 0xdc, 0x4e, 0x6b, 0x20, 0x25, 0x2e, 0x57, 0xe8,
-	0x15, 0xb8, 0xec, 0x27, 0x24, 0x13, 0x0f, 0x0f, 0xdb, 0x44, 0x9c, 0x3b, 0xed, 0x5d, 0xea, 0x19,
-	0x3f, 0x09, 0xdb, 0xc4, 0xfe, 0xd6, 0x80, 0x65, 0xb5, 0x8e, 0x1a, 0x31, 0x3d, 0xc5, 0xae, 0xfe,
-	0x62, 0xc0, 0x4a, 0x71, 0x36, 0xb2, 0xb1, 0x1f, 0x68, 0x1a, 0xbb, 0xac, 0x6b, 0x88, 0x26, 0x8a,
-	0xa6, 0xb7, 0xff, 0x5b, 0x8f, 0xbe, 0x31, 0x60, 0x4e, 0xf7, 0x4f, 0x9e, 0xab, 0x4f, 0xe5, 0x7c,
-	0x9f, 0x2e, 0xaa, 0x3c, 0x7b, 0x03, 0x16, 0xd4, 0x82, 0xa6, 0x7f, 0x32, 0x69, 0xbd, 0x1f, 0x32,
-	0x5e, 0x3c, 0x5a, 0x1f, 0x80, 0x35, 0x0e, 0x2a, 0x3b, 0xb0, 0x0e, 0x95, 0x7d, 0x61, 0x95, 0xd5,
-	0x37, 0xf5, 0x49, 0xa5, 0x1e, 0xb2, 0xe0, 0xd2, 0xdf, 0xde, 0x83, 0x4a, 0x66, 0x1f, 0x5b, 0x95,
-	0x1a, 0x94, 0x3b, 0x94, 0x46, 0xb2, 0x11, 0x0b, 0xba, 0xc8, 0x5b, 0x98, 0x85, 0xfe, 0x3d, 0x4a,
-	0x23, 0x4f, 0xb8, 0xda, 0x9b, 0xb0, 0xa8, 0x26, 0xec, 0x91, 0xc1, 0xf4, 0x2c, 0x66, 0xfb, 0x93,
-	0x01, 0x4b, 0xe3, 0xd1, 0x92, 0x30, 0x85, 0x85, 0x44, 0xb1, 0x37, 0x7c, 0x4a, 0xa3, 0x16, 0x3d,
-	0x8e, 0x1b, 0x24, 0xe6, 0x49, 0x48, 0x7a, 0x2a, 0xbc, 0xae, 0xcb, 0x56, 0x0d, 0xb8, 0x13, 0xf3,
-	0xe4, 0x44, 0x96, 0x64, 0x5e, 0x8d, 0x78, 0x57, 0x06, 0xdc, 0xc9, 0xe2, 0xa1, 0x1b, 0xf0, 0x1c,
-	0x3e, 0xc2, 0x61, 0x84, 0x9b, 0x11, 0xd9, 0x8b, 0x28, 0x67, 0x52, 0x1c, 0x43, 0x56, 0xfb, 0x3e,
-	0x5c, 0x1d, 0x89, 0x9f, 0x13, 0x56, 0x0b, 0xf3, 0xde, 0x15, 0xd8, 0x17, 0xd6, 0x36, 0xe6, 0x04,
-	0x2d, 0xc2, 0xec, 0x7e, 0x18, 0x87, 0xec, 0x20, 0x73, 0xc9, 0xc2, 0x43, 0x66, 0x4a, 0x1d, 0xea,
-	0x4f, 0x66, 0xe0, 0x92, 0x5a, 0x18, 0xf4, 0x83, 0x01, 0x97, 0x73, 0xb7, 0x2d, 0x7a, 0x5d, 0xc7,
-	0x77, 0xec, 0x6d, 0x6e, 0x3a, 0xff, 0xd5, 0x3d, 0xab, 0xba, 0xbd, 0xf6, 0xd5, 0x6f, 0x7f, 0x7d,
-	0x5f, 0x72, 0xd0, 0x6b, 0xee, 0xf8, 0x97, 0x4d, 0x03, 0x0b, 0x8c, 0xfb, 0x85, 0xec, 0xe7, 0x97,
-	0xe8, 0x57, 0x03, 0xaa, 0xe3, 0x2e, 0x07, 0xb4, 0x5e, 0x94, 0xc2, 0xb8, 0xab, 0xcd, 0xdc, 0xb8,
-	0x00, 0x52, 0xf2, 0x78, 0x5b, 0xf0, 0xb8, 0x85, 0xd6, 0x27, 0xf1, 0x18, 0x79, 0x60, 0xa8, 0x9c,
-	0xfe, 0x30, 0x60, 0x7e, 0xc2, 0x68, 0x44, 0x9b, 0x45, 0xc9, 0x4d, 0x18, 0xef, 0xe6, 0xed, 0x8b,
-	0x81, 0x25, 0xb9, 0xbb, 0x82, 0xdc, 0x5b, 0x68, 0x73, 0x12, 0x39, 0xdd, 0x73, 0x46, 0xe5, 0xf7,
-	0xa3, 0x01, 0x57, 0x47, 0xc6, 0x0d, 0xaa, 0x15, 0x25, 0x36, 0x32, 0xd5, 0xcc, 0xfa, 0x79, 0x20,
-	0x92, 0xc1, 0x86, 0x60, 0xb0, 0x8a, 0x6a, 0x93, 0x18, 0x64, 0xf3, 0xab, 0x11, 0x85, 0x8c, 0x2b,
-	0x79, 0xff, 0x6c, 0xc0, 0x9c, 0x66, 0x6e, 0xa0, 0xd5, 0xa2, 0x34, 0x34, 0x33, 0xca, 0x5c, 0x3b,
-	0x1f, 0x48, 0x66, 0x7f, 0x4b, 0x64, 0xbf, 0x86, 0xea, 0x93, 0xb2, 0x57, 0x47, 0xcd, 0x20, 0xfd,
-	0xad, 0xed, 0x47, 0xa7, 0x96, 0xf1, 0xf8, 0xd4, 0x32, 0x9e, 0x9c, 0x5a, 0xc6, 0x77, 0x67, 0xd6,
-	0xd4, 0xe3, 0x33, 0x6b, 0xea, 0xf7, 0x33, 0x6b, 0xea, 0xc1, 0xcd, 0x20, 0xe4, 0x07, 0xdd, 0xa6,
-	0xe3, 0xd3, 0xb6, 0xfb, 0xde, 0xfd, 0xcf, 0x76, 0x3e, 0x24, 0xfc, 0x98, 0x26, 0x87, 0xae, 0x7f,
-	0x80, 0xc3, 0xd8, 0xfd, 0x5c, 0x1e, 0xc3, 0x4f, 0x3a, 0x84, 0x35, 0x2b, 0xe2, 0xb9, 0xb8, 0xfa,
-	0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x7b, 0x07, 0x10, 0x80, 0x0c, 0x00, 0x00,
+	// 893 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x55, 0x41, 0x6f, 0x1b, 0x45,
+	0x14, 0xce, 0x3a, 0xc6, 0x15, 0xcf, 0x2d, 0xd0, 0x09, 0xaa, 0xcc, 0x06, 0xaf, 0xa3, 0x45, 0x34,
+	0xa1, 0x82, 0x5d, 0xd9, 0x09, 0xa8, 0x25, 0x70, 0xa8, 0x9b, 0x84, 0x43, 0x01, 0x95, 0x35, 0x20,
+	0xb5, 0x17, 0x6b, 0xbc, 0x3b, 0xde, 0xac, 0xb2, 0xde, 0x71, 0x77, 0xc6, 0x09, 0x16, 0xe2, 0xc2,
+	0x09, 0x01, 0x07, 0x24, 0xfe, 0x02, 0x7f, 0x81, 0x13, 0x9c, 0x38, 0xf5, 0x58, 0x89, 0x0b, 0x17,
+	0x10, 0x4a, 0xf8, 0x21, 0x68, 0x67, 0x66, 0xed, 0x71, 0xbd, 0xb6, 0x09, 0xb7, 0xdd, 0x37, 0xef,
+	0x7b, 0xf3, 0x7d, 0xf3, 0xbe, 0x37, 0x03, 0x5b, 0x27, 0xe3, 0x53, 0xe2, 0x3e, 0x1e, 0x91, 0x74,
+	0xec, 0x9e, 0x36, 0x7b, 0x84, 0xe3, 0xa6, 0x8b, 0x7d, 0x9f, 0x8e, 0x12, 0xee, 0x0c, 0x53, 0xca,
+	0x29, 0x42, 0x59, 0x86, 0x23, 0x32, 0x1c, 0x95, 0x61, 0xde, 0xf2, 0x29, 0x1b, 0x50, 0xe6, 0xf6,
+	0x30, 0x7b, 0x16, 0x3c, 0xc4, 0x61, 0x94, 0x60, 0x1e, 0xd1, 0x44, 0xe2, 0xcd, 0x97, 0x43, 0x1a,
+	0x52, 0xf1, 0xe9, 0x66, 0x5f, 0x2a, 0xfa, 0x6a, 0x48, 0x69, 0x18, 0x13, 0x17, 0x0f, 0x23, 0x17,
+	0x27, 0x09, 0xe5, 0x02, 0xc2, 0xd4, 0xaa, 0x55, 0xc0, 0x4a, 0x32, 0x10, 0xeb, 0xf6, 0xdb, 0xf0,
+	0xca, 0x27, 0xd9, 0xef, 0x5d, 0xc9, 0xf4, 0x2e, 0x63, 0x84, 0x33, 0x8f, 0x3c, 0x1e, 0x11, 0xc6,
+	0x51, 0x0d, 0xae, 0xe0, 0x20, 0x48, 0x09, 0x63, 0x35, 0x63, 0xcb, 0xd8, 0x79, 0xde, 0xcb, 0x7f,
+	0xed, 0x6f, 0xd6, 0xc1, 0x2c, 0xc2, 0xb1, 0x21, 0x4d, 0x18, 0xc9, 0x80, 0x3d, 0x1c, 0xe3, 0xc4,
+	0x27, 0x02, 0x58, 0xf6, 0xf2, 0x5f, 0x74, 0x1b, 0x6a, 0x62, 0x63, 0x9f, 0xc6, 0x5d, 0x46, 0xe2,
+	0x7e, 0x37, 0x20, 0x31, 0x09, 0x05, 0xe5, 0x5a, 0x49, 0xa4, 0xde, 0xc8, 0xd7, 0x3b, 0x24, 0xee,
+	0x1f, 0x4c, 0x56, 0xd1, 0x7d, 0xb0, 0x17, 0x21, 0xbb, 0xa3, 0xa4, 0x47, 0x93, 0x20, 0x4a, 0xc2,
+	0xda, 0xba, 0xa8, 0xd1, 0x28, 0xae, 0xf1, 0x59, 0x9e, 0x86, 0x5c, 0xd8, 0x98, 0x14, 0xd3, 0x18,
+	0x94, 0x05, 0x1a, 0xe5, 0x4b, 0xda, 0xee, 0x6d, 0xa8, 0x17, 0x00, 0xb4, 0x8d, 0x9f, 0x13, 0xd0,
+	0xcd, 0x79, 0xe8, 0x74, 0xd3, 0x37, 0xe0, 0xa5, 0x49, 0x8d, 0x94, 0x9c, 0xe1, 0x34, 0x60, 0xb5,
+	0x8a, 0x80, 0xbd, 0x98, 0xc7, 0x3d, 0x19, 0x9e, 0x49, 0xed, 0x8f, 0xe4, 0x0e, 0x57, 0x66, 0x53,
+	0x8f, 0x64, 0xd8, 0xfe, 0xce, 0x80, 0x6d, 0xbd, 0x15, 0x05, 0x3b, 0x4f, 0x1a, 0x7a, 0x04, 0x30,
+	0x75, 0x95, 0x68, 0x4d, 0xb5, 0x75, 0xd3, 0x91, 0x16, 0x74, 0x32, 0x0b, 0xce, 0xba, 0xd3, 0x79,
+	0x80, 0x43, 0xa2, 0xb0, 0x9e, 0x86, 0xd4, 0x8d, 0x51, 0x9a, 0x35, 0xc6, 0x6f, 0x06, 0xec, 0xac,
+	0x66, 0xa3, 0x6c, 0xf2, 0x11, 0xc0, 0xe4, 0x00, 0x33, 0x8b, 0xad, 0xef, 0x54, 0x5b, 0xdb, 0xce,
+	0xfc, 0x94, 0x38, 0x05, 0x55, 0xda, 0xe5, 0x27, 0x7f, 0x35, 0xd6, 0x3c, 0xad, 0x00, 0xfa, 0x60,
+	0x46, 0x5d, 0x49, 0xa8, 0xdb, 0x5e, 0xa9, 0x4e, 0x72, 0xd1, 0xe5, 0xd9, 0xdf, 0x1a, 0xb0, 0x51,
+	0xd4, 0xc0, 0x1b, 0x50, 0xc1, 0x83, 0x4c, 0x95, 0x72, 0xb5, 0xfa, 0x43, 0xaf, 0xc1, 0x35, 0x3f,
+	0x25, 0xd2, 0x11, 0x3c, 0x1a, 0x10, 0xe5, 0xe4, 0xab, 0x79, 0xf0, 0xd3, 0x68, 0x40, 0xd0, 0x3b,
+	0x50, 0x61, 0x1c, 0x9f, 0x90, 0x54, 0x78, 0xb4, 0xda, 0xb2, 0x8a, 0x84, 0x1e, 0x8d, 0xe2, 0xb8,
+	0x23, 0xb2, 0x3c, 0x95, 0x6d, 0xdf, 0x81, 0xba, 0x7e, 0xa0, 0x59, 0xdb, 0x49, 0xf0, 0x61, 0xc4,
+	0xf8, 0xea, 0x29, 0x7d, 0x04, 0xd6, 0x22, 0xa8, 0xea, 0xc0, 0x6d, 0xa8, 0xf4, 0x45, 0x54, 0x9d,
+	0xbe, 0x59, 0x4c, 0x2a, 0xcb, 0x50, 0x07, 0xae, 0xf2, 0xed, 0x0e, 0x54, 0x64, 0x7c, 0xe1, 0xa9,
+	0x34, 0xa1, 0x3c, 0xa4, 0x34, 0x56, 0x8d, 0xa8, 0x17, 0x55, 0x6e, 0x63, 0x16, 0xf9, 0x0f, 0x28,
+	0x8d, 0x3d, 0x91, 0x6a, 0xef, 0x43, 0x43, 0x27, 0xec, 0x91, 0xe9, 0xa8, 0xad, 0x56, 0xfb, 0x8b,
+	0x01, 0x5b, 0x8b, 0xd1, 0x4a, 0x30, 0x85, 0x7a, 0xaa, 0xc5, 0xbb, 0x3e, 0xa5, 0x71, 0x40, 0xcf,
+	0x92, 0x2e, 0x49, 0x78, 0x1a, 0x91, 0xdc, 0x85, 0xaf, 0x17, 0xb1, 0xd5, 0x0b, 0x1e, 0x26, 0x3c,
+	0x1d, 0xab, 0x23, 0xd9, 0xd4, 0x2b, 0xde, 0x53, 0x05, 0x0f, 0x65, 0x3d, 0x74, 0x13, 0x5e, 0xc0,
+	0xa7, 0x38, 0x8a, 0x71, 0x2f, 0x26, 0x9d, 0x98, 0x72, 0xa6, 0xcc, 0xf1, 0x4c, 0xd4, 0x7e, 0x08,
+	0xd7, 0xe7, 0xea, 0xcf, 0x18, 0x2b, 0xc0, 0x3c, 0xbf, 0x4d, 0x27, 0xc6, 0x3a, 0xc0, 0x9c, 0xa0,
+	0x06, 0x54, 0xfb, 0x51, 0x12, 0xb1, 0x63, 0x99, 0x22, 0xcb, 0x83, 0x0c, 0x65, 0x09, 0xad, 0xef,
+	0x2b, 0x70, 0x55, 0x3f, 0x18, 0xf4, 0x93, 0x01, 0xd7, 0x66, 0x2e, 0x6e, 0xf4, 0x56, 0x91, 0xde,
+	0x85, 0x0f, 0x83, 0xe9, 0xfc, 0xd7, 0x74, 0x79, 0xea, 0xf6, 0xde, 0xd7, 0xbf, 0xff, 0xf3, 0x63,
+	0xc9, 0x41, 0x6f, 0xba, 0x8b, 0x1f, 0xc9, 0x2e, 0x16, 0x18, 0xf7, 0x4b, 0xd5, 0xcf, 0xaf, 0xd0,
+	0x9f, 0x06, 0x6c, 0x2e, 0xb9, 0x46, 0xd0, 0xfe, 0x2a, 0x16, 0x4b, 0xae, 0x42, 0xf3, 0xbd, 0xff,
+	0x07, 0x56, 0x82, 0xee, 0x09, 0x41, 0xef, 0xa3, 0xfd, 0x65, 0x82, 0x8a, 0xde, 0x09, 0x5d, 0xdf,
+	0xcf, 0x06, 0x5c, 0x9f, 0x1b, 0x4d, 0xd4, 0x5c, 0x45, 0x6c, 0xee, 0x06, 0x30, 0x5b, 0x97, 0x81,
+	0x28, 0x05, 0x77, 0x84, 0x82, 0x5d, 0xd4, 0x5c, 0xa6, 0x40, 0xce, 0x7a, 0x37, 0x8e, 0x18, 0xd7,
+	0x78, 0xff, 0x6a, 0xc0, 0x46, 0xc1, 0x8c, 0xa1, 0xdd, 0x55, 0x34, 0x0a, 0xe6, 0xd9, 0xdc, 0xbb,
+	0x1c, 0x48, 0xb1, 0x7f, 0x57, 0xb0, 0xdf, 0x43, 0xad, 0x65, 0xec, 0xf5, 0xb1, 0x9c, 0xd2, 0x6f,
+	0x1f, 0x3c, 0x39, 0xb7, 0x8c, 0xa7, 0xe7, 0x96, 0xf1, 0xf7, 0xb9, 0x65, 0xfc, 0x70, 0x61, 0xad,
+	0x3d, 0xbd, 0xb0, 0xd6, 0xfe, 0xb8, 0xb0, 0xd6, 0x1e, 0xdd, 0x0a, 0x23, 0x7e, 0x3c, 0xea, 0x39,
+	0x3e, 0x1d, 0xb8, 0xf7, 0x1f, 0x7e, 0x7e, 0xf8, 0x31, 0xe1, 0x67, 0x34, 0x3d, 0x71, 0xfd, 0x63,
+	0x1c, 0x25, 0xee, 0x17, 0x6a, 0x1b, 0x3e, 0x1e, 0x12, 0xd6, 0xab, 0x88, 0x77, 0x78, 0xf7, 0xdf,
+	0x00, 0x00, 0x00, 0xff, 0xff, 0xce, 0x91, 0x98, 0x17, 0xf7, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -929,8 +747,6 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryAccountClient interface {
 	// AccountAssets returns an overview of the sum of all balances for a given user. e.g. balance, staking, funding, etc.
 	AccountAssets(ctx context.Context, in *QueryAccountAssetsRequest, opts ...grpc.CallOption) (*QueryAccountAssetsResponse, error)
-	// AccountStakingUnbondings ...
-	AccountStakingUnbondings(ctx context.Context, in *QueryAccountStakingUnbondingsRequest, opts ...grpc.CallOption) (*QueryAccountStakingUnbondingsResponse, error)
 	// AccountDelegationUnbondings ...
 	AccountDelegationUnbondings(ctx context.Context, in *QueryAccountDelegationUnbondingsRequest, opts ...grpc.CallOption) (*QueryAccountDelegationUnbondingsResponse, error)
 	// AccountFundedList returns all pools the given user has funded into.
@@ -950,15 +766,6 @@ func NewQueryAccountClient(cc grpc1.ClientConn) QueryAccountClient {
 func (c *queryAccountClient) AccountAssets(ctx context.Context, in *QueryAccountAssetsRequest, opts ...grpc.CallOption) (*QueryAccountAssetsResponse, error) {
 	out := new(QueryAccountAssetsResponse)
 	err := c.cc.Invoke(ctx, "/kyve.query.v1beta1.QueryAccount/AccountAssets", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryAccountClient) AccountStakingUnbondings(ctx context.Context, in *QueryAccountStakingUnbondingsRequest, opts ...grpc.CallOption) (*QueryAccountStakingUnbondingsResponse, error) {
-	out := new(QueryAccountStakingUnbondingsResponse)
-	err := c.cc.Invoke(ctx, "/kyve.query.v1beta1.QueryAccount/AccountStakingUnbondings", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -996,8 +803,6 @@ func (c *queryAccountClient) AccountRedelegation(ctx context.Context, in *QueryA
 type QueryAccountServer interface {
 	// AccountAssets returns an overview of the sum of all balances for a given user. e.g. balance, staking, funding, etc.
 	AccountAssets(context.Context, *QueryAccountAssetsRequest) (*QueryAccountAssetsResponse, error)
-	// AccountStakingUnbondings ...
-	AccountStakingUnbondings(context.Context, *QueryAccountStakingUnbondingsRequest) (*QueryAccountStakingUnbondingsResponse, error)
 	// AccountDelegationUnbondings ...
 	AccountDelegationUnbondings(context.Context, *QueryAccountDelegationUnbondingsRequest) (*QueryAccountDelegationUnbondingsResponse, error)
 	// AccountFundedList returns all pools the given user has funded into.
@@ -1012,9 +817,6 @@ type UnimplementedQueryAccountServer struct {
 
 func (*UnimplementedQueryAccountServer) AccountAssets(ctx context.Context, req *QueryAccountAssetsRequest) (*QueryAccountAssetsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountAssets not implemented")
-}
-func (*UnimplementedQueryAccountServer) AccountStakingUnbondings(ctx context.Context, req *QueryAccountStakingUnbondingsRequest) (*QueryAccountStakingUnbondingsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AccountStakingUnbondings not implemented")
 }
 func (*UnimplementedQueryAccountServer) AccountDelegationUnbondings(ctx context.Context, req *QueryAccountDelegationUnbondingsRequest) (*QueryAccountDelegationUnbondingsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AccountDelegationUnbondings not implemented")
@@ -1044,24 +846,6 @@ func _QueryAccount_AccountAssets_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryAccountServer).AccountAssets(ctx, req.(*QueryAccountAssetsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _QueryAccount_AccountStakingUnbondings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAccountStakingUnbondingsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryAccountServer).AccountStakingUnbondings(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/kyve.query.v1beta1.QueryAccount/AccountStakingUnbondings",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryAccountServer).AccountStakingUnbondings(ctx, req.(*QueryAccountStakingUnbondingsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1127,10 +911,6 @@ var _QueryAccount_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AccountAssets",
 			Handler:    _QueryAccount_AccountAssets_Handler,
-		},
-		{
-			MethodName: "AccountStakingUnbondings",
-			Handler:    _QueryAccount_AccountStakingUnbondings_Handler,
 		},
 		{
 			MethodName: "AccountDelegationUnbondings",
@@ -1219,154 +999,18 @@ func (m *QueryAccountAssetsResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 		i--
 		dAtA[i] = 0x20
 	}
-	if m.ProtocolStakingUnbonding != 0 {
-		i = encodeVarintAccount(dAtA, i, uint64(m.ProtocolStakingUnbonding))
+	if m.ProtocolSelfDelegationUnbonding != 0 {
+		i = encodeVarintAccount(dAtA, i, uint64(m.ProtocolSelfDelegationUnbonding))
 		i--
 		dAtA[i] = 0x18
 	}
-	if m.ProtocolStaking != 0 {
-		i = encodeVarintAccount(dAtA, i, uint64(m.ProtocolStaking))
+	if m.ProtocolSelfDelegation != 0 {
+		i = encodeVarintAccount(dAtA, i, uint64(m.ProtocolSelfDelegation))
 		i--
 		dAtA[i] = 0x10
 	}
 	if m.Balance != 0 {
 		i = encodeVarintAccount(dAtA, i, uint64(m.Balance))
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryAccountStakingUnbondingsRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryAccountStakingUnbondingsRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryAccountStakingUnbondingsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintAccount(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAccount(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryAccountStakingUnbondingsResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryAccountStakingUnbondingsResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryAccountStakingUnbondingsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Staker != nil {
-		{
-			size, err := m.Staker.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAccount(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x1a
-	}
-	if m.Pagination != nil {
-		{
-			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintAccount(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Unbondings) > 0 {
-		for iNdEx := len(m.Unbondings) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Unbondings[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintAccount(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0xa
-		}
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *StakingUnbonding) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *StakingUnbonding) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *StakingUnbonding) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.CreationTime != 0 {
-		i = encodeVarintAccount(dAtA, i, uint64(m.CreationTime))
-		i--
-		dAtA[i] = 0x10
-	}
-	if m.Amount != 0 {
-		i = encodeVarintAccount(dAtA, i, uint64(m.Amount))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -1754,11 +1398,11 @@ func (m *QueryAccountAssetsResponse) Size() (n int) {
 	if m.Balance != 0 {
 		n += 1 + sovAccount(uint64(m.Balance))
 	}
-	if m.ProtocolStaking != 0 {
-		n += 1 + sovAccount(uint64(m.ProtocolStaking))
+	if m.ProtocolSelfDelegation != 0 {
+		n += 1 + sovAccount(uint64(m.ProtocolSelfDelegation))
 	}
-	if m.ProtocolStakingUnbonding != 0 {
-		n += 1 + sovAccount(uint64(m.ProtocolStakingUnbonding))
+	if m.ProtocolSelfDelegationUnbonding != 0 {
+		n += 1 + sovAccount(uint64(m.ProtocolSelfDelegationUnbonding))
 	}
 	if m.ProtocolDelegation != 0 {
 		n += 1 + sovAccount(uint64(m.ProtocolDelegation))
@@ -1771,61 +1415,6 @@ func (m *QueryAccountAssetsResponse) Size() (n int) {
 	}
 	if m.ProtocolFunding != 0 {
 		n += 1 + sovAccount(uint64(m.ProtocolFunding))
-	}
-	return n
-}
-
-func (m *QueryAccountStakingUnbondingsRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovAccount(uint64(l))
-	}
-	l = len(m.Address)
-	if l > 0 {
-		n += 1 + l + sovAccount(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryAccountStakingUnbondingsResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if len(m.Unbondings) > 0 {
-		for _, e := range m.Unbondings {
-			l = e.Size()
-			n += 1 + l + sovAccount(uint64(l))
-		}
-	}
-	if m.Pagination != nil {
-		l = m.Pagination.Size()
-		n += 1 + l + sovAccount(uint64(l))
-	}
-	if m.Staker != nil {
-		l = m.Staker.Size()
-		n += 1 + l + sovAccount(uint64(l))
-	}
-	return n
-}
-
-func (m *StakingUnbonding) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Amount != 0 {
-		n += 1 + sovAccount(uint64(m.Amount))
-	}
-	if m.CreationTime != 0 {
-		n += 1 + sovAccount(uint64(m.CreationTime))
 	}
 	return n
 }
@@ -2113,9 +1702,9 @@ func (m *QueryAccountAssetsResponse) Unmarshal(dAtA []byte) error {
 			}
 		case 2:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProtocolStaking", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ProtocolSelfDelegation", wireType)
 			}
-			m.ProtocolStaking = 0
+			m.ProtocolSelfDelegation = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowAccount
@@ -2125,16 +1714,16 @@ func (m *QueryAccountAssetsResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ProtocolStaking |= uint64(b&0x7F) << shift
+				m.ProtocolSelfDelegation |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
 		case 3:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ProtocolStakingUnbonding", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ProtocolSelfDelegationUnbonding", wireType)
 			}
-			m.ProtocolStakingUnbonding = 0
+			m.ProtocolSelfDelegationUnbonding = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowAccount
@@ -2144,7 +1733,7 @@ func (m *QueryAccountAssetsResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ProtocolStakingUnbonding |= uint64(b&0x7F) << shift
+				m.ProtocolSelfDelegationUnbonding |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2221,368 +1810,6 @@ func (m *QueryAccountAssetsResponse) Unmarshal(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.ProtocolFunding |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccount(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryAccountStakingUnbondingsRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccount
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAccountStakingUnbondingsRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAccountStakingUnbondingsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccount
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAccount
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageRequest{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccount
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthAccount
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccount(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryAccountStakingUnbondingsResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccount
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAccountStakingUnbondingsResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAccountStakingUnbondingsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Unbondings", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccount
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAccount
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Unbondings = append(m.Unbondings, StakingUnbonding{})
-			if err := m.Unbondings[len(m.Unbondings)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccount
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAccount
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Pagination == nil {
-				m.Pagination = &query.PageResponse{}
-			}
-			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Staker", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccount
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthAccount
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Staker == nil {
-				m.Staker = &FullStaker{}
-			}
-			if err := m.Staker.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipAccount(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthAccount
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *StakingUnbonding) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowAccount
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: StakingUnbonding: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: StakingUnbonding: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
-			}
-			m.Amount = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccount
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Amount |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CreationTime", wireType)
-			}
-			m.CreationTime = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowAccount
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.CreationTime |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}

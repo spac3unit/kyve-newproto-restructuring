@@ -47,16 +47,20 @@ func (k Keeper) parsePoolResponse(ctx sdk.Context, pool *pooltypes.Pool) types.P
 	bundleProposal, _ := k.bundleKeeper.GetBundleProposal(ctx, pool.Id)
 	stakers := k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, pool.Id)
 
-	totalStake := k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id) // Todo maybe show self delegation
+	totalSelfDelegation := uint64(0)
+	for _, address := range k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, pool.Id) {
+		totalSelfDelegation = k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, address, address)
+	}
+
 	totalDelegation := k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id)
 
 	return types.PoolResponse{
-		Id:              pool.Id,
-		Data:            pool,
-		BundleProposal:  &bundleProposal,
-		Stakers:         stakers,
-		TotalStake:      totalStake,
-		TotalDelegation: totalDelegation,
-		Status:          k.GetPoolStatus(ctx, pool),
+		Id:                  pool.Id,
+		Data:                pool,
+		BundleProposal:      &bundleProposal,
+		Stakers:             stakers,
+		TotalSelfDelegation: totalSelfDelegation,
+		TotalDelegation:     totalDelegation,
+		Status:              k.GetPoolStatus(ctx, pool),
 	}
 }

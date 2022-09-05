@@ -24,15 +24,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetCommissionChangeEntry(ctx, entry)
 	}
 
-	for _, entry := range genState.UnbondingStakeEntries {
-		k.SetUnbondingStakeEntry(ctx, entry)
-	}
-
 	for _, entry := range genState.LeavePoolEntries {
 		k.SetLeavePoolEntry(ctx, entry)
 	}
 
-	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_UNSTAKING, genState.QueueStateUnstaking)
 	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_COMMISSION, genState.QueueStateCommission)
 	k.SetQueueState(ctx, types.QUEUE_IDENTIFIER_LEAVE, genState.QueueStateLeave)
 }
@@ -48,11 +43,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.CommissionChangeEntries = k.GetAllCommissionChangeEntries(ctx)
 
-	genesis.UnbondingStakeEntries = k.GetAllUnbondingStakeEntries(ctx)
-
 	genesis.LeavePoolEntries = k.GetAllLeavePoolEntries(ctx)
-
-	genesis.QueueStateUnstaking = k.GetQueueState(ctx, types.QUEUE_IDENTIFIER_UNSTAKING)
 
 	genesis.QueueStateCommission = k.GetQueueState(ctx, types.QUEUE_IDENTIFIER_COMMISSION)
 
