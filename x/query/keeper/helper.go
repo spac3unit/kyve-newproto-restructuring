@@ -49,14 +49,22 @@ func (k Keeper) GetFullStaker(ctx sdk.Context, stakerAddress string) *types.Full
 		})
 	}
 
+	// Iterate all UnbondingDelegation entries to get total delegation unbonding amount
+	selfDelegationUnbonding := uint64(0)
+	for _, entry := range k.delegationKeeper.GetAllUnbondingDelegationQueueEntriesOfDelegator(ctx, stakerAddress) {
+		if entry.Staker == stakerAddress {
+			selfDelegationUnbonding += entry.Amount
+		}
+	}
+
 	return &types.FullStaker{
-		Address:         staker.Address,
-		Metadata:        &stakerMetadata,
-		SelfDelegation:  k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, stakerAddress, stakerAddress),
-		UnbondingAmount: 0, // TODO
-		TotalDelegation: k.delegationKeeper.GetDelegationAmount(ctx, staker.Address),
-		DelegatorCount:  delegationData.DelegatorCount,
-		Pools:           poolMemberships,
+		Address:                 staker.Address,
+		Metadata:                &stakerMetadata,
+		SelfDelegation:          k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, stakerAddress, stakerAddress),
+		SelfDelegationUnbonding: selfDelegationUnbonding,
+		TotalDelegation:         k.delegationKeeper.GetDelegationAmount(ctx, staker.Address),
+		DelegatorCount:          delegationData.DelegatorCount,
+		Pools:                   poolMemberships,
 	}
 }
 

@@ -117,6 +117,7 @@ func (k Keeper) GetFinalizedBundle(ctx sdk.Context, poolId, id uint64) (val type
 	return val, true
 }
 
+// TODO consider performance improvement
 func (k Keeper) GetPaginatedFinalizedBundleQuery(ctx sdk.Context, pagination *query.PageRequest, poolId uint64) ([]types.FinalizedBundle, *query.PageResponse, error) {
 	var data []types.FinalizedBundle
 

@@ -28,7 +28,6 @@ func GetQueryCmd(queryRoute string) *cobra.Command {
 	cmd.AddCommand(CmdAccountAssets())
 	cmd.AddCommand(CmdAccountFundedList())
 	cmd.AddCommand(CmdAccountDelegationUnbondings())
-	cmd.AddCommand(CmdAccountStakingUnbondings())
 	cmd.AddCommand(CmdAccountRedelegation())
 
 	// Pool
