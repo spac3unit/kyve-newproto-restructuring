@@ -71,6 +71,15 @@ func (k Keeper) ProcessDelegatorUnbondingQueue(ctx sdk.Context) {
 				util.PanicHalt(k.upgradeKeeper, ctx, "Not enough money in delegation module - logic_unbonding")
 			}
 
+			// Emit a delegation event.
+			if errEmit := ctx.EventManager().EmitTypedEvent(&types.EventUndelegate{
+				Address: undelegationEntry.Delegator,
+				Node:    undelegationEntry.Staker,
+				Amount:  undelegatedAmount,
+			}); errEmit != nil {
+				util.LogFatalLogicError("Event not parsable", errEmit.Error())
+			}
+
 			k.RemoveUndelegationQueueEntry(ctx, &undelegationEntry)
 
 			continueProcessing = true
