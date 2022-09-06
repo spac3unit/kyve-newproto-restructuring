@@ -21,6 +21,12 @@ func (k Keeper) performDelegation(ctx sdk.Context, stakerAddress string, delegat
 		if err != nil {
 			util.PanicHalt(k.upgradeKeeper, ctx, "no money left in module")
 		}
+		// Emit withdraw event.
+		ctx.EventManager().EmitTypedEvent(&types.EventWithdrawRewards{
+			Address:  delegatorAddress,
+			FromNode: stakerAddress,
+			Amount:   reward,
+		})
 
 		// Perform redelegation
 		unDelegateAmount := k.f1RemoveDelegator(ctx, stakerAddress, delegatorAddress)
@@ -47,6 +53,13 @@ func (k Keeper) performUndelegation(ctx sdk.Context, stakerAddress string, deleg
 	if err := util.TransferFromModuleToAddress(k.bankKeeper, ctx, types.ModuleName, delegatorAddress, reward); err != nil {
 		util.PanicHalt(k.upgradeKeeper, ctx, "not enough money in module")
 	}
+
+	// Emit withdraw event.
+	ctx.EventManager().EmitTypedEvent(&types.EventWithdrawRewards{
+		Address:  delegatorAddress,
+		FromNode: stakerAddress,
+		Amount:   reward,
+	})
 
 	// Perform an internal re-delegation.
 	undelegatedAmount := k.f1RemoveDelegator(ctx, stakerAddress, delegatorAddress)
