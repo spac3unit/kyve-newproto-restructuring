@@ -11,6 +11,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// TODO: validator does not vote n times in a row
+
 var _ = Describe("Bundles module integration tests", Ordered, func() {
 	s := i.NewCleanChain()
 

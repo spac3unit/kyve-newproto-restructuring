@@ -230,8 +230,8 @@ func (k Keeper) handleNonVoters(ctx sdk.Context, poolId uint64) {
 
 			if points >= k.MaxPoints(ctx) {
 				k.delegationKeeper.SlashDelegators(ctx, staker, stakermoduletypes.SLASH_TYPE_TIMEOUT)
-
 				k.stakerKeeper.ResetPoints(ctx, poolId, staker)
+				k.stakerKeeper.RemoveValaccountFromPool(ctx, poolId, staker)
 			}
 		}
 	}
