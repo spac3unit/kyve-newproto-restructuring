@@ -48,8 +48,8 @@ func (k Keeper) parsePoolResponse(ctx sdk.Context, pool *pooltypes.Pool) types.P
 	stakers := k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, pool.Id)
 
 	totalSelfDelegation := uint64(0)
-	for _, address := range k.stakerKeeper.GetAllStakerAddressesOfPool(ctx, pool.Id) {
-		totalSelfDelegation = k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, address, address)
+	for _, address := range stakers {
+		totalSelfDelegation += k.delegationKeeper.GetDelegationAmountOfDelegator(ctx, address, address)
 	}
 
 	totalDelegation := k.delegationKeeper.GetDelegationOfPool(ctx, pool.Id)

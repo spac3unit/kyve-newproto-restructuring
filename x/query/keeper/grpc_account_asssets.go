@@ -21,10 +21,7 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	response := types.QueryAccountAssetsResponse{
-		ProtocolSelfDelegation:          0,
-		ProtocolSelfDelegationUnbonding: 0,
-	}
+	response := types.QueryAccountAssetsResponse{}
 
 	// =======
 	// Balance
@@ -80,5 +77,5 @@ func (k Keeper) AccountAssets(goCtx context.Context, req *types.QueryAccountAsse
 		response.ProtocolFunding += funder.Amount
 	}
 
-	return &types.QueryAccountAssetsResponse{}, nil
+	return &response, nil
 }

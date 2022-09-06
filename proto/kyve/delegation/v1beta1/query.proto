@@ -5,6 +5,7 @@ package kyve.delegation.v1beta1;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "kyve/delegation/v1beta1/params.proto";
+import "kyve/delegation/v1beta1/delegation.proto";
 // this line is used by starport scaffolding # 1
 
 
@@ -14,9 +15,12 @@ option go_package = "github.com/KYVENetwork/chain/x/delegation/types";
 service Query {
   // Parameters queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/KYVENetwork/chain/delegation/params";
+    option (google.api.http).get = "/kyve/delegation/v1beta1/params";
   }
-  // this line is used by starport scaffolding # 2
+
+  rpc Slashes(QuerySlashesRequest) returns (QuerySlashesResponse) {
+    option (google.api.http).get = "/kyve/delegation/v1beta1/slashes";
+  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -26,6 +30,14 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QuerySlashesRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QuerySlashesResponse {
+  repeated DelegationSlash slashes = 1;
 }
 
 // this line is used by starport scaffolding # 3

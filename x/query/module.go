@@ -75,6 +75,7 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 	types.RegisterQueryStakersHandlerClient(context.Background(), mux, types.NewQueryStakersClient(clientCtx))
 	types.RegisterQueryDelegationHandlerClient(context.Background(), mux, types.NewQueryDelegationClient(clientCtx))
 	types.RegisterQueryBundlesHandlerClient(context.Background(), mux, types.NewQueryBundlesClient(clientCtx))
+	types.RegisterQueryParamsHandlerClient(context.Background(), mux, types.NewQueryParamsClient(clientCtx))
 }
 
 // GetTxCmd returns the capability module's root tx command.
@@ -140,6 +141,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryStakersServer(cfg.QueryServer(), am.keeper)
 	types.RegisterQueryDelegationServer(cfg.QueryServer(), am.keeper)
 	types.RegisterQueryBundlesServer(cfg.QueryServer(), am.keeper)
+	types.RegisterQueryParamsServer(cfg.QueryServer(), am.keeper)
 }
 
 // RegisterInvariants registers the capability module's invariants.
