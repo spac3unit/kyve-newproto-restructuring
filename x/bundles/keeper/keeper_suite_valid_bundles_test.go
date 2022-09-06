@@ -83,7 +83,7 @@ var _ = Describe("valid bundles", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	PIt("Produce a valid bundle with one validator and no foreign delegations", func() {
+	It("Produce a valid bundle with one validator and no foreign delegations", func() {
 		// ARRANGE
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
 			Creator:    i.VALADDRESS_0,
@@ -166,15 +166,23 @@ var _ = Describe("valid bundles", Ordered, func() {
 		Expect(balanceValaddress).To(Equal(initialBalanceValaddress))
 
 		balanceStaker := s.GetBalanceFromAddress(valaccountUploader.Staker)
+		uploader, _ := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
 
-		// calculate uploader reward
+		// calculate uploader rewards
 		totalReward := 100*s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
 		networkFee, _ := sdk.NewDecFromStr(s.App().BundlesKeeper.NetworkFee(s.Ctx()))
+		commission, _ := sdk.NewDecFromStr(uploader.Commission)
 
 		treasuryReward := uint64(sdk.NewDec(int64(totalReward)).Mul(networkFee).RoundInt64())
-		uploaderReward := totalReward - treasuryReward
+		totalUploaderReward := totalReward - treasuryReward
 
-		Expect(balanceStaker + s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(initialBalanceStaker + uploaderReward))
+		uploaderPayoutReward := uint64(sdk.NewDec(int64(totalUploaderReward)).Mul(commission).RoundInt64())
+		uploaderDelegationReward := totalUploaderReward - uploaderPayoutReward
+
+		// assert payout transfer
+		Expect(balanceStaker).To(Equal(initialBalanceStaker + uploaderPayoutReward))
+		// assert uploader self delegation rewards
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(Equal(uploaderDelegationReward))
 
 		// check pool funds
 		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
