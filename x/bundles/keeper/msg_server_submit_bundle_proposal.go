@@ -127,7 +127,7 @@ func (k msgServer) SubmitBundleProposal(
 
 		// Drop current bundle. Can't register the provided bundle because the previous bundles
 		// needs to be resubmitted first.
-		if err := k.dropCurrentBundleProposal(ctx, pool, bundleProposal, voteDistribution); err != nil {
+		if err := k.dropCurrentBundleProposal(ctx, pool, bundleProposal, voteDistribution, bundleProposal.NextUploader); err != nil {
 			return nil, err
 		}
 

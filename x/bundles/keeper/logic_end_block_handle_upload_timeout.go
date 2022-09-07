@@ -48,22 +48,7 @@ func (k Keeper) HandleUploadTimeout(goCtx context.Context) {
 				}
 
 				// If consensus wasn't reached, we drop the bundle and emit an event.
-				ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
-					PoolId:  pool.Id,
-					Id:      pool.TotalBundles,
-					Valid:   voteDistribution.Valid,
-					Invalid: voteDistribution.Invalid,
-					Abstain: voteDistribution.Abstain,
-					Total:   voteDistribution.Total,
-					Status:  voteDistribution.Status,
-				})
-
-				bundleProposal = types.BundleProposal{
-					NextUploader: nextUploader,
-					CreatedAt:    uint64(ctx.BlockTime().Unix()),
-				}
-
-				k.SetBundleProposal(ctx, bundleProposal)
+				k.dropCurrentBundleProposal(ctx, pool, bundleProposal, voteDistribution, nextUploader)
 				continue
 			}
 		}

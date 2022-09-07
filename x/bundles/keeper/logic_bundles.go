@@ -318,7 +318,12 @@ func (k Keeper) finalizeCurrentBundleProposal(ctx sdk.Context, pool poolmodulety
 	return nil
 }
 
-func (k Keeper) dropCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.Pool, bundleProposal types.BundleProposal, voteDistribution types.VoteDistribution) error {
+func (k Keeper) dropCurrentBundleProposal(
+	ctx sdk.Context, pool poolmoduletypes.Pool,
+	bundleProposal types.BundleProposal,
+	voteDistribution types.VoteDistribution,
+	nextUploader string,
+) error {
 	err := ctx.EventManager().EmitTypedEvent(&types.EventBundleFinalized{
 		PoolId:  pool.Id,
 		Id:      pool.TotalBundles,
@@ -331,7 +336,8 @@ func (k Keeper) dropCurrentBundleProposal(ctx sdk.Context, pool poolmoduletypes.
 
 	// drop bundle
 	bundleProposal = types.BundleProposal{
-		NextUploader: bundleProposal.NextUploader,
+		PoolId:       pool.Id,
+		NextUploader: nextUploader,
 		CreatedAt:    uint64(ctx.BlockTime().Unix()),
 	}
 

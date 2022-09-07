@@ -29,6 +29,7 @@ TEST CASES - logic_end_block_handle_upload_timeout.go
 * A bundle proposal with no quorum does not reach the upload interval
 * A bundle proposal with no quorum does reach the upload interval
 * Staker who just left the pool is next uploader of bundle proposal and upload timeout passes
+* TODO: test with multiple pools
 
 */
 
