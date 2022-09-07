@@ -32,7 +32,6 @@ service QueryAccount {
   }
 }
 
-
 // ========================
 // account_assets/{address}
 // ========================
@@ -60,7 +59,6 @@ message QueryAccountAssetsResponse {
   // protocol_funding ...
   uint64 protocol_funding = 7;
 }
-
 
 // =======================================
 // account_delegation_unbondings/{address}
@@ -92,7 +90,6 @@ message DelegationUnbonding {
   FullStaker staker = 3;
 }
 
-
 // =============================
 // account_funded_list/{address}
 // =============================
@@ -121,7 +118,6 @@ message Funded {
   BasicPool pool = 2;
 }
 
-
 // ==============================
 // account_redelegation/{address}
 // ==============================
@@ -138,7 +134,7 @@ message QueryAccountRedelegationResponse {
   repeated RedelegationEntry redelegation_cooldown_entries = 1 [(gogoproto.nullable) = false];
 
   // availableSlots ...
-  uint64 availableSlots = 2;
+  uint64 available_slots = 2;
 }
 
 // RedelegationEntry ...
