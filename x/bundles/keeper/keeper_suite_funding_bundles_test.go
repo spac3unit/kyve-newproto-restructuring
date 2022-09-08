@@ -5,15 +5,17 @@ import (
 	bundletypes "github.com/KYVENetwork/chain/x/bundles/types"
 	pooltypes "github.com/KYVENetwork/chain/x/pool/types"
 	stakertypes "github.com/KYVENetwork/chain/x/stakers/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
 )
 
 /*
 
 TEST CASES - funding bundles
 
-* TODO: Produce a valid bundle with only one funder
-* TODO: Produce a valid bundle with multiple funders and same funding amounts
+* Produce a valid bundle with only one funder
+* Produce a valid bundle with multiple funders and same funding amounts
 * TODO: Produce a valid bundle with multiple funders and different funding amounts
 
 */
@@ -21,11 +23,8 @@ TEST CASES - funding bundles
 var _ = Describe("funding bundles", Ordered, func() {
 	s := i.NewCleanChain()
 
-	//initialBalanceStaker0 := s.GetBalanceFromAddress(i.STAKER_0)
-	//initialBalanceValaddress0 := s.GetBalanceFromAddress(i.VALADDRESS_0)
-	//
-	//initialBalanceStaker1 := s.GetBalanceFromAddress(i.STAKER_1)
-	//initialBalanceValaddress1 := s.GetBalanceFromAddress(i.VALADDRESS_1)
+	initialBalanceAlice := s.GetBalanceFromAddress(i.ALICE)
+	initialBalanceBob := s.GetBalanceFromAddress(i.BOB)
 
 	BeforeEach(func() {
 		// init new clean chain
@@ -46,12 +45,6 @@ var _ = Describe("funding bundles", Ordered, func() {
 			UpgradePlan: &pooltypes.UpgradePlan{},
 		})
 
-		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
-			Creator: i.ALICE,
-			Id:      0,
-			Amount:  100 * i.KYVE,
-		})
-
 		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
 			Creator: i.STAKER_0,
 			Amount:  100 * i.KYVE,
@@ -62,6 +55,19 @@ var _ = Describe("funding bundles", Ordered, func() {
 			PoolId:     0,
 			Valaddress: i.VALADDRESS_0,
 		})
+	})
+
+	AfterEach(func() {
+		s.PerformValidityChecks()
+	})
+
+	It("Produce a valid bundle with only one funder", func() {
+		// ARRANGE
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id:      0,
+			Amount:  100 * i.KYVE,
+		})
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
 			Creator: i.VALADDRESS_0,
@@ -69,16 +75,219 @@ var _ = Describe("funding bundles", Ordered, func() {
 			PoolId:  0,
 		})
 
-		//initialBalanceStaker0 = s.GetBalanceFromAddress(i.STAKER_0)
-		//initialBalanceValaddress0 = s.GetBalanceFromAddress(i.VALADDRESS_0)
-		//
-		//initialBalanceStaker1 = s.GetBalanceFromAddress(i.STAKER_1)
-		//initialBalanceValaddress1 = s.GetBalanceFromAddress(i.VALADDRESS_1)
+		s.CommitAfterSeconds(60)
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
+			FromHeight: 0,
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
+			BundleHash: "test_hash",
+		})
 
 		s.CommitAfterSeconds(60)
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
+			PoolId:     0,
+			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize:   100,
+			FromHeight: 100,
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value2",
+			BundleHash: "test_hash2",
+		})
+
+		// ASSERT
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		totalReward := 100*s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
+
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		// assert total pool funds
+		Expect(pool.TotalFunds).To(Equal(100*i.KYVE - totalReward))
+		Expect(pool.Funders).To(HaveLen(1))
+
+		// assert individual funds
+		funder, _ := pool.GetFunder(i.ALICE)
+		Expect(funder.Amount).To(Equal(100*i.KYVE - totalReward))
+
+		// assert individual balances
+		balanceAlice := s.GetBalanceFromAddress(i.ALICE)
+
+		Expect(balanceAlice).To(Equal(initialBalanceAlice - 100*i.KYVE))
 	})
 
-	AfterEach(func() {
-		s.PerformValidityChecks()
+	It("Produce a valid bundle with multiple funders and same funding amounts", func() {
+		// ARRANGE
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id:      0,
+			Amount:  100 * i.KYVE,
+		})
+
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.BOB,
+			Id:      0,
+			Amount:  100 * i.KYVE,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		s.CommitAfterSeconds(60)
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
+			FromHeight: 0,
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
+			BundleHash: "test_hash",
+		})
+
+		s.CommitAfterSeconds(60)
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
+			PoolId:     0,
+			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize:   100,
+			FromHeight: 100,
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value2",
+			BundleHash: "test_hash2",
+		})
+
+		// ASSERT
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		totalReward := 100*s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
+
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		// assert total pool funds
+		Expect(pool.TotalFunds).To(Equal(200*i.KYVE - totalReward))
+		Expect(pool.Funders).To(HaveLen(2))
+
+		// assert individual funds
+		fundersCharge := uint64(sdk.NewDec(int64(totalReward)).Quo(sdk.NewDec(2)).TruncateInt64())
+
+		funderAlice, _ := pool.GetFunder(i.ALICE)
+		Expect(funderAlice.Amount).To(Equal(100*i.KYVE - fundersCharge))
+
+		funderBob, _ := pool.GetFunder(i.BOB)
+		Expect(funderBob.Amount).To(Equal(100*i.KYVE - fundersCharge))
+
+		// assert individual balances
+		balanceAlice := s.GetBalanceFromAddress(i.ALICE)
+		Expect(balanceAlice).To(Equal(initialBalanceAlice - 100*i.KYVE))
+
+		balanceBob := s.GetBalanceFromAddress(i.BOB)
+		Expect(balanceBob).To(Equal(initialBalanceBob - 100*i.KYVE))
+	})
+
+	It("Produce a valid bundle with multiple funders and different funding amounts", func() {
+		// ARRANGE
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.ALICE,
+			Id:      0,
+			Amount:  150 * i.KYVE,
+		})
+
+		s.RunTxPoolSuccess(&pooltypes.MsgFundPool{
+			Creator: i.BOB,
+			Id:      0,
+			Amount:  50 * i.KYVE,
+		})
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgClaimUploaderRole{
+			Creator: i.VALADDRESS_0,
+			Staker:  i.STAKER_0,
+			PoolId:  0,
+		})
+
+		s.CommitAfterSeconds(60)
+
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
+			PoolId:     0,
+			StorageId:  "y62A3tfbSNcNYDGoL-eXwzyV-Zc9Q0OVtDvR1biJmNI",
+			ByteSize:   100,
+			FromHeight: 0,
+			ToHeight:   100,
+			FromKey:    "0",
+			ToKey:      "99",
+			ToValue:    "test_value",
+			BundleHash: "test_hash",
+		})
+
+		s.CommitAfterSeconds(60)
+
+		// ACT
+		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
+			Creator:    i.VALADDRESS_0,
+			Staker:     i.STAKER_0,
+			PoolId:     0,
+			StorageId:  "P9edn0bjEfMU_lecFDIPLvGO2v2ltpFNUMWp5kgPddg",
+			ByteSize:   100,
+			FromHeight: 100,
+			ToHeight:   200,
+			FromKey:    "99",
+			ToKey:      "199",
+			ToValue:    "test_value2",
+			BundleHash: "test_hash2",
+		})
+
+		// ASSERT
+		pool, _ := s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		totalReward := 100*s.App().BundlesKeeper.StorageCost(s.Ctx()) + pool.OperatingCost
+
+		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
+
+		// assert total pool funds
+		Expect(pool.TotalFunds).To(Equal(200*i.KYVE - totalReward))
+		Expect(pool.Funders).To(HaveLen(2))
+
+		// assert individual funds
+		fundersCharge := uint64(sdk.NewDec(int64(totalReward)).Quo(sdk.NewDec(2)).TruncateInt64())
+
+		funderAlice, _ := pool.GetFunder(i.ALICE)
+		Expect(funderAlice.Amount).To(Equal(150*i.KYVE - fundersCharge))
+
+		funderBob, _ := pool.GetFunder(i.BOB)
+		Expect(funderBob.Amount).To(Equal(50*i.KYVE - fundersCharge))
+
+		// assert individual balances
+		balanceAlice := s.GetBalanceFromAddress(i.ALICE)
+		Expect(balanceAlice).To(Equal(initialBalanceAlice - 150*i.KYVE))
+
+		balanceBob := s.GetBalanceFromAddress(i.BOB)
+		Expect(balanceBob).To(Equal(initialBalanceBob - 50*i.KYVE))
 	})
 })
