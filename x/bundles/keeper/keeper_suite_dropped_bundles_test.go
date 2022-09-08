@@ -85,7 +85,7 @@ var _ = Describe("dropped bundles", Ordered, func() {
 		s.PerformValidityChecks()
 	})
 
-	PIt("Produce dropped bundle because nodes do not vote", func() {
+	It("Produce a dropped bundle because not enough validators voted", func() {
 		// ARRANGE
 		// stake a bit more than first node so >50% is reached
 		s.RunTxStakersSuccess(&stakertypes.MsgCreateStaker{
@@ -98,6 +98,8 @@ var _ = Describe("dropped bundles", Ordered, func() {
 			PoolId:     0,
 			Valaddress: i.VALADDRESS_1,
 		})
+
+		initialBalanceStaker1 = s.GetBalanceFromAddress(i.STAKER_1)
 
 		s.RunTxBundlesSuccess(&bundletypes.MsgSubmitBundleProposal{
 			Creator:    i.VALADDRESS_0,
