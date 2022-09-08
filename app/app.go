@@ -1,12 +1,11 @@
 package app
 
 import (
+	v0_7_0_beta1 "github.com/KYVENetwork/chain/app/upgrades/v0.7.0_beta1"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
-
-	v0_7_0 "github.com/KYVENetwork/chain/app/upgrades/v0.7.0"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -741,5 +740,6 @@ func GetMaccPerms() map[string][]string {
 }
 
 func (app *App) setupUpgradeHandlers() {
-	app.UpgradeKeeper.SetUpgradeHandler(v0_7_0.UpgradeName, v0_7_0.CreateUpgradeHandler(&app.RegistryKeeper))
+	//app.UpgradeKeeper.SetUpgradeHandler(v0_7_0.UpgradeName, v0_7_0.CreateUpgradeHandler(&app.RegistryKeeper))
+	app.UpgradeKeeper.SetUpgradeHandler(v0_7_0_beta1.UpgradeName, v0_7_0_beta1.CreateUpgradeHandler(&app.RegistryKeeper))
 }
