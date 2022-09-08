@@ -18,6 +18,7 @@ TEST CASES - invalid bundles
 
 * Produce an invalid bundle with multiple validators and no foreign delegations
 * Produce an invalid bundle with multiple validators and foreign delegations
+* TODO: Produce an invalid bundle with multiple validators although some voted valid
 
 */
 
@@ -183,9 +184,7 @@ var _ = Describe("invalid bundles", Ordered, func() {
 		_, uploaderFound := s.App().StakersKeeper.GetStaker(s.Ctx(), valaccountUploader.Staker)
 		Expect(uploaderFound).To(BeTrue())
 
-		// assert payout transfer
 		Expect(balanceUploader).To(Equal(initialBalanceStaker0))
-		// assert uploader self delegation rewards
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.STAKER_0, i.STAKER_0)).To(BeZero())
 
 		// calculate uploader slashes
@@ -203,9 +202,9 @@ var _ = Describe("invalid bundles", Ordered, func() {
 		Expect(balanceVoterValaddress).To(Equal(initialBalanceValaddress1))
 
 		balanceVoter := s.GetBalanceFromAddress(valaccountVoter.Staker)
-		Expect(balanceVoter).To(Equal(initialBalanceStaker1))
 
-		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.STAKER_1, i.BOB)).To(BeZero())
+		Expect(balanceVoter).To(Equal(initialBalanceStaker1))
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.STAKER_1, i.STAKER_1)).To(BeZero())
 
 		// check pool funds
 		pool, _ = s.App().PoolKeeper.GetPool(s.Ctx(), 0)
@@ -349,7 +348,7 @@ var _ = Describe("invalid bundles", Ordered, func() {
 
 		balanceVoter := s.GetBalanceFromAddress(valaccountVoter.Staker)
 		Expect(balanceVoter).To(Equal(initialBalanceStaker1))
-
+		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.STAKER_1, i.STAKER_1)).To(BeZero())
 		Expect(s.App().DelegationKeeper.GetOutstandingRewards(s.Ctx(), i.STAKER_1, i.BOB)).To(BeZero())
 
 		// check pool funds
