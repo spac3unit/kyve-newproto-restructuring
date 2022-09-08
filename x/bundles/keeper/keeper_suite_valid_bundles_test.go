@@ -20,6 +20,8 @@ TEST CASES - valid bundles
 * Produce a valid bundle with one validator and foreign delegations
 * Produce a valid bundle with multiple validators and no foreign delegations
 * Produce a valid bundle with multiple validators and foreign delegations
+* TODO: Produce a valid bundle with multiple validators and foreign delegation although some voted abstain
+* TODO: Produce a valid bundle with multiple validators and foreign delegation although some voted invalid
 
 */
 

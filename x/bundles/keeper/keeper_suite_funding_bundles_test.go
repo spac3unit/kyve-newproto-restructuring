@@ -16,7 +16,7 @@ TEST CASES - funding bundles
 
 * Produce a valid bundle with only one funder
 * Produce a valid bundle with multiple funders and same funding amounts
-* TODO: Produce a valid bundle with multiple funders and different funding amounts
+* Produce a valid bundle with multiple funders and different funding amounts
 
 */
 

@@ -119,7 +119,7 @@ func (k msgServer) SubmitBundleProposal(
 		// slash stakers who voted incorrectly - uploader receives upload slash
 		for _, voter := range bundleProposal.VotersValid {
 			if voter == bundleProposal.Uploader {
-				k.delegationKeeper.SlashDelegators(ctx, voter, stakertypes.SLASH_TYPE_VOTE)
+				k.delegationKeeper.SlashDelegators(ctx, voter, stakertypes.SLASH_TYPE_UPLOAD)
 			} else {
 				k.delegationKeeper.SlashDelegators(ctx, voter, stakertypes.SLASH_TYPE_VOTE)
 			}
