@@ -1,4 +1,4 @@
-module github.com/KYVENetwork/chain
+module github.com/spac3unit/kyve-newproto-restructuring
 
 go 1.18
 
